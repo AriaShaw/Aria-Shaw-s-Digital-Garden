@@ -33,20 +33,29 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', (event) => {
-        document.querySelectorAll('div.highlight').forEach((codeBlock) => {
+        // Select only the <pre> element that is a DIRECT child of a <div class="highlight">
+        document.querySelectorAll('div.highlight > pre').forEach((preElement) => {
+            const codeBlockContainer = preElement.parentElement; // This is the <div> we want to add the button to
+
+            // A failsafe to prevent adding multiple buttons if the script runs twice
+            if (codeBlockContainer.querySelector('.copy-button')) {
+                return; 
+            }
+
             const copyButton = document.createElement('button');
             copyButton.className = 'copy-button';
             copyButton.textContent = 'Copy';
-            codeBlock.appendChild(copyButton);
+            codeBlockContainer.appendChild(copyButton);
 
-            copyButton.addEventListener('click', () => {
-                const code = codeBlock.querySelector('code').innerText;
+            copyButton.addEventListener('click', (e) => {
+                e.stopPropagation(); // Stop the click from bubbling up
+                const code = preElement.querySelector('code').innerText;
                 navigator.clipboard.writeText(code).then(() => {
                     copyButton.textContent = 'Copied!';
-                    copyButton.classList.add('copied'); // Add class for styling
+                    copyButton.classList.add('copied');
                     setTimeout(() => {
                         copyButton.textContent = 'Copy';
-                        copyButton.classList.remove('copied'); // Remove class
+                        copyButton.classList.remove('copied');
                     }, 2000);
                 }).catch(err => {
                     console.error('Failed to copy text: ', err);
