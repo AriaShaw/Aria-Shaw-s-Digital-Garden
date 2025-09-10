@@ -12,8 +12,26 @@ Here you will find a growing library of guides. Each one is designed to fill an 
 
 *A step-by-step blueprint for deploying a secure, scalable Odoo instance from scratch, while navigating the common pitfalls that can lead to a $48,000 disaster.*
 
+### 🚀 [Odoo Database Migration Crisis: The Complete Zero-Downtime Guide (2025)](/odoo-database-migration-guide/)
+
+*The definitive guide to migrating Odoo databases with zero data loss and minimal downtime. Battle-tested methodology from 300+ successful migrations, covering everything from risk assessment to disaster recovery.*
+
 ---
 *More playbooks are being cultivated and will be published here soon.*
+
+---
+
+## 🧰 The Toolkit: Featured Tools
+
+Alongside the guides, I build and maintain a collection of open-source scripts. Here are a few featured tools:
+
+* **[Migration Risk Assessor](/scripts/migration_assessment.sh)**
+    *A shell script to quickly analyze your Odoo database to identify potential migration risks.*
+
+* **[Environment Compatibility Checker](/scripts/compatibility_check.py)**
+    *A Python script to verify system environments to prevent compatibility-related failures.*
+
+**[→ Explore the Full Toolkit Library...](/toolkit/)**
 
 ---
 
