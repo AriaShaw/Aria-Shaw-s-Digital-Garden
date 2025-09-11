@@ -1,54 +1,104 @@
 <style>
-    /* The container for the code block needs a relative position */
+    /* 1. Code Copy Button Styles */
     div.highlight {
         position: relative;
     }
     .copy-button {
         position: absolute;
-        top: 0.5em; /* Use 'em' for responsive spacing */
+        top: 0.5em;
         right: 0.5em;
-        padding: 3px 8px; /* Make the button smaller */
+        padding: 3px 8px;
         font-size: 12px;
-        color: #e0e0e0; /* Softer text color */
-        background-color: #333; /* Darker, less obtrusive background */
-        border: 1px solid #555; /* A subtle border */
+        color: #e0e0e0;
+        background-color: #333;
+        border: 1px solid #555;
         border-radius: 5px;
         cursor: pointer;
-        opacity: 0; /* Hidden by default */
+        opacity: 0;
         transition: opacity 0.2s ease-in-out, background-color 0.2s;
+        z-index: 10;
     }
-    /* Show the button when hovering over the code block container */
     div.highlight:hover .copy-button {
         opacity: 1;
     }
     .copy-button:hover {
-        background-color: #444; /* Slightly lighter on hover */
+        background-color: #444;
     }
-    /* Visual feedback on click */
     .copy-button.copied {
-        background-color: #28a745; /* Green when copied */
+        background-color: #28a745;
         border-color: #1c7430;
     }
-</style>
 
+    /* 2. Floating Table of Contents Styles */
+    .toc-container {
+        position: fixed; /* Fixes it to the viewport */
+        top: 120px;
+        left: 20px;
+        width: 260px;
+        max-height: 75vh; /* Prevents it from being too long */
+        overflow-y: auto; /* Adds a scrollbar if needed */
+        
+        background: #ffffff;
+        border: 1px solid #e1e4e8;
+        border-radius: 6px;
+        padding: 20px;
+        
+        display: none; /* Hidden by default, shown only on large screens */
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+    }
+    .toc-container h3 {
+        margin-top: 0;
+        margin-bottom: 15px;
+        font-size: 16px;
+        font-weight: 600;
+        border-bottom: 1px solid #e1e4e8;
+        padding-bottom: 10px;
+    }
+    .toc-container .js-toc ul {
+        padding-left: 15px;
+        margin-bottom: 0;
+    }
+    .toc-container .js-toc li {
+        list-style-type: none;
+        margin-bottom: 10px;
+    }
+    .toc-container .js-toc a {
+        text-decoration: none;
+        color: #586069;
+        font-size: 14px;
+        transition: color 0.2s;
+    }
+    .toc-container .js-toc a:hover {
+        color: #0366d6;
+    }
+    .toc-container .is-active-link {
+        font-weight: 700;
+        color: #0366d6;
+    }
+    
+    /* The magic that makes it all work without overlapping */
+    @media (min-width: 1280px) {
+        .toc-container {
+            display: block; /* Show the TOC */
+        }
+        /* Push the main content to the side to make space for the TOC */
+        .wrapper {
+            max-width: 860px;
+            margin: 0 auto 0 320px; /* Adjust the left margin */
+        }
+    }
+</style>
 <script>
     document.addEventListener('DOMContentLoaded', (event) => {
-        // Select only the <pre> element that is a DIRECT child of a <div class="highlight">
         document.querySelectorAll('div.highlight > pre').forEach((preElement) => {
-            const codeBlockContainer = preElement.parentElement; // This is the <div> we want to add the button to
-
-            // A failsafe to prevent adding multiple buttons if the script runs twice
-            if (codeBlockContainer.querySelector('.copy-button')) {
-                return; 
-            }
-
+            const codeBlockContainer = preElement.parentElement;
+            if (codeBlockContainer.querySelector('.copy-button')) { return; }
             const copyButton = document.createElement('button');
             copyButton.className = 'copy-button';
             copyButton.textContent = 'Copy';
             codeBlockContainer.appendChild(copyButton);
-
             copyButton.addEventListener('click', (e) => {
-                e.stopPropagation(); // Stop the click from bubbling up
+                e.stopPropagation();
                 const code = preElement.querySelector('code').innerText;
                 navigator.clipboard.writeText(code).then(() => {
                     copyButton.textContent = 'Copied!';
@@ -57,95 +107,24 @@
                         copyButton.textContent = 'Copy';
                         copyButton.classList.remove('copied');
                     }, 2000);
-                }).catch(err => {
-                    console.error('Failed to copy text: ', err);
-                });
+                }).catch(err => { console.error('Failed to copy text: ', err); });
             });
         });
     });
 </script>
 
-<style>
-    /* New, Optimized Table of Contents Styling for "Minimal" Theme */
-    .toc-container {
-        position: fixed;
-        top: 120px; /* Adjust top position to avoid header */
-        left: 20px;  /* Position it on the left */
-        width: 260px; /* Give it a bit more space */
-        max-height: 75vh; /* Limit height to 75% of the viewport height */
-        overflow-y: auto; /* Add scrollbar if content overflows */
-        
-        background: #ffffff; /* Match the theme's content background */
-        border: 1px solid #e1e4e8; /* Use a subtle border color */
-        border-radius: 6px; /* Match GitHub's border radius */
-        padding: 20px;
-        
-        display: none; /* Hide by default */
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji"; /* Match theme font */
-    }
-
-    /* Style the title of the TOC */
-    .toc-container h3 {
-        margin-top: 0;
-        margin-bottom: 15px;
-        font-size: 16px;
-        font-weight: 600; /* Bolder title */
-        border-bottom: 1px solid #e1e4e8;
-        padding-bottom: 10px;
-    }
-
-    /* Styling for the list itself */
-    .toc-container .js-toc {
-      padding-left: 0;
-    }
-    
-    .toc-container ul {
-        padding-left: 15px;
-        margin-bottom: 0;
-    }
-
-    .toc-container li {
-        list-style-type: none;
-        margin-bottom: 10px;
-    }
-    
-    .toc-container a {
-        text-decoration: none;
-        color: #586069; /* Softer link color */
-        font-size: 14px;
-        transition: color 0.2s;
-    }
-    
-    .toc-container a:hover {
-        color: #0366d6; /* Brighter hover color */
-    }
-
-    /* This is the key: The media query that determines when the TOC appears */
-    /* We will only show the TOC on screens wider than 1280px */
-    @media (min-width: 1280px) {
-        .toc-container {
-            display: block;
-        }
-        /* When the TOC is visible, we need to make sure the main content is not too wide */
-        .wrapper {
-            max-width: 860px; /* Adjust as needed */
-            margin-left: 320px; /* Create space on the left for the TOC */
-        }
-    }
-</style>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.21.1/tocbot.min.js"></script>
-
 <script>
     document.addEventListener('DOMContentLoaded', (event) => {
-        // Only run this on pages that have a content area and a toc container
         if (document.querySelector('.post-content') && document.querySelector('.js-toc')) {
             tocbot.init({
-                tocSelector: '.js-toc', // Where to render the table of contents
-                contentSelector: '.post-content', // Where to grab the headings from
-                headingSelector: 'h2, h3', // Which headings to include
+                tocSelector: '.js-toc',
+                contentSelector: '.post-content',
+                headingSelector: 'h2, h3',
                 hasInnerContainers: true,
                 scrollSmooth: true,
+                activeLinkClass: 'is-active-link', // Highlights the current section
+                headingsOffset: 40, // Offset for sticky header
             });
         }
     });
