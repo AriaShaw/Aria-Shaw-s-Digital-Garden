@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Odoo Database Migration: The Complete Zero-Downtime Guide for Business Owners (2025)"
+title: "Odoo Database Migration 2025: Zero-Downtime Made Easy"
 author: "Aria Shaw"
 date: 2025-09-10
 description: "Master Odoo database migration in 2025 🚀 Ensure zero data loss & under 5 min downtime with a guide proven in 300+ successful migrations."
