@@ -206,6 +206,129 @@
             display: none;
         }
     }
+
+    /* 4. Image Lightbox Styles */
+    .lightbox-overlay {
+        display: none;
+        position: fixed;
+        z-index: 9999;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.9);
+        cursor: pointer;
+    }
+
+    .lightbox-overlay.active {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        animation: fadeIn 0.3s ease;
+    }
+
+    .lightbox-content {
+        position: relative;
+        max-width: 95%;
+        max-height: 95%;
+        cursor: default;
+    }
+
+    .lightbox-image {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        border-radius: 8px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+        animation: scaleIn 0.3s ease;
+    }
+
+    .lightbox-close {
+        position: absolute;
+        top: -40px;
+        right: -10px;
+        background: rgba(255, 255, 255, 0.9);
+        border: none;
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        font-size: 18px;
+        font-weight: bold;
+        color: #333;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+        z-index: 10000;
+    }
+
+    .lightbox-close:hover {
+        background: #fff;
+        transform: scale(1.1);
+    }
+
+    .lightbox-caption {
+        position: absolute;
+        bottom: -50px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 4px;
+        font-size: 14px;
+        max-width: 90%;
+        text-align: center;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* Clickable images cursor */
+    img[src*="/assets/images/"]:not(.no-lightbox) {
+        cursor: zoom-in;
+        transition: transform 0.2s ease, filter 0.2s ease;
+    }
+
+    img[src*="/assets/images/"]:not(.no-lightbox):hover {
+        transform: scale(1.02);
+        filter: brightness(1.05);
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @keyframes scaleIn {
+        from { 
+            opacity: 0; 
+            transform: scale(0.8); 
+        }
+        to { 
+            opacity: 1; 
+            transform: scale(1); 
+        }
+    }
+
+    /* Mobile responsive */
+    @media (max-width: 768px) {
+        .lightbox-close {
+            top: -35px;
+            right: -5px;
+            width: 28px;
+            height: 28px;
+            font-size: 16px;
+        }
+
+        .lightbox-caption {
+            bottom: -40px;
+            font-size: 12px;
+            padding: 6px 12px;
+        }
+    }
 </style>
 <script>
     document.addEventListener('DOMContentLoaded', (event) => {
@@ -232,6 +355,9 @@
 
         // 3. 浮动目录功能
         initFloatingTOC();
+
+        // 4. 图片放大功能
+        initImageLightbox();
     });
 
     function initFloatingTOC() {
@@ -384,6 +510,132 @@
                     behavior: 'smooth'
                 });
             }
+        });
+    }
+
+    function initImageLightbox() {
+        // 创建lightbox HTML结构
+        if (document.getElementById('image-lightbox')) return; // 避免重复创建
+
+        const lightboxHTML = `
+            <div id="image-lightbox" class="lightbox-overlay">
+                <div class="lightbox-content">
+                    <button class="lightbox-close" aria-label="关闭图片">×</button>
+                    <img class="lightbox-image" alt="">
+                    <div class="lightbox-caption"></div>
+                </div>
+            </div>
+        `;
+        
+        document.body.insertAdjacentHTML('beforeend', lightboxHTML);
+        
+        const lightbox = document.getElementById('image-lightbox');
+        const lightboxImg = lightbox.querySelector('.lightbox-image');
+        const lightboxCaption = lightbox.querySelector('.lightbox-caption');
+        const closeBtn = lightbox.querySelector('.lightbox-close');
+        
+        // 为所有assets/images下的图片添加点击事件
+        function attachImageListeners() {
+            const images = document.querySelectorAll('img[src*="/assets/images/"]:not(.no-lightbox)');
+            
+            images.forEach(img => {
+                // 避免重复绑定
+                if (img.hasAttribute('data-lightbox-attached')) return;
+                img.setAttribute('data-lightbox-attached', 'true');
+                
+                img.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    openLightbox(this);
+                });
+            });
+        }
+        
+        function openLightbox(imgElement) {
+            const imgSrc = imgElement.src;
+            const imgAlt = imgElement.alt;
+            
+            // 获取图片的标题（可能来自alt或父元素的em标签）
+            let caption = '';
+            const nextSibling = imgElement.nextElementSibling;
+            if (nextSibling && nextSibling.tagName === 'EM') {
+                caption = nextSibling.textContent;
+            } else if (imgAlt && imgAlt.trim()) {
+                caption = imgAlt;
+            }
+            
+            lightboxImg.src = imgSrc;
+            lightboxImg.alt = imgAlt;
+            
+            if (caption) {
+                lightboxCaption.textContent = caption;
+                lightboxCaption.style.display = 'block';
+            } else {
+                lightboxCaption.style.display = 'none';
+            }
+            
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden'; // 防止背景滚动
+        }
+        
+        function closeLightbox() {
+            lightbox.classList.remove('active');
+            document.body.style.overflow = ''; // 恢复滚动
+            
+            // 清理
+            setTimeout(() => {
+                if (!lightbox.classList.contains('active')) {
+                    lightboxImg.src = '';
+                }
+            }, 300);
+        }
+        
+        // 事件监听器
+        closeBtn.addEventListener('click', closeLightbox);
+        
+        // 点击背景关闭
+        lightbox.addEventListener('click', function(e) {
+            if (e.target === lightbox) {
+                closeLightbox();
+            }
+        });
+        
+        // ESC键关闭
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && lightbox.classList.contains('active')) {
+                closeLightbox();
+            }
+        });
+        
+        // 防止点击图片内容区域时关闭
+        lightbox.querySelector('.lightbox-content').addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+        
+        // 初始化绑定现有图片
+        attachImageListeners();
+        
+        // 监听DOM变化，为动态添加的图片绑定事件
+        const observer = new MutationObserver(function(mutations) {
+            let shouldAttach = false;
+            mutations.forEach(function(mutation) {
+                if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                    mutation.addedNodes.forEach(function(node) {
+                        if (node.nodeType === 1) { // 元素节点
+                            if (node.tagName === 'IMG' || node.querySelector('img')) {
+                                shouldAttach = true;
+                            }
+                        }
+                    });
+                }
+            });
+            if (shouldAttach) {
+                setTimeout(attachImageListeners, 100); // 延迟执行，确保DOM更新完成
+            }
+        });
+        
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
         });
     }
 </script>
