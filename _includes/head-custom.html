@@ -315,9 +315,8 @@
         }
     }
 
-    /* Scroll indicator for long images */
-    .lightbox-overlay.active::before {
-        content: "⬇ Scroll to view full image ⬇";
+    /* Dynamic scroll indicator for long images */
+    .scroll-indicator {
         position: fixed;
         bottom: 20px;
         left: 50%;
@@ -328,14 +327,24 @@
         border-radius: 20px;
         font-size: 12px;
         z-index: 10000;
-        opacity: 0.7;
+        opacity: 0;
         pointer-events: none;
-        animation: fadeInOut 3s ease-in-out;
+        transition: opacity 0.3s ease;
+    }
+
+    .scroll-indicator.show {
+        opacity: 0.8;
+        animation: fadeInOut 4s ease-in-out;
+    }
+
+    .scroll-indicator.hide {
+        opacity: 0;
     }
 
     @keyframes fadeInOut {
-        0%, 100% { opacity: 0; }
-        10%, 90% { opacity: 0.7; }
+        0% { opacity: 0; }
+        15%, 75% { opacity: 0.8; }
+        100% { opacity: 0; }
     }
 
     /* Mobile responsive */
@@ -366,8 +375,7 @@
             margin-top: 10px;
         }
 
-        .lightbox-overlay.active::before {
-            content: "⬇ Scroll to view ⬇";
+        .scroll-indicator {
             bottom: 15px;
             font-size: 11px;
             padding: 6px 12px;
@@ -568,6 +576,7 @@
                     <img class="lightbox-image" alt="">
                     <div class="lightbox-caption"></div>
                 </div>
+                <div class="scroll-indicator">⬇ Scroll to view full image ⬇</div>
             </div>
         `;
         
@@ -577,6 +586,7 @@
         const lightboxImg = lightbox.querySelector('.lightbox-image');
         const lightboxCaption = lightbox.querySelector('.lightbox-caption');
         const closeBtn = lightbox.querySelector('.lightbox-close');
+        const scrollIndicator = lightbox.querySelector('.scroll-indicator');
         
         // 为所有assets/images下的图片添加点击事件
         function attachImageListeners() {
@@ -619,11 +629,20 @@
             
             lightbox.classList.add('active');
             document.body.style.overflow = 'hidden'; // 防止背景滚动
+            
+            // 智能检测是否需要显示滚动提示
+            setTimeout(() => {
+                checkAndShowScrollIndicator(lightboxImg, scrollIndicator);
+            }, 100); // 等待图片渲染完成
         }
         
         function closeLightbox() {
             lightbox.classList.remove('active');
             document.body.style.overflow = ''; // 恢复滚动
+            
+            // 隐藏滚动提示
+            scrollIndicator.classList.remove('show');
+            scrollIndicator.classList.add('hide');
             
             // 清理
             setTimeout(() => {
@@ -631,6 +650,56 @@
                     lightboxImg.src = '';
                 }
             }, 300);
+        }
+        
+        // 智能检测是否需要显示滚动提示
+        function checkAndShowScrollIndicator(img, indicator) {
+            const viewportHeight = window.innerHeight;
+            const imgHeight = img.offsetHeight;
+            const contentElement = img.parentElement;
+            const contentHeight = contentElement.offsetHeight;
+            
+            // 如果内容高度超过视窗高度的85%，显示滚动提示
+            if (contentHeight > viewportHeight * 0.85) {
+                indicator.classList.add('show');
+                indicator.classList.remove('hide');
+                
+                // 设置滚动监听，用户滚动后隐藏提示
+                setupScrollIndicatorHiding(indicator);
+            } else {
+                indicator.classList.add('hide');
+                indicator.classList.remove('show');
+            }
+        }
+        
+        // 设置滚动提示的自动隐藏
+        function setupScrollIndicatorHiding(indicator) {
+            let scrollTimeout;
+            let hasScrolled = false;
+            
+            function hideOnScroll() {
+                if (!hasScrolled) {
+                    hasScrolled = true;
+                    clearTimeout(scrollTimeout);
+                    
+                    // 用户开始滚动后，逐渐隐藏提示
+                    scrollTimeout = setTimeout(() => {
+                        indicator.classList.remove('show');
+                        indicator.classList.add('hide');
+                    }, 1000); // 滚动1秒后隐藏
+                }
+            }
+            
+            // 监听lightbox内的滚动
+            lightbox.addEventListener('scroll', hideOnScroll, { once: false });
+            
+            // 4秒后自动隐藏（即使用户没有滚动）
+            setTimeout(() => {
+                if (indicator.classList.contains('show')) {
+                    indicator.classList.remove('show');
+                    indicator.classList.add('hide');
+                }
+            }, 4000);
         }
         
         // 事件监听器
