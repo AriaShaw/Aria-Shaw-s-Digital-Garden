@@ -52,6 +52,18 @@ All scripts include comprehensive error handling, logging, and are designed to f
 
 ## Odoo Self-Hosting Scripts
 
-A collection of scripts from the "Bulletproof Self-Hosting Guide".
+A collection of scripts from the "Bulletproof Self-Hosting Guide" for Odoo 2025.
 
-* *...在这里列出第一篇文章里的脚本...*
+### Backup & Recovery Solutions
+* **💾 [Basic Odoo Backup Script](/scripts/backup_odoo.sh)** - *Simple, reliable daily backup solution with automatic cleanup and compression.*
+* **☁️ [Enhanced Cloud Backup](/scripts/enhanced_backup_odoo.sh)** - *Advanced backup with Backblaze B2 cloud sync and failure alerting.*
+
+### Database Maintenance & Optimization
+* **🔧 [PostgreSQL Maintenance](/scripts/db_maintenance.sh)** - *Weekly database optimization with VACUUM, ANALYZE, and REINDEX operations.*
+
+### Monitoring & Health Checks
+* **📊 [System Health Check](/scripts/system_health_check.sh)** - *One-line system status overview for disk, memory, and service status.*
+* **👀 [Basic Odoo Monitor](/scripts/monitor_odoo.sh)** - *Simple monitoring with email alerts for downtime and disk space issues.*
+* **🔍 [Advanced System Monitor](/scripts/advanced_monitor_odoo.sh)** - *Comprehensive monitoring with detailed logging and database connection tracking.*
+
+These scripts are designed for production environments and include proper error handling, logging, and security considerations. They complement the comprehensive self-hosting guide and help maintain a bulletproof Odoo installation.

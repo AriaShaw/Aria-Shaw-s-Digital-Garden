@@ -211,7 +211,7 @@ Total Annual: $967.20+
 
 ### Decision Tree: Is Self-Hosting Right for You?
 
-![Odoo Self-Hosting Decision Flowchart](/assets/images/odoo-decision-flowchart.png)
+![Odoo Self-Hosting Decision Flowchart](/assets/images/Odoo Self-Hosting Decision Flowchart.png)
 *Decision flowchart to help you determine if Odoo self-hosting is right for your business*
 
 ### Your Readiness Score
@@ -1195,31 +1195,12 @@ Set up automated backups (critical!):
 sudo nano /home/odoo/backup-odoo.sh
 ```
 
-Add this script:
+Download and run this backup script:
 
 ```bash
-#!/bin/bash
-
-# Configuration
-DB_NAME="production"
-DB_USER="odoo"
-BACKUP_DIR="/home/odoo/backups"
-DATE=$(date +%Y%m%d_%H%M%S)
-
-# Create backup directory
-mkdir -p $BACKUP_DIR
-
-# Database backup
-pg_dump -U $DB_USER -h localhost $DB_NAME > $BACKUP_DIR/db_backup_$DATE.sql
-
-# Filestore backup  
-tar -czf $BACKUP_DIR/filestore_backup_$DATE.tar.gz -C /home/odoo/.local/share/Odoo/filestore $DB_NAME
-
-# Keep only last 7 days of backups
-find $BACKUP_DIR -name "*.sql" -mtime +7 -delete
-find $BACKUP_DIR -name "*.tar.gz" -mtime +7 -delete
-
-echo "Backup completed: $DATE"
+wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/backup_odoo.sh
+chmod +x backup_odoo.sh
+sudo mv backup_odoo.sh /home/odoo/backup-odoo.sh
 ```
 
 **Make script executable and test:**
@@ -1293,23 +1274,12 @@ For businesses needing advanced features and compliance:
 
 #### Hybrid Backup Strategy (Best Practice):
 
+Download the enhanced backup script with cloud sync:
+
 ```bash
-# Enhanced backup script with cloud sync
-#!/bin/bash
-
-# ... (existing backup code) ...
-
-# Sync to Backblaze B2 (add after local backup)
-echo "Syncing to cloud..."
-b2 sync /home/odoo/backups/ b2://odoo-backups/$(hostname)/
-
-# Verify cloud backup
-CLOUD_FILES=$(b2 ls odoo-backups --long | wc -l)
-echo "Cloud backup files: $CLOUD_FILES"
-
-if [ $CLOUD_FILES -lt 2 ]; then
-  echo "WARNING: Cloud backup failed!" | mail -s "Backup Alert" admin@yourcompany.com
-fi
+wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/enhanced_backup_odoo.sh
+chmod +x enhanced_backup_odoo.sh
+sudo mv enhanced_backup_odoo.sh /home/odoo/enhanced-backup-odoo.sh
 ```
 
 ---
@@ -1355,26 +1325,12 @@ sudo systemctl restart postgresql
 ```
 
 #### 2. Database Maintenance Script
-```bash
-sudo nano /home/odoo/db-maintenance.sh
-```
+Download and set up the database maintenance script:
 
 ```bash
-#!/bin/bash
-DB_NAME="production"
-
-echo "Starting database maintenance..."
-
-# Analyze tables for better query planning
-sudo -u postgres psql $DB_NAME -c "ANALYZE;"
-
-# Vacuum tables to reclaim space
-sudo -u postgres psql $DB_NAME -c "VACUUM ANALYZE;"
-
-# Reindex for better performance  
-sudo -u postgres psql $DB_NAME -c "REINDEX DATABASE $DB_NAME;"
-
-echo "Database maintenance completed"
+wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/db_maintenance.sh
+chmod +x db_maintenance.sh
+sudo mv db_maintenance.sh /home/odoo/db-maintenance.sh
 ```
 
 **Make executable and run weekly:**
@@ -1489,29 +1445,14 @@ DD_API_KEY=your_api_key bash -c "$(curl -L https://s3.amazonaws.com/dd-agent/scr
 
 ### 🥉 **DIY Monitoring (For Advanced Users)**
 
-If you prefer complete control, here's a simple monitoring script:
+If you prefer complete control, download this simple monitoring script:
 
 ```bash
-# Create simple monitoring script
+wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/monitor_odoo.sh
+chmod +x monitor_odoo.sh
+sudo mv monitor_odoo.sh /home/odoo/monitor-odoo.sh
+# Edit the script to customize domain and email
 sudo nano /home/odoo/monitor-odoo.sh
-```
-
-```bash
-#!/bin/bash
-DOMAIN="https://yourdomain.com"
-EMAIL="admin@yourcompany.com"
-
-# Check if Odoo is responding
-if ! curl -f -s $DOMAIN/web/login > /dev/null; then
-    echo "ALERT: Odoo is down!" | mail -s "Odoo Down Alert" $EMAIL
-    echo "$(date): Odoo down" >> /var/log/odoo-monitor.log
-fi
-
-# Check disk space
-DISK_USAGE=$(df / | tail -1 | awk '{print $5}' | sed 's/%//')
-if [ $DISK_USAGE -gt 85 ]; then
-    echo "ALERT: Disk usage is ${DISK_USAGE}%" | mail -s "Disk Space Alert" $EMAIL
-fi
 ```
 
 **Run monitoring every 5 minutes:**
@@ -1577,46 +1518,12 @@ sudo systemctl status node_exporter
 
 #### 2. Simple Monitoring Script
 
-For basic monitoring without complex setup:
+For basic monitoring without complex setup, download the advanced monitoring script:
 
 ```bash
-sudo nano /home/odoo/monitor-odoo.sh
-```
-
-```bash
-#!/bin/bash
-
-LOG_FILE="/var/log/odoo/monitor.log"
-DATE=$(date '+%Y-%m-%d %H:%M:%S')
-
-# Check if Odoo is running
-if systemctl is-active --quiet odoo; then
-    ODOO_STATUS="UP"
-else
-    ODOO_STATUS="DOWN"
-    echo "$DATE - ALERT: Odoo is DOWN!" >> $LOG_FILE
-fi
-
-# Check disk usage
-DISK_USAGE=$(df / | tail -1 | awk '{print $5}' | sed 's/%//')
-if [ $DISK_USAGE -gt 80 ]; then
-    echo "$DATE - WARNING: Disk usage is ${DISK_USAGE}%" >> $LOG_FILE
-fi
-
-# Check memory usage
-MEMORY_USAGE=$(free | grep Mem | awk '{printf("%.0f", $3/$2 * 100.0)}')
-if [ $MEMORY_USAGE -gt 90 ]; then
-    echo "$DATE - WARNING: Memory usage is ${MEMORY_USAGE}%" >> $LOG_FILE
-fi
-
-# Check database connections
-DB_CONNECTIONS=$(sudo -u postgres psql -t -c "SELECT count(*) FROM pg_stat_activity WHERE datname='production';" | tr -d ' ')
-if [ $DB_CONNECTIONS -gt 50 ]; then
-    echo "$DATE - WARNING: High database connections: $DB_CONNECTIONS" >> $LOG_FILE
-fi
-
-# Log status
-echo "$DATE - Status: Odoo=$ODOO_STATUS, Disk=${DISK_USAGE}%, Memory=${MEMORY_USAGE}%, DB_Conn=$DB_CONNECTIONS" >> $LOG_FILE
+wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/advanced_monitor_odoo.sh
+chmod +x advanced_monitor_odoo.sh
+sudo mv advanced_monitor_odoo.sh /home/odoo/monitor-odoo.sh
 ```
 
 **Run monitoring every 5 minutes:**
@@ -2043,14 +1950,9 @@ Bookmark this section. You'll come back to it more than you think.
 
 #### System Health Check (Run Weekly)
 ```bash
-# One-line system status
-echo "=== SYSTEM STATUS ===" && \
-echo "Disk Usage: $(df -h / | tail -1 | awk '{print $5}')" && \
-echo "Memory Usage: $(free | grep Mem | awk '{printf("%.1f%%", $3/$2 * 100.0)}')" && \
-echo "Odoo Status: $(systemctl is-active odoo)" && \
-echo "Nginx Status: $(systemctl is-active nginx)" && \
-echo "PostgreSQL Status: $(systemctl is-active postgresql)" && \
-echo "Last Backup: $(ls -lt /home/odoo/backups/*.sql | head -1 | awk '{print $6, $7, $8}')"
+wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/system_health_check.sh
+chmod +x system_health_check.sh
+./system_health_check.sh
 ```
 
 #### Emergency Troubleshooting
@@ -2132,48 +2034,20 @@ location ~* /web/static/ {
 
 ### Troubleshooting Decision Tree
 
-```
-🚨 PROBLEM: Odoo won't load in browser
-    ├─ Can you access server via SSH?
-    │   ├─ No → Check server provider dashboard/contact support  
-    │   └─ Yes → Continue below
-    ├─ Is Nginx running? (systemctl status nginx)
-    │   ├─ No → sudo systemctl start nginx
-    │   └─ Yes → Continue below  
-    ├─ Is Odoo running? (systemctl status odoo)
-    │   ├─ No → Check logs: journalctl -u odoo -f
-    │   └─ Yes → Continue below
-    ├─ Can you curl localhost:8069?
-    │   ├─ No → Odoo configuration issue, check logs
-    │   └─ Yes → Nginx configuration issue, check nginx -t
-    └─ SSL certificate valid? (certbot certificates)
-        ├─ No → Run: certbot renew
-        └─ Yes → Check DNS settings
+#### 🚨 Problem: Odoo Won't Load in Browser
 
-🐌 PROBLEM: Odoo is very slow
-    ├─ Check memory usage: free -h
-    │   ├─ >90% → Add more RAM or reduce workers
-    │   └─ <90% → Continue below
-    ├─ Check disk space: df -h  
-    │   ├─ >85% → Clean up logs/backups, upgrade storage
-    │   └─ <85% → Continue below
-    ├─ Check database: sudo -u postgres psql production -c "SELECT * FROM pg_stat_activity;"
-    │   ├─ >50 connections → Investigate long-running queries  
-    │   └─ <50 connections → Check system load: htop
-    └─ Run database maintenance: /home/odoo/db-maintenance.sh
+![Odoo Won't Load Troubleshooting Decision Tree](/assets/images/Odoo won't load in browser.png)
+*Complete troubleshooting flowchart for when Odoo fails to load in the browser*
 
-🔒 PROBLEM: Can't login to Odoo
-    ├─ Correct URL? (https://yourdomain.com not http://)
-    │   ├─ No → Fix URL
-    │   └─ Yes → Continue below
-    ├─ Database accessible? 
-    │   ├─ Check: sudo -u postgres psql production -c "\dt;"
-    │   ├─ No tables → Database corruption, restore from backup
-    │   └─ Tables exist → Continue below  
-    ├─ Reset admin password:
-    │   └─ python /home/odoo/odoo-server/odoo/odoo-bin -c /etc/odoo/odoo.conf -d production --update=base --stop-after-init
-    └─ Check Odoo logs: grep -i "login\|password\|auth" /var/log/odoo/odoo.log
-```
+#### 🐌 Problem: Odoo is Very Slow
+
+![Odoo Performance Troubleshooting Decision Tree](/assets/images/Odoo is very slow.png)
+*Step-by-step performance diagnosis flowchart for slow Odoo systems*
+
+#### 🔒 Problem: Can't Login to Odoo
+
+![Odoo Login Issues Troubleshooting Decision Tree](/assets/images/Can't login to Odoo.png)
+*Comprehensive login troubleshooting flowchart with password reset procedures*
 
 ### Backup & Recovery Cheat Sheet
 
