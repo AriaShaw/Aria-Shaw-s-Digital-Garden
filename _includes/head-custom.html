@@ -28,69 +28,6 @@
         background-color: #28a745;
         border-color: #1c7430;
     }
-
-    /* Table of Contents Final Override Styles 
-       Using !important to enforce layout over theme defaults
-    */
-
-    /* This forces the main wrapper to behave correctly */
-    .wrapper {
-        display: flex !important;
-        justify-content: space-between !important;
-        align-items: flex-start !important;
-        max-width: 1200px !important; /* Widen the layout to fit everything */
-        margin: 0 auto !important;
-    }
-    
-    /* The Left Sidebar from the Theme */
-    .sidebar {
-        width: 260px !important;
-        flex-shrink: 0 !important;
-    }
-
-    /* The Main Content Area */
-    .main-content-area {
-        width: 100% !important;
-        max-width: 800px !important; /* Give it a max-width for readability */
-    }
-
-    /* Our TOC, which we will now place INSIDE the theme's sidebar */
-    .toc-container {
-        position: sticky !important;
-        top: 20px !important;
-        width: 100% !important; /* Fill the sidebar it is placed in */
-        max-height: 85vh !important;
-        overflow-y: auto !important;
-        
-        background: #f1f1f1; /* A slightly different background to distinguish it */
-        border: 1px solid #ddd;
-        border-radius: 6px;
-        padding: 15px;
-        margin-top: 20px; /* Add some space from the content above it */
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-    }
-
-    /* Hide the TOC on screens that are too narrow */
-    @media (max-width: 1200px) {
-        .toc-container {
-            display: none !important;
-        }
-        .sidebar {
-            display: none !important; /* Also hide the entire sidebar for a cleaner mobile view */
-        }
-        .wrapper {
-            display: block !important; /* Go back to a single column layout */
-            margin: 0 20px !important; /* Add some padding */
-        }
-    }
-
-    /* Standard TOC styles */
-    .toc-container h3 { margin-top: 0; margin-bottom: 15px; font-size: 16px; font-weight: 600; border-bottom: 1px solid #ccc; padding-bottom: 10px; }
-    .toc-container .js-toc ul { padding-left: 15px; margin-bottom: 0; }
-    .toc-container .js-toc li { list-style-type: none; margin-bottom: 10px; }
-    .toc-container .js-toc a { text-decoration: none; color: #333; font-size: 14px; }
-    .toc-container .js-toc a:hover { color: #007bff; }
-    .toc-container .is-active-link { font-weight: 700; color: #007bff; }
 </style>
 <script>
     document.addEventListener('DOMContentLoaded', (event) => {
@@ -117,18 +54,59 @@
     });
 </script>
 
+<style>
+    /* This style block only controls the TOC, not the entire site layout */
+    #toc-sidebar {
+        display: none; /* Hidden on small screens by default */
+    }
+
+    @media (min-width: 1280px) {
+        /* On large screens, use a modern grid layout */
+        .post-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 280px; /* Main content | TOC sidebar */
+            gap: 30px;
+        }
+        
+        #toc-sidebar {
+            display: block; /* Show the sidebar */
+            order: 2; /* Place the TOC on the right */
+        }
+
+        .post-content-main {
+            order: 1; /* Place the main content on the left */
+        }
+        
+        .toc-container {
+            position: sticky;
+            top: 20px;
+            max-height: 85vh;
+            overflow-y: auto;
+            border-left: 2px solid #e1e4e8;
+            padding-left: 20px;
+        }
+
+        .toc-container h3 { margin-top: 0; font-size: 16px; font-weight: 600; }
+        #toc ul { padding-left: 15px; margin: 0; }
+        #toc li { list-style-type: none; margin-bottom: 8px; }
+        #toc a { text-decoration: none; color: #586069; font-size: 14px; }
+        #toc a:hover { color: #0366d6; }
+        #toc .is-active-link { font-weight: 700; color: #0366d6; }
+    }
+</style>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.21.1/tocbot.min.js"></script>
+
 <script>
     document.addEventListener('DOMContentLoaded', (event) => {
-        if (document.querySelector('.post-content') && document.querySelector('.js-toc')) {
+        if (document.querySelector('.post-content-main')) {
             tocbot.init({
-                tocSelector: '.js-toc',
-                contentSelector: '.post-content',
+                tocSelector: '#toc',
+                contentSelector: '.post-content-main',
                 headingSelector: 'h2, h3',
-                hasInnerContainers: true,
                 scrollSmooth: true,
-                activeLinkClass: 'is-active-link', // Highlights the current section
-                headingsOffset: 40, // Offset for sticky header
+                activeLinkClass: 'is-active-link',
+                headingsOffset: 40,
             });
         }
     });
