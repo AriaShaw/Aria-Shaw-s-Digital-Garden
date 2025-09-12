@@ -123,6 +123,17 @@ Let's dive in.
 
 ---
 
+> 🛡️ **Skip the Guesswork - Get Expert Risk Assessment**  
+> Before you invest hours in implementation, wouldn't you like to know exactly what challenges you'll face? Our **Migration Pre-Flight Check Service** runs comprehensive diagnostic scripts on your current setup and delivers a professional risk assessment report.
+> 
+> ✅ **What You Get**: Complete compatibility analysis, data integrity check, and personalized migration roadmap  
+> ⚡ **How It Works**: Provide read-only server access → We run our diagnostic suite → You get a detailed PDF report within 24 hours  
+> 💰 **Investment**: $99 (vs. thousands in potential failed migration costs)
+> 
+> 🚀 **[Get Your Pre-Flight Check Now →](https://ariashaw.gumroad.com/l/preflight)**
+
+---
+
 ## ⚡ Quick Start Checklist
 
 Before we dive into the detailed steps, here's what you'll need to have ready:
@@ -134,6 +145,17 @@ Before we dive into the detailed steps, here's what you'll need to have ready:
 - [ ] **Business requirements list** (which modules you'll need)
 
 > 💡 **Pro Tip**: Don't have a server yet? We'll show you exactly how to get one for under $20/month that can handle 50+ users.
+>
+> **🎯 Want the Express Lane?** If you're looking at these steps and thinking "I just want the essentials without the overwhelm," I've got you covered. My **Odoo Self-Hosting Kit** distills this entire 8,000-word guide into:
+> 
+> ✅ **The Core Guidebook** - All the essential steps in a clean, focused format  
+> ✅ **One-Page Cheat Sheet** - Every critical command and configuration at a glance  
+> ✅ **Command Vault** - Copy-paste ready scripts with clear annotations
+>
+> Perfect for busy founders who want bulletproof results without the research marathon.
+>
+> 💰 **[Get the Complete Kit for $7 →](https://ariashaw.gumroad.com/l/odoohosting)**  
+> *Everything you need • Zero fluff • Instant download*
 
 ---
 
@@ -288,6 +310,10 @@ Best plan: $88-99/month (4 vCPUs, 8GB RAM, 160GB SSD + full management)
 > 💰 **Game Changer**: Cloudways handles all the server management headaches for you. No more midnight server crashes or security patch nightmares. They manage updates, security, performance optimization, and provide 24/7 human support. Plus, you get automated backups and can scale instantly.
 > 
 > **Why I recommend Cloudways for Odoo**: After managing my own servers for years, I'll admit - the peace of mind is worth every penny. When your team needs Odoo at 2 AM and something breaks, you'll want experts fixing it, not you scrambling with documentation.
+>
+>💡 **[Try Cloudways now with a free 3-day trial](https://www.cloudways.com/en/?id=2007562)**  
+> *24/7 expert support • Automated backups • No server headaches*
+
 
 #### 🥈 **Vultr (Best for advanced users who want control)**
 ```
@@ -327,7 +353,7 @@ Here's what I've learned after 5+ years of managing Odoo deployments:
 > 💰 **Ready to Save Your Time & Sanity?**  
 > Skip 20+ hours of setup headaches. Get your Odoo running in under 30 minutes.
 > 
-> 🚀 **[Start your Cloudways free trial now](https://bit.ly/aria-cloudways)**  
+> 🚀 **[Start your Cloudways free trial now](https://www.cloudways.com/en/?id=2007562)**  
 > *No credit card • 3 days to test everything • 24/7 support included*
 
 ### Step-by-Step Server Provisioning
@@ -541,11 +567,23 @@ To                         Action      From
 
 **Perfect! Your server is ready. Now comes the exciting part - installing Odoo in a way that'll serve your business for years to come...**
 
-> ⚠️ **Hold On - Is This Getting Too Complex?**  
+> 🆘 **Feeling Overwhelmed? You're Not Alone**  
 > If you're looking at the upcoming installation steps and thinking "This is more technical than I bargained for," you're not alone. 75% of business owners who start the DIY route switch to managed hosting within 6 months.
-> 
-> 🚀 **[Skip the complexity with Cloudways](https://bit.ly/aria-cloudways)**  
+>
+> **Here's the reality**: One misconfigured setting can corrupt your entire database. One missed security step can expose your customer data. One performance bottleneck can cripple your business operations.
+>
+> **🎯 Three Smart Options:**
+>
+> **Option 1 - Get Professional Help**: If you're migrating from an existing system or want guaranteed success, consider our **Migration Pre-Flight Check Service**. We'll assess your current setup, identify potential risks, and provide you with a bulletproof migration plan.
+> 🚀 **[Schedule Migration Assessment →](https://ariashaw.gumroad.com/l/preflight)**
+>
+> **Option 2 - Skip the Complexity**: Let Cloudways handle all the technical complexity while you focus on your business.
+> 🚀 **[Skip the complexity with Cloudways](https://www.cloudways.com/en/?id=2007562)**  
 > *3-minute setup • Zero Linux knowledge needed • 24/7 expert support*
+>
+> **Option 3 - DIY with Better Tools**: Continue with self-hosting but arm yourself with the streamlined **Odoo Self-Hosting Kit** - all the essential steps, commands, and configurations without the overwhelm.
+> 🚀 **[Get the Self-Hosting Kit ($7) →](https://ariashaw.gumroad.com/l/odoohosting)**  
+> *Focused guidebook • Command vault • One-page cheat sheet*
 
 ---
 
@@ -1077,7 +1115,7 @@ sudo certbot certificates
 > 😅 **Feeling Overwhelmed by All These Steps?**  
 > You've just completed what 70% of business owners call "the hardest part." But there's still monitoring, backups, updates, and maintenance ahead. 
 > 
-> 🚀 **[Let Cloudways handle all this for you](https://bit.ly/aria-cloudways)**  
+> 🚀 **[Let Cloudways handle all this for you](https://www.cloudways.com/en/?id=2007562)**  
 > *All the technical stuff above? Done automatically • Focus on your business, not Linux*
 
 ---
@@ -2056,6 +2094,10 @@ Bookmark this section. You'll come back to it more than you think.
 
 ### Quick Reference Commands
 
+> **💡 Quick Access Tip**: These commands are great for occasional reference, but if you're managing your Odoo system regularly, you'll want them organized properly. The **Command Vault** in my Self-Hosting Kit contains all these commands (and more) in a clean .txt file with clear categories and annotations - perfect for keeping on your desktop or phone.
+>
+> 💰 **[Get organized commands →](https://ariashaw.gumroad.com/l/odoohosting)** *All commands • Categorized • Copy-paste ready*
+
 #### System Health Check (Run Weekly)
 ```bash
 wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/system_health_check.sh
@@ -2295,6 +2337,17 @@ Last Verified Restore: __________________
 ```
 
 Print this cheat sheet and keep it handy. When systems are down, you don't want to be searching through documentation.
+
+> **🎯 Pro System Admin Tip**: While this guide gives you everything you need, smart sysadmins keep the essentials in multiple formats. That's exactly why I created the **Odoo Self-Hosting Kit** - you get the complete guide as a clean PDF, a printer-friendly one-page cheat sheet, and all commands in a searchable .txt file.
+>
+> **Perfect for**:
+> - 📱 **Mobile reference** when you're troubleshooting on-the-go
+> - 🖨️ **Printed backup** when the internet is down
+> - 👥 **Team sharing** - send the essentials to your IT person
+> - ⚡ **Quick setup** - skip the research, get straight to implementation
+>
+> 💰 **[Get the complete toolkit for $7 →](https://ariashaw.gumroad.com/l/odoohosting)**  
+> *PDF guidebook • Cheat sheet • Command vault • Instant access*
 
 **You've built more than just an ERP system. You've built a competitive advantage.**
 
