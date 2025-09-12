@@ -186,28 +186,21 @@ Let's figure out if you're ready for this. Answer these questions honestly:
 
 Let's break down what self-hosting actually costs vs. the alternatives:
 
-#### Self-Hosting Costs (Annual)
-```
-Server/VPS (Digital Ocean, Linode, etc.): $240-$1,200
-Domain & SSL: $15-$50
-Backup storage: $60-$120
-Your time (setup + maintenance): $500-$1,500*
----
-Total Year 1: $815-$2,870
-Total Year 2+: $315-$1,370
+#### Cost Comparison: Self-Hosting vs Odoo Online
 
-*Assuming $50/hour for 10-30 hours annually
-```
+| **Cost Component** | **Self-Hosting** | **Odoo Online (10 users)** |
+|---|---|---|
+| Server/VPS | $240-$1,200 | Included |
+| Domain & SSL | $15-$50 | Included |
+| Backup storage | $60-$120 | Included |
+| Base subscription | — | $744 |
+| Additional apps | — | $223.20+ |
+| Your time (setup + maintenance)* | $500-$1,500 | — |
+| **Total Year 1** | **$815-$2,870** | **$967.20+** |
+| **Total Year 2+** | **$315-$1,370** | **$967.20+** |
 
-#### Odoo Online Costs (10 users, annual)
-```
-Odoo Online (10 users × $6.20/month): $744
-Additional apps (average 3 × $6.20): $223.20
----
-Total Annual: $967.20+
-
-*Costs scale with every user addition
-```
+*Assuming $50/hour for 10-30 hours annually  
+**Note: Odoo Online costs scale with every user addition*
 
 ### Decision Tree: Is Self-Hosting Right for You?
 
