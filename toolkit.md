@@ -44,7 +44,22 @@ A collection of scripts designed for the "Odoo Database Migration Nightmare" gui
 * **🛡️ [Safe OpenUpgrade Wrapper](/scripts/safe_openupgrade.sh)** - *OpenUpgrade execution with multiple safety nets and automatic rollback capabilities.*
 * **🧩 [Module Compatibility Scanner](/scripts/module_compatibility_scan.py)** - *Analyze custom modules for API compatibility across Odoo versions.*
 * **🔗 [Dependency Analyzer](/scripts/dependency_analyzer.py)** - *Resolve complex module dependency conflicts and installation order.*
+* **⚙️ [Dependency Resolution Engine](/scripts/resolve_dependencies.py)** - *Intelligent module dependency resolver with topological sorting and circular dependency detection.*
 * **🚨 [Database Corruption Detector](/scripts/db_corruption_detector.sh)** - *Advanced corruption detection and recovery procedures for damaged databases.*
+
+### Integration & Communication Testing
+* **🌐 [API Diagnostics Tool](/scripts/api_diagnostics.py)** - *Comprehensive API connection testing with DNS, SSL, and HTTP response validation.*
+* **📧 [SMTP Configuration Tester](/scripts/test_smtp.py)** - *Complete email system testing including authentication and message delivery verification.*
+
+### Emergency Recovery Procedures
+* **🔄 [Intelligent Rollback System](/scripts/intelligent_rollback.sh)** - *Advanced rollback with selective data preservation and automated safety checks.*
+
+### Security & Compliance Tools
+* **🛡️ [GDPR Data Retention Policy](/scripts/gdpr_data_retention.py)** - *Automated GDPR-compliant data retention and anonymization for migration environments.*
+* **👀 [GDPR Compliance Monitor](/scripts/gdpr_monitoring.sh)** - *Real-time monitoring for data breaches and unauthorized access during migration.*
+* **📊 [Migration Audit Report Generator](/scripts/generate_audit_report.py)** - *Comprehensive audit trail reporting for compliance and security reviews.*
+* **🔐 [Migration Access Control System](/scripts/migration_access_control.sh)** - *Time-limited access control with automated expiration and full audit trails.*
+* **🕵️ [Sensitive Data Scanner & Masker](/scripts/sensitive_data_scanner.py)** - *Pattern-based sensitive data discovery with automated masking for non-production environments.*
 
 All scripts include comprehensive error handling, logging, and are designed to fail safely. They're the same tools I use in professional migrations and are battle-tested across hundreds of production environments.
 

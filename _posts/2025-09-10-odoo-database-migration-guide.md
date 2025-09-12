@@ -1826,67 +1826,11 @@ sudo -u odoo /opt/odoo/odoo-bin shell -d production_new
 
 **Strategic dependency resolution order:**
 
+Download and run the dependency resolution script:
+
 ```bash
-# Create dependency installation order script
-cat > /tmp/resolve_dependencies.py << 'EOF'
-#!/usr/bin/env python3
-import psycopg2
-from collections import defaultdict, deque
-
-def get_install_order(db_name):
-    conn = psycopg2.connect(f"dbname={db_name} user=odoo")
-    cur = conn.cursor()
-    
-    # Get all modules and their dependencies
-    cur.execute("""
-        SELECT m.name, m.state, array_agg(d.name) as deps
-        FROM ir_module_module m
-        LEFT JOIN ir_module_module_dependency md ON m.id = md.module_id
-        LEFT JOIN ir_module_module d ON md.name = d.name
-        WHERE m.state IN ('to install', 'to upgrade', 'uninstalled')
-        GROUP BY m.name, m.state
-    """)
-    
-    modules = {}
-    for name, state, deps in cur.fetchall():
-        clean_deps = [d for d in (deps or []) if d]
-        modules[name] = {'state': state, 'dependencies': clean_deps}
-    
-    # Topological sort for installation order
-    install_order = []
-    visited = set()
-    temp_visited = set()
-    
-    def visit(module):
-        if module in temp_visited:
-            raise Exception(f"Circular dependency involving {module}")
-        if module in visited:
-            return
-        
-        temp_visited.add(module)
-        for dep in modules.get(module, {}).get('dependencies', []):
-            if dep in modules:
-                visit(dep)
-        temp_visited.remove(module)
-        visited.add(module)
-        install_order.append(module)
-    
-    for module in modules:
-        if module not in visited:
-            visit(module)
-    
-    return install_order
-
-if __name__ == "__main__":
-    import sys
-    db_name = sys.argv[1] if len(sys.argv) > 1 else "production_new"
-    order = get_install_order(db_name)
-    print("Installation order:")
-    for i, module in enumerate(order, 1):
-        print(f"{i:2d}. {module}")
-EOF
-
-python3 /tmp/resolve_dependencies.py production_new
+wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/resolve_dependencies.py
+python3 resolve_dependencies.py production_new
 ```
 
 [Visual: **依赖关系分析图**，展示模块依赖树结构：中央显示终端界面的依赖分析结果，包含模块依赖关系的树状图（15+个模块的层级结构），用红色圆圈标识循环依赖问题，用绿色路径显示建议的安装顺序，右侧显示依赖冲突解决建议和预估修复时间]
@@ -1895,7 +1839,7 @@ python3 /tmp/resolve_dependencies.py production_new
 
 ```bash
 # Install modules in correct dependency order
-INSTALL_ORDER=($(python3 /tmp/resolve_dependencies.py production_new | grep -E "^ *[0-9]+\." | awk '{print $2}'))
+INSTALL_ORDER=($(python3 resolve_dependencies.py production_new | grep -E "^ *[0-9]+\." | awk '{print $2}'))
 
 for module in "${INSTALL_ORDER[@]}"; do
     echo "Installing/updating module: $module"
@@ -2127,153 +2071,22 @@ python3 integration_diagnostics.py --config /etc/odoo/odoo.conf --test-all
 
 **API connectivity troubleshooting:**
 
-```python
-# Advanced API connection testing
-import requests
-import json
-import ssl
-import socket
-from urllib.parse import urlparse
-
 [Visual: **集成诊断流程图**，展示API连接故障排查：起始节点为"集成失败检测" → DNS解析测试 → SSL证书验证 → 端口连接测试 → 认证令牌验证 → API响应格式检查 → 数据传输测试，每个节点显示通过/失败状态，失败节点分支到相应的修复建议，整个流程用不同颜色标识测试类型（网络层、安全层、应用层）]
 
-def diagnose_api_connection(api_url, headers=None, timeout=30):
-    print(f"Diagnosing connection to: {api_url}")
-    
-    # Parse URL components
-    parsed = urlparse(api_url)
-    host = parsed.hostname
-    port = parsed.port or (443 if parsed.scheme == 'https' else 80)
-    
-    # 1. DNS Resolution Test
-    try:
-        ip = socket.gethostbyname(host)
-        print(f"✓ DNS Resolution: {host} -> {ip}")
-    except socket.gaierror as e:
-        print(f"✗ DNS Resolution failed: {e}")
-        return False
-    
-    # 2. Port Connectivity Test
-    try:
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.settimeout(10)
-        result = sock.connect_ex((host, port))
-        sock.close()
-        if result == 0:
-            print(f"✓ Port {port} is accessible")
-        else:
-            print(f"✗ Port {port} is not accessible")
-            return False
-    except Exception as e:
-        print(f"✗ Port test failed: {e}")
-        return False
-    
-    # 3. SSL Certificate Test (for HTTPS)
-    if parsed.scheme == 'https':
-        try:
-            context = ssl.create_default_context()
-            with socket.create_connection((host, port), timeout=10) as sock:
-                with context.wrap_socket(sock, server_hostname=host) as ssock:
-                    cert = ssock.getpeercert()
-                    print(f"✓ SSL Certificate valid until: {cert['notAfter']}")
-        except ssl.SSLError as e:
-            print(f"✗ SSL Certificate error: {e}")
-            return False
-        except Exception as e:
-            print(f"✗ SSL test failed: {e}")
-            return False
-    
-    # 4. HTTP Response Test
-    try:
-        response = requests.get(api_url, headers=headers, timeout=timeout, verify=True)
-        print(f"✓ HTTP Response: {response.status_code}")
-        print(f"  Response time: {response.elapsed.total_seconds():.2f}s")
-        print(f"  Content length: {len(response.content)} bytes")
-        return True
-    except requests.exceptions.RequestException as e:
-        print(f"✗ HTTP Request failed: {e}")
-        return False
+Download and run the API diagnostics script:
 
-# Test your critical API endpoints
-critical_apis = [
-    "https://api.example.com/webhook",
-    "https://your-payment-gateway.com/api",
-    "https://your-crm-system.com/integration"
-]
-
-for api in critical_apis:
-    print(f"\n{'='*50}")
-    diagnose_api_connection(api)
+```bash
+wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/api_diagnostics.py
+python3 api_diagnostics.py
 ```
 
 **Email system recovery:**
 
+Download and run the SMTP test script:
+
 ```bash
-# Test SMTP configuration comprehensively
-cat > /tmp/test_smtp.py << 'EOF'
-#!/usr/bin/env python3
-import smtplib
-import ssl
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-import configparser
-
-def test_smtp_config(config_file):
-    config = configparser.ConfigParser()
-    config.read(config_file)
-    
-    # Extract SMTP settings from Odoo config
-    smtp_server = config.get('options', 'smtp_server', fallback='localhost')
-    smtp_port = config.getint('options', 'smtp_port', fallback=25)
-    smtp_user = config.get('options', 'smtp_user', fallback='')
-    smtp_password = config.get('options', 'smtp_password', fallback='')
-    smtp_ssl = config.getboolean('options', 'smtp_ssl', fallback=False)
-    
-    print(f"Testing SMTP configuration:")
-    print(f"  Server: {smtp_server}")
-    print(f"  Port: {smtp_port}")
-    print(f"  SSL/TLS: {smtp_ssl}")
-    print(f"  Authentication: {'Yes' if smtp_user else 'No'}")
-    
-    try:
-        # Create SMTP connection
-        if smtp_ssl:
-            server = smtplib.SMTP_SSL(smtp_server, smtp_port)
-        else:
-            server = smtplib.SMTP(smtp_server, smtp_port)
-            if smtp_port == 587:  # TLS on port 587
-                server.starttls()
-        
-        print("✓ SMTP connection established")
-        
-        # Test authentication if configured
-        if smtp_user and smtp_password:
-            server.login(smtp_user, smtp_password)
-            print("✓ SMTP authentication successful")
-        
-        # Test sending a message
-        msg = MIMEText("Test message from Odoo migration verification")
-        msg['Subject'] = "Odoo Migration Test Email"
-        msg['From'] = smtp_user or "noreply@yourdomain.com"
-        msg['To'] = "admin@yourdomain.com"
-        
-        server.send_message(msg)
-        print("✓ Test email sent successfully")
-        
-        server.quit()
-        return True
-        
-    except Exception as e:
-        print(f"✗ SMTP test failed: {e}")
-        return False
-
-if __name__ == "__main__":
-    import sys
-    config_file = sys.argv[1] if len(sys.argv) > 1 else "/etc/odoo/odoo.conf"
-    test_smtp_config(config_file)
-EOF
-
-python3 /tmp/test_smtp.py /etc/odoo/odoo.conf
+wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/test_smtp.py
+python3 test_smtp.py /etc/odoo/odoo.conf
 ```
 
 ### Rollback Execution Detailed Procedures
@@ -2291,81 +2104,12 @@ sudo ./intelligent_rollback.sh --preserve-new-data --analysis-mode
 
 **Manual rollback with selective data preservation:**
 
+Download and run the intelligent rollback script:
+
 ```bash
-#!/bin/bash
-# Intelligent rollback procedure
-
-echo "=== EMERGENCY ROLLBACK PROCEDURE ==="
-echo "This will rollback to pre-migration state with optional data preservation"
-read -p "Continue? (yes/no): " confirm
-
-if [ "$confirm" != "yes" ]; then
-    echo "Rollback cancelled"
-    exit 1
-fi
-
-BACKUP_FILE="/backup/pre_migration_snapshot.backup"
-CURRENT_DB="production_new"
-ROLLBACK_DB="production_rollback_$(date +%Y%m%d_%H%M%S)"
-
-# Step 1: Preserve critical new data
-echo "Step 1: Analyzing new data created during migration window..."
-sudo -u postgres psql -d "$CURRENT_DB" -c "
-CREATE TABLE rollback_new_data AS
-SELECT 
-    'res_partner' as table_name,
-    id,
-    create_date,
-    write_date
-FROM res_partner 
-WHERE create_date > (SELECT MAX(create_date) FROM res_partner WHERE create_date < '$(date -d '1 day ago' '+%Y-%m-%d')')
-
-UNION ALL
-
-SELECT 
-    'account_move' as table_name,
-    id,
-    create_date,
-    write_date
-FROM account_move 
-WHERE create_date > (SELECT MAX(create_date) FROM account_move WHERE create_date < '$(date -d '1 day ago' '+%Y-%m-%d')');"
-
-NEW_RECORDS=$(sudo -u postgres psql -d "$CURRENT_DB" -t -c "SELECT COUNT(*) FROM rollback_new_data;")
-echo "Found $NEW_RECORDS new records created during migration window"
-
-# Step 2: Create rollback database
-echo "Step 2: Creating rollback database..."
-sudo -u postgres createdb "$ROLLBACK_DB"
-
-# Step 3: Restore from backup
-echo "Step 3: Restoring from pre-migration backup..."
-sudo -u postgres pg_restore -d "$ROLLBACK_DB" "$BACKUP_FILE"
-
-# Step 4: Optional - Import critical new data
-if [ "$NEW_RECORDS" -gt 0 ]; then
-    read -p "Import $NEW_RECORDS new records into rollback database? (yes/no): " import_new
-    if [ "$import_new" = "yes" ]; then
-        echo "Step 4: Importing new data..."
-        # This would require custom logic based on your specific data relationships
-        echo "Manual data import required - see documentation"
-    fi
-fi
-
-# Step 5: Switch databases
-echo "Step 5: Switching to rollback database..."
-sudo systemctl stop odoo
-
-# Update Odoo configuration
-sudo sed -i "s/db_name = $CURRENT_DB/db_name = $ROLLBACK_DB/" /etc/odoo/odoo.conf
-
-# Step 6: Restart services
-echo "Step 6: Restarting Odoo with rollback database..."
-sudo systemctl start odoo
-
-echo "Rollback completed successfully!"
-echo "Current database: $ROLLBACK_DB"
-echo "Failed migration database preserved as: $CURRENT_DB"
-```
+wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/intelligent_rollback.sh
+chmod +x intelligent_rollback.sh
+sudo ./intelligent_rollback.sh
 
 [Visual: **回滚流程决策图**，展示紧急回滚执行路径：起始决策点"是否保留失败数据"分支到两条路径（完全回滚 vs 数据保留回滚），每条路径显示关键步骤（服务停止 → 数据库切换 → 配置恢复 → 验证检查点），每个步骤标注预估时间（2-5分钟不等），最终汇聚到"回滚完成验证"，整个流程用颜色编码显示风险级别和优先级]
 
@@ -3385,56 +3129,12 @@ ORDER BY gdpr_classification, table_name;
 
 GDPR requires that you only process data you actually need and delete it when you no longer need it:
 
-```python
-def implement_data_retention_policy():
-    """Implement GDPR-compliant data retention during migration"""
-    
-    # Define retention periods by data type
-    retention_policies = {
-        'customer_data': 2555,  # 7 years for business records
-        'marketing_data': 1095,  # 3 years for marketing consent
-        'audit_logs': 2190,     # 6 years for audit requirements
-        'session_data': 30,     # 30 days for technical logs
-    }
-    
-    for data_type, retention_days in retention_policies.items():
-        cutoff_date = datetime.now() - timedelta(days=retention_days)
-        
-        if data_type == 'customer_data':
-            # Archive old customer records
-            old_partners = env['res.partner'].search([
-                ('last_activity_date', '<', cutoff_date),
-                ('active', '=', False)
-            ])
-            
-            for partner in old_partners:
-                # Create anonymized record for statistical purposes
-                env['res.partner.archive'].create({
-                    'original_id': partner.id,
-                    'country_id': partner.country_id.id,
-                    'industry_id': partner.industry_id.id,
-                    'archived_date': fields.Datetime.now(),
-                    'anonymized_data': True
-                })
-                
-                # Remove personal data
-                partner.write({
-                    'name': f"DELETED-{partner.id}",
-                    'email': False,
-                    'phone': False,
-                    'street': False,
-                    'city': False,
-                    'zip': False,
-                    'comment': "Personal data removed per GDPR retention policy"
-                })
-        
-        elif data_type == 'marketing_data':
-            # Remove marketing data for contacts who haven't engaged
-            old_marketing = env['mailing.contact'].search([
-                ('create_date', '<', cutoff_date),
-                ('opt_out', '=', True)
-            ])
-            old_marketing.unlink()
+Download and implement the GDPR data retention policy script:
+
+```bash
+wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/gdpr_data_retention.py
+# Review and customize retention periods before running
+python3 gdpr_data_retention.py
 ```
 
 **3. Consent Management and Data Subject Rights**
@@ -3481,36 +3181,12 @@ class GDPRConsentMigration(models.Model):
 
 Migration activities are high-risk for data breaches. Here's your breach prevention framework:
 
+Download and set up comprehensive GDPR monitoring:
+
 ```bash
-# Set up comprehensive monitoring during migration
-cat > /usr/local/bin/gdpr_monitoring.sh << 'EOF'
-#!/bin/bash
-# GDPR Compliance Monitoring During Migration
-
-LOG_FILE="/var/log/gdpr_compliance.log"
-
-# Monitor database access
-echo "$(date): Checking database access logs" >> $LOG_FILE
-sudo tail -n 100 /var/log/postgresql/postgresql-14-main.log | \
-  grep -E "(CONNECT|DISCONNECT|ERROR|FATAL)" >> $LOG_FILE
-
-# Monitor file access to personal data
-echo "$(date): Checking file access to personal data" >> $LOG_FILE  
-sudo ausearch -f /opt/odoo/filestore/ -ts recent | \
-  grep -v "success=yes" >> $LOG_FILE
-
-# Check for unauthorized data export attempts
-echo "$(date): Checking for data export attempts" >> $LOG_FILE
-sudo netstat -an | grep :5432 | grep ESTABLISHED | \
-  awk '{print $5}' | cut -d: -f1 | sort | uniq -c | \
-  awk '$1 > 10 {print "WARNING: High connection count from " $2}' >> $LOG_FILE
-
-# Alert on suspicious activity
-if grep -q "WARNING\|ERROR\|FATAL" $LOG_FILE; then
-    echo "GDPR Alert: Suspicious activity detected during migration" | \
-    mail -s "GDPR Compliance Alert" compliance@yourcompany.com
-fi
-EOF
+wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/gdpr_monitoring.sh
+chmod +x gdpr_monitoring.sh
+sudo mv gdpr_monitoring.sh /usr/local/bin/
 
 # Run monitoring every 15 minutes during migration
 echo "*/15 * * * * root /usr/local/bin/gdpr_monitoring.sh" >> /etc/crontab
@@ -3597,92 +3273,15 @@ class MigrationAuditTrail(models.Model):
 
 **Automated Audit Report Generation:**
 
+Download and set up the audit report generator:
+
 ```bash
-# Generate comprehensive audit reports for compliance
-cat > /usr/local/bin/generate_audit_report.py << 'EOF'
-#!/usr/bin/env python3
-import psycopg2
-import json
-from datetime import datetime, timedelta
+wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/generate_audit_report.py
+chmod +x generate_audit_report.py
+sudo mv generate_audit_report.py /usr/local/bin/
 
-def generate_migration_audit_report(start_date, end_date):
-    """Generate comprehensive audit report for migration period"""
-    
-    conn = psycopg2.connect("dbname=production_new user=odoo")
-    cur = conn.cursor()
-    
-    # Data access summary
-    cur.execute("""
-        SELECT 
-            action_type,
-            data_sensitivity,
-            COUNT(*) as access_count,
-            COUNT(DISTINCT user_id) as unique_users
-        FROM migration_audit_trail 
-        WHERE timestamp BETWEEN %s AND %s
-        GROUP BY action_type, data_sensitivity
-        ORDER BY access_count DESC
-    """, (start_date, end_date))
-    
-    access_summary = cur.fetchall()
-    
-    # Sensitive data access details
-    cur.execute("""
-        SELECT 
-            u.name as user_name,
-            mat.timestamp,
-            mat.action_type,
-            mat.table_name,
-            mat.data_sensitivity,
-            mat.ip_address
-        FROM migration_audit_trail mat
-        JOIN res_users u ON mat.user_id = u.id
-        WHERE mat.timestamp BETWEEN %s AND %s
-        AND mat.data_sensitivity IN ('confidential', 'restricted', 'personal')
-        ORDER BY mat.timestamp DESC
-    """, (start_date, end_date))
-    
-    sensitive_access = cur.fetchall()
-    
-    # Generate report
-    report = {
-        'report_period': f"{start_date} to {end_date}",
-        'generated_at': datetime.now().isoformat(),
-        'access_summary': [
-            {
-                'action_type': row[0],
-                'data_sensitivity': row[1], 
-                'access_count': row[2],
-                'unique_users': row[3]
-            } for row in access_summary
-        ],
-        'sensitive_data_access': [
-            {
-                'user': row[0],
-                'timestamp': row[1].isoformat(),
-                'action': row[2],
-                'table': row[3],
-                'sensitivity': row[4],
-                'ip_address': row[5]
-            } for row in sensitive_access
-        ]
-    }
-    
-    # Save report
-    with open(f'audit_report_{start_date}_{end_date}.json', 'w') as f:
-        json.dump(report, f, indent=2, default=str)
-    
-    print(f"Audit report generated: audit_report_{start_date}_{end_date}.json")
-    return report
-
-if __name__ == "__main__":
-    import sys
-    start_date = sys.argv[1] if len(sys.argv) > 1 else "2025-01-01"
-    end_date = sys.argv[2] if len(sys.argv) > 2 else "2025-12-31"
-    generate_migration_audit_report(start_date, end_date)
-EOF
-
-chmod +x /usr/local/bin/generate_audit_report.py
+# Generate audit report for specific period
+generate_audit_report.py 2025-01-01 2025-12-31
 ```
 
 ### Access Control During Migration Process
@@ -3693,78 +3292,16 @@ During migration, you temporarily need to give people access to systems and data
 
 **Principle of Least Privilege During Migration:**
 
+Download and set up the migration access control system:
+
 ```bash
-# Create time-limited migration access controls
-cat > /usr/local/bin/migration_access_control.sh << 'EOF'
-#!/bin/bash
-# Temporary access control for migration activities
-
-create_migration_user() {
-    local username="$1"
-    local access_level="$2"
-    local duration_hours="$3"
-    local justification="$4"
-    
-    echo "Creating temporary migration access for $username"
-    echo "Access level: $access_level"
-    echo "Duration: $duration_hours hours" 
-    echo "Justification: $justification"
-    
-    # Create temporary PostgreSQL user
-    sudo -u postgres createuser "$username"
-    
-    case $access_level in
-        "read_only")
-            sudo -u postgres psql -c "GRANT CONNECT ON DATABASE production_new TO $username;"
-            sudo -u postgres psql -c "GRANT USAGE ON SCHEMA public TO $username;"
-            sudo -u postgres psql -c "GRANT SELECT ON ALL TABLES IN SCHEMA public TO $username;"
-            ;;
-        "data_migration")
-            sudo -u postgres psql -c "GRANT CONNECT ON DATABASE production_new TO $username;"
-            sudo -u postgres psql -c "GRANT USAGE ON SCHEMA public TO $username;"
-            sudo -u postgres psql -c "GRANT SELECT, INSERT, UPDATE ON ALL TABLES IN SCHEMA public TO $username;"
-            ;;
-        "admin")
-            sudo -u postgres psql -c "ALTER USER $username CREATEDB;"
-            sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE production_new TO $username;"
-            ;;
-    esac
-    
-    # Set automatic expiration
-    echo "sudo -u postgres dropuser $username" | at now + $duration_hours hours
-    
-    # Log access creation
-    echo "$(date): Created migration access for $username ($access_level) expires in $duration_hours hours" >> /var/log/migration_access.log
-}
-
-revoke_migration_access() {
-    local username="$1"
-    
-    echo "Revoking migration access for $username"
-    sudo -u postgres dropuser "$username"
-    
-    # Log access revocation
-    echo "$(date): Revoked migration access for $username" >> /var/log/migration_access.log
-}
-
-audit_migration_access() {
-    echo "=== Current Migration Access Audit ==="
-    echo "Active database users:"
-    sudo -u postgres psql -c "\du"
-    
-    echo "Active system sessions:"
-    who
-    
-    echo "Recent access log:"
-    tail -20 /var/log/migration_access.log
-}
+wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/migration_access_control.sh
+chmod +x migration_access_control.sh
+sudo mv migration_access_control.sh /usr/local/bin/
 
 # Example usage:
+# source /usr/local/bin/migration_access_control.sh
 # create_migration_user "consultant_john" "read_only" 8 "Data validation during migration"
-# create_migration_user "dba_sarah" "data_migration" 24 "Database schema migration"
-EOF
-
-chmod +x /usr/local/bin/migration_access_control.sh
 ```
 
 ### Sensitive Data Handling Best Practices
@@ -3781,76 +3318,12 @@ Every business thinks they know what sensitive data they have until they start l
 
 **Sensitive Data Discovery and Protection:**
 
-```python
-def scan_for_sensitive_data():
-    """Comprehensive scan for sensitive data patterns"""
-    
-    sensitive_patterns = {
-        'credit_card': r'\b(?:\d{4}[-\s]?){3}\d{4}\b',
-        'ssn': r'\b\d{3}-\d{2}-\d{4}\b',
-        'email': r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b',
-        'phone': r'\b\d{3}[-.]?\d{3}[-.]?\d{4}\b',
-        'iban': r'\b[A-Z]{2}\d{2}[A-Z0-9]{4}\d{7}([A-Z0-9]?){0,16}\b',
-        'passport': r'\b[A-Z]{1,2}\d{6,9}\b'
-    }
-    
-    # Scan text fields across all tables
-    for model_name in env.registry:
-        try:
-            model = env[model_name]
-            if hasattr(model, '_fields'):
-                for field_name, field in model._fields.items():
-                    if field.type in ('char', 'text', 'html'):
-                        # Search for sensitive patterns
-                        records = model.search([])
-                        for record in records:
-                            field_value = getattr(record, field_name, '')
-                            if field_value:
-                                for pattern_name, pattern in sensitive_patterns.items():
-                                    if re.search(pattern, str(field_value)):
-                                        # Log potential sensitive data
-                                        env['sensitive.data.log'].create({
-                                            'model': model_name,
-                                            'record_id': record.id,
-                                            'field': field_name,
-                                            'pattern_type': pattern_name,
-                                            'found_value': str(field_value)[:100],  # Truncated for security
-                                            'discovery_date': fields.Datetime.now(),
-                                            'review_required': True
-                                        })
-        except Exception as e:
-            _logger.error(f"Error scanning {model_name}: {e}")
+Download and run the sensitive data scanner and masking tool:
 
-def implement_data_masking():
-    """Implement data masking for non-production environments"""
-    
-    masking_rules = {
-        'res.partner': {
-            'email': lambda x: f"masked_{hash(x)[:8]}@example.com",
-            'phone': lambda x: "555-0100" if x else False,
-            'street': lambda x: "123 Main Street" if x else False,
-            'name': lambda x: f"Customer {hash(x) % 10000}" if x else False
-        },
-        'hr.employee': {
-            'work_email': lambda x: f"employee_{hash(x)[:8]}@company.com",
-            'private_email': lambda x: f"private_{hash(x)[:8]}@example.com",
-            'identification_id': lambda x: "***MASKED***" if x else False
-        }
-    }
-    
-    for model_name, field_rules in masking_rules.items():
-        model = env[model_name]
-        records = model.search([])
-        
-        for record in records:
-            update_values = {}
-            for field_name, masking_func in field_rules.items():
-                current_value = getattr(record, field_name, False)
-                if current_value:
-                    update_values[field_name] = masking_func(current_value)
-            
-            if update_values:
-                record.write(update_values)
+```bash
+wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/sensitive_data_scanner.py
+# Review and customize patterns before running
+python3 sensitive_data_scanner.py
 ```
 
 [Visual: **数据敏感度分类矩阵**，展示不同数据类型的安全控制要求：横轴显示数据类型（公开、内部、机密、受限、个人），纵轴显示安全控制措施（访问权限、加密要求、备份策略、审计跟踪、合规要求），交叉点用颜色编码显示安全级别（绿色低风险、黄色中等风险、红色高风险），每个单元格显示具体的安全控制措施和合规要求]
