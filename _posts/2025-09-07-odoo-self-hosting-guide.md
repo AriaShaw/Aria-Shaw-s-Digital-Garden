@@ -123,17 +123,6 @@ Let's dive in.
 
 ---
 
-> 🛡️ **Skip the Guesswork - Get Expert Risk Assessment**  
-> Before you invest hours in implementation, wouldn't you like to know exactly what challenges you'll face? Our **Migration Pre-Flight Check Service** runs comprehensive diagnostic scripts on your current setup and delivers a professional risk assessment report.
-> 
-> ✅ **What You Get**: Complete compatibility analysis, data integrity check, and personalized migration roadmap  
-> ⚡ **How It Works**: Provide read-only server access → We run our diagnostic suite → You get a detailed PDF report within 24 hours  
-> 💰 **Investment**: $99 (vs. thousands in potential failed migration costs)
-> 
-> 🚀 **[Get Your Pre-Flight Check Now →](https://ariashaw.gumroad.com/l/preflight)**
-
----
-
 ## ⚡ Quick Start Checklist
 
 Before we dive into the detailed steps, here's what you'll need to have ready:
@@ -572,16 +561,13 @@ To                         Action      From
 >
 > **Here's the reality**: One misconfigured setting can corrupt your entire database. One missed security step can expose your customer data. One performance bottleneck can cripple your business operations.
 >
-> **🎯 Three Smart Options:**
+> **🎯 Two Smart Options:**
 >
-> **Option 1 - Get Professional Help**: If you're migrating from an existing system or want guaranteed success, consider our **Migration Pre-Flight Check Service**. We'll assess your current setup, identify potential risks, and provide you with a bulletproof migration plan.
-> 🚀 **[Schedule Migration Assessment →](https://ariashaw.gumroad.com/l/preflight)**
->
-> **Option 2 - Skip the Complexity**: Let Cloudways handle all the technical complexity while you focus on your business.
+> **Option 1 - Skip the Complexity**: Let Cloudways handle all the technical complexity while you focus on your business.
 > 🚀 **[Skip the complexity with Cloudways](https://www.cloudways.com/en/?id=2007562)**  
 > *3-minute setup • Zero Linux knowledge needed • 24/7 expert support*
 >
-> **Option 3 - DIY with Better Tools**: Continue with self-hosting but arm yourself with the streamlined **Odoo Self-Hosting Kit** - all the essential steps, commands, and configurations without the overwhelm.
+> **Option 2 - DIY with Better Tools**: Continue with self-hosting but arm yourself with the streamlined **Odoo Self-Hosting Kit** - all the essential steps, commands, and configurations without the overwhelm.
 > 🚀 **[Get the Self-Hosting Kit ($7) →](https://ariashaw.gumroad.com/l/odoohosting)**  
 > *Focused guidebook • Command vault • One-page cheat sheet*
 
