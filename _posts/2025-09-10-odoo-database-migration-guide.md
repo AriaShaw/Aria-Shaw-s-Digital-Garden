@@ -143,7 +143,7 @@ chmod +x migration_assessment.sh
 
 ![Odoo Migration Risk Assessment](../assets/images/Odoo Migration Risk Assessment.png)
 
-*Figure 1: Odoo Migration Risk Assessment - A comprehensive mind map showing the core elements of migration risk evaluation including database size analysis, PostgreSQL version compatibility, custom module complexity, and risk level classification with corresponding response strategies.*
+*Comprehensive migration risk assessment covering database analysis, version compatibility, module complexity, and risk classification with response strategies.*
 
 **What this script tells you:**
 
@@ -172,7 +172,9 @@ python3 compatibility_check.py --source-server source_ip --target-server target_
 
 **Run this checker on both your source and target servers.** Any mismatches between them need to be resolved before you start the actual migration.
 
-[Visual: **流程图**，展示环境兼容性检查流程：源服务器检测 → 目标服务器检测 → 版本对比分析 → 依赖关系验证 → 兼容性评分，每个环节显示通过（绿色勾选）或失败（红色X标记）的状态，以及失败时的具体错误信息和修复建议路径]
+![Environment Compatibility Check Flow](../assets/images/Environment Compatibility Check Flow.png)
+
+*Environment compatibility check workflow showing source and target server detection, version comparison, dependency validation, and compatibility scoring with pass/fail indicators.*
 
 **The most common compatibility killers I've seen:**
 
@@ -197,7 +199,7 @@ python3 data_cleanup.py your_database_name
 
 ![Database Health Status](../assets/images/Database Health Status.png)
 
-*Figure 2: Database Health Status - A comprehensive concept map depicting data cleanup analysis results, showing duplicate record analysis, orphaned record detection, large table analysis, and data integrity check results with specific quantity statistics and recommended actions.*
+*Database health analysis showing duplicate records, orphaned data, large tables, and integrity checks with cleanup recommendations.*
 
 **The cleanup actions you MUST take before migration:**
 
@@ -207,8 +209,6 @@ python3 data_cleanup.py your_database_name
 4. **Test custom modules** - Ensure all custom code works with your target Odoo version
 
 **Pro tip that'll save you hours of debugging:** Run this cleanup script on your test database first, fix all the issues, then run it on production. I've seen businesses discover 50,000 duplicate records during migration—don't let that be you at 2 AM on a Saturday night.
-
-[Visual: **概念图**，展示"清洁数据迁移成功公式"：四个相互连接的齿轮图标，分别代表"零重复记录"（防止合并冲突）、"零孤立记录"（避免引用完整性错误）、"模块测试完成"（消除模块缺失意外）、"合理表大小"（确保可预测的迁移时间线），四个齿轮中心汇聚到"迁移成功"的金色奖杯图标]
 
 **The "Clean Data Migration Success Formula":**
 - ✅ Zero duplicate records = Zero merge conflicts during migration
@@ -240,7 +240,7 @@ chmod +x backup_database.sh
 
 ![PostgreSQL Enterprise Backup Process](../assets/images/PostgreSQL Enterprise Backup Process.png)
 
-*Figure 3: PostgreSQL Enterprise Backup Process - A detailed flow chart showing the enterprise-grade backup workflow from pre-check phase through metadata recording, with timing information and quality assurance checkpoints at each stage.*
+*Enterprise-grade PostgreSQL backup workflow with pre-checks, metadata recording, timing information, and quality assurance checkpoints.*
 
 **Why this backup method is bulletproof:**
 
@@ -272,8 +272,6 @@ chmod +x backup_filestore.sh
 ./backup_filestore.sh your_database_name /path/to/backup/directory
 ```
 
-[Visual: **插图**，描绘Odoo文件存储备份过程：左侧显示原始文件存储结构（包含附件、图像、PDF等文件类型的图标，标注总计15,247个文件），中间展示压缩打包过程（进度条显示2.3GB数据压缩中），右侧显示最终备份文件（压缩后大小和存储位置），整个过程用箭头连接，突出显示60-80%的压缩率效果]
-
 **Why this filestore backup method is superior:**
 
 1. **Auto-discovery** - Finds filestore even if it's in a non-standard location
@@ -295,7 +293,9 @@ chmod +x backup_configuration.sh
 ./backup_configuration.sh your_database_name /path/to/backup/directory
 ```
 
-[Visual: **思维导图**，展示Odoo配置备份全景：中心为"完整配置备份"，分支包括主配置文件（odoo.conf及其关键参数）、自定义插件目录（显示3个目录和15个模块的详细结构）、系统服务文件、Web服务器配置、环境依赖文档，每个分支显示文件大小、校验码和验证状态]
+![Complete Configuration Backup](../assets/images/Complete Configuration Backup.png)
+
+*Complete configuration backup overview showing main config files, custom module directories, system services, web server settings, and environment dependencies with verification status.*
 
 **What this configuration backup captures:**
 
@@ -328,7 +328,7 @@ pg_restore --list /secure/backup/odoo_backup_*.backup | head -10
 
 ![Triple Backup Verification Flow](../assets/images/Triple Backup Verification Flow.png)
 
-*Figure 4: Triple Backup Verification Flow - A comprehensive verification process showing database backup validation, filestore integrity testing, and configuration backup verification with specific check commands, MD5 checksums, and final 100% backup integrity confirmation.*
+*Triple backup verification process covering database validation, filestore integrity, and configuration verification with MD5 checksums and integrity confirmation.*
 
 You now have a complete, bulletproof backup system that captures everything needed for a successful migration. These aren't just files—they're your business continuity insurance policy.
 
@@ -419,8 +419,6 @@ wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/
 python3 calculate_server_specs.py
 ```
 
-[Visual: **插图/示意图**，描绘服务器规格计算器界面：左侧为输入区域（显示滑动条设置：50个并发用户、5GB数据库大小、500事务/小时），右侧为计算结果区域（显示推荐配置：6核CPU、16GB RAM、专业级服务器），底部显示成本估算范围$150-250/月，整个界面采用现代化的仪表盘设计风格]
-
 **What makes this calculator superior to generic advice:**
 
 1. **Multi-factor analysis** - Considers users, database size, transactions, and modules together
@@ -437,8 +435,6 @@ python3 calculate_server_specs.py
 | Small Retail | 10 | 2GB | 100 | 4 CPU, 8GB RAM | $50-80 |
 | Growing Manufacturing | 25 | 8GB | 500 | 6 CPU, 16GB RAM | $150-250 |
 | Large Distribution | 100 | 25GB | 2000 | 12 CPU, 32GB RAM | $400-800 |
-
-[Visual: **对比图表**，展示服务器配置误区 vs 正确做法：左侧"常见错误"列显示低配置（2GB RAM、共享CPU、最小磁盘空间）及其导致的问题（性能瓶颈、随机卡顿、空间不足），右侧"正确配置"列显示推荐配置（8GB+ RAM、专用CPU、充足存储）及其带来的好处（稳定性能、可预测响应时间、充足扩展空间）]
 
 **Common sizing mistakes that kill performance:**
 
@@ -461,7 +457,7 @@ sudo ./setup_ubuntu_odoo.sh
 
 ![Ubuntu Optimization Installation Process](../assets/images/Ubuntu Optimization Installation Process.png)
 
-*Figure 5: Ubuntu Optimization Installation Process - A complete flow chart showing the Ubuntu optimization workflow from system initialization through service management, with progress indicators, key configuration parameters, and completion confirmations at each stage.*
+*Ubuntu optimization workflow from system initialization through service management with progress indicators, configuration parameters, and completion confirmations.*
 
 **What this optimization script accomplishes:**
 
@@ -509,7 +505,9 @@ sudo ./tune_postgresql_odoo.sh
 sudo ./tune_postgresql_odoo.sh
 ```
 
-[Visual: **概念图**，展示PostgreSQL性能调优过程：中心为"系统检测"（显示16GB RAM、8核CPU、SSD存储），围绕中心的四个模块分别为内存优化（shared_buffers、effective_cache_size设置）、连接优化（max_connections、work_mem配置）、磁盘优化（checkpoint设置、WAL配置）、查询优化（统计信息更新、索引建议），最终指向"性能提升30-50%"的结果标识]
+![PostgreSQL Performance Tuning Process](../assets/images/PostgreSQL Performance Tuning Process.png)
+
+*PostgreSQL performance optimization workflow covering memory, connection, disk, and query optimizations for 30-50% performance improvement.*
 
 **What this advanced tuning accomplishes:**
 
@@ -574,7 +572,7 @@ Every failed migration I've investigated had one thing in common - they skipped 
 
 ![Staged Validation Workflow](../assets/images/Staged Validation Workflow.png)
 
-*Figure 6: Staged Validation Workflow - A comprehensive validation process showing backup creation through production migration execution, with forward progression arrows and rollback safety paths (indicated by dotted lines) for emergency recovery options.*
+*Staged validation workflow from backup creation through production migration with forward progression and rollback safety paths for emergency recovery.*
 
 **Download and run the staging validation script:**
 
@@ -610,8 +608,6 @@ Now comes the moment of truth. With staging validation complete and proving our 
 
 Traditional migrations require taking the system offline, potentially for hours. Our approach minimizes downtime to less than 5 minutes using a rolling deployment strategy with automatic validation and rollback capabilities.
 
-[Visual: **时间线图表**，展示零停机迁移时序：正常运营阶段（绿色） → 迁移准备阶段（蓝色，2分钟，数据同步和服务预热）→ 服务暂停阶段（橙色，3-5分钟，DNS切换和最终数据同步）→ 验证阶段（黄色，2分钟，新服务验证和健康检查）→ 新服务激活（绿色，服务恢复正常）→ 旧服务器待命（灰色虚线，30分钟备用期）→ 迁移完成（深绿色），每个阶段标注具体用时和关键操作]
-
 **Download and run the production migration script:**
 
 ```bash
@@ -628,7 +624,9 @@ chmod +x production_migration.sh
 sudo ./production_migration.sh
 ```
 
-[Visual: **流程图**，展示生产迁移执行过程：预迁移检查 → 数据同步启动（进度条显示）→ 服务切换（DNS更新）→ 数据库最终同步 → 新服务验证（七层测试）→ 性能确认 → 迁移完成，每个步骤显示实时计时信息，最终显示"总停机时间：4.2秒，所有服务验证通过"的成功消息]
+![Production Migration Execution Process](../assets/images/Production Migration Execution Process.png)
+
+*Production migration execution workflow from pre-check through data sync, service switching, validation, and completion with real-time timing and minimal downtime.*
 
 **What this production migration delivers:**
 
@@ -648,8 +646,6 @@ Your migration is complete, but the job isn't finished. The next 24 hours are cr
 
 I've seen migrations declared "successful" only to have performance issues emerge days later. By then, the rollback window has closed, and businesses are stuck with a slower system. This validation process catches and fixes performance issues immediately.
 
-[Visual: **仪表盘界面**，展示性能监控指标：上方显示响应时间趋势图（实时更新的折线图）、左侧显示CPU利用率环形图、右侧显示内存使用情况柱状图、下方展示数据库查询性能分析表格、底部显示用户会话跟踪时间线，整个界面采用现代化深色主题，关键指标用绿色/黄色/红色进行状态标识]
-
 **Download and run the performance validation script:**
 
 ```bash
@@ -664,8 +660,6 @@ sudo ./performance_validation.sh
 chmod +x performance_validation.sh
 sudo ./performance_validation.sh
 ```
-
-[Visual: **插图/示意图**，描绘性能监控执行界面：实时滚动的性能指标更新（显示响应时间<1秒的样本数据、CPU使用率波动图、内存占用趋势）、左下角显示运行状态"监控中..."、右上角显示当前测试进度，最终界面底部显示大大的"优秀"评级徽章和详细统计数据摘要]
 
 ---
 
@@ -687,8 +681,6 @@ sudo ./final_verification.sh
 chmod +x final_verification.sh
 sudo ./final_verification.sh
 ```
-
-[Visual: **成就界面**，展示最终验证结果：上方显示所有验证项目的清单（数据库连接、模块功能、用户权限、集成服务、性能指标、安全设置、备份系统等），每项旁边都有绿色勾选标记，中央显示"成功率 100%"的大型圆形进度图，底部显示金色的"恭喜！迁移完成"横幅和庆祝元素]
 
 **You've successfully completed your Odoo database migration!** Your system is now running on the new server with optimized performance, comprehensive backups, and monitoring in place.
 
@@ -721,8 +713,6 @@ FROM pg_stat_database
 WHERE datname = 'odoo_production_new';"
 ```
 
-[Visual: **分屏界面图**，展示迁移后监控场景：左侧显示系统监控终端（CPU使用率曲线图、内存占用柱状图、磁盘使用情况饼图，数值实时刷新），右侧显示Odoo日志监控窗口（错误日志用红色高亮、警告用黄色标识、正常信息用绿色显示），两个窗口都显示滚动的实时数据更新]
-
 **🔍 User acceptance testing checklist:**
 
 After 24 hours of stable operation, conduct these critical business function tests:
@@ -747,10 +737,12 @@ After 24 hours of stable operation, conduct these critical business function tes
 4. **User Authentication and Permissions**
    - Test login for all user roles
    - Verify access permissions are working correctly
-
-[Visual: **流程图**，展示用户验收测试流程：订单处理流（从创建销售订单到发货的完整流程）→ 库存管理测试（库存查询、调整、移动）→ 财务操作验证（对账、报表生成、税务计算）→ 用户权限测试（不同角色登录验证），每个流程显示关键检查点和通过标准]
    - Check email notifications are being sent
    - Test multi-company setup (if applicable)
+
+![User Acceptance Testing Flow](../assets/images/User Acceptance Testing Flow.png)
+
+*User acceptance testing workflow covering order processing, inventory management, financial operations, and user permissions with key checkpoints and validation criteria.*
 
 ### Weekly Maintenance Routine
 
@@ -802,11 +794,7 @@ chmod +x monthly_health_check.sh
    - Analyze disk usage trends and project future needs
    - Review CPU and memory utilization patterns
    - Plan for seasonal traffic variations
-
-[Visual: **思维导图**，展示月度维护体系：中心为"月度健康检查"，分为四个主要分支：性能分析（慢查询优化、容量规划、数据库调优）、安全审计（用户权限审查、系统补丁、证书检查、备份加密）、容量规划（存储趋势、资源使用模式、季节性变化预测）、系统优化（配置调整、性能改进建议），每个分支显示具体的检查项目和评估标准]
    - Evaluate need for hardware upgrades
-
-[Visual: **综合仪表盘**，展示月度健康指标：上方显示数据库增长趋势图（30天内的存储空间变化曲线）、左侧显示用户活动热力图（按时间和功能模块的使用强度分布）、右侧显示性能趋势分析（响应时间、查询速度、系统负载的变化趋势），下方显示安全审计结果面板，用绿色/黄色/红色状态指示器显示各项安全检查结果]
 
 ### Disaster Recovery Planning
 
@@ -913,8 +901,6 @@ sudo -u postgres psql -d odoo_production_new -c "VACUUM ANALYZE;"
 # Check and adjust shared_buffers in postgresql.conf
 ```
 
-[Visual: **对比分析图**，展示性能诊断结果：左侧"问题诊断"显示迁移前后的关键指标对比（响应时间从0.8秒增加到4.2秒、数据库查询性能下降、内存使用异常），右侧"解决方案"显示针对性优化措施（数据库VACUUM优化、Odoo工作进程调整、PostgreSQL内存配置优化），每个问题区域用红色高亮标识，解决方案用绿色箭头指向改进结果]
-
 ### Database Connection Issues
 
 **Symptom**: "database connection failed" errors
@@ -934,7 +920,9 @@ sudo -u postgres psql -c "SELECT count(*) FROM pg_stat_activity;"
 # Then restart: sudo systemctl restart postgresql
 ```
 
-[Visual: **故障诊断流程图**，展示常见迁移后问题的诊断路径：性能问题（响应缓慢）→ 数据库连接问题（连接失败）→ 模块加载问题（自定义模块错误）→ 集成失败（邮件/第三方服务），每个问题分支显示诊断步骤、常见原因和解决方法，用不同颜色区分问题类型和严重级别]
+![Common Post-Migration Issue Diagnosis Flow](../assets/images/Common Post-Migration Issue Diagnosis Flow.png)
+
+*Common post-migration issue diagnosis flowchart covering performance problems, database connections, module loading, and integration failures with diagnostic steps and solutions.*
 
 ### Module Loading Problems
 
@@ -1021,8 +1009,6 @@ Let's quantify the value you've created with this migration:
 3. **Future Migrations**: You can repeat this process for version upgrades with minimal cost
 4. **Business Continuity**: Comprehensive backup and recovery procedures protect business operations
 5. **Performance Optimization**: Properly tuned system reduces user frustration and increases productivity
-
-[Visual: **ROI分析仪表盘**，展示投资回报分析：上方显示成本节省分解图（迁移咨询费用节省、硬件优化节省、停机时间减少等），中央显示性能改进图表（响应速度提升、系统稳定性增强、用户满意度改善的量化数据），下方显示3年期价值投影曲线（累计节省成本、生产力提升价值、风险规避价值的时间趋势）]
 
 ---
 
@@ -1292,8 +1278,6 @@ You start the migration, everything seems fine, then PostgreSQL throws version c
 
 **Why this happens:** PostgreSQL 10 to 14+ migrations often break due to deprecated functions, changed data types, and modified authentication methods. The pg_dump from older versions may create backups that newer PostgreSQL versions refuse to restore properly.
 
-[Visual: **错误诊断界面**，展示PostgreSQL版本兼容性错误场景：终端界面显示典型的错误信息（用红色高亮显示"函数不存在"、"数据类型不兼容"等关键错误），左侧显示错误堆栈跟踪，右侧显示具体的不兼容函数列表和受影响的数据表，底部显示建议的修复步骤和预估修复时间]
-
 **The Prevention Strategy:**
 
 ```bash
@@ -1361,8 +1345,6 @@ You're using OpenUpgrade for a version migration (like Odoo 13→15), and halfwa
 
 **Why this happens:** OpenUpgrade has known issues with complex custom modules, certain PostgreSQL configurations, and specific Odoo version combinations. The tool often fails silently or crashes without proper rollback.
 
-[Visual: **错误追踪界面**，展示OpenUpgrade工具失败场景：主要显示Python堆栈跟踪信息，重点高亮显示关键错误（缺少odoo-bin文件、模块依赖失败），左侧显示失败的升级步骤进度（在第3步中断），右侧显示受影响的数据库对象和模块列表，底部显示紧急回滚选项和数据恢复建议]
-
 **The Prevention Strategy:**
 
 Never trust OpenUpgrade alone. Use this bulletproof wrapper that adds safety nets:
@@ -1418,8 +1400,6 @@ sudo systemctl start odoo
 Your database migration completes successfully, but when Odoo starts, half your custom modules refuse to load. Critical business functionality is broken, users can't access key features, and error logs are full of "module not found" and API compatibility errors.
 
 **Why this happens:** Odoo's API changes between versions break custom modules. Fields get renamed, methods disappear, and security models change. Your modules worked perfectly on the old version but are incompatible with the new one.
-
-[Visual: **对比界面图**，展示自定义模块迁移失败的表现：左侧显示正常Odoo界面（完整的菜单结构、正常功能模块），右侧显示迁移后的问题界面（缺失的菜单项用红色边框标识、错误的模块显示灰化状态），底部显示日志查看器中的错误信息（"AttributeError: 模块没有该属性"等警告用黄色背景高亮）]
 
 **The Prevention Strategy:**
 
@@ -1490,8 +1470,6 @@ sudo -u odoo /opt/odoo/odoo-bin shell -d production_new
 Migration completes, but nobody can log in. Admin passwords don't work, database permission errors flood the logs, and even root access to PostgreSQL is behaving strangely. You're locked out of your own system.
 
 **Why this happens:** PostgreSQL role ownership changes during migration, Odoo's authentication cache becomes corrupted, and password hashing methods may be incompatible between versions.
-
-[Visual: **对比错误界面**，展示认证权限故障：左侧显示Odoo登录界面的"无效凭据"错误提示，右侧显示PostgreSQL日志窗口中的权限错误（"数据库访问被拒绝"、"角色不存在"等错误信息用红色高亮），底部显示权限诊断建议和修复步骤]
 
 **The Prevention Strategy:**
 
@@ -1571,8 +1549,6 @@ Odoo loads, users can log in, but the interface looks completely broken. No CSS 
 
 **Why this happens:** Odoo's asset management system caches CSS and JavaScript files with specific server paths and database references. After migration, these cached assets point to the wrong locations or contain outdated references.
 
-[Visual: **对比界面图**，展示CSS/资源加载失败效果：左侧显示正常的Odoo界面（现代化设计、完整样式、美观布局），右侧显示资源加载失败后的界面（缺失CSS样式、朴素的HTML按钮、破损的页面布局、JavaScript错误提示），中间用虚线分割，突出显示两种状态的巨大差异]
-
 **The Prevention Strategy:**
 
 Always clear and rebuild assets as part of your migration:
@@ -1626,8 +1602,6 @@ sudo -u odoo /opt/odoo/odoo-bin shell -d production_new
 Your migration appears successful—everything works functionally—but the system is 3-5x slower than before. Simple operations take forever, reports timeout, and users are complaining about terrible performance.
 
 **Why this happens:** Database statistics are outdated, indexes need rebuilding, PostgreSQL configuration doesn't match the new server, or the migration process left the database in a non-optimized state.
-
-[Visual: **性能对比仪表盘**，展示迁移前后性能退化：左侧显示迁移前的基准性能指标（响应时间0.8秒、数据库查询正常、用户满意度高），右侧显示迁移后的性能问题（响应时间增加到4.2秒、数据库查询性能严重下降、系统负载过高），中央显示性能退化幅度的红色警告图表和影响分析]
 
 **Immediate Performance Recovery Protocol:**
 
@@ -1744,11 +1718,6 @@ After seeing too many businesses struggle with failed migrations, I developed th
 
 When I'm not optimizing databases, I'm sharing practical infrastructure knowledge through detailed guides like this one. My goal is simple: help business owners master their technology instead of being controlled by it.
 
-**Connect with me:**
-- [LinkedIn](https://linkedin.com/in/ariashaw-tech) for professional updates
-- [Twitter](https://twitter.com/AriaShaw_Tech) for daily optimization tips
-- [GitHub](https://github.com/AriaShaw) for migration scripts and tools
-
 ---
 
 ## Advanced Troubleshooting Guide 🔧
@@ -1832,8 +1801,6 @@ Download and run the dependency resolution script:
 wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/resolve_dependencies.py
 python3 resolve_dependencies.py production_new
 ```
-
-[Visual: **依赖关系分析图**，展示模块依赖树结构：中央显示终端界面的依赖分析结果，包含模块依赖关系的树状图（15+个模块的层级结构），用红色圆圈标识循环依赖问题，用绿色路径显示建议的安装顺序，右侧显示依赖冲突解决建议和预估修复时间]
 
 **Critical dependency resolution commands:**
 
@@ -1938,8 +1905,6 @@ REINDEX INDEX CONCURRENTLY res_partner_pkey;
 REINDEX INDEX CONCURRENTLY account_move_line_move_id_index;
 REINDEX INDEX CONCURRENTLY stock_move_picking_id_index;
 ```
-
-[Visual: **数据库修复分析报告**，展示数据损坏修复过程：上方显示损坏诊断结果（孤立记录数量、约束违规统计、数据完整性评分），中央显示修复进度条和正在处理的数据表，下方显示修复前后的统计对比（修复的记录数、恢复的引用关系、提升的数据质量分数），整个界面用颜色编码显示修复状态（红色问题、黄色处理中、绿色已修复）]
 
 ### Performance Regression Diagnosis Tools
 
@@ -2055,8 +2020,6 @@ WHERE n_tup_upd + n_tup_del > 10000  -- Tables with high modification rate
 ORDER BY n_tup_upd + n_tup_del DESC;
 ```
 
-[Visual: **性能分析综合仪表盘**，展示查询性能诊断：左上角显示查询执行时间分布图（慢查询用红色标识），右上角显示缓存命中率环形图（显示数据库缓存效率），左下角显示索引使用统计表格（显示缺失索引和低效索引），右下角显示颜色编码的优化建议面板（绿色为立即可实施的优化、黄色为需要计划的改进、红色为紧急修复项目）]
-
 ### Integration Failure Recovery Methods
 
 **The Challenge:** Your external integrations (APIs, webhooks, email systems) stopped working after migration, and standard troubleshooting isn't revealing the root cause.
@@ -2070,8 +2033,6 @@ python3 integration_diagnostics.py --config /etc/odoo/odoo.conf --test-all
 ```
 
 **API connectivity troubleshooting:**
-
-[Visual: **集成诊断流程图**，展示API连接故障排查：起始节点为"集成失败检测" → DNS解析测试 → SSL证书验证 → 端口连接测试 → 认证令牌验证 → API响应格式检查 → 数据传输测试，每个节点显示通过/失败状态，失败节点分支到相应的修复建议，整个流程用不同颜色标识测试类型（网络层、安全层、应用层）]
 
 Download and run the API diagnostics script:
 
@@ -2111,13 +2072,13 @@ wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/
 chmod +x intelligent_rollback.sh
 sudo ./intelligent_rollback.sh
 
-[Visual: **回滚流程决策图**，展示紧急回滚执行路径：起始决策点"是否保留失败数据"分支到两条路径（完全回滚 vs 数据保留回滚），每条路径显示关键步骤（服务停止 → 数据库切换 → 配置恢复 → 验证检查点），每个步骤标注预估时间（2-5分钟不等），最终汇聚到"回滚完成验证"，整个流程用颜色编码显示风险级别和优先级]
-
 ---
 
 ## Advanced Troubleshooting Decision Tree 🌳
 
-[Visual: **故障诊断决策树**，展示复杂迁移问题的诊断路径：根节点"迁移问题检测"分支到四个主要类别（数据库相关、模块相关、性能相关、集成相关），每个类别进一步细分为具体问题类型和相应的诊断工具，叶节点显示推荐的解决方案和预估修复时间，整个决策树用不同形状和颜色区分问题类型和严重程度]
+![Migration Issue Decision Tree](../assets/images/Migration Issue Decision Tree.png)
+
+*Migration issue decision tree for complex problems, categorizing database, module, performance, and integration issues with diagnostic tools and estimated resolution times.*
 
 **Use this decision tree when facing complex migration issues:**
 │  │       └─ NO → Check API compatibility issues
@@ -2283,8 +2244,6 @@ The manufacturing floor came online exactly on schedule. More importantly, the s
 
 5. **Sometimes the best migration reveals problems you didn't know you had.** Their original system was hiding performance issues that became apparent only when we moved to a properly configured environment.
 
-[Visual: **性能对比图表**，展示制造业案例的迁移效果：左侧显示迁移前的性能基线（查询响应时间8-15秒、报表生成耗时45分钟、系统负载高），右侧显示迁移后的改进结果（查询响应时间降至2-3秒、报表生成缩短到12分钟、系统运行稳定），中央用绿色箭头显示性能提升幅度，底部显示业务影响指标（用户满意度、运营效率）]
-
 ---
 
 ### Case Study #2: E-commerce Platform - The Version Leap Challenge
@@ -2310,8 +2269,6 @@ This outdoor gear retailer had grown from $2M to $8M in annual revenue during CO
 - **Seasonal inventory challenges** requiring sophisticated demand planning
 
 Their Odoo 14 system was struggling with the advanced inventory features they needed, and the new multi-company accounting requirements made an upgrade unavoidable.
-
-[Visual: **版本跨越挑战图**，展示Odoo 14→18的升级复杂性：时间轴显示版本演进路径（14→15→16→17→18），突出显示跨版本升级的风险点（API变更、数据结构改变、模块兼容性问题），右侧显示业务增长曲线（从$2M到$8M收入增长），下方显示技术债务累积和升级必要性的对比分析]
 
 **The Technical Challenge:**
 
@@ -2438,8 +2395,6 @@ The real test came during their next peak season:
 
 5. **Sometimes delayed upgrades work in your favor.** By the time we upgraded to Odoo 18, many bugs had been fixed and best practices established. Being an early adopter isn't always better.
 
-[Visual: **迁移时间线图**，展示三阶段升级方法：第一阶段（Odoo 14→15，2周）、第二阶段（15→17，3周）、第三阶段（17→18，2周），每个阶段标注关键里程碑和回滚点，下方对比性能指标从Odoo 14基线到Odoo 18最终结果的改进（响应速度、并发处理能力、报表生成速度），用绿色趋势线显示持续改善]
-
 ---
 
 ### Case Study #3: Service Business Complexity - Multi-Company Maze
@@ -2454,8 +2409,6 @@ The real test came during their next peak season:
 When this consulting firm first contacted me, they said they had a "simple consolidation project." Five companies, all running Odoo 15, all needed to be merged into one system for consolidated reporting.
 
 "How hard could it be?" I thought. Famous last words.
-
-[Visual: **多公司整合复杂度图**，展示五个独立运营公司的差异：中央显示5个公司的不同系统架构（用不同颜色表示各公司），周围显示关键差异点：会计科目结构（500 vs 50个科目）、客户编号系统、产品分类方法、货币处理方式、财务年度设置，每个差异点用连线显示数据整合的复杂性和冲突点]
 
 What they didn't tell me initially was that these five companies had been operating independently for years, with different:
 - **Chart of accounts structures** (some had 500 accounts, others had 50)
@@ -2681,8 +2634,6 @@ class LegalMatter(models.Model):
 4. **Change management requires ongoing support.** Six months of user training was just the beginning. Real adoption took a full year.
 
 5. **Sometimes you have to move backward to move forward.** Adding back the legal-specific features felt like a step backward, but it was necessary for user adoption.
-
-[Visual: **组织架构整合图**，展示多公司合并的转变：上方显示整合前的5个独立公司（各自独立的系统和数据流），用虚线框分隔；下方显示整合后的统一架构（共享的数据流、自动化的公司间交易处理、统一的报表系统），用实线连接显示数据流动和业务流程自动化，整体用绿色箭头表示整合带来的效率提升]
 
 ---
 
@@ -2931,8 +2882,6 @@ This disaster was completely preventable. Every single failure point could have 
 
 But here's the thing—disasters like this happen more often than the industry wants to admit. Having a recovery plan isn't just good practice; it's essential for any business that depends on their systems.
 
-[Visual: **紧急恢复时间线**，展示72小时恢复过程：时间轴显示关键里程碑（第0小时：灾难发现，第6小时：恢复团队到位，第24小时：数据恢复完成，第48小时：系统功能验证，第72小时：业务全面恢复），每个阶段标注关键任务和决策点，下方对比系统可靠性指标的恢复前后变化（可用性从0%恢复到99.9%、数据完整性、性能指标）]
-
 ---
 
 ## What These Stories Teach Us About Migration Success
@@ -3071,7 +3020,9 @@ tar -czf - /opt/odoo/filestore/ | \
 gpg --decrypt backup_$(date +%Y%m%d).backup.gpg | pg_restore --list
 ```
 
-[Visual: **加密工作流程图**，展示数据安全保护的完整流程：中央显示三个加密层级（静态数据库加密、传输中SSL/TLS加密、备份GPG加密），每个层级显示具体的加密方法和密钥管理流程，周围显示验证步骤（密钥生成、证书验证、完整性检查），整个流程用不同颜色区分加密类型和安全级别]
+![Data Security Protection Encryption Workflow](../assets/images/Data Security Protection Encryption Workflow.png)
+
+*Data security encryption workflow showing three encryption layers (database, transport, backup) with key management and verification processes for comprehensive data protection.*
 
 ### GDPR Compliance During Migration
 
@@ -3325,8 +3276,6 @@ wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/
 # Review and customize patterns before running
 python3 sensitive_data_scanner.py
 ```
-
-[Visual: **数据敏感度分类矩阵**，展示不同数据类型的安全控制要求：横轴显示数据类型（公开、内部、机密、受限、个人），纵轴显示安全控制措施（访问权限、加密要求、备份策略、审计跟踪、合规要求），交叉点用颜色编码显示安全级别（绿色低风险、黄色中等风险、红色高风险），每个单元格显示具体的安全控制措施和合规要求]
 
 ### Security Validation Checklist
 
@@ -3670,8 +3619,6 @@ Features:
 - Performance benchmarking
 - Integration health monitoring
 ```
-
-[Visual: **脚本库组织架构图**，展示分类脚本及其功能关系：中央为"脚本库"主节点，分支到五个主要类别（预迁移准备脚本、备份脚本、迁移执行脚本、验证脚本、故障恢复脚本），每个类别下显示具体脚本名称和主要功能，用箭头显示脚本间的依赖关系和执行顺序，整个架构用颜色编码区分脚本类型和优先级]
 
 ### Templates and Checklists
 
@@ -4377,8 +4324,6 @@ When I talk to teams about Odoo migration, the same question always comes up: "W
 ### DIY Migration vs. Professional Services vs. Hybrid Approach
 
 **The Reality Check**: After guiding hundreds of migrations, I've learned that the "best" approach isn't about budget alone—it's about matching your team's capabilities with your business's risk tolerance.
-
-[Visual: **决策矩阵图**，展示不同迁移方法的适用场景：横轴为项目复杂度（简单、中等、复杂），纵轴为风险承受能力（低、中、高），矩阵中绘制三种方法的适用区域（DIY自主迁移、专业服务、混合方法），每个区域标注真实项目案例（小型零售商、制造业企业、大型分销商等），用不同颜色和图标表示推荐程度和成功率]
 
 ### Option 1: Full DIY Migration (The Path We've Been Following)
 
