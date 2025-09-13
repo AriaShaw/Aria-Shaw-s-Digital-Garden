@@ -60,6 +60,13 @@ A collection of scripts designed for the "Odoo Database Migration Nightmare" gui
 * **📊 [Migration Audit Report Generator](/scripts/generate_audit_report.py)** - *Comprehensive audit trail reporting for compliance and security reviews.*
 * **🔐 [Migration Access Control System](/scripts/migration_access_control.sh)** - *Time-limited access control with automated expiration and full audit trails.*
 * **🕵️ [Sensitive Data Scanner & Masker](/scripts/sensitive_data_scanner.py)** - *Pattern-based sensitive data discovery with automated masking for non-production environments.*
+* **🔒 [GDPR Consent Migration Model](/scripts/gdpr_consent_migration.py)** - *Track and validate GDPR consent during migration, ensuring compliance with data protection regulations.*
+* **📋 [Migration Audit Trail System](/scripts/migration_audit_trail.py)** - *Comprehensive audit logging for migration activities with compliance tracking and data sensitivity classification.*
+
+### Business Process Automation Scripts
+* **💼 [Inter-company Transaction Manager](/scripts/intercompany_transaction_manager.py)** - *Automatically create offsetting journal entries for inter-company transactions in multi-company Odoo setups.*
+* **⚖️ [Legal Matter Model](/scripts/legal_matter_model.py)** - *Custom Odoo model for legal services companies requiring conflict checking and specialized billing features.*
+* **🚨 [Emergency Order Import System](/scripts/emergency_order_import.py)** - *Import orders that were written down during system outages, converting CSV data back into Odoo sales orders for business continuity.*
 
 All scripts include comprehensive error handling, logging, and are designed to fail safely. They're the same tools I use in professional migrations and are battle-tested across hundreds of production environments.
 
