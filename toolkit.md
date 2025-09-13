@@ -36,8 +36,6 @@ A collection of scripts designed for the "Odoo Database Migration Nightmare" gui
 ### Ongoing Maintenance & Monitoring
 * **🔄 [Weekly Maintenance Automation](/scripts/weekly_maintenance.sh)** - *Automated weekly database maintenance, log rotation, and performance optimization.*
 * **📈 [Monthly Health Check](/scripts/monthly_health_check.sh)** - *Comprehensive monthly system review with capacity planning and security audit.*
-* **🩺 [Performance Diagnosis Tool](/scripts/performance_diagnosis.sh)** - *Quick performance issue identification and optimization recommendations.*
-* **🔍 [Data Integrity Checker](/scripts/data_integrity_check.sh)** - *Detect and report database corruption or consistency issues.*
 
 ### Advanced Troubleshooting & Recovery
 * **🔌 [PostgreSQL Compatibility Check](/scripts/pg_compatibility_check.sh)** - *Deep compatibility analysis between PostgreSQL versions to prevent migration disasters.*
