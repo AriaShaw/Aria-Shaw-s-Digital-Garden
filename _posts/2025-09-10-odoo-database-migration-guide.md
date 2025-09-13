@@ -2071,34 +2071,16 @@ Download and run the intelligent rollback script:
 wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/intelligent_rollback.sh
 chmod +x intelligent_rollback.sh
 sudo ./intelligent_rollback.sh
+```
 
 ---
 
 ## Advanced Troubleshooting Decision Tree 🌳
 
+**Use this decision tree when facing complex migration issues:**
 ![Migration Issue Decision Tree](../assets/images/Migration Issue Decision Tree.png)
 
 *Migration issue decision tree for complex problems, categorizing database, module, performance, and integration issues with diagnostic tools and estimated resolution times.*
-
-**Use this decision tree when facing complex migration issues:**
-│  │       └─ NO → Check API compatibility issues
-│  └─ NO → Continue to next branch
-│
-├─ Integration-related?
-│  ├─ YES → External APIs failing?
-│  │       ├─ YES → Use integration diagnostics
-│  │       └─ NO → Check internal communication issues
-│  └─ NO → Continue to next branch
-│
-├─ Performance-related?
-│  ├─ YES → Specific operations slow?
-│  │       ├─ YES → Use performance profiling tools
-│  │       └─ NO → Check system resource usage
-│  └─ NO → Continue to next branch
-│
-└─ Multiple issues or unknown root cause?
-   └─ Consider intelligent rollback with data preservation
-```
 
 **Critical escalation triggers:**
 - More than 3 different issue types simultaneously
@@ -4643,7 +4625,7 @@ Now go forth and migrate with confidence. 🚀
 
 ## 👨‍💻 About the Author
 
-Hey there! I'm **Aria Shaw**, and I've been rescuing businesses from their own technology disasters for over 15 years.
+Hey there! I'm **Aria Shaw**, and I've been rescuing businesses from their own technology disasters for over a decade.
 
 My journey started in the unglamorous world of emergency IT consulting - you know, those 3 AM phone calls when "simple" software updates have somehow destroyed entire business operations. After the 200th panicked call about failed ERP migrations, corrupted databases, and mysterious system failures, I realized something important: most business technology disasters aren't technical problems - they're planning problems disguised as technical problems.
 
@@ -4663,7 +4645,7 @@ My journey started in the unglamorous world of emergency IT consulting - you kno
 - **500+ successful migrations** completed without data loss
 - **Zero ransomware casualties** among clients who followed our backup procedures  
 - **€2.3 million in avoided downtime costs** through proper migration planning
-- **15 years** of learning from other people's expensive mistakes
+- **Over a decade** of learning from other people's expensive mistakes
 
 **My Core Belief**: Your business data is too important to trust to people who don't understand your business. The person who cares most about your data is you - so you should be empowered to protect it.
 

@@ -2341,7 +2341,7 @@ Print this cheat sheet and keep it handy. When systems are down, you don't want 
 
 ## 👨‍💻 About the Author
 
-Hey there! I'm **Aria Shaow**, and I've been fixing broken digital pipes for over a decade.
+Hey there! I'm **Aria Shaw**, and I've been fixing broken digital pipes for over a decade.
 
 My journey started in the trenches of enterprise IT, debugging why yet another "simple" software integration had brought a manufacturing plant to its knees. After the 50th emergency call at 2 AM to fix someone else's rushed implementation, I realized something: most business software problems aren't technical problems - they're process problems disguised as technical problems.
 
