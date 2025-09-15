@@ -122,7 +122,7 @@ Let's break down what self-hosting actually costs vs. the alternatives:
 
 ### Decision Tree: Is Self-Hosting Right for You?
 
-![Odoo Self-Hosting Decision Flowchart](/assets/images/Odoo Self-Hosting Decision Flowchart.png)
+![Odoo Self-Hosting Decision Flowchart](/assets/images/Odoo Self-Hosting Decision Flowchart.webp)
 *Decision flowchart to help you determine if Odoo self-hosting is right for your business*
 
 ### Your Readiness Score
@@ -2081,17 +2081,17 @@ location ~* /web/static/ {
 
 #### 🚨 Problem: Odoo Won't Load in Browser
 
-![Odoo Won't Load Troubleshooting Decision Tree](/assets/images/Odoo won't load in browser.png)
+![Odoo Won't Load Troubleshooting Decision Tree](/assets/images/Odoo won't load in browser.webp)
 *Complete troubleshooting flowchart for when Odoo fails to load in the browser*
 
 #### 🐌 Problem: Odoo is Very Slow
 
-![Odoo Performance Troubleshooting Decision Tree](/assets/images/Odoo is very slow.png)
+![Odoo Performance Troubleshooting Decision Tree](/assets/images/Odoo is very slow.webp)
 *Step-by-step performance diagnosis flowchart for slow Odoo systems*
 
 #### 🔒 Problem: Can't Login to Odoo
 
-![Odoo Login Issues Troubleshooting Decision Tree](/assets/images/Can't login to Odoo.png)
+![Odoo Login Issues Troubleshooting Decision Tree](/assets/images/Can't login to Odoo.webp)
 *Comprehensive login troubleshooting flowchart with password reset procedures*
 
 ### Backup & Recovery Cheat Sheet
