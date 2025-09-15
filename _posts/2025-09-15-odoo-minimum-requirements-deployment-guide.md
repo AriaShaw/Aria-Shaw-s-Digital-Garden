@@ -1746,7 +1746,7 @@ Since we just talked about migration, here's the exact checklist I use when movi
 For your convenience, here are all the exclusive resources mentioned in this guide:
 
 **Planning & Assessment:**
-- [Odoo Requirements Calculator (CSV)](https://ariashaw.github.io/resources/odoo-requirements-calculator.csv) | [Web Version](https://ariashaw.github.io/resources/odoo-requirements-calculator.html)
+- [Odoo Requirements Calculator (CSV)](https://ariashaw.github.io/resources/odoo-requirements-calculator.csv) | [Web Version](https://ariashaw.github.io/tools/odoo-requirements-calculator.html)
 - [Hosting Decision Calculator (Web Tool)](https://ariashaw.github.io/tools/odoo-hosting-calculator.html)
 
 **Implementation & Deployment:**

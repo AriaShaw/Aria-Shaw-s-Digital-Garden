@@ -12,7 +12,7 @@ This directory contains all the resources referenced in our comprehensive Odoo g
 - **Features:** User count inputs, business type analysis, resource calculations
 - **Usage:** Fill blue cells with your parameters, get specific hardware recommendations
 
-**🧮 [odoo-requirements-calculator.html](./odoo-requirements-calculator.html)**
+**🧮 [odoo-requirements-calculator.html](../tools/odoo-requirements-calculator.html)**
 - **Purpose:** Web-based interactive requirements calculator
 - **Features:** Real-time calculations, hosting cost estimates, risk assessment
 - **Usage:** Open in browser, adjust parameters, get instant recommendations
