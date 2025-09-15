@@ -95,53 +95,26 @@ Welcome to the Toolkit, a curated library of open-source scripts and tools I've 
 * **🚨 [Odoo Emergency Recovery System](/scripts/odoo_emergency_recovery.sh)** - *Complete disaster recovery toolkit with automated database restoration, service recovery, and system validation.*
 {% endcapture %}
 
-<div class="toolkit-accordion">
-<button class="accordion-header" aria-expanded="false">
-<span class="accordion-icon">🔄</span>
-<span class="accordion-title">Odoo Database Migration Scripts</span>
-<span class="accordion-chevron">▼</span>
-</button>
-<div class="accordion-content">
-<div class="accordion-meta">
+<div class="toolkit-accordion"><button class="accordion-header" aria-expanded="false"><span class="accordion-icon">🔄</span><span class="accordion-title">Odoo Database Migration Scripts</span><span class="accordion-chevron">▼</span></button><div class="accordion-content"><div class="accordion-meta">
 📖 <strong>From the complete guide:</strong> <a href="/odoo-database-migration-guide/">Odoo Database Migration 2025: Zero-Downtime Made Easy</a>
 </div>
 
 {{ migration_content | markdownify }}
+</div></div>
 
-</div>
-</div>
-
-<div class="toolkit-accordion">
-<button class="accordion-header" aria-expanded="false">
-<span class="accordion-icon">🏠</span>
-<span class="accordion-title">Odoo Self-Hosting Scripts</span>
-<span class="accordion-chevron">▼</span>
-</button>
-<div class="accordion-content">
-<div class="accordion-meta">
+<div class="toolkit-accordion"><button class="accordion-header" aria-expanded="false"><span class="accordion-icon">🏠</span><span class="accordion-title">Odoo Self-Hosting Scripts</span><span class="accordion-chevron">▼</span></button><div class="accordion-content"><div class="accordion-meta">
 📖 <strong>From the complete guide:</strong> <a href="/odoo-self-hosting-guide/">Avoid $48,000 Loss: Odoo Self-Hosting Guide for 2025</a>
 </div>
 
 {{ selfhosting_content | markdownify }}
+</div></div>
 
-</div>
-</div>
-
-<div class="toolkit-accordion">
-<button class="accordion-header" aria-expanded="false">
-<span class="accordion-icon">⚙️</span>
-<span class="accordion-title">Odoo System Requirements & Deployment Scripts</span>
-<span class="accordion-chevron">▼</span>
-</button>
-<div class="accordion-content">
-<div class="accordion-meta">
+<div class="toolkit-accordion"><button class="accordion-header" aria-expanded="false"><span class="accordion-icon">⚙️</span><span class="accordion-title">Odoo System Requirements & Deployment Scripts</span><span class="accordion-chevron">▼</span></button><div class="accordion-content"><div class="accordion-meta">
 📖 <strong>From the complete guide:</strong> <a href="/odoo-system-requirements-deployment-guide/">Odoo Minimum Requirements 2025: Complete Deployment Guide</a>
 </div>
 
 {{ requirements_content | markdownify }}
-
-</div>
-</div>
+</div></div>
 
 ---
 
