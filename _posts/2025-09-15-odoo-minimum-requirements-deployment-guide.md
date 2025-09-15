@@ -1547,37 +1547,56 @@ Performance:
 □ Database connection pooling properly configured
 ```
 
-**Download:** [Production Checklist (Markdown)](https://ariashaw.github.io/resources/odoo-production-checklist.md)
+**Download:** [Production Checklist (PDF)](https://ariashaw.github.io/resources/odoo-production-checklist.pdf)
 
 ---
 
 ### 🎁 Exclusive Resource #3: The Complete Monitoring Scripts Collection
 
 **What You Get:**
-A suite of bash scripts that provide comprehensive monitoring for your Odoo deployment. These scripts catch issues before they become problems.
+A battle-tested suite of 7 monitoring scripts that I've refined through years of managing production Odoo deployments. These scripts catch issues before they become problems and automate essential maintenance tasks.
 
 **Scripts Included:**
 
-**1. Advanced Health Monitor (`odoo_advanced_monitor.sh`)**
-- Monitors 15+ critical metrics
-- Sends email/Slack alerts
-- Generates weekly health reports
-- Predicts capacity issues before they occur
+**1. Comprehensive Health Monitor (`odoo_health_monitor.sh`)**
+- Monitors CPU, memory, disk usage, and database connections
+- Intelligent alert system with cooldown to prevent spam
+- Email notifications for critical issues
+- Configurable thresholds for different environments
 
-**2. Performance Baseline Recorder (`odoo_performance_baseline.sh`)**
-- Records system performance during normal operations
-- Creates baseline metrics for comparison
-- Helps identify performance degradation over time
+**2. Advanced System Monitor (`advanced_monitor_odoo.sh`)**
+- Real-time monitoring of Odoo service status
+- Tracks resource usage patterns
+- Logs performance metrics for trend analysis
+- Lightweight design for continuous monitoring
 
-**3. Database Optimization Analyzer (`postgres_odoo_analyzer.sh`)**
-- Analyzes slow queries and suggests optimizations
-- Identifies unused indexes
-- Recommends vacuum and analyze schedules
+**3. Monthly Health Reporter (`monthly_health_check.sh`)**
+- Generates comprehensive HTML reports
+- Database growth analysis and capacity planning
+- System performance metrics over time
+- Executive-friendly summaries with charts
 
-**4. Capacity Planning Reporter (`odoo_capacity_planner.sh`)**
-- Tracks resource usage trends
-- Predicts when you'll need to scale
-- Generates executive-friendly capacity reports
+**4. Weekly Maintenance Automation (`weekly_maintenance.sh`)**
+- Automated database VACUUM and ANALYZE
+- Log rotation and cleanup
+- Index bloat detection and reindexing
+- Backup verification checks
+
+**5. Database Maintenance (`db_maintenance.sh`)**
+- Quick database optimization routines
+- Table analysis for query planning
+- Space reclamation through vacuuming
+- Performance-focused reindexing
+
+**6. System Health Checker (`system_health_check.sh`)**
+- Essential system metrics monitoring
+- Quick health status verification
+- Integration with monitoring dashboards
+
+**7. Basic Odoo Monitor (`monitor_odoo.sh`)**
+- Lightweight service monitoring
+- Perfect for resource-constrained environments
+- Simple alert mechanisms
 
 **Download:** [Complete Monitoring Suite](https://ariashaw.github.io/resources/odoo_monitoring_suite.tar.gz)
 
@@ -1718,7 +1737,7 @@ Since we just talked about migration, here's the exact checklist I use when movi
 □ Document new server access and procedures
 ```
 
-**Download:** [Complete Migration Checklist (Markdown)](https://ariashaw.github.io/resources/odoo-migration-checklist.md)
+**Download:** [Complete Migration Checklist (PDF)](https://ariashaw.github.io/resources/odoo-migration-checklist.pdf)
 
 ---
 
@@ -1731,12 +1750,12 @@ For your convenience, here are all the exclusive resources mentioned in this gui
 - [Hosting Decision Calculator (Web Tool)](https://ariashaw.github.io/tools/odoo-hosting-calculator.html)
 
 **Implementation & Deployment:**
-- [Production Environment Checklist (Markdown)](https://ariashaw.github.io/resources/odoo-production-checklist.md)
-- [Migration Checklist (Markdown)](https://ariashaw.github.io/resources/odoo-migration-checklist.md)
+- [Production Environment Checklist (PDF)](https://ariashaw.github.io/resources/odoo-production-checklist.pdf)
+- [Migration Checklist (PDF)](https://ariashaw.github.io/resources/odoo-migration-checklist.pdf)
 
 **Monitoring & Maintenance:**
 - [Complete Monitoring Scripts Suite](https://ariashaw.github.io/resources/odoo_monitoring_suite.tar.gz)
-- [Emergency Recovery Scripts](https://ariashaw.github.io/scripts/) (Individual scripts from throughout this guide)
+- [Emergency Recovery Scripts](https://ariashaw.github.io/scripts/odoo_emergency_recovery.sh) 
 
 **Configuration Templates:**
 - [Production Odoo Configuration Template](https://ariashaw.github.io/templates/odoo-production.conf)
