@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Odoo Hosting Decision Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .calculator-content {
+            padding: 40px;
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .form-section h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+            display: flex;
+            align-items: center;
+        }
+
+        .form-section h3::before {
+            content: "📊";
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+
+        .form-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-field {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-field label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-size: 0.95em;
+        }
+
+        .form-field input,
+        .form-field select {
+            padding: 12px;
+            border: 2px solid #e1e8ed;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-field input:focus,
+        .form-field select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .calculate-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1em;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            display: block;
+            margin: 30px auto;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .results {
+            margin-top: 40px;
+            display: none;
+        }
+
+        .results.show {
+            display: block;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result-card {
+            background: white;
+            border: 2px solid #e1e8ed;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .result-card.recommended {
+            border-color: #28a745;
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+        }
+
+        .result-card.alternative {
+            border-color: #ffc107;
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+        }
+
+        .result-card h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .score {
+            background: #667eea;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+
+        .result-card.recommended .score {
+            background: #28a745;
+        }
+
+        .result-card.alternative .score {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .reasoning {
+            margin-top: 15px;
+        }
+
+        .reasoning h5 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .pros-cons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .pros, .cons {
+            background: rgba(255,255,255,0.7);
+            padding: 15px;
+            border-radius: 6px;
+        }
+
+        .pros h6, .cons h6 {
+            margin-bottom: 8px;
+            font-size: 1em;
+        }
+
+        .pros h6 {
+            color: #28a745;
+        }
+
+        .cons h6 {
+            color: #dc3545;
+        }
+
+        .pros ul, .cons ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .pros li::before {
+            content: "✓ ";
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .cons li::before {
+            content: "⚠ ";
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        .cost-breakdown {
+            background: rgba(255,255,255,0.8);
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 15px;
+        }
+
+        .cost-breakdown h6 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .cost-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 0.95em;
+        }
+
+        .total-cost {
+            border-top: 2px solid #2c3e50;
+            padding-top: 8px;
+            margin-top: 8px;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        @media (max-width: 768px) {
+            .form-group {
+                grid-template-columns: 1fr;
+            }
+
+            .pros-cons {
+                grid-template-columns: 1fr;
+            }
+
+            .calculator-content {
+                padding: 20px;
+            }
+
+            .header {
+                padding: 20px;
+            }
+        }
+
+        .info-tooltip {
+            position: relative;
+            display: inline-block;
+            margin-left: 5px;
+            cursor: help;
+        }
+
+        .info-tooltip::after {
+            content: "ℹ️";
+            font-size: 0.8em;
+        }
+
+        .info-tooltip:hover::before {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            white-space: nowrap;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Odoo Hosting Decision Calculator</h1>
+            <p>Find the perfect hosting solution based on your specific requirements</p>
+        </div>
+
+        <div class="calculator-content">
+            <form id="hostingForm">
+                <div class="form-section">
+                    <h3>Business Requirements</h3>
+                    <div class="form-group">
+                        <div class="form-field">
+                            <label for="teamSize">Team Size
+                                <span class="info-tooltip" data-tooltip="Number of concurrent users"></span>
+                            </label>
+                            <input type="number" id="teamSize" value="25" min="1" max="1000" required>
+                        </div>
+                        <div class="form-field">
+                            <label for="monthlyBudget">Monthly Budget (USD)
+                                <span class="info-tooltip" data-tooltip="Total hosting budget per month"></span>
+                            </label>
+                            <input type="number" id="monthlyBudget" value="100" min="10" max="10000" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="form-field">
+                            <label for="growthRate">Expected Annual Growth
+                                <span class="info-tooltip" data-tooltip="Expected user growth percentage per year"></span>
+                            </label>
+                            <select id="growthRate" required>
+                                <option value="0">No growth (0%)</option>
+                                <option value="25">Slow growth (25%)</option>
+                                <option value="50" selected>Moderate growth (50%)</option>
+                                <option value="100">Fast growth (100%)</option>
+                                <option value="200">Rapid growth (200%+)</option>
+                            </select>
+                        </div>
+                        <div class="form-field">
+                            <label for="businessType">Business Type
+                                <span class="info-tooltip" data-tooltip="Type affects resource requirements"></span>
+                            </label>
+                            <select id="businessType" required>
+                                <option value="services">Services</option>
+                                <option value="retail">Retail</option>
+                                <option value="manufacturing" selected>Manufacturing</option>
+                                <option value="consulting">Consulting</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Technical Requirements</h3>
+                    <div class="form-group">
+                        <div class="form-field">
+                            <label for="technicalExpertise">Technical Expertise
+                                <span class="info-tooltip" data-tooltip="Team's ability to manage servers"></span>
+                            </label>
+                            <select id="technicalExpertise" required>
+                                <option value="none">None - Need full management</option>
+                                <option value="basic">Basic - Can follow guides</option>
+                                <option value="moderate" selected>Moderate - Comfortable with Linux</option>
+                                <option value="high">High - DevOps experience</option>
+                                <option value="expert">Expert - System administrators</option>
+                            </select>
+                        </div>
+                        <div class="form-field">
+                            <label for="uptimeRequirement">Uptime Requirement
+                                <span class="info-tooltip" data-tooltip="Required system availability"></span>
+                            </label>
+                            <select id="uptimeRequirement" required>
+                                <option value="95">Basic (95%)</option>
+                                <option value="99">Business (99%)</option>
+                                <option value="99.9" selected>Critical (99.9%)</option>
+                                <option value="99.99">Enterprise (99.99%)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="form-field">
+                            <label for="complianceNeeds">Compliance Requirements
+                                <span class="info-tooltip" data-tooltip="Regulatory compliance needs"></span>
+                            </label>
+                            <select id="complianceNeeds" required>
+                                <option value="none" selected>None required</option>
+                                <option value="basic">Basic (ISO standards)</option>
+                                <option value="gdpr">GDPR compliance</option>
+                                <option value="hipaa">HIPAA compliance</option>
+                                <option value="enterprise">Full enterprise compliance</option>
+                            </select>
+                        </div>
+                        <div class="form-field">
+                            <label for="geographicDistribution">Geographic Distribution
+                                <span class="info-tooltip" data-tooltip="Where are your users located?"></span>
+                            </label>
+                            <select id="geographicDistribution" required>
+                                <option value="local" selected>Single country/region</option>
+                                <option value="national">National (multiple regions)</option>
+                                <option value="continental">Continental (one continent)</option>
+                                <option value="global">Global (multiple continents)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Business Priorities</h3>
+                    <div class="form-group">
+                        <div class="form-field">
+                            <label for="maintenanceTime">Available Maintenance Time (hours/month)
+                                <span class="info-tooltip" data-tooltip="Time your team can dedicate to server maintenance"></span>
+                            </label>
+                            <select id="maintenanceTime" required>
+                                <option value="0">0 hours - No time available</option>
+                                <option value="2">2 hours - Minimal maintenance</option>
+                                <option value="8" selected>8 hours - Regular maintenance</option>
+                                <option value="20">20 hours - Significant maintenance</option>
+                                <option value="40">40+ hours - Full-time DevOps</option>
+                            </select>
+                        </div>
+                        <div class="form-field">
+                            <label for="scalingSpeed">Required Scaling Speed
+                                <span class="info-tooltip" data-tooltip="How quickly you need to scale up"></span>
+                            </label>
+                            <select id="scalingSpeed" required>
+                                <option value="slow">Slow (weeks planning)</option>
+                                <option value="moderate" selected>Moderate (days planning)</option>
+                                <option value="fast">Fast (hours planning)</option>
+                                <option value="instant">Instant (auto-scaling)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="calculate-btn">Calculate Best Hosting Solution</button>
+            </form>
+
+            <div id="results" class="results">
+                <div id="recommendedSolution" class="result-card recommended">
+                    <!-- Recommended solution will be populated here -->
+                </div>
+                <div id="alternativeSolution" class="result-card alternative">
+                    <!-- Alternative solution will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('hostingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            calculateHosting();
+        });
+
+        function calculateHosting() {
+            // Get form values
+            const teamSize = parseInt(document.getElementById('teamSize').value);
+            const monthlyBudget = parseInt(document.getElementById('monthlyBudget').value);
+            const growthRate = parseInt(document.getElementById('growthRate').value);
+            const businessType = document.getElementById('businessType').value;
+            const technicalExpertise = document.getElementById('technicalExpertise').value;
+            const uptimeRequirement = parseFloat(document.getElementById('uptimeRequirement').value);
+            const complianceNeeds = document.getElementById('complianceNeeds').value;
+            const geographicDistribution = document.getElementById('geographicDistribution').value;
+            const maintenanceTime = parseInt(document.getElementById('maintenanceTime').value);
+            const scalingSpeed = document.getElementById('scalingSpeed').value;
+
+            // Calculate scores for each hosting option
+            const hostingOptions = [
+                {
+                    name: "Cloudways Managed",
+                    type: "managed",
+                    baseCost: calculateCloudwaysCost(teamSize),
+                    score: 0,
+                    pros: [],
+                    cons: [],
+                    description: "Managed DigitalOcean hosting with full support"
+                },
+                {
+                    name: "DigitalOcean VPS",
+                    type: "vps",
+                    baseCost: calculateDigitalOceanCost(teamSize),
+                    score: 0,
+                    pros: [],
+                    cons: [],
+                    description: "Self-managed cloud infrastructure"
+                },
+                {
+                    name: "AWS Enterprise",
+                    type: "enterprise",
+                    baseCost: calculateAWSCost(teamSize),
+                    score: 0,
+                    pros: [],
+                    cons: [],
+                    description: "Enterprise cloud with full compliance"
+                },
+                {
+                    name: "Docker Container",
+                    type: "container",
+                    baseCost: calculateContainerCost(teamSize),
+                    score: 0,
+                    pros: [],
+                    cons: [],
+                    description: "Containerized deployment solution"
+                }
+            ];
+
+            // Score each option
+            hostingOptions.forEach(option => {
+                option.score = scoreHostingOption(option, {
+                    teamSize, monthlyBudget, growthRate, businessType,
+                    technicalExpertise, uptimeRequirement, complianceNeeds,
+                    geographicDistribution, maintenanceTime, scalingSpeed
+                });
+            });
+
+            // Sort by score
+            hostingOptions.sort((a, b) => b.score - a.score);
+
+            // Display results
+            displayResults(hostingOptions[0], hostingOptions[1]);
+        }
+
+        function calculateCloudwaysCost(teamSize) {
+            if (teamSize <= 10) return 35;
+            if (teamSize <= 25) return 55;
+            if (teamSize <= 50) return 85;
+            if (teamSize <= 100) return 140;
+            return 200;
+        }
+
+        function calculateDigitalOceanCost(teamSize) {
+            if (teamSize <= 10) return 20;
+            if (teamSize <= 25) return 40;
+            if (teamSize <= 50) return 80;
+            if (teamSize <= 100) return 120;
+            return 160;
+        }
+
+        function calculateAWSCost(teamSize) {
+            if (teamSize <= 10) return 75;
+            if (teamSize <= 25) return 150;
+            if (teamSize <= 50) return 250;
+            if (teamSize <= 100) return 400;
+            return 600;
+        }
+
+        function calculateContainerCost(teamSize) {
+            if (teamSize <= 10) return 30;
+            if (teamSize <= 25) return 50;
+            if (teamSize <= 50) return 90;
+            if (teamSize <= 100) return 140;
+            return 200;
+        }
+
+        function scoreHostingOption(option, params) {
+            let score = 50; // Base score
+
+            // Budget compatibility
+            if (option.baseCost <= params.monthlyBudget) {
+                score += 20;
+            } else if (option.baseCost <= params.monthlyBudget * 1.2) {
+                score += 10;
+            } else if (option.baseCost <= params.monthlyBudget * 1.5) {
+                score -= 10;
+            } else {
+                score -= 30;
+            }
+
+            // Technical expertise compatibility
+            const expertiseScores = {
+                'managed': { none: 25, basic: 20, moderate: 10, high: 5, expert: 0 },
+                'vps': { none: -20, basic: 0, moderate: 15, high: 20, expert: 25 },
+                'enterprise': { none: -10, basic: 5, moderate: 10, high: 20, expert: 25 },
+                'container': { none: -25, basic: -10, moderate: 10, high: 20, expert: 25 }
+            };
+            score += expertiseScores[option.type][params.technicalExpertise] || 0;
+
+            // Maintenance time compatibility
+            const maintenanceScores = {
+                'managed': { 0: 25, 2: 20, 8: 15, 20: 10, 40: 5 },
+                'vps': { 0: -20, 2: -10, 8: 15, 20: 20, 40: 25 },
+                'enterprise': { 0: 10, 2: 15, 8: 20, 20: 25, 40: 20 },
+                'container': { 0: -15, 2: 0, 8: 10, 20: 20, 40: 25 }
+            };
+            score += maintenanceScores[option.type][params.maintenanceTime] || 0;
+
+            // Team size compatibility
+            if (params.teamSize <= 25) {
+                if (option.type === 'managed' || option.type === 'vps') score += 10;
+                if (option.type === 'enterprise') score -= 5;
+            } else if (params.teamSize <= 100) {
+                if (option.type === 'vps' || option.type === 'enterprise') score += 10;
+                if (option.type === 'container') score += 5;
+            } else {
+                if (option.type === 'enterprise') score += 15;
+                if (option.type === 'container') score += 10;
+                if (option.type === 'managed') score -= 10;
+            }
+
+            // Compliance requirements
+            if (params.complianceNeeds === 'enterprise' || params.complianceNeeds === 'hipaa') {
+                if (option.type === 'enterprise') score += 20;
+                else score -= 10;
+            }
+
+            // Geographic distribution
+            if (params.geographicDistribution === 'global') {
+                if (option.type === 'enterprise') score += 15;
+                else score -= 5;
+            }
+
+            // Growth rate compatibility
+            if (params.growthRate >= 100) {
+                if (option.type === 'enterprise' || option.type === 'container') score += 10;
+                if (option.type === 'managed') score += 5;
+            }
+
+            // Add pros and cons based on scoring
+            addProsAndCons(option, params);
+
+            return Math.max(0, Math.min(100, score));
+        }
+
+        function addProsAndCons(option, params) {
+            option.pros = [];
+            option.cons = [];
+
+            switch (option.type) {
+                case 'managed':
+                    option.pros.push("No server management required");
+                    option.pros.push("24/7 support included");
+                    option.pros.push("Automatic backups and updates");
+                    if (params.maintenanceTime <= 8) option.pros.push("Perfect for limited technical time");
+                    if (option.baseCost <= params.monthlyBudget) option.pros.push("Fits within budget");
+
+                    if (params.teamSize > 100) option.cons.push("May not scale cost-effectively for large teams");
+                    if (params.technicalExpertise === 'expert') option.cons.push("Less control than self-managed options");
+                    if (params.complianceNeeds === 'enterprise') option.cons.push("Limited compliance certifications");
+                    break;
+
+                case 'vps':
+                    option.pros.push("Full control over configuration");
+                    option.pros.push("Best price-to-performance ratio");
+                    option.pros.push("Great learning experience");
+                    if (params.technicalExpertise >= 'moderate') option.pros.push("Perfect match for technical team");
+                    if (option.baseCost <= params.monthlyBudget * 0.8) option.pros.push("Cost-effective solution");
+
+                    if (params.maintenanceTime <= 2) option.cons.push("Requires significant maintenance time");
+                    if (params.technicalExpertise === 'none') option.cons.push("Too complex for non-technical teams");
+                    if (params.uptimeRequirement >= 99.9) option.cons.push("Uptime depends on your expertise");
+                    break;
+
+                case 'enterprise':
+                    option.pros.push("Enterprise-grade reliability");
+                    option.pros.push("Global infrastructure");
+                    option.pros.push("Full compliance certifications");
+                    option.pros.push("Unlimited scalability");
+                    if (params.complianceNeeds !== 'none') option.pros.push("Meets compliance requirements");
+                    if (params.geographicDistribution === 'global') option.pros.push("Perfect for global deployment");
+
+                    if (option.baseCost > params.monthlyBudget * 1.5) option.cons.push("Significantly over budget");
+                    if (params.teamSize < 50) option.cons.push("Overkill for small teams");
+                    option.cons.push("Complex pricing structure");
+                    if (params.technicalExpertise === 'none') option.cons.push("Requires cloud expertise");
+                    break;
+
+                case 'container':
+                    option.pros.push("Modern, scalable architecture");
+                    option.pros.push("Environment consistency");
+                    option.pros.push("Easy to scale and replicate");
+                    if (params.technicalExpertise >= 'high') option.pros.push("Great for DevOps teams");
+                    if (params.scalingSpeed === 'fast' || params.scalingSpeed === 'instant') option.pros.push("Excellent for rapid scaling");
+
+                    if (params.technicalExpertise <= 'basic') option.cons.push("Requires container expertise");
+                    option.cons.push("Additional complexity layer");
+                    if (params.teamSize < 25) option.cons.push("May be overkill for small deployments");
+                    option.cons.push("Debugging can be more complex");
+                    break;
+            }
+        }
+
+        function displayResults(recommended, alternative) {
+            const resultsDiv = document.getElementById('results');
+            const recommendedDiv = document.getElementById('recommendedSolution');
+            const alternativeDiv = document.getElementById('alternativeSolution');
+
+            recommendedDiv.innerHTML = createResultCard(recommended, 'recommended');
+            alternativeDiv.innerHTML = createResultCard(alternative, 'alternative');
+
+            resultsDiv.classList.add('show');
+            resultsDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function createResultCard(option, type) {
+            const title = type === 'recommended' ? 'Recommended Solution' : 'Alternative Option';
+            const emoji = type === 'recommended' ? '🏆' : '🥈';
+
+            return `
+                <h4>${emoji} ${title}: ${option.name} <span class="score">${option.score}/100</span></h4>
+                <p><strong>${option.description}</strong></p>
+
+                <div class="cost-breakdown">
+                    <h6>💰 Cost Breakdown</h6>
+                    <div class="cost-item">
+                        <span>Base hosting cost:</span>
+                        <span>$${option.baseCost}/month</span>
+                    </div>
+                    <div class="cost-item">
+                        <span>Estimated add-ons:</span>
+                        <span>$${Math.round(option.baseCost * 0.2)}/month</span>
+                    </div>
+                    <div class="cost-item total-cost">
+                        <span>Total estimated cost:</span>
+                        <span>$${Math.round(option.baseCost * 1.2)}/month</span>
+                    </div>
+                </div>
+
+                <div class="reasoning">
+                    <h5>Why this solution works for you:</h5>
+                    <div class="pros-cons">
+                        <div class="pros">
+                            <h6>✅ Advantages</h6>
+                            <ul>
+                                ${option.pros.map(pro => `<li>${pro}</li>`).join('')}
+                            </ul>
+                        </div>
+                        <div class="cons">
+                            <h6>⚠️ Considerations</h6>
+                            <ul>
+                                ${option.cons.map(con => `<li>${con}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Auto-calculate when form values change
+        document.querySelectorAll('input, select').forEach(element => {
+            element.addEventListener('change', function() {
+                if (document.getElementById('results').classList.contains('show')) {
+                    calculateHosting();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

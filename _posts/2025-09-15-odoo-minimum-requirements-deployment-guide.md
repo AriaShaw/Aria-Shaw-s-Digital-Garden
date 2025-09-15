@@ -247,7 +247,7 @@ Here's a simple compatibility check script that I use for all new deployments:
 
 ```bash
 # System compatibility checker
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/odoo_system_checker.sh
+wget https://ariashaw.github.io/scripts/odoo_system_checker.sh
 chmod +x odoo_system_checker.sh
 ./odoo_system_checker.sh
 ```
@@ -519,7 +519,7 @@ With separated architecture, your backup strategy becomes more complex but more 
 
 ```bash
 # Database backup script
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/separated_backup_strategy.sh
+wget https://ariashaw.github.io/scripts/separated_backup_strategy.sh
 chmod +x separated_backup_strategy.sh
 ```
 
@@ -630,7 +630,7 @@ While you could set up complex monitoring solutions, here's a simple alerting sc
 
 ```bash
 # Download and setup basic monitoring
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/odoo_health_monitor.sh
+wget https://ariashaw.github.io/scripts/odoo_health_monitor.sh
 chmod +x odoo_health_monitor.sh
 
 # Add to crontab for every 5 minutes
@@ -694,7 +694,7 @@ Sometimes you need to start fresh. Here's my "dependency reset" approach:
 
 ```bash
 # Complete dependency cleanup and reinstall
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/odoo_dependency_fixer.sh
+wget https://ariashaw.github.io/scripts/odoo_dependency_fixer.sh
 chmod +x odoo_dependency_fixer.sh
 sudo ./odoo_dependency_fixer.sh
 ```
@@ -784,7 +784,7 @@ sudo iptables -L
 
 ```bash
 # Download comprehensive troubleshooting script
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/odoo_port_diagnostics.sh
+wget https://ariashaw.github.io/scripts/odoo_port_diagnostics.sh
 chmod +x odoo_port_diagnostics.sh
 ./odoo_port_diagnostics.sh
 ```
@@ -949,7 +949,7 @@ Never go live without load testing. Here's my approach:
 
 ```bash
 # Simple load test to verify your configuration
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/odoo_load_tester.sh
+wget https://ariashaw.github.io/scripts/odoo_load_tester.sh
 chmod +x odoo_load_tester.sh
 ./odoo_load_tester.sh --users 25 --duration 300
 ```
@@ -1039,7 +1039,7 @@ If you prefer to stick with your current VPS setup, at least implement proper mo
 
 ```bash
 # Set up automated health monitoring
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/odoo_health_monitor.sh
+wget https://ariashaw.github.io/scripts/odoo_health_monitor.sh
 chmod +x odoo_health_monitor.sh
 
 # Add to crontab for monitoring every 5 minutes
@@ -1068,7 +1068,7 @@ echo "DB Status: $(systemctl is-active postgresql)"
 #### Emergency Recovery Scripts
 ```bash
 # Complete emergency recovery toolkit
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/odoo_emergency_recovery.sh
+wget https://ariashaw.github.io/scripts/odoo_emergency_recovery.sh
 chmod +x odoo_emergency_recovery.sh
 sudo ./odoo_emergency_recovery.sh
 ```
@@ -1234,7 +1234,7 @@ Here's the exact DigitalOcean setup I use for 30-50 user deployments:
 
 ```bash
 # Server provisioning script for DigitalOcean
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/digitalocean_odoo_setup.sh
+wget https://ariashaw.github.io/scripts/digitalocean_odoo_setup.sh
 chmod +x digitalocean_odoo_setup.sh
 sudo ./digitalocean_odoo_setup.sh
 ```
@@ -1513,7 +1513,7 @@ Output Specifications:
 - Recommended hosting tier for each platform
 ```
 
-**Download:** [Odoo Requirements Calculator (Excel)](https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/resources/odoo-requirements-calculator.xlsx)
+**Download:** [Odoo Requirements Calculator (CSV)](https://ariashaw.github.io/resources/odoo-requirements-calculator.csv) | [Interactive Web Version](https://ariashaw.github.io/resources/odoo-requirements-calculator.html)
 
 **Real Example:**
 I used this calculator for a 45-person manufacturing company. Their initial estimate was a $20/month VPS. The calculator showed they actually needed 8GB RAM and 4 cores due to heavy inventory management. We started with the right specs and avoided the expensive mid-project upgrade.
@@ -1547,7 +1547,7 @@ Performance:
 □ Database connection pooling properly configured
 ```
 
-**Download:** [Production Checklist (PDF)](https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/resources/odoo-production-checklist.pdf)
+**Download:** [Production Checklist (Markdown)](https://ariashaw.github.io/resources/odoo-production-checklist.md)
 
 ---
 
@@ -1579,7 +1579,7 @@ A suite of bash scripts that provide comprehensive monitoring for your Odoo depl
 - Predicts when you'll need to scale
 - Generates executive-friendly capacity reports
 
-**Download:** [Complete Monitoring Suite](https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/odoo_monitoring_suite.tar.gz)
+**Download:** [Complete Monitoring Suite](https://ariashaw.github.io/resources/odoo_monitoring_suite.tar.gz)
 
 ---
 
@@ -1618,7 +1618,7 @@ Cost savings: $35/month
 Trade-off: Requires 4+ hours monthly maintenance
 ```
 
-**Access:** [Hosting Decision Calculator (Interactive Web Tool)](https://ariashaw.github.io/tools/odoo-hosting-calculator/)
+**Access:** [Hosting Decision Calculator (Interactive Web Tool)](https://ariashaw.github.io/tools/odoo-hosting-calculator.html)
 
 ---
 
@@ -1655,7 +1655,7 @@ TechStart Solutions (name changed for privacy) came to me in panic mode. Their 3
 **Hour 1-8: Emergency Stabilization**
 ```bash
 # Used our emergency recovery toolkit
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/odoo_emergency_recovery.sh
+wget https://ariashaw.github.io/scripts/odoo_emergency_recovery.sh
 chmod +x odoo_emergency_recovery.sh
 sudo ./odoo_emergency_recovery.sh
 ```
@@ -1718,7 +1718,7 @@ Since we just talked about migration, here's the exact checklist I use when movi
 □ Document new server access and procedures
 ```
 
-**Download:** [Complete Migration Checklist (PDF)](https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/resources/odoo-migration-checklist.pdf)
+**Download:** [Complete Migration Checklist (Markdown)](https://ariashaw.github.io/resources/odoo-migration-checklist.md)
 
 ---
 
@@ -1727,21 +1727,21 @@ Since we just talked about migration, here's the exact checklist I use when movi
 For your convenience, here are all the exclusive resources mentioned in this guide:
 
 **Planning & Assessment:**
-- [Odoo Requirements Calculator (Excel)](https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/resources/odoo-requirements-calculator.xlsx)
-- [Hosting Decision Calculator (Web Tool)](https://ariashaw.github.io/tools/odoo-hosting-calculator/)
+- [Odoo Requirements Calculator (CSV)](https://ariashaw.github.io/resources/odoo-requirements-calculator.csv) | [Web Version](https://ariashaw.github.io/resources/odoo-requirements-calculator.html)
+- [Hosting Decision Calculator (Web Tool)](https://ariashaw.github.io/tools/odoo-hosting-calculator.html)
 
 **Implementation & Deployment:**
-- [Production Environment Checklist (PDF)](https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/resources/odoo-production-checklist.pdf)
-- [Migration Checklist (PDF)](https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/resources/odoo-migration-checklist.pdf)
+- [Production Environment Checklist (Markdown)](https://ariashaw.github.io/resources/odoo-production-checklist.md)
+- [Migration Checklist (Markdown)](https://ariashaw.github.io/resources/odoo-migration-checklist.md)
 
 **Monitoring & Maintenance:**
-- [Complete Monitoring Scripts Suite](https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/odoo_monitoring_suite.tar.gz)
-- [Emergency Recovery Scripts](https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/) (Individual scripts from throughout this guide)
+- [Complete Monitoring Scripts Suite](https://ariashaw.github.io/resources/odoo_monitoring_suite.tar.gz)
+- [Emergency Recovery Scripts](https://ariashaw.github.io/scripts/) (Individual scripts from throughout this guide)
 
 **Configuration Templates:**
-- [Production Odoo Configuration Template](https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/templates/odoo-production.conf)
-- [Nginx Proxy Configuration Template](https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/templates/nginx-odoo.conf)
-- [PostgreSQL Optimization Template](https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/templates/postgresql-odoo.conf)
+- [Production Odoo Configuration Template](https://ariashaw.github.io/templates/odoo-production.conf)
+- [Nginx Proxy Configuration Template](https://ariashaw.github.io/templates/nginx-odoo.conf)
+- [PostgreSQL Optimization Template](https://ariashaw.github.io/templates/postgresql-odoo.conf)
 
 These resources represent hundreds of hours of development and testing across real production environments. Use them, share them with your team, and most importantly—let me know how they work for you.
 
