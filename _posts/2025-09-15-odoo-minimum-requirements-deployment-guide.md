@@ -90,8 +90,6 @@ Odoo 17+ also requires PostgreSQL 12.0 or above. If you're running an older vers
 sudo -u postgres psql -c "SELECT version();"
 ```
 
-[Image: Screenshot showing PostgreSQL version check output, with a red box highlighting version number and green checkmark for 12.0+ or red X for older versions]
-
 #### Memory and CPU Impact by Version
 
 Here's the data nobody talks about—how much more resources newer Odoo versions actually consume:
@@ -151,7 +149,8 @@ This is where things get interesting. You can't just linearly scale the small bu
 - **Database Server**: 4 cores, 16GB RAM, SSD storage
 - **Load Balancer**: Optional but recommended
 
-[Image: Architecture diagram showing separated application and database servers, with arrows indicating data flow and a highlighted network connection between them]
+![Odoo Separated Architecture Design](/assets/images/Odoo Separated Architecture Design.webp)
+*Separated architecture design showing application and database server configuration*
 
 Here's a reality check I wish someone had given me: **if you're expecting 40+ concurrent users, plan for separation from day one**. Retrofitting a single-server setup is exponentially more painful than starting with proper architecture.
 
@@ -220,7 +219,8 @@ lsb_release -a
 - PostgreSQL 12 default (adequate but not optimal)
 - Security updates until 2025
 
-[Image: Decision tree flowchart showing OS selection process, starting with "New Deployment?" and branching to different Ubuntu versions based on specific requirements]
+![Odoo OS Selection Decision Tree](/assets/images/Odoo OS Selection Decision Tree.webp)
+*OS selection decision tree for optimal Odoo deployment configuration*
 
 #### Container Deployment Considerations
 
@@ -261,6 +261,36 @@ The script checks Python version, PostgreSQL availability, memory requirements, 
 - **Backup space**: 2-3x your database size
 
 Most importantly: **always provision 20% more storage than your calculations suggest**. Storage expansion under pressure is never fun.
+
+#### 💡 Feeling Overwhelmed by Configuration Choices?
+
+**Stop guessing at hardware requirements.**
+
+I know you're staring at these technical specifications thinking: *"Do I really need 8GB or will 4GB work? What about CPU cores? How do I know if I'm over-engineering or under-provisioning?"*
+
+Here's the thing: **every business is different**. Your user patterns, module choices, and growth timeline create a unique requirement profile that generic recommendations can't address.
+
+That's why I created the **Personalized Hosting Blueprint** service.
+
+**Here's how it works:**
+1. **You answer 3 simple questions** (takes 2 minutes):
+   - Your expected user count
+   - Which core Odoo modules you'll use
+   - Your monthly hosting budget
+
+2. **I create your custom blueprint** (within 24 hours):
+   - Exact server configuration recommendation
+   - Clear reasoning based on your specific needs
+   - Direct purchase links to get exactly what you need
+   - Future scaling timeline and upgrade path
+
+**Investment: $29** (one-time fee)
+
+**Why this works:** Instead of spending days researching and second-guessing yourself, you get a definitive answer from someone who's configured hundreds of Odoo deployments.
+
+**[Get Your Personalized Blueprint →](https://ariashaw.gumroad.com/l/blueprint)**
+
+*Most clients tell me this saved them 10+ hours of research and prevented at least one expensive mistake.*
 
 ---
 
@@ -348,8 +378,6 @@ sudo ufw enable
 sudo ufw status verbose
 ```
 
-[Image: Screenshot of UFW status output showing allowed and denied ports, with green checkmarks for proper configuration and red highlights for any security issues]
-
 #### PostgreSQL Security Hardening
 
 This is where many deployments fail catastrophically. PostgreSQL's default configuration is designed for development, not production:
@@ -424,7 +452,8 @@ Here's the architecture I use for the 50-200 user range:
 - High-performance SSD with good IOPS
 - Dedicated backup storage
 
-[Image: Network architecture diagram showing application server, database server, and load balancer configuration with security groups and network flow arrows]
+![Network Architecture for Odoo Production Environment](/assets/images/Network Architecture for Odoo Production Environment.webp)
+*Production network architecture with load balancer, application servers, and database separation*
 
 #### PostgreSQL Optimization for Separation
 
@@ -620,7 +649,8 @@ This monitoring script checks:
 - Database connections: < 70% of max_connections
 - Disk I/O wait: < 20%
 
-[Image: Performance dashboard showing these metrics with green/yellow/red indicators for healthy, warning, and critical states]
+![Odoo Performance Monitoring Dashboard](/assets/images/Odoo Performance Monitoring Dashboard.webp)
+*Performance monitoring dashboard with health indicators and critical metrics*
 
 If you're consistently missing these targets, it's time to either optimize your configuration or scale your infrastructure. The next section will show you exactly when and how to make that decision.
 
@@ -738,7 +768,8 @@ sudo ufw status
 sudo iptables -L
 ```
 
-[Image: Troubleshooting flowchart showing the diagnostic sequence with decision points and actions for each failure scenario]
+![Odoo Port 8069 Troubleshooting Flowchart](/assets/images/Odoo Port 8069 Troubleshooting Flowchart.webp)
+*Systematic troubleshooting flowchart for port 8069 accessibility issues*
 
 #### The Complete Port Access Troubleshooting Toolkit
 
@@ -972,7 +1003,7 @@ I used to be a "DIY everything" person until I did the math. Here's my current r
 
 After testing dozens of hosting solutions and analyzing user satisfaction data, here's what works:
 
-If you've already configured your Odoo system following this guide, you probably appreciate the value of having expertise handle the complex stuff. That's exactly why I recommend **Cloudways for Odoo hosting**.
+If you've already configured your Odoo system following this guide, you probably appreciate the value of having expertise handle the complex stuff. That's exactly why I recommend **[Cloudways for Odoo hosting](https://www.cloudways.com/en/?id=2007562)**.
 
 Here's why it makes sense for most businesses:
 
@@ -1087,8 +1118,6 @@ No more dependency hell. They've already solved the LXML compilation issues, Pos
 - CloudFlare CDN integration
 - Image optimization pipeline
 - Database query caching
-
-[Image: Side-by-side comparison showing a DIY server setup checklist (20+ items) versus Cloudways setup (3 clicks), highlighting the complexity difference]
 
 #### Cost Analysis: The Hidden Truth
 
@@ -1286,7 +1315,8 @@ RDS PostgreSQL (Multi-AZ)
 S3 (file attachments)
 ```
 
-[Image: AWS architecture diagram showing the interconnected services with security groups and availability zones highlighted]
+![AWS Enterprise Odoo Architecture](/assets/images/AWS Enterprise Odoo Architecture.webp)
+*AWS enterprise architecture showing interconnected services and multi-AZ deployment*
 
 **Who Should Choose AWS:**
 - Large enterprises with existing AWS infrastructure
@@ -1395,7 +1425,8 @@ services:
 
 Based on analyzing deployment outcomes across different hosting strategies:
 
-[Image: Cost-complexity matrix chart showing four quadrants with each hosting option plotted based on complexity (x-axis) and total cost of ownership (y-axis)]
+![Odoo Hosting Solutions Cost-Complexity Matrix](/assets/images/Odoo Hosting Solutions Cost-Complexity Matrix.webp)
+*Cost-complexity matrix comparing different Odoo hosting solutions*
 
 #### Decision Framework Questions
 
@@ -1427,7 +1458,7 @@ Based on analyzing deployment outcomes across different hosting strategies:
 
 After managing deployments across all these platforms, here's my honest assessment:
 
-**For 80% of businesses**: Start with Cloudways. You can always migrate later when you outgrow it or develop more expertise.
+**For 80% of businesses**: Start with [Cloudways](https://www.cloudways.com/en/?id=2007562). You can always migrate later when you outgrow it or develop more expertise.
 
 **For technical teams**: DigitalOcean gives you the best learning experience and cost efficiency.
 
@@ -1743,7 +1774,9 @@ Cloudways offers a 3-day free trial with no credit card required. That's enough 
 
 If it doesn't work for your needs, you haven't lost anything. If it does work, you've just solved your hosting decision permanently.
 
-**[Start Your 3-Day Cloudways Trial →](https://cloudways.com)**
+**[Start Your 3-Day Cloudways Trial →](https://www.cloudways.com/en/?id=2007562)**
+
+*Use code **SUMMER305** at checkout for 30% OFF for 5 months + 15 free migrations*
 
 **Full Transparency:** I do receive a referral commission if you choose to continue with Cloudways after the trial. But here's why I'm comfortable recommending them:
 

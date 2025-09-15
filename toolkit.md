@@ -167,7 +167,7 @@ Welcome to the Toolkit, a curated library of open-source scripts and tools I've 
 </button>
 <div class="accordion-content">
 <div class="accordion-meta">
-📖 <strong>From the complete guide:</strong> <a href="/odoo-system-requirements-deployment-guide/">Odoo Minimum Requirements 2025: Complete Deployment Guide</a>
+📖 <strong>From the complete guide:</strong> <a href="/odoo-minimum-requirements-deployment-guide/">Odoo Minimum Requirements 2025: Complete Deployment Guide</a>
 </div>
 {{ requirements_content }}
 </div>

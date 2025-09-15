@@ -16,6 +16,10 @@ Here you will find a growing library of guides. Each one is designed to fill an 
 
 *The definitive guide to migrating Odoo databases with zero data loss and minimal downtime. Battle-tested methodology from 300+ successful migrations, covering everything from risk assessment to disaster recovery.*
 
+### ⚙️ [Odoo Minimum Requirements 2025: Complete Deployment Guide](/odoo-minimum-requirements-deployment-guide/)
+
+*The comprehensive guide to Odoo system requirements, hosting decisions, and production deployment. From hardware sizing to security hardening, everything you need to avoid expensive deployment failures and build a bulletproof Odoo infrastructure.*
+
 ---
 *More playbooks are being cultivated and will be published here soon.*
 
