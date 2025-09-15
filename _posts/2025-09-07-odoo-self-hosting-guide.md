@@ -30,99 +30,6 @@ Let's dive in.
 
 ---
 
-## 📋 Table of Contents
-
-### Getting Started
-- [🎯 The $48,000 Problem That Brings You Here](#-the-48000-problem-that-brings-you-here)
-- [⚡ Quick Start Checklist](#-quick-start-checklist)
-
-### Planning & Assessment
-- [🔍 Step 1: Is Odoo Self-Hosting Right for Your Business?](#-step-1-is-odoo-self-hosting-right-for-your-business)
-  - [The Self-Hosting Readiness Assessment](#the-self-hosting-readiness-assessment)
-  - [The Real Cost Calculator](#the-real-cost-calculator)
-  - [Decision Tree: Is Self-Hosting Right for You?](#decision-tree-is-self-hosting-right-for-you)
-  - [Your Readiness Score](#your-readiness-score)
-
-### Infrastructure Setup
-- [🖥️ Step 2: Choosing the Perfect Server for Odoo Self-Hosting](#️-step-2-choosing-the-perfect-server-for-odoo-self-hosting)
-  - [The Reality-Tested Hardware Requirements](#the-reality-tested-hardware-requirements)
-  - [Real-World Monthly Costs by Provider](#-real-world-monthly-costs-by-provider)
-  - [Quick Sizing Guide](#-quick-sizing-guide)
-  - [Operating System Selection: Ubuntu 22.04 LTS](#operating-system-selection-ubuntu-2204-lts-heres-why)
-  - [Choosing Your Cloud Provider](#choosing-your-cloud-provider)
-  - [Step-by-Step Server Provisioning](#step-by-step-server-provisioning)
-  - [Domain Configuration](#domain-configuration)
-  - [Firewall Configuration](#firewall-configuration)
-
-### Installation & Configuration
-- [⚙️ Step 3: How to Install Odoo on Your Own Server](#️-step-3-how-to-install-odoo-on-your-own-server)
-  - [Database Setup: PostgreSQL](#database-setup-postgresql)
-  - [Python Environment Setup](#python-environment-setup)
-  - [Download and Install Odoo](#download-and-install-odoo)
-  - [Create Odoo Configuration File](#create-odoo-configuration-file)
-  - [Create System Service](#create-system-service)
-  - [Create Log Directory and Start Odoo](#create-log-directory-and-start-odoo)
-  - [Test Your Installation](#test-your-installation)
-
-### Security & SSL
-- [🔒 Step 4: Securing Your Self-Hosted Odoo Installation](#-step-4-securing-your-self-hosted-odoo-installation)
-  - [Nginx Setup (Reverse Proxy)](#nginx-setup-reverse-proxy)
-  - [SSL Certificate with Let's Encrypt](#ssl-certificate-with-lets-encrypt)
-  - [Enterprise SSL Certificates](#enterprise-ssl-certificates-for-business-requirements)
-  - [Security Hardening](#security-hardening)
-  - [Test Your Secure Installation](#test-your-secure-installation)
-
-### Modules & Customization
-- [🧩 Step 5: Essential Odoo Modules and Configuration](#-step-5-essential-odoo-modules-and-configuration)
-  - [Initial Database Setup](#initial-database-setup)
-  - [Essential Modules for Different Business Types](#essential-modules-for-different-business-types)
-  - [Installing Modules Through Interface](#installing-modules-through-interface)
-  - [Installing Third-Party Modules](#installing-third-party-modules)
-  - [Essential Configuration Steps](#essential-configuration-steps)
-  - [Backup Configuration](#backup-configuration)
-  - [Cloud Backup Solutions](#cloud-backup-solutions-essential-for-business-continuity)
-
-### Performance & Monitoring
-- [🚀 Step 6: Optimizing Odoo Performance for Maximum Speed](#-step-6-optimizing-odoo-performance-for-maximum-speed)
-  - [Database Optimization](#database-optimization)
-  - [Redis Caching Setup](#redis-caching-setup)
-  - [Simple Monitoring Solutions](#-simple-monitoring-solutions-start-here)
-  - [Advanced Monitoring Setup with Grafana](#advanced-monitoring-setup-with-grafana)
-  - [Performance Tuning Checklist](#performance-tuning-checklist)
-  - [Load Testing](#load-testing)
-
-### Best Practices & Troubleshooting
-- [❌ 3 Costly Odoo Self-Hosting Mistakes to Avoid](#-3-costly-odoo-self-hosting-mistakes-to-avoid)
-  - [Mistake #1: "I'll Just Skip Regular Backups"](#mistake-1-ill-just-skip-regular-backups-the-50000-lesson)
-  - [Mistake #2: "2GB RAM Should Be Enough"](#mistake-2-2gb-ram-should-be-enough-the-performance-death-spiral)
-  - [Mistake #3: "Security Updates Can Wait"](#mistake-3-security-updates-can-wait-the-hackers-dream)
-  - [The "I'm Smart, I'll Skip Steps" Bonus Mistake](#the-im-smart-ill-skip-steps-bonus-mistake)
-
-### Cost Analysis & Alternatives
-- [🆚 Odoo Online vs Self-Hosting: Cost Comparison 2025](#-odoo-online-vs-self-hosting-cost-comparison-2025)
-  - [Odoo Online (SaaS) vs. Self-Hosting](#odoo-online-saas-vs-self-hosting)
-  - [Odoo.sh vs. Self-Hosting](#odoo-sh-vs-self-hosting)
-  - [ClickUp and Other Alternatives](#clickup-and-other-alternatives)
-  - [The Hybrid Approach: Best of Both Worlds?](#the-hybrid-approach-best-of-both-worlds)
-  - [Decision Framework: Choose Your Path](#decision-framework-choose-your-path)
-  - [The Honest Truth About Each Option](#the-honest-truth-about-each-option)
-
-### Reference & Support
-- [🎁 Ultimate Odoo Self-Hosting Commands & Troubleshooting Guide](#-ultimate-odoo-self-hosting-commands--troubleshooting-guide)
-  - [Quick Reference Commands](#quick-reference-commands)
-  - [Configuration File Quick References](#configuration-file-quick-references)
-  - [Troubleshooting Decision Tree](#troubleshooting-decision-tree)
-  - [Backup & Recovery Cheat Sheet](#backup--recovery-cheat-sheet)
-  - [Performance Benchmarks & Warning Signs](#performance-benchmarks--warning-signs)
-  - [Security Monitoring Commands](#security-monitoring-commands)
-  - [When to Call for Help](#when-to-call-for-help)
-  - [Emergency Contact List Template](#emergency-contact-list-template)
-
-### About
-- [👨‍💻 About the Author](#-about-the-author)
-
----
-
 ## ⚡ Quick Start Checklist
 
 Before we dive into the detailed steps, here's what you'll need to have ready:
@@ -235,6 +142,8 @@ Based on your assessment above:
 ## 🖥️ Step 2: Choosing the Perfect Server for Odoo Self-Hosting
 
 Here's where most guides get it wrong. They'll tell you "2GB RAM minimum" and call it a day. But I'm going to give you the real-world specifications that'll keep your system running smoothly when your team is actually using it.
+
+> 💡 **Need deeper technical specs?** For comprehensive hardware requirements, hosting comparisons, and production-ready configurations, check out our detailed **[Odoo Minimum Requirements 2025: Complete Deployment Guide](/odoo-minimum-requirements-deployment-guide/)**.
 
 ### The Reality-Tested Hardware Requirements
 
