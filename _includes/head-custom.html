@@ -381,6 +381,197 @@
             padding: 6px 12px;
         }
     }
+
+    /* 5. Accordion Styles for Toolkit */
+    .toolkit-accordion {
+        margin-bottom: 20px;
+        border: 1px solid #e1e4e8;
+        border-radius: 8px;
+        overflow: hidden;
+        background: #ffffff;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .accordion-header {
+        background: linear-gradient(135deg, #f6f8fa 0%, #ffffff 100%);
+        border: none;
+        padding: 18px 20px;
+        width: 100%;
+        text-align: left;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-weight: 600;
+        font-size: 16px;
+        color: #24292f;
+        transition: all 0.3s ease;
+        position: relative;
+        border-bottom: 1px solid transparent;
+    }
+
+    .accordion-header:hover {
+        background: linear-gradient(135deg, #f1f3f4 0%, #f8f9fa 100%);
+        border-bottom-color: #e1e4e8;
+    }
+
+    .accordion-header.active {
+        background: linear-gradient(135deg, #e3f2fd 0%, #f8f9fa 100%);
+        border-bottom-color: #0969da;
+        color: #0969da;
+    }
+
+    .accordion-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 0;
+        font-size: 16px;
+        font-weight: 600;
+    }
+
+    .accordion-icon {
+        font-size: 18px;
+        transition: transform 0.3s ease;
+        color: #656d76;
+    }
+
+    .accordion-header.active .accordion-icon {
+        transform: rotate(90deg);
+        color: #0969da;
+    }
+
+    .accordion-chevron {
+        font-size: 16px;
+        transition: transform 0.3s ease;
+        color: #656d76;
+        opacity: 0.7;
+    }
+
+    .accordion-header.active .accordion-chevron {
+        transform: rotate(180deg);
+        color: #0969da;
+    }
+
+    .accordion-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.4s ease, padding 0.3s ease;
+        background: #ffffff;
+        padding: 0 20px;
+    }
+
+    .accordion-content.active {
+        max-height: 2000px; /* Large enough for content */
+        padding: 20px 20px 25px 20px;
+    }
+
+    .accordion-meta {
+        margin-bottom: 16px;
+        padding: 12px 16px;
+        background: #f6f8fa;
+        border-radius: 6px;
+        border-left: 3px solid #0969da;
+        font-size: 14px;
+        color: #656d76;
+        line-height: 1.5;
+    }
+
+    .accordion-meta a {
+        color: #0969da;
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    .accordion-meta a:hover {
+        text-decoration: underline;
+    }
+
+    .toolkit-grid {
+        display: grid;
+        gap: 16px;
+        margin-bottom: 16px;
+    }
+
+    .toolkit-grid h3 {
+        margin-top: 24px;
+        margin-bottom: 12px;
+        font-size: 18px;
+        color: #24292f;
+        border-bottom: 2px solid #e1e4e8;
+        padding-bottom: 6px;
+    }
+
+    .toolkit-grid ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .toolkit-grid li {
+        margin-bottom: 10px;
+        padding: 8px 0;
+        border-bottom: 1px solid #f1f3f4;
+    }
+
+    .toolkit-grid li:last-child {
+        border-bottom: none;
+    }
+
+    .toolkit-grid a {
+        color: #0969da;
+        text-decoration: none;
+        font-weight: 600;
+        transition: color 0.2s ease;
+    }
+
+    .toolkit-grid a:hover {
+        color: #0550ae;
+        text-decoration: underline;
+    }
+
+    /* Mobile responsive for accordion */
+    @media (max-width: 768px) {
+        .toolkit-accordion {
+            margin-bottom: 16px;
+            border-radius: 6px;
+        }
+
+        .accordion-header {
+            padding: 14px 16px;
+            font-size: 15px;
+        }
+
+        .accordion-title {
+            font-size: 15px;
+        }
+
+        .accordion-content.active {
+            padding: 16px 16px 20px 16px;
+        }
+
+        .accordion-meta {
+            padding: 10px 12px;
+            font-size: 13px;
+            margin-bottom: 14px;
+        }
+
+        .toolkit-grid h3 {
+            font-size: 16px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        .toolkit-grid li {
+            margin-bottom: 8px;
+            padding: 6px 0;
+        }
+    }
+
+    /* Smooth performance optimization */
+    .toolkit-accordion * {
+        box-sizing: border-box;
+    }
 </style>
 <script>
     document.addEventListener('DOMContentLoaded', (event) => {
@@ -410,6 +601,9 @@
 
         // 4. 图片放大功能
         initImageLightbox();
+
+        // 5. 手风琴功能
+        initToolkitAccordion();
     });
 
     function initFloatingTOC() {
@@ -750,6 +944,85 @@
             childList: true,
             subtree: true
         });
+    }
+
+    function initToolkitAccordion() {
+        const accordionHeaders = document.querySelectorAll('.accordion-header');
+
+        accordionHeaders.forEach(header => {
+            header.addEventListener('click', function() {
+                const content = this.nextElementSibling;
+                const isActive = this.classList.contains('active');
+
+                // 关闭所有其他手风琴（可选：如果要一次只打开一个）
+                // accordionHeaders.forEach(otherHeader => {
+                //     if (otherHeader !== this) {
+                //         otherHeader.classList.remove('active');
+                //         otherHeader.nextElementSibling.classList.remove('active');
+                //     }
+                // });
+
+                // 切换当前手风琴状态
+                this.classList.toggle('active');
+                content.classList.toggle('active');
+
+                // 更新aria-expanded属性
+                this.setAttribute('aria-expanded', !isActive);
+
+                // 可选：滚动到当前区域（移动端友好）
+                if (!isActive) {
+                    setTimeout(() => {
+                        this.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }, 200);
+                }
+            });
+
+            // 添加键盘支持
+            header.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    this.click();
+                }
+            });
+
+            // 确保可访问性属性设置正确
+            header.setAttribute('tabindex', '0');
+            header.setAttribute('role', 'button');
+            header.setAttribute('aria-expanded', 'false');
+
+            const content = header.nextElementSibling;
+            if (content) {
+                content.setAttribute('role', 'region');
+                const headerId = header.id || 'accordion-header-' + Date.now() + Math.random();
+                const contentId = 'accordion-content-' + Date.now() + Math.random();
+
+                header.id = headerId;
+                content.id = contentId;
+                header.setAttribute('aria-controls', contentId);
+                content.setAttribute('aria-labelledby', headerId);
+            }
+        });
+
+        // 检查URL哈希，自动展开相应的手风琴
+        const hash = window.location.hash;
+        if (hash) {
+            const targetElement = document.querySelector(hash);
+            if (targetElement) {
+                const accordion = targetElement.closest('.toolkit-accordion');
+                if (accordion) {
+                    const header = accordion.querySelector('.accordion-header');
+                    const content = accordion.querySelector('.accordion-content');
+                    if (header && content) {
+                        header.classList.add('active');
+                        content.classList.add('active');
+                        header.setAttribute('aria-expanded', 'true');
+                    }
+                }
+            }
+        }
     }
 </script>
 
