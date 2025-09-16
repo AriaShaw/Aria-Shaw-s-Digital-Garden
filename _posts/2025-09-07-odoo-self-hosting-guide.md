@@ -210,8 +210,7 @@ Best plan: $88-99/month (4 vCPUs, 8GB RAM, 160GB SSD + full management)
 > **Why I recommend Cloudways for Odoo**: After managing my own servers for years, I'll admit - the peace of mind is worth every penny. When your team needs Odoo at 2 AM and something breaks, you'll want experts fixing it, not you scrambling with documentation.
 >
 >💡 **[Try Cloudways now with a free 3-day trial](https://www.cloudways.com/en/?id=2007562)**  
-> *24/7 expert support • Automated backups • No server headaches*
-
+>*Use code **SUMMER305** for 30% OFF for 5 months + 15 free migrations*
 
 #### 🥈 **Vultr (Best for advanced users who want control)**
 ```
@@ -474,7 +473,7 @@ To                         Action      From
 >
 > **Option 1 - Skip the Complexity**: Let Cloudways handle all the technical complexity while you focus on your business.
 > 🚀 **[Skip the complexity with Cloudways](https://www.cloudways.com/en/?id=2007562)**  
-> *3-minute setup • Zero Linux knowledge needed • 24/7 expert support*
+> *Use code **SUMMER305** for 30% OFF for 5 months + 15 free migrations*
 >
 > **Option 2 - DIY with Better Tools**: Continue with self-hosting but arm yourself with the streamlined **Odoo Self-Hosting Kit** - all the essential steps, commands, and configurations without the overwhelm.
 > 🚀 **[Get the Self-Hosting Kit ($7) →](https://ariashaw.gumroad.com/l/odoohosting)**  
