@@ -1513,7 +1513,7 @@ Output Specifications:
 - Recommended hosting tier for each platform
 ```
 
-**Download:** [Odoo Requirements Calculator (CSV)](https://ariashaw.github.io/resources/odoo-requirements-calculator.csv) | [Interactive Web Version](https://ariashaw.github.io/resources/odoo-requirements-calculator.html)
+**Download:** [Odoo Requirements Calculator (CSV)](https://ariashaw.github.io/resources/odoo-requirements-calculator.csv) | [Interactive Web Version](https://ariashaw.github.io/toolkit/odoo-requirements-calculator)
 
 **Real Example:**
 I used this calculator for a 45-person manufacturing company. Their initial estimate was a $20/month VPS. The calculator showed they actually needed 8GB RAM and 4 cores due to heavy inventory management. We started with the right specs and avoided the expensive mid-project upgrade.
@@ -1637,7 +1637,7 @@ Cost savings: $35/month
 Trade-off: Requires 4+ hours monthly maintenance
 ```
 
-**Access:** [Hosting Decision Calculator (Interactive Web Tool)](https://ariashaw.github.io/tools/odoo-hosting-calculator.html)
+**Access:** [Hosting Decision Calculator (Interactive Web Tool)](https://ariashaw.github.io/toolkit/odoo-hosting-calculator)
 
 ---
 
@@ -1747,8 +1747,8 @@ For your convenience, here are all the exclusive resources mentioned in this gui
 
 **Planning & Assessment:**
 - [Odoo Requirements Calculator (CSV)](https://ariashaw.github.io/resources/odoo-requirements-calculator.csv) 
-| [Web Version](https://ariashaw.github.io/tools/odoo-requirements-calculator.html)
-- [Hosting Decision Calculator (Web Tool)](https://ariashaw.github.io/tools/odoo-hosting-calculator.html)
+| [Web Version](https://ariashaw.github.io/toolkit/odoo-requirements-calculator)
+- [Hosting Decision Calculator (Web Tool)](https://ariashaw.github.io/toolkit/odoo-hosting-calculator)
 
 **Implementation & Deployment:**
 - [Production Environment Checklist (PDF)](https://ariashaw.github.io/resources/odoo-production-checklist.pdf)
