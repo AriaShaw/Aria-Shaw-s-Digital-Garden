@@ -464,21 +464,6 @@ To                         Action      From
 
 **Perfect! Your server is ready. Now comes the exciting part - installing Odoo in a way that'll serve your business for years to come...**
 
-> 🆘 **Feeling Overwhelmed? You're Not Alone**  
-> If you're looking at the upcoming installation steps and thinking "This is more technical than I bargained for," you're not alone. 75% of business owners who start the DIY route switch to managed hosting within 6 months.
->
-> **Here's the reality**: One misconfigured setting can corrupt your entire database. One missed security step can expose your customer data. One performance bottleneck can cripple your business operations.
->
-> **🎯 Two Smart Options:**
->
-> **Option 1 - Skip the Complexity**: Let Cloudways handle all the technical complexity while you focus on your business.
-> 🚀 **[Skip the complexity with Cloudways](https://www.cloudways.com/en/?id=2007562)**  
-> *Use code **SUMMER305** for 30% OFF for 5 months + 15 free migrations*
->
-> **Option 2 - DIY with Better Tools**: Continue with self-hosting but arm yourself with the streamlined **Odoo Self-Hosting Kit** - all the essential steps, commands, and configurations without the overwhelm.
-> 🚀 **[Get the Self-Hosting Kit ($7) →](https://ariashaw.gumroad.com/l/odoohosting)**  
-> *Focused guidebook • Command vault • One-page cheat sheet*
-
 ---
 
 ## ⚙️ Step 3: How to Install Odoo on Your Own Server
@@ -1010,7 +995,7 @@ sudo certbot certificates
 > You've just completed what 70% of business owners call "the hardest part." But there's still monitoring, backups, updates, and maintenance ahead. 
 > 
 > 🚀 **[Let Cloudways handle all this for you](https://www.cloudways.com/en/?id=2007562)**  
-> *All the technical stuff above? Done automatically • Focus on your business, not Linux*
+> *All the technical stuff above? Done automatically • Focus on your business, not Linux • Use code **SUMMER305** for 30% OFF for 5 months + 15 free migrations*
 
 ---
 
