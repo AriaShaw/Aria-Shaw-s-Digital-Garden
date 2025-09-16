@@ -173,6 +173,28 @@ Welcome to the Toolkit, a curated library of open-source scripts and tools I've 
 </div>
 </div>
 
+{% capture online_tools_content %}
+<h3>Infrastructure Planning Tools</h3>
+<ul>
+<li><strong>📊 <a href="/toolkit/odoo-requirements-calculator/">Odoo System Requirements Calculator</a></strong> - <em>Calculate exact CPU, RAM, and storage requirements for your Odoo deployment. Prevent costly under-provisioning with data from 500+ production deployments.</em></li>
+<li><strong>🏆 <a href="/toolkit/odoo-hosting-calculator/">Odoo Hosting Decision Calculator</a></strong> - <em>Get personalized hosting recommendations based on your technical expertise, budget, and business needs. Stop wasting time comparing options.</em></li>
+</ul>
+{% endcapture %}
+
+<div class="toolkit-accordion">
+<button class="accordion-header" aria-expanded="false">
+<span class="accordion-icon">🧮</span>
+<span class="accordion-title">Online Calculators & Planning Tools</span>
+<span class="accordion-chevron">▼</span>
+</button>
+<div class="accordion-content">
+<div class="accordion-meta">
+🎯 <strong>Interactive tools for Odoo planning:</strong> Skip the guesswork with battle-tested calculators built from real-world deployment data.
+</div>
+{{ online_tools_content }}
+</div>
+</div>
+
 ---
 
 **📝 Battle-Tested Reliability:** All scripts include comprehensive error handling, logging, and are designed to fail safely. They're the same tools I use in professional migrations and are battle-tested across hundreds of production environments.
