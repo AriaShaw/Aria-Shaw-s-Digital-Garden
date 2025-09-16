@@ -27,7 +27,17 @@ Here you will find a growing library of guides. Each one is designed to fill an 
 
 ## 🧰 The Toolkit: Featured Tools
 
-Alongside the guides, I build and maintain a collection of open-source scripts. Here are the most powerful tools that solve the hardest business problems:
+Alongside the guides, I build and maintain a collection of open-source scripts and interactive tools. Here are the most powerful tools that solve the hardest business problems:
+
+**🧮 Interactive Planning Tools:**
+
+* **📊 [Odoo Requirements Calculator](/toolkit/odoo-requirements-calculator/)**
+    *Skip the guesswork on server sizing. Calculate exact CPU, RAM, and storage requirements based on real data from 500+ production deployments. Prevents costly under-provisioning.*
+
+* **🏆 [Odoo Hosting Decision Calculator](/toolkit/odoo-hosting-calculator/)**
+    *End hosting confusion with personalized recommendations based on your technical expertise, budget, and business needs. Built from 6 years of hosting experience.*
+
+**🛠️ Battle-Tested Scripts:**
 
 * **🚨 [Migration Risk Assessor](/scripts/migration_assessment.sh)**
     *Prevents disaster by analyzing your database for the 3 critical errors that destroy 90% of DIY migrations. One script that could save you weeks of downtime.*
