@@ -8,11 +8,11 @@ Each playbook is a deep-dive, meticulously crafted to be the only resource you n
 
 Here you will find a growing library of guides. Each one is designed to fill an information vacuum and provide a clear path to a powerful outcome.
 
-### 📖 [Odoo Self-Hosting: The Definitive Guide (2025)](/odoo-self-hosting-guide/)
+### 📖 [Avoid $48,000 Loss: Odoo Self-Hosting Guide for 2025](/odoo-self-hosting-guide/)
 
 *A step-by-step blueprint for deploying a secure, scalable Odoo instance from scratch, while navigating the common pitfalls that can lead to a $48,000 disaster.*
 
-### 🚀 [Odoo Database Migration Crisis: The Complete Zero-Downtime Guide (2025)](/odoo-database-migration-guide/)
+### 🚀 [Odoo Database Migration 2025: Zero-Downtime Made Easy](/odoo-database-migration-guide/)
 
 *The definitive guide to migrating Odoo databases with zero data loss and minimal downtime. Battle-tested methodology from 300+ successful migrations, covering everything from risk assessment to disaster recovery.*
 
