@@ -586,24 +586,12 @@ The Odoo community has developed several excellent backup scripts. Here are the 
 # Install from GitHub
 git clone https://github.com/OCA/server-tools.git
 cd server-tools/auto_backup
-
-# This module provides:
-# - Automated daily/weekly/monthly backups
-# - SFTP/FTP remote storage
-# - Email notifications
-# - Backup validation
 ```
 
 **2. Cybrosys Backup Scripts**
 ```bash
 # Advanced backup with cloud integration
 wget https://raw.githubusercontent.com/cybrosys-technologies/odoo-backup/main/odoo_backup_advanced.py
-
-# Features:
-# - Multiple cloud providers (AWS, GCP, Azure)
-# - Backup encryption
-# - Incremental backups
-# - Web dashboard for monitoring
 ```
 
 ![Community Scripts Comparison Table](/assets/images/Community Scripts Comparison.webp)
