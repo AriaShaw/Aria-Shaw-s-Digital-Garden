@@ -20,7 +20,7 @@ Here you will find a growing library of guides. Each one is designed to fill an 
 
 *The comprehensive guide to Odoo system requirements, hosting decisions, and production deployment. From hardware sizing to security hardening, everything you need to avoid expensive deployment failures and build a bulletproof Odoo infrastructure.*
 
-### 💾 [Master Odoo Database Backup & Restore 2025](/odoo-database-backup-restore-guide/)
+### 💾 [Odoo Database Backup ＆ Restore: The Step-by-Step Guide 2025](/odoo-database-backup-restore-guide/)
 
 *Master reliable backup and restore procedures for Odoo databases. From web interface methods to automated scripts and cloud integration, this guide covers everything administrators need to protect their business data and recover from disasters with confidence.*
 

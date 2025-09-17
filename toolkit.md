@@ -185,9 +185,7 @@ Welcome to the Toolkit, a curated library of open-source scripts and tools I've 
 <h3>Automated Backup Systems</h3>
 <ul>
 <li><strong>💾 <a href="/scripts/basic_odoo_backup.sh">Basic Odoo Backup Script</a></strong> - <em>Simple, reliable daily backup solution with cURL commands and automatic cleanup.</em></li>
-<li><strong>☁️ <a href="/scripts/enhanced_backup_odoo.sh">Enhanced Cloud Backup</a></strong> - <em>Advanced backup with Backblaze B2 cloud sync, email alerts, and failure recovery.</em></li>
 <li><strong>🐍 <a href="/scripts/odoo_backup_manager.py">Odoo Backup Manager</a></strong> - <em>Enterprise-grade Python backup solution with object-oriented design and multiple database support.</em></li>
-<li><strong>📋 <a href="/scripts/separated_backup_strategy.sh">Separated Architecture Backup Strategy</a></strong> - <em>Professional backup solution for distributed Odoo deployments with comprehensive logging and reporting.</em></li>
 </ul>
 
 <h3>Backup Verification &amp; Quality Control</h3>
@@ -209,8 +207,6 @@ Welcome to the Toolkit, a curated library of open-source scripts and tools I've 
 <h3>Emergency Restore &amp; Recovery</h3>
 <ul>
 <li><strong>⚡ <a href="/scripts/emergency_restore.sh">Emergency Fast-Track Restore</a></strong> - <em>Cuts normal restore time by 50% using parallel processing and performance optimizations for disaster recovery.</em></li>
-<li><strong>🚨 <a href="/scripts/odoo_emergency_recovery.sh">Complete Emergency Recovery System</a></strong> - <em>Comprehensive disaster recovery toolkit with automated database restoration and system validation.</em></li>
-<li><strong>🔄 <a href="/scripts/intelligent_rollback.sh">Intelligent Rollback System</a></strong> - <em>Smart rollback with selective data preservation and automated safety checks for failed operations.</em></li>
 </ul>
 
 <h3>Cloud Storage Integration</h3>
@@ -227,7 +223,7 @@ Welcome to the Toolkit, a curated library of open-source scripts and tools I've 
 </button>
 <div class="accordion-content">
 <div class="accordion-meta">
-📖 <strong>From the complete guide:</strong> <a href="/odoo-database-backup-restore-guide/">Master Odoo Database Backup & Restore 2025</a>
+📖 <strong>From the complete guide:</strong> <a href="/odoo-database-backup-restore-guide/">Odoo Database Backup ＆ Restore: The Step-by-Step Guide 2025</a>
 </div>
 {{ backup_content }}
 </div>
