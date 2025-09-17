@@ -1,7 +1,7 @@
 ---
 layout: post
-title: "Odoo Database Backup and Restore: The Complete Step-by-Step Guide for Administrators (2025 Edition)"
-description: "Learn how to backup and restore Odoo databases with confidence. Master manual methods, command-line tools, automated scripts, and cloud backup strategies. Includes troubleshooting for common errors and enterprise solutions."
+title: "Odoo Database Backup ＆ Restore: The Complete Step-by-Step Guide 2025"
+description: "Learn reliable Odoo Database Backup and Restore methods. Complete guide with automation, cloud sync, and emergency recovery strategies."
 date: 2025-09-17
 author: Aria Shaw
 ---

@@ -181,6 +181,58 @@ Welcome to the Toolkit, a curated library of open-source scripts and tools I've 
 </ul>
 {% endcapture %}
 
+{% capture backup_content %}
+<h3>Automated Backup Systems</h3>
+<ul>
+<li><strong>💾 <a href="/scripts/basic_odoo_backup.sh">Basic Odoo Backup Script</a></strong> - <em>Simple, reliable daily backup solution with cURL commands and automatic cleanup.</em></li>
+<li><strong>☁️ <a href="/scripts/enhanced_backup_odoo.sh">Enhanced Cloud Backup</a></strong> - <em>Advanced backup with Backblaze B2 cloud sync, email alerts, and failure recovery.</em></li>
+<li><strong>🐍 <a href="/scripts/odoo_backup_manager.py">Odoo Backup Manager</a></strong> - <em>Enterprise-grade Python backup solution with object-oriented design and multiple database support.</em></li>
+<li><strong>📋 <a href="/scripts/separated_backup_strategy.sh">Separated Architecture Backup Strategy</a></strong> - <em>Professional backup solution for distributed Odoo deployments with comprehensive logging and reporting.</em></li>
+</ul>
+
+<h3>Backup Verification &amp; Quality Control</h3>
+<ul>
+<li><strong>📁 <a href="/scripts/filestore_verification.sh">Filestore Verification System</a></strong> - <em>Comprehensive filestore backup verification that ensures all uploaded files are properly backed up and accessible.</em></li>
+<li><strong>🔍 <a href="/scripts/backup_validation_tool.py">Backup Validation Tool</a></strong> - <em>Complete backup integrity checker that validates ZIP files, database dumps, and manifest files without full restoration.</em></li>
+<li><strong>📊 <a href="/scripts/backup_quality_calculator.sh">Backup Quality Calculator</a></strong> - <em>Interactive assessment tool with 120-point evaluation system for backup strategy effectiveness.</em></li>
+<li><strong>📈 <a href="/scripts/backup_status_dashboard.sh">Backup Status Dashboard</a></strong> - <em>Real-time backup monitoring dashboard with storage usage and success rate tracking.</em></li>
+</ul>
+
+<h3>Advanced Backup Tools</h3>
+<ul>
+<li><strong>🗜️ <a href="/scripts/filestore_deduplication.py">Filestore Deduplication Tool</a></strong> - <em>Reduces backup sizes by 40-60% through intelligent deduplication of duplicate files in the filestore.</em></li>
+<li><strong>📏 <a href="/scripts/predict_backup_size.py">Backup Size Predictor</a></strong> - <em>Predict backup sizes before starting to avoid storage surprises and plan capacity requirements.</em></li>
+<li><strong>🔧 <a href="/scripts/backup_repair_toolkit.sh">Backup Repair Toolkit</a></strong> - <em>Recovery tools for corrupted backups with automated repair and integrity restoration capabilities.</em></li>
+<li><strong>🗂️ <a href="/scripts/backup_retention_manager.sh">Backup Retention Manager</a></strong> - <em>Intelligent backup cleanup with configurable retention policies and automated lifecycle management.</em></li>
+</ul>
+
+<h3>Emergency Restore &amp; Recovery</h3>
+<ul>
+<li><strong>⚡ <a href="/scripts/emergency_restore.sh">Emergency Fast-Track Restore</a></strong> - <em>Cuts normal restore time by 50% using parallel processing and performance optimizations for disaster recovery.</em></li>
+<li><strong>🚨 <a href="/scripts/odoo_emergency_recovery.sh">Complete Emergency Recovery System</a></strong> - <em>Comprehensive disaster recovery toolkit with automated database restoration and system validation.</em></li>
+<li><strong>🔄 <a href="/scripts/intelligent_rollback.sh">Intelligent Rollback System</a></strong> - <em>Smart rollback with selective data preservation and automated safety checks for failed operations.</em></li>
+</ul>
+
+<h3>Cloud Storage Integration</h3>
+<ul>
+<li><strong>☁️ <a href="/scripts/s3_backup_verification.sh">S3 Backup Verification</a></strong> - <em>Automated verification of cloud-stored backups with integrity checking and availability testing.</em></li>
+</ul>
+{% endcapture %}
+
+<div class="toolkit-accordion">
+<button class="accordion-header" aria-expanded="false">
+<span class="accordion-icon">💾</span>
+<span class="accordion-title">Odoo Backup & Restore Scripts</span>
+<span class="accordion-chevron">▼</span>
+</button>
+<div class="accordion-content">
+<div class="accordion-meta">
+📖 <strong>From the complete guide:</strong> <a href="/odoo-database-backup-restore-guide/">Master Odoo Database Backup & Restore 2025</a>
+</div>
+{{ backup_content }}
+</div>
+</div>
+
 <div class="toolkit-accordion">
 <button class="accordion-header" aria-expanded="false">
 <span class="accordion-icon">🧮</span>
