@@ -10,9 +10,13 @@ If you're managing an Odoo system, you've probably discovered that backing up an
 
 Don't worry. This guide will walk you through the entire process, step by step, like a set of LEGO instructions. By the end, you'll not only know how to backup and restore your Odoo database reliably, but you'll also have the confidence to automate the process and handle any errors that come your way.
 
+**🚀 Quick Start Summary**: Need to backup right now? Jump to [Method 1: Web Interface Backup](#method-1-using-odooss-web-interface-simple-but-limited) for immediate action, then return here to understand the complete system.
+
 I'll be completely honest with you—I've made my share of mistakes with Odoo backups. There was that time I spent an entire afternoon debugging a restore that failed because I forgot about the filestore, and another instance where I assumed a backup worked perfectly until I actually needed it. Learn from my scars so you don't have to get them yourself.
 
-## Understanding Odoo Database Architecture: What You're Actually Backing Up
+**⚠️ Important Safety Note**: Before implementing any backup strategy on production systems, always test your procedures on a staging environment first. The methods in this guide are based on extensive real-world testing, but every Odoo installation is unique.
+
+## Understanding Odoo Database Architecture: What You're Actually Backing Up (And Why Most People Get It Wrong)
 
 Before we dive into the how-to steps, you need to understand what you're actually backing up. This isn't just academic knowledge—understanding Odoo's two-part architecture will save you from the most common backup failures I see administrators struggle with.
 
@@ -25,7 +29,8 @@ Here's the thing that trips up most people: **Odoo doesn't store everything in t
 
 Think of it like this: if Odoo were a filing cabinet, the PostgreSQL database would be all the index cards with information, while the filestore would be all the actual documents stored in the folders.
 
-[Image: A diagram showing Odoo's two-part architecture with PostgreSQL database on the left containing structured data tables, and filestore on the right containing various file types like PDFs, images, and documents]
+![Odoo Database Architecture Overview](/assets/images/Odoo Database Architecture Overview.webp)
+*Visual representation of Odoo's two-part architecture: PostgreSQL database and filestore components*
 
 Let me show you exactly where these components live on your system:
 
@@ -71,8 +76,6 @@ ls -la /var/lib/odoo/filestore/your_database_name/
 # These contain your uploaded files organized by Odoo's internal system
 ```
 
-[Image: A terminal screenshot showing the output of the filestore directory listing with numbered folders and file sizes]
-
 ### Why Standard PostgreSQL Backup Tools Aren't Enough
 
 This is where many administrators go wrong. If you've worked with other applications, you might think running `pg_dump` on your Odoo database gives you a complete backup. **It doesn't.**
@@ -101,8 +104,6 @@ SELECT name, datas_fname FROM ir_attachment WHERE id = 1;
 -- But the actual PDF file lives in:
 -- /var/lib/odoo/filestore/your_db/1a/1a2b3c4d5e6f...
 ```
-
-[Image: A screenshot of Odoo interface showing a missing attachment icon with an error message, demonstrating what happens when filestore is missing]
 
 ### Backup Formats Explained: ZIP vs SQL Dump
 
@@ -147,11 +148,12 @@ ZIP backup:     2.5 GB  (database + filestore + manifest)
 # The ratio depends on how many files you've uploaded to Odoo
 ```
 
-[Image: A comparison table showing ZIP vs SQL backup formats with checkmarks and X marks for what's included in each]
+![Odoo Backup Format Comparison Table](/assets/images/Odoo Backup Format Comparison.webp)
+*Comprehensive comparison of ZIP vs SQL backup formats and their included components*
 
 **Pro Tip**: Always use ZIP format unless you have a specific reason not to. I've seen too many restore attempts fail because someone used SQL format thinking it was "simpler."
 
-## How to Backup Odoo Database: 4 Proven Methods
+## How to Backup Odoo Database: 4 Proven Methods That Actually Work (2025 Edition)
 
 Now that you understand what you're backing up, let's walk through the four most reliable methods to create Odoo backups. I'll start with the simplest approach and work up to more advanced techniques that give you greater control and automation capabilities.
 
@@ -172,8 +174,6 @@ If you're running Odoo locally:
 ```
 http://localhost:8069/web/database/manager
 ```
-
-[Image: Screenshot of Odoo database manager interface showing the list of databases with backup, restore, duplicate, and delete options]
 
 **Step 2: Master Password Configuration Requirements**
 
@@ -212,8 +212,6 @@ sudo systemctl restart odoo
 sudo service odoo restart
 ```
 
-[Image: Screenshot of Odoo configuration file showing the master_passwd line highlighted in a text editor]
-
 **Step 3: Initiate the Backup**
 
 1. Click the **"Backup"** button next to your database name
@@ -221,8 +219,6 @@ sudo service odoo restart
 3. Choose your backup format:
    - **ZIP** (recommended): Complete backup with filestore
    - **SQL**: Database only (rarely needed)
-
-[Image: Screenshot of Odoo backup dialog showing master password field, format selection dropdown with ZIP selected, and the backup button]
 
 **Step 4: Monitor the Download**
 
@@ -301,7 +297,8 @@ admin_passwd = backup_restore_password
 master_passwd = database_management_password
 ```
 
-[Image: A troubleshooting flowchart showing the decision tree for resolving master password issues]
+![Master Password Troubleshooting Decision Tree](/assets/images/Master Password Troubleshooting Decision Tree.webp)
+*Step-by-step flowchart for diagnosing and fixing master password configuration issues*
 
 ### Method 2: Odoo Database Backup Command Line
 
@@ -374,8 +371,6 @@ Invoke-WebRequest -Uri "https://raw.githubusercontent.com/AriaShaw/AriaShaw.gith
 # Usage example:
 .\Odoo-Backup.ps1 -OdooUrl "http://localhost:8069" -MasterPassword "your_password" -DatabaseName "production_db"
 ```
-
-[Image: A terminal screenshot showing the cURL backup command in progress with output showing download progress and completion]
 
 ### Method 3: Manual PostgreSQL + Filestore Backup
 
@@ -535,8 +530,6 @@ For enterprise-grade manual backup with comprehensive logging, error handling, a
 
 📋 **[Separated Backup Strategy Script](/scripts/separated_backup_strategy.sh)** - Professional backup solution for distributed Odoo deployments with database/application server separation, email alerts, and detailed reporting.
 
-[Image: A terminal screenshot showing the manual backup script in progress with verbose output from pg_dump and tar operations]
-
 ### Method 4: Automated Backup Scripts
 
 For production environments, manual backups aren't sustainable. You need automation that runs reliably, handles errors gracefully, and notifies you when something goes wrong.
@@ -613,9 +606,10 @@ wget https://raw.githubusercontent.com/cybrosys-technologies/odoo-backup/main/od
 # - Web dashboard for monitoring
 ```
 
-[Image: A comparison table showing features of different community backup scripts with checkmarks for supported features]
+![Community Scripts Comparison Table](/assets/images/Community Scripts Comparison.webp)
+*Feature comparison matrix of popular community backup solutions with supported capabilities*
 
-## How to Restore Odoo Database: Complete Recovery Guide
+## How to Restore Odoo Database: Complete Recovery Guide (Never Lose Data Again)
 
 Now comes the moment of truth—when you actually need to use those backups. I've been through this scenario more times than I'd like to admit, and I can tell you that having a solid restore process is what separates a minor inconvenience from a business-threatening disaster.
 
@@ -632,8 +626,6 @@ First, navigate to your database manager (just like we did for backups):
 ```
 https://your-odoo-domain.com/web/database/manager
 ```
-
-[Image: Screenshot of Odoo database manager showing the restore database button prominently displayed]
 
 #### Upload and Restore Process
 
@@ -674,8 +666,6 @@ The web interface will show a progress indicator. During this time, Odoo is:
 2. Importing the SQL structure and data
 3. Extracting and placing filestore files
 4. Running any necessary post-restore updates
-
-[Image: Screenshot of Odoo restore progress dialog showing percentage complete and estimated time remaining]
 
 #### Post-Restore Verification Steps
 
@@ -885,8 +875,6 @@ watch "sudo -u postgres psql -c \"SELECT pg_database.datname, pg_size_pretty(pg_
 # Monitor active connections and queries
 sudo -u postgres psql -c "SELECT pid, state, query FROM pg_stat_activity WHERE datname = 'production_restored';"
 ```
-
-[Image: A terminal screenshot showing pg_restore running with verbose output and a second terminal monitoring database size growth]
 
 ### Disaster Recovery: When Everything Goes Wrong
 
@@ -1175,9 +1163,7 @@ chmod +x backup_status_dashboard.sh
 echo "*/5 * * * * /path/to/backup_status_dashboard.sh" | crontab -
 ```
 
-[Image: Screenshot of a simple backup status dashboard showing recent backups, storage usage, and S3 status in a clean web interface]
-
-## Common Mistakes and Troubleshooting
+## Common Backup Mistakes and Troubleshooting: Fix 90% of Problems Instantly
 
 Let's be real—backup failures happen to everyone. I've seen seasoned system administrators spend hours pulling their hair out over what turned out to be a simple configuration issue. The key is knowing how to diagnose problems quickly and having a systematic approach to fixing them.
 
@@ -1584,7 +1570,8 @@ aws s3 sync /backup/odoo/ s3://your-backup-bucket/
 find /backup/odoo -mtime +$LOCAL_RETENTION -delete
 ```
 
-[Image: A flowchart showing the decision tree for diagnosing backup and restore issues, with common symptoms pointing to specific solutions]
+![Backup and Restore Issue Diagnosis](/assets/images/Backup and Restore Issue Diagnosis.webp)
+*Comprehensive troubleshooting flowchart for common backup and restore problems*
 
 ## Alternative Solutions Comparison
 
@@ -1889,7 +1876,8 @@ Monthly:        Automated size monitoring
 # Annually: Complete strategy review
 ```
 
-[Image: A decision tree flowchart showing when to choose manual, automated, or hybrid backup approaches based on organization size, technical expertise, and business requirements]
+![Backup Strategy Decision Tree](/assets/images/Backup Strategy Decision Tree.webp)
+*Decision flowchart for selecting optimal backup approach based on organizational needs*
 
 The key is starting with a solid foundation and gradually adding automation as your needs and capabilities grow. I've seen too many organizations try to implement complex automated systems from day one, only to have them fail when they're needed most.
 
@@ -2260,7 +2248,8 @@ sudo -u odoo /opt/odoo/odoo-bin \
 grep -E "module.*updated|module.*installed" /var/log/odoo/odoo.log
 ```
 
-[Image: A version comparison chart showing backup/restore features across Odoo 16, 17, and 18, highlighting new capabilities and compatibility notes]
+![Odoo Backup Features Comparison Table](/assets/images/Odoo Backup Features Comparison Table.webp)
+*Evolution of backup and restore capabilities across Odoo versions 16, 17, and 18*
 
 **Key Takeaways for Version Management:**
 
