@@ -78,3 +78,4 @@ You can follow my work and thoughts on building and digital plumbing here:
 
 * **GitHub:** [@AriaShaw](https://github.com/AriaShaw)
 * **X (Twitter):** [@theAriaShaw](https://x.com/theAriaShaw) 
+* **Email:**aria@ariashaw.com

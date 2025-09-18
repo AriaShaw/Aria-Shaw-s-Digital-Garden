@@ -2641,7 +2641,7 @@ After helping hundreds of organizations implement backup strategies, I know exac
 
 **Ready to get started?** Choose the option that fits your needs, or reach out if you have questions about which solution is right for your situation.
 
-**Questions?** Email me directly: yixiang.xiao2024@gmail.com - I personally read and respond to every message.
+**Questions?** Email me directly: aria@ariashaw.com - I personally read and respond to every message.
 
 ---
 
@@ -2659,7 +2659,7 @@ That's when I became obsessed with building foolproof backup systems that work e
 
 **My Expertise**:
 - Over 200 Odoo deployments across industries from manufacturing to healthcare
-- Emergency recovery specialist (yes, I'm the guy they call at 3 AM)
+- Emergency recovery specialist (yes, I'm the person they call at 3 AM)
 - Author of backup strategies used by Fortune 500 companies
 - Open-source contributor to Odoo backup and recovery tools
 
