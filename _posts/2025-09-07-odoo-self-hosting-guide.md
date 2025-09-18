@@ -1173,6 +1173,8 @@ For each team member:
 
 Set up automated backups (critical!):
 
+> 🔧 **Need a comprehensive backup strategy?** Check out our complete **[Odoo Database Backup & Restore Guide](/odoo-database-backup-restore-guide/)** for detailed backup methods, cloud sync strategies, and emergency recovery procedures.
+
 ```bash
 # Create backup script
 sudo nano /home/odoo/backup-odoo.sh
@@ -1647,6 +1649,8 @@ After helping dozens of businesses with their Odoo self-hosting setups, I've see
 **The Scenario**: You've spent weeks setting up your perfect Odoo system. Everything's running smoothly. Backups feel like that thing you'll "get to later" because nothing's ever gone wrong.
 
 Then your server crashes. Or someone accidentally deletes critical data. Or a module update goes sideways and corrupts your database.
+
+> 💾 **Don't become another statistic!** Learn how to implement bulletproof backup strategies with our **[Complete Odoo Database Backup & Restore Guide](/odoo-database-backup-restore-guide/)**. Covers automated backups, cloud sync, and tested recovery procedures.
 
 **Real Example**: A manufacturing company I consulted for lost 3 months of sales orders, inventory tracking, and customer communications because they were running without backups. The cost? $47,000 in lost orders and 160 hours of manual data reconstruction.
 

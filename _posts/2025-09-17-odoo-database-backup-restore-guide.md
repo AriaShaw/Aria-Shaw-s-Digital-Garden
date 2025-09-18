@@ -92,6 +92,8 @@ pg_dump -h localhost -U odoo_user your_database > backup.sql
 
 I learned this the hard way during a server migration. Everything looked perfect after the restore—until users started asking, "Where are all our uploaded documents?" The database had references to files that no longer existed because I hadn't backed up the filestore.
 
+> 📍 **Planning a server migration?** Our **[Odoo Database Migration Guide](/odoo-database-migration-guide/)** provides step-by-step migration procedures with zero-downtime strategies and complete data integrity verification.
+
 **The Missing Link Example:**
 ```sql
 -- Your database might have a record like this:
@@ -533,6 +535,8 @@ For enterprise-grade manual backup with comprehensive logging, error handling, a
 ### Method 4: Automated Backup Scripts
 
 For production environments, manual backups aren't sustainable. You need automation that runs reliably, handles errors gracefully, and notifies you when something goes wrong.
+
+> 🏗️ **Setting up a production Odoo environment?** Check our **[Odoo Self-Hosting Guide](/odoo-self-hosting-guide/)** for complete production setup including server configuration, security hardening, and automated backup implementation.
 
 #### Python-Based Database Manager Scripts
 
@@ -1422,7 +1426,7 @@ sudo -u postgres psql -c "SELECT version();"
 
 # For major version differences (e.g., 16.0 to 17.0):
 # Requires migration - use OpenUpgrade
-# See our migration scripts in /scripts/
+# See our comprehensive Odoo Database Migration Guide: /odoo-database-migration-guide/
 
 # For PostgreSQL version issues:
 # Dump with compatible format
@@ -2035,6 +2039,8 @@ SELECT pg_reload_conf();
 ```
 
 #### Migration from Older Versions
+
+> 🔄 **Cross-version restoration is complex!** For comprehensive migration strategies, see our **[Odoo Database Migration Guide](/odoo-database-migration-guide/)** which covers zero-downtime migration, version compatibility, and complete migration automation.
 
 **Restoring Odoo 16 backups to Odoo 17:**
 

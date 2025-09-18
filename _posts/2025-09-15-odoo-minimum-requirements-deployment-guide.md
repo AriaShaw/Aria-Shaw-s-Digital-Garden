@@ -517,6 +517,8 @@ Port 22: Source YOUR_MANAGEMENT_IP/32
 
 With separated architecture, your backup strategy becomes more complex but more robust:
 
+> 📋 **For complete backup strategies**: Our **[Odoo Database Backup & Restore Guide](/odoo-database-backup-restore-guide/)** covers all backup methods including separated architecture, cloud sync, and advanced automation techniques.
+
 ```bash
 # Database backup script
 wget https://ariashaw.github.io/scripts/separated_backup_strategy.sh
