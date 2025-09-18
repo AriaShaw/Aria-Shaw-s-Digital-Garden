@@ -50,6 +50,13 @@ Welcome to the Toolkit, a curated library of open-source scripts and tools I've 
 <li><strong>🔗 <a href="/scripts/dependency_analyzer.py">Dependency Analyzer</a></strong> - <em>Resolve complex module dependency conflicts and installation order.</em></li>
 <li><strong>⚙️ <a href="/scripts/resolve_dependencies.py">Dependency Resolution Engine</a></strong> - <em>Intelligent module dependency resolver with topological sorting and circular dependency detection.</em></li>
 <li><strong>🚨 <a href="/scripts/db_corruption_detector.sh">Database Corruption Detector</a></strong> - <em>Advanced corruption detection and recovery procedures for damaged databases.</em></li>
+<li><strong>☁️ <a href="/scripts/professional-backup-with-cloud-sync.sh">Professional Cloud Backup</a></strong> - <em>Production-ready backup script with S3 integration, integrity verification, compression, and automatic retention management.</em></li>
+</ul>
+
+<h3>DevOps Integration &amp; Automation</h3>
+<ul>
+<li><strong>⚙️ <a href="/scripts/jenkins-odoo-migration-pipeline.groovy">Jenkins Migration Pipeline</a></strong> - <em>Complete Jenkins pipeline script for automating Odoo migrations with parameterized builds and notification systems.</em></li>
+<li><strong>📋 <a href="/scripts/ansible-odoo-migration-playbook.yml">Ansible Migration Playbook</a></strong> - <em>Ansible playbook for automating Odoo migrations across multiple servers with error handling and notifications.</em></li>
 </ul>
 
 <h3>Integration &amp; Communication Testing</h3>

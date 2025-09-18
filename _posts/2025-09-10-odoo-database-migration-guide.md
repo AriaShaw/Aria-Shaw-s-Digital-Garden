@@ -3096,429 +3096,45 @@ I still use these templates for every migration I do. They've saved me from forg
 
 #### **Pre-Migration Planning Templates**
 
-**Migration Project Charter Template**
-```markdown
-# Odoo Migration Project Charter
+**📋 Migration Project Charter Template**
 
-## Project Overview
-- **Project Name:** [Business Name] Odoo Migration
-- **Project Manager:** [Name and Contact]
-- **Technical Lead:** [Name and Contact]
-- **Business Sponsor:** [Name and Contact]
-- **Target Go-Live Date:** [Date]
+**[Download Migration Project Charter Template (PDF)](./resources/migration-project-charter-template.md)**
 
-## Current State Analysis
-- **Current Odoo Version:** [Version]
-- **Database Size:** [Size in GB]
-- **Number of Users:** [Active Users]
-- **Custom Modules:** [List with Version Info]
-- **Key Integrations:** [List External Systems]
-- **Business Critical Processes:** [List and Priority]
+Complete project charter template covering scope, objectives, risk assessment, communication plan, and success metrics. Use this to establish clear expectations with stakeholders and secure proper project approval.
 
-## Migration Objectives
-- **Primary Objective:** [Main Business Goal]
-- **Success Criteria:** [Measurable Outcomes]
-- **Performance Targets:** [Specific Metrics]
-- **Compliance Requirements:** [GDPR, HIPAA, etc.]
+**📋 Risk Assessment Matrix Template**
 
-## Scope and Constraints
-### In Scope:
-- [ ] Database migration from [Version] to [Version]
-- [ ] Custom module updates and testing
-- [ ] Integration reconfiguration
-- [ ] User training and documentation
+**[Download Risk Assessment Matrix Template (PDF)](./resources/risk-assessment-matrix-template.pdf)**
 
-### Out of Scope:
-- [ ] New feature development
-- [ ] Business process redesign
-- [ ] Additional integrations
-
-### Constraints:
-- **Budget:** [Amount and Approval Authority]
-- **Timeline:** [Hard Deadlines and Dependencies]
-- **Resources:** [Team Availability and Skills]
-- **Technical:** [Infrastructure Limitations]
-
-## Risk Assessment
-| Risk Category | Probability | Impact | Mitigation Strategy |
-|---------------|-------------|---------|-------------------|
-| Data Loss | Low | High | Comprehensive backup strategy |
-| Extended Downtime | Medium | High | Zero-downtime migration approach |
-| Integration Failure | Medium | Medium | Thorough testing in staging |
-| User Adoption | High | Medium | Training and change management |
-
-## Communication Plan
-- **Stakeholder Updates:** [Frequency and Format]
-- **User Communications:** [Timeline and Channels]
-- **Escalation Procedures:** [Contact Tree and Thresholds]
-- **Go-Live Announcement:** [Communication Strategy]
-
-## Success Metrics
-- **Technical Metrics:**
-  - System availability: >99.9%
-  - Performance improvement: >20%
-  - Data integrity: 100%
-  - Security compliance: 100%
-
-- **Business Metrics:**
-  - User satisfaction: >90%
-  - Process efficiency improvement: >15%
-  - Support ticket reduction: >30%
-  - Training completion: 100%
-
-## Project Timeline
-[Detailed timeline with milestones, dependencies, and critical path]
-
-## Budget and Resources
-- **Software Costs:** [Licensing and Third-party Tools]
-- **Hardware/Infrastructure:** [Server, Storage, Network]
-- **Professional Services:** [Consulting and Support]
-- **Internal Resources:** [Team Time and Opportunity Cost]
-
-## Approval and Sign-off
-- **Business Sponsor:** [Name, Date, Signature]
-- **IT Leadership:** [Name, Date, Signature]
-- **Project Manager:** [Name, Date, Signature]
-```
-
-**Risk Assessment Matrix Template**
-```markdown
-# Migration Risk Assessment Matrix
-
-## Risk Identification Worksheet
-
-### Technical Risks
-| Risk Factor | Current State | Risk Level | Impact | Probability | Mitigation |
-|-------------|---------------|------------|---------|-------------|------------|
-| Database Size | [GB] | [H/M/L] | [1-5] | [1-5] | [Strategy] |
-| Custom Modules | [Count] | [H/M/L] | [1-5] | [1-5] | [Strategy] |
-| Integration Points | [Count] | [H/M/L] | [1-5] | [1-5] | [Strategy] |
-| Version Gap | [Versions] | [H/M/L] | [1-5] | [1-5] | [Strategy] |
-| Infrastructure Age | [Years] | [H/M/L] | [1-5] | [1-5] | [Strategy] |
-
-### Business Risks
-| Risk Factor | Current State | Risk Level | Impact | Probability | Mitigation |
-|-------------|---------------|------------|---------|-------------|------------|
-| Business Criticality | [24/7, Business Hours, etc.] | [H/M/L] | [1-5] | [1-5] | [Strategy] |
-| User Expertise | [Advanced, Intermediate, Basic] | [H/M/L] | [1-5] | [1-5] | [Strategy] |
-| Change Management | [History and Culture] | [H/M/L] | [1-5] | [1-5] | [Strategy] |
-| Budget Constraints | [Fixed, Flexible, Unknown] | [H/M/L] | [1-5] | [1-5] | [Strategy] |
-| Timeline Pressure | [Firm Deadline, Flexible] | [H/M/L] | [1-5] | [1-5] | [Strategy] |
-
-### Compliance and Security Risks
-| Risk Factor | Current State | Risk Level | Impact | Probability | Mitigation |
-|-------------|---------------|------------|---------|-------------|------------|
-| Data Sensitivity | [PII, Financial, Health, etc.] | [H/M/L] | [1-5] | [1-5] | [Strategy] |
-| Regulatory Requirements | [GDPR, HIPAA, SOX, etc.] | [H/M/L] | [1-5] | [1-5] | [Strategy] |
-| Audit Schedule | [Upcoming, Recent, None] | [H/M/L] | [1-5] | [1-5] | [Strategy] |
-| Security Infrastructure | [Mature, Developing, Basic] | [H/M/L] | [1-5] | [1-5] | [Strategy] |
-
-## Risk Score Calculation
-**Risk Score = Impact × Probability**
-- **1-4:** Low Risk (Green) - Standard procedures adequate
-- **5-12:** Medium Risk (Yellow) - Enhanced monitoring and mitigation required
-- **13-25:** High Risk (Red) - Dedicated mitigation plan and contingencies required
-
-## Mitigation Strategies by Risk Level
-
-### High Risk Items (Score 13-25)
-- [ ] Dedicated risk owner assigned
-- [ ] Detailed mitigation plan with timeline
-- [ ] Alternative approaches identified
-- [ ] Enhanced monitoring and early warning systems
-- [ ] Escalation procedures defined
-- [ ] Contingency budget allocated
-
-### Medium Risk Items (Score 5-12)
-- [ ] Monitoring plan in place
-- [ ] Mitigation strategies identified
-- [ ] Resource allocation planned
-- [ ] Review checkpoints scheduled
-
-### Low Risk Items (Score 1-4)
-- [ ] Standard procedures documented
-- [ ] Regular monitoring included in overall plan
-- [ ] Basic contingency measures identified
-```
+Comprehensive risk identification and scoring worksheet covering technical, business, and compliance risks. Includes mitigation strategies by risk level and scoring methodology to prioritize your preparation efforts.
 
 #### **Execution Checklists**
 
-**Pre-Migration Verification Checklist**
-```markdown
-# Pre-Migration Master Checklist
+**📋 Pre-Migration Verification Checklist**
 
-## Environment Preparation (T-7 Days)
-### Infrastructure Readiness
-- [ ] Target server provisioned and configured
-- [ ] Network connectivity tested between source and target
-- [ ] DNS entries created and tested
-- [ ] SSL certificates installed and validated
-- [ ] Firewall rules configured and tested
-- [ ] Monitoring systems configured for new environment
+**[Download Pre-Migration Verification Checklist (PDF)](./resources/pre-migration-verification-checklist.pdf)**
 
-### Software Installation and Configuration
-- [ ] Operating system updated and patched
-- [ ] PostgreSQL installed with correct version
-- [ ] Python dependencies installed and verified
-- [ ] Odoo application installed (target version)
-- [ ] Required system packages installed
-- [ ] Service accounts created with proper permissions
+This comprehensive checklist covers all critical preparation steps from T-7 days through T-1 day before your migration. Print this out and check off each item to ensure nothing is missed during the high-pressure pre-migration period.
 
-### Security Configuration
-- [ ] Database encryption configured and tested
-- [ ] SSL/TLS configured for all connections
-- [ ] Access controls implemented and tested
-- [ ] Audit logging enabled and functioning
-- [ ] Backup encryption configured and tested
-- [ ] Security monitoring tools deployed
+**📋 Migration Day Execution Checklist**
 
-## Data Preparation (T-3 Days)
-### Source System Analysis
-- [ ] Database size and structure analysis completed
-- [ ] Custom module inventory and compatibility check
-- [ ] Integration endpoints documented and tested
-- [ ] User account audit and cleanup completed
-- [ ] Data quality assessment performed
+**[Download Migration Day Execution Checklist (PDF)](./resources/migration-day-execution-checklist.pdf)**
 
-### Backup Creation and Validation
-- [ ] Full database backup created and verified
-- [ ] Filestore backup created and verified
-- [ ] Configuration backup created and verified
-- [ ] Custom modules backed up and version controlled
-- [ ] Backup restoration tested in staging environment
-- [ ] Backup integrity verification completed
-
-### Testing Environment Setup
-- [ ] Staging environment fully configured
-- [ ] Test migration executed successfully
-- [ ] Performance benchmarks established
-- [ ] User acceptance testing completed
-- [ ] Integration testing completed
-- [ ] Rollback procedures tested and documented
-
-## Team Preparation (T-1 Day)
-### Communication Readiness
-- [ ] Stakeholder notification sent
-- [ ] User communication distributed
-- [ ] Support team briefed and ready
-- [ ] Emergency contact list updated
-- [ ] Status page prepared for updates
-
-### Technical Team Readiness
-- [ ] All team members briefed on migration plan
-- [ ] Emergency procedures reviewed and understood
-- [ ] Tool access verified for all team members
-- [ ] Communication channels tested (Slack, phone, etc.)
-- [ ] Backup technical resources identified and briefed
-
-### Business Readiness
-- [ ] Business stakeholders available for testing
-- [ ] Key users identified and prepared for validation
-- [ ] Business processes documented for validation
-- [ ] Acceptance criteria clearly defined
-- [ ] Go/no-go decision criteria established
-```
-
-**Migration Day Execution Checklist**
-```markdown
-# Migration Day Master Checklist
-
-## Pre-Migration Phase (Hour 0-2)
-### Final Verifications
-- [ ] All backup systems verified operational
-- [ ] Team members confirmed available and ready
-- [ ] Communication channels tested and functional
-- [ ] Emergency procedures reviewed with team
-- [ ] Go/no-go decision checkpoint completed
-
-### System Preparation
-- [ ] Source system performance baseline captured
-- [ ] User notifications sent (migration starting)
-- [ ] External integrations paused or redirected
-- [ ] Maintenance mode enabled on source system
-- [ ] Final incremental backup completed
-
-## Migration Execution Phase (Hour 2-6)
-### Data Migration
-- [ ] Database export initiated with progress monitoring
-- [ ] Filestore copy initiated with verification
-- [ ] Configuration files transferred and validated
-- [ ] Custom modules deployed and configured
-- [ ] Database import completed successfully
-
-### System Configuration
-- [ ] Database connections tested and verified
-- [ ] Application startup completed without errors
-- [ ] Basic functionality testing completed
-- [ ] Integration endpoints configured and tested
-- [ ] User authentication tested for admin accounts
-
-### Validation Testing
-- [ ] Critical business processes tested
-- [ ] Data integrity verification completed
-- [ ] Performance benchmarks compared to baseline
-- [ ] Security configurations verified operational
-- [ ] Backup systems tested on new environment
-
-## Post-Migration Phase (Hour 6-8)
-### System Stabilization
-- [ ] All services running and stable
-- [ ] Performance monitoring active and reporting
-- [ ] Error logs reviewed and any issues addressed
-- [ ] Integration systems reconnected and tested
-- [ ] User access permissions verified correct
-
-### Business Validation
-- [ ] Key business processes validated by users
-- [ ] Critical reports generated and verified
-- [ ] Financial data integrity confirmed
-- [ ] Customer-facing systems tested
-- [ ] Support team briefed on any changes
-
-### Final Steps
-- [ ] DNS cutover completed (if applicable)
-- [ ] User notifications sent (migration complete)
-- [ ] Documentation updated with new system details
-- [ ] Source system secured or decommissioned
-- [ ] Post-migration monitoring activated
-
-## Success Criteria Verification
-- [ ] All planned functionality working correctly
-- [ ] Performance meeting or exceeding targets
-- [ ] No data loss or corruption detected
-- [ ] All integrations functioning properly
-- [ ] Users able to perform critical business functions
-```
+This hour-by-hour checklist guides you through migration day from initial verifications through final success criteria validation. Keep this handy during the actual migration to maintain focus and ensure all critical steps are completed.
 
 #### **Post-Migration Templates**
 
-**Performance Monitoring Dashboard Template**
-```markdown
-# Post-Migration Performance Dashboard
+**📋 Performance Monitoring Dashboard Template**
 
-## System Health Indicators
-### Database Performance
-- **Query Response Time:** [Current] vs [Baseline] vs [Target]
-- **Connection Count:** [Current] vs [Maximum] vs [Typical]
-- **Database Size:** [Current] vs [Pre-migration] vs [Expected]
-- **Cache Hit Ratio:** [Current] vs [Target] vs [Optimal]
+**[Download Performance Monitoring Dashboard Template (PDF)](./resources/performance-monitoring-dashboard-template.pdf)**
 
-### Application Performance  
-- **Page Load Times:** [Current] vs [Baseline] vs [Target]
-- **User Session Count:** [Current] vs [Typical] vs [Capacity]
-- **Error Rate:** [Current] vs [Baseline] vs [Threshold]
-- **Feature Availability:** [Current] vs [Expected] vs [SLA]
+Complete dashboard template for monitoring system health, business processes, and user experience metrics after migration. Includes action item tracking and immediate/short-term/long-term optimization categories.
 
-### Infrastructure Metrics
-- **CPU Utilization:** [Current] vs [Baseline] vs [Capacity]
-- **Memory Usage:** [Current] vs [Baseline] vs [Capacity]
-- **Disk I/O:** [Current] vs [Baseline] vs [Capacity]
-- **Network Throughput:** [Current] vs [Baseline] vs [Capacity]
+**📋 Lessons Learned Template**
 
-## Business Process Validation
-### Critical Functions Status
-- [ ] Order Processing: [Functional/Issues/Failed]
-- [ ] Inventory Management: [Functional/Issues/Failed]
-- [ ] Financial Reporting: [Functional/Issues/Failed]
-- [ ] User Authentication: [Functional/Issues/Failed]
-- [ ] External Integrations: [Functional/Issues/Failed]
+**[Download Lessons Learned Template (PDF)](./resources/lessons-learned-template.pdf)**
 
-### User Experience Metrics
-- **User Login Success Rate:** [Current] vs [Target]
-- **Support Ticket Volume:** [Current] vs [Baseline]
-- **User Satisfaction Score:** [Current] vs [Target]
-- **Training Completion Rate:** [Current] vs [Target]
-
-## Action Items and Follow-up
-### Immediate Actions (0-24 hours)
-- [ ] [Action Item 1 with Owner and Due Date]
-- [ ] [Action Item 2 with Owner and Due Date]
-
-### Short-term Actions (1-7 days)
-- [ ] [Action Item 1 with Owner and Due Date]
-- [ ] [Action Item 2 with Owner and Due Date]
-
-### Long-term Optimizations (1-4 weeks)
-- [ ] [Action Item 1 with Owner and Due Date]
-- [ ] [Action Item 2 with Owner and Due Date]
-```
-
-**Lessons Learned Template**
-```markdown
-# Migration Lessons Learned Report
-
-## Project Summary
-- **Migration Completed:** [Date]
-- **Duration:** [Planned] vs [Actual]
-- **Downtime:** [Planned] vs [Actual]
-- **Budget:** [Planned] vs [Actual]
-- **Scope:** [Planned] vs [Delivered]
-
-## What Went Well
-### Technical Successes
-1. **[Success Area]**
-   - What happened: [Description]
-   - Why it worked: [Root causes of success]
-   - Lessons for future: [How to replicate]
-
-2. **[Success Area]**
-   - What happened: [Description]
-   - Why it worked: [Root causes of success]
-   - Lessons for future: [How to replicate]
-
-### Process Successes
-1. **[Process Area]**
-   - What happened: [Description]  
-   - Why it worked: [Root causes of success]
-   - Lessons for future: [How to replicate]
-
-## What Could Be Improved
-### Technical Challenges
-1. **[Challenge Area]**
-   - What happened: [Description]
-   - Root cause: [Analysis]
-   - Impact: [Business and technical impact]
-   - Prevention strategy: [How to avoid in future]
-
-2. **[Challenge Area]**
-   - What happened: [Description]
-   - Root cause: [Analysis]
-   - Impact: [Business and technical impact]
-   - Prevention strategy: [How to avoid in future]
-
-### Process Improvements
-1. **[Process Area]**
-   - What happened: [Description]
-   - Root cause: [Analysis]
-   - Impact: [Business and technical impact]
-   - Improvement strategy: [How to do better next time]
-
-## Recommendations for Future Migrations
-### Technical Recommendations
-- [ ] [Specific technical recommendation with rationale]
-- [ ] [Specific technical recommendation with rationale]
-
-### Process Recommendations  
-- [ ] [Specific process recommendation with rationale]
-- [ ] [Specific process recommendation with rationale]
-
-### Tool and Resource Recommendations
-- [ ] [Tool or resource with specific use case]
-- [ ] [Tool or resource with specific use case]
-
-## Knowledge Transfer
-### Documentation Created/Updated
-- [ ] [Document name and location]
-- [ ] [Document name and location]
-
-### Skills Developed
-- [ ] [Skill area and team members who developed it]
-- [ ] [Skill area and team members who developed it]
-
-### Vendor/Consultant Relationships
-- [ ] [Vendor evaluation and recommendations]
-- [ ] [Vendor evaluation and recommendations]
-```
+Comprehensive post-migration analysis template to capture what went well, areas for improvement, and recommendations for future migrations. Essential for building organizational knowledge and improving your migration capabilities.
 
 ### Quick Reference Guides
 
@@ -3526,62 +3142,17 @@ I still use these templates for every migration I do. They've saved me from forg
 
 When things go wrong during migration, you don't have time to search through documentation. These quick reference cards give you the essential commands and procedures for the most common emergency scenarios.
 
-**Database Corruption Emergency Card**
-```
-🚨 DATABASE CORRUPTION DETECTED
-================================
+**🚨 Database Corruption Emergency Card**
 
-IMMEDIATE ACTIONS:
-1. STOP all application services
-   sudo systemctl stop odoo nginx
+**[Download Database Corruption Emergency Card (PDF)](./resources/database-corruption-emergency-card.pdf)**
 
-2. ASSESS damage extent
-   sudo -u postgres pg_dump --schema-only production_db > schema_check.sql
-   
-3. RESTORE from last known good backup
-   sudo -u postgres dropdb production_db
-   sudo -u postgres pg_restore -C -d postgres backup_file.backup
+Critical step-by-step emergency response procedures for database corruption incidents. Keep this printed and accessible during high-risk operations. Includes immediate actions, verification steps, and contact information.
 
-4. VERIFY data integrity
-   sudo -u postgres psql -d production_db -c "SELECT COUNT(*) FROM res_users;"
+**⚡ Performance Crisis Emergency Card**
 
-5. RESTART services only after verification
-   sudo systemctl start postgresql odoo nginx
+**[Download Performance Crisis Emergency Card (PDF)](./resources/performance-crisis-emergency-card.pdf)**
 
-CRITICAL: Document all actions taken for post-incident analysis
-```
-
-**Performance Crisis Quick Card**
-```
-⚡ SEVERE PERFORMANCE DEGRADATION
-=================================
-
-IMMEDIATE DIAGNOSTICS:
-1. CHECK system resources
-   top, htop, iostat -x 1
-
-2. IDENTIFY database bottlenecks  
-   sudo -u postgres psql -c "SELECT query, calls, total_time FROM pg_stat_statements ORDER BY total_time DESC LIMIT 5;"
-
-3. CHECK for blocking queries
-   sudo -u postgres psql -c "SELECT pid, state, query FROM pg_stat_activity WHERE state != 'idle';"
-
-4. MONITOR disk I/O
-   iotop -o
-
-IMMEDIATE ACTIONS:
-1. KILL problematic queries (if identified)
-   sudo -u postgres psql -c "SELECT pg_terminate_backend([PID]);"
-
-2. RESTART application (if safe)
-   sudo systemctl restart odoo
-
-3. INCREASE resource limits (if needed)
-   Edit /etc/postgresql/14/main/postgresql.conf
-   Increase shared_buffers, work_mem as appropriate
-
-ESCALATION: If no improvement in 15 minutes, implement rollback procedures
-```
+Emergency diagnostic and response procedures for severe performance degradation. Includes system resource checks, database bottleneck identification, and escalation thresholds. Essential for rapid incident response.
 
 ### Tool Integration Guides
 
@@ -3589,114 +3160,17 @@ ESCALATION: If no improvement in 15 minutes, implement rollback procedures
 
 Many organizations use existing DevOps toolchains. Here's how to integrate these migration tools with common platforms:
 
-**Jenkins Integration Example**
-```groovy
-pipeline {
-    agent any
-    
-    parameters {
-        choice(name: 'MIGRATION_TYPE', choices: ['assessment', 'backup', 'migration', 'rollback'], description: 'Type of migration operation')
-        string(name: 'DATABASE_NAME', defaultValue: 'production_db', description: 'Source database name')
-        string(name: 'TARGET_VERSION', defaultValue: '17.0', description: 'Target Odoo version')
-    }
-    
-    stages {
-        stage('Pre-Migration Assessment') {
-            when {
-                expression { params.MIGRATION_TYPE == 'assessment' }
-            }
-            steps {
-                script {
-                    sh '''
-                        cd /opt/migration-toolkit
-                        ./scripts/migration_assessment.sh --database ${DATABASE_NAME} --target-version ${TARGET_VERSION}
-                    '''
-                }
-            }
-        }
-        
-        stage('Create Backup') {
-            when {
-                expression { params.MIGRATION_TYPE == 'backup' }
-            }
-            steps {
-                script {
-                    sh '''
-                        cd /opt/migration-toolkit
-                        ./scripts/enterprise_backup.sh --database ${DATABASE_NAME} --verify-restore
-                    '''
-                }
-            }
-        }
-        
-        stage('Execute Migration') {
-            when {
-                expression { params.MIGRATION_TYPE == 'migration' }
-            }
-            steps {
-                script {
-                    sh '''
-                        cd /opt/migration-toolkit
-                        ./scripts/zero_downtime_migration.sh --source-db ${DATABASE_NAME} --target-version ${TARGET_VERSION}
-                    '''
-                }
-            }
-        }
-    }
-    
-    post {
-        always {
-            archiveArtifacts artifacts: 'logs/**/*', fingerprint: true
-            emailext body: "Migration ${params.MIGRATION_TYPE} completed for ${params.DATABASE_NAME}", 
-                     subject: "Odoo Migration Status: ${currentBuild.result}",
-                     to: "migration-team@company.com"
-        }
-    }
-}
-```
+**📥 Jenkins Integration Pipeline**
 
-**Ansible Playbook Integration**
-```yaml
----
-- name: Odoo Migration Automation
-  hosts: odoo_servers
-  become: yes
-  
-  vars:
-    source_database: "production_db"
-    target_version: "17.0"
-    backup_location: "/backup"
-    
-  tasks:
-    - name: Run migration assessment
-      command: >
-        /opt/migration-toolkit/scripts/migration_assessment.sh
-        --database {{ source_database }}
-        --target-version {{ target_version }}
-      register: assessment_result
-      
-    - name: Create comprehensive backup
-      command: >
-        /opt/migration-toolkit/scripts/enterprise_backup.sh
-        --database {{ source_database }}
-        --backup-dir {{ backup_location }}
-        --verify-restore
-      when: assessment_result.rc == 0
-      
-    - name: Execute migration
-      command: >
-        /opt/migration-toolkit/scripts/zero_downtime_migration.sh
-        --source-db {{ source_database }}
-        --target-version {{ target_version }}
-      register: migration_result
-      
-    - name: Send notification
-      mail:
-        to: migration-team@company.com
-        subject: "Migration completed for {{ source_database }}"
-        body: "Migration result: {{ migration_result.stdout }}"
-      when: migration_result is defined
-```
+**[Download Jenkins Migration Pipeline Script](./scripts/jenkins-odoo-migration-pipeline.groovy)**
+
+Complete Jenkins pipeline script for automating Odoo migrations with parameterized builds for assessment, backup, migration, and rollback operations. Includes artifact archiving and email notifications.
+
+**📥 Ansible Playbook Integration**
+
+**[Download Ansible Migration Playbook](./scripts/ansible-odoo-migration-playbook.yml)**
+
+Complete Ansible playbook for automating Odoo migrations across multiple servers. Includes assessment, backup, migration execution, and notification tasks with conditional logic and error handling.
 
 ### Documentation Standards
 
@@ -3704,72 +3178,11 @@ pipeline {
 
 I've learned that the best documentation isn't just accurate—it's maintainable. These templates are designed to be updated as your environment changes, not written once and forgotten.
 
-**Migration Runbook Template**
-```markdown
-# [Company Name] Odoo Migration Runbook
+**📋 Migration Runbook Template**
 
-## Document Control
-- **Version:** [Version Number]
-- **Last Updated:** [Date]
-- **Updated By:** [Name and Role]
-- **Next Review Date:** [Date]
-- **Approval:** [Name and Date]
+**[Download Migration Runbook Template (PDF)](./resources/migration-runbook-template.pdf)**
 
-## Environment-Specific Information
-### Production Environment
-- **Server:** [Hostname/IP]
-- **Database:** [Name and Version]
-- **Odoo Version:** [Current Version]
-- **Custom Modules:** [List with Versions]
-- **Integrations:** [External Systems]
-
-### Target Environment  
-- **Server:** [Hostname/IP]
-- **Database:** [Name and Version]
-- **Odoo Version:** [Target Version]
-- **Infrastructure Changes:** [Hardware/Cloud Changes]
-
-## Standard Operating Procedures
-### Pre-Migration Procedures
-1. [Step-by-step procedure with commands]
-2. [Step-by-step procedure with commands]
-
-### Migration Execution Procedures
-1. [Step-by-step procedure with commands]
-2. [Step-by-step procedure with commands]
-
-### Post-Migration Procedures
-1. [Step-by-step procedure with commands]
-2. [Step-by-step procedure with commands]
-
-## Emergency Procedures
-### Rollback Procedure
-[Detailed steps for emergency rollback]
-
-### Escalation Contacts
-- **Primary Technical:** [Name, Phone, Email]
-- **Secondary Technical:** [Name, Phone, Email]
-- **Business Owner:** [Name, Phone, Email]
-- **Executive Sponsor:** [Name, Phone, Email]
-
-## Validation Criteria
-### Technical Validation
-- [ ] [Specific technical check with expected result]
-- [ ] [Specific technical check with expected result]
-
-### Business Validation
-- [ ] [Specific business process with validation steps]
-- [ ] [Specific business process with validation steps]
-
-## Historical Information
-### Previous Migrations
-- **[Date]:** [Summary of changes and lessons learned]
-- **[Date]:** [Summary of changes and lessons learned]
-
-### Known Issues and Workarounds
-- **[Issue]:** [Description and workaround]
-- **[Issue]:** [Description and workaround]
-```
+Complete organizational runbook template with environment-specific information, standard operating procedures, emergency contacts, and validation criteria. This living document grows with your migration experience and becomes your operational playbook.
 
 ---
 
@@ -3934,25 +3347,11 @@ After extensive testing across multiple cloud providers, here's what works relia
 - **Version control**: Every backup is preserved with rollback capability
 - **Global availability**: Access your backups from anywhere during disaster recovery
 
-**Implementation Script:**
-```bash
-# Professional-grade backup with automatic cloud sync
-#!/bin/bash
-DATE=$(date +%Y%m%d_%H%M%S)
+**📥 Professional Backup Script:**
 
-# Create local backup
-pg_dump -U odoo production > /backup/db_$DATE.sql
+**[Download Professional Backup with Cloud Sync Script](./scripts/professional-backup-with-cloud-sync.sh)**
 
-# Sync to S3 with versioning
-aws s3 sync /backup/ s3://your-company-odoo-backups/daily/ \
-  --storage-class INTELLIGENT_TIERING \
-  --delete
-
-# Keep 30 days of versioned backups
-aws s3api put-bucket-versioning \
-  --bucket your-company-odoo-backups \
-  --versioning-configuration Status=Enabled
-```
+Production-ready backup script with S3 integration, integrity verification, compression, checksums, and automatic retention management. Includes comprehensive error handling and notification capabilities.
 
 **Real-World Cost Analysis:**
 A typical 50GB Odoo backup costs approximately €3-8/month in S3, compared to €15-50/month for specialized backup services, while providing enterprise-grade reliability.

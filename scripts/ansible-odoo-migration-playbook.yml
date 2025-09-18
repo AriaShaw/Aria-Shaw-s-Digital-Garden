@@ -1,0 +1,39 @@
+---
+- name: Odoo Migration Automation
+  hosts: odoo_servers
+  become: yes
+
+  vars:
+    source_database: "production_db"
+    target_version: "17.0"
+    backup_location: "/backup"
+
+  tasks:
+    - name: Run migration assessment
+      command: >
+        /opt/migration-toolkit/scripts/migration_assessment.sh
+        --database {{ source_database }}
+        --target-version {{ target_version }}
+      register: assessment_result
+
+    - name: Create comprehensive backup
+      command: >
+        /opt/migration-toolkit/scripts/enterprise_backup.sh
+        --database {{ source_database }}
+        --backup-dir {{ backup_location }}
+        --verify-restore
+      when: assessment_result.rc == 0
+
+    - name: Execute migration
+      command: >
+        /opt/migration-toolkit/scripts/zero_downtime_migration.sh
+        --source-db {{ source_database }}
+        --target-version {{ target_version }}
+      register: migration_result
+
+    - name: Send notification
+      mail:
+        to: migration-team@company.com
+        subject: "Migration completed for {{ source_database }}"
+        body: "Migration result: {{ migration_result.stdout }}"
+      when: migration_result is defined
