@@ -1285,37 +1285,9 @@ LIMIT 5;"
 
 ## The Migration Disaster Prevention Checklist ✅
 
-Print this checklist and keep it handy during your migration:
+**📋 [Download Migration Disaster Prevention Checklist (PDF)](./resources/migration-disaster-prevention-checklist.pdf)**
 
-**Pre-Migration (Must Complete All):**
-- [ ] PostgreSQL version compatibility verified on both servers
-- [ ] Custom modules tested on target Odoo version in isolated environment
-- [ ] Complete authentication backup created and tested
-- [ ] Asset clearing procedure tested in staging
-- [ ] Performance baseline metrics documented
-- [ ] Emergency rollback procedure tested and documented
-
-**During Migration (Monitor Continuously):**
-- [ ] Database restoration progress monitored for errors
-- [ ] PostgreSQL error logs watched for compatibility issues
-- [ ] Module loading monitored for missing dependencies
-- [ ] Authentication tested with multiple user accounts
-- [ ] Asset loading verified in multiple browsers
-- [ ] Performance spot-checks conducted at each major step
-
-**Post-Migration (First 24 Hours):**
-- [ ] Full authentication testing completed
-- [ ] All custom modules verified functional
-- [ ] Asset loading confirmed across all major browsers
-- [ ] Performance benchmarks meet or exceed baseline
-- [ ] Database integrity checks passed
-- [ ] User acceptance testing completed successfully
-
-**Emergency Contacts Ready:**
-- [ ] Database administrator contact information
-- [ ] Odoo community forum bookmarked
-- [ ] Professional support contact (if available)
-- [ ] Internal team emergency communication plan
+Essential pre-migration, during-migration, and post-migration verification checklist. Includes emergency contact information and critical system details. Print this and keep it handy during your migration to prevent common disasters.
 
 **💡 Pro Tip: Organization Under Pressure**
 
@@ -2745,46 +2717,9 @@ python3 sensitive_data_scanner.py
 
 ### Security Validation Checklist
 
-**Pre-Migration Security Verification:**
+**🔐 [Download Security Validation Checklist (PDF)](./resources/security-validation-checklist.pdf)**
 
-```bash
-# Download and run the comprehensive security validation script
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/security_validation.sh
-chmod +x security_validation.sh
-sudo ./security_validation.sh --full-audit
-```
-
-**Manual security checklist for critical systems:**
-
-☐ **Encryption Verification**
-- [ ] Database encryption at rest enabled and tested
-- [ ] SSL/TLS certificates valid and properly configured  
-- [ ] Backup encryption working with key management
-- [ ] Network traffic encryption verified
-
-☐ **Access Control Validation**
-- [ ] All default passwords changed
-- [ ] Multi-factor authentication enabled for admin accounts
-- [ ] Principle of least privilege applied to all user accounts
-- [ ] Guest/demo accounts disabled or removed
-
-☐ **Data Protection Compliance**
-- [ ] Personal data inventory completed and classified
-- [ ] Data retention policies implemented and tested
-- [ ] Consent management system functional
-- [ ] Data subject rights procedures documented
-
-☐ **Audit and Monitoring**
-- [ ] Comprehensive logging enabled for all systems
-- [ ] Log aggregation and analysis configured
-- [ ] Intrusion detection systems active
-- [ ] Backup integrity monitoring functional
-
-☐ **Incident Response Preparation**
-- [ ] Security incident response plan documented
-- [ ] Emergency contact lists updated
-- [ ] Backup restoration procedures tested
-- [ ] Communication templates prepared for stakeholders
+Comprehensive security verification checklist covering encryption, access control, data protection compliance, audit monitoring, and incident response preparation. Includes automated validation scripts and manual verification procedures with escalation matrix.
 
 ### What I've Learned About Security in Practice
 
@@ -3098,7 +3033,7 @@ I still use these templates for every migration I do. They've saved me from forg
 
 **📋 Migration Project Charter Template**
 
-**[Download Migration Project Charter Template (PDF)](./resources/migration-project-charter-template.md)**
+**[Download Migration Project Charter Template (PDF)](./resources/migration-project-charter-template.pdf)**
 
 Complete project charter template covering scope, objectives, risk assessment, communication plan, and success metrics. Use this to establish clear expectations with stakeholders and secure proper project approval.
 
