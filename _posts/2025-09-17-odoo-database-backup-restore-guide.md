@@ -2557,7 +2557,7 @@ Everything you need to implement bulletproof backup strategies, packaged in a pr
 - Meet compliance requirements with documented procedures
 - Train your team with proven, tested methods
 
-**[Get The Complete Backup Mastery Package - $19 →](https://ariashaw.gumroad.com/l/odoo-backup-mastery)**
+**[Get The Complete Backup Mastery Package - $19 →](https://ariashaw.gumroad.com/l/odoobackup)**
 
 ### 🎯 Personalized Hosting Blueprint Service ($29)
 
