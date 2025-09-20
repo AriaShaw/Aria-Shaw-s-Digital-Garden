@@ -359,7 +359,7 @@ work_mem = 4MB
 maintenance_work_mem = 64MB
 ```
 
-![Odoo enterprise architecture diagram showing separated application and database tiers with load balancing](assets\images\Odoo Separated Architecture Design.webp)
+![Odoo enterprise architecture diagram showing separated application and database tiers with load balancing](/assets/images/Odoo Separated Architecture Design.webp)
 
 #### Operating System Recommendations
 
@@ -822,7 +822,7 @@ Before touching a single record, you need to map exactly what data you have and 
 - Which systems feed data into your current setup and how will migration affect them?
 - What's your acceptable downtime window for business operations?
 
-![Complete data migration workflow from legacy systems to Odoo with detailed field mapping](assets\images\Data Migration Flow from Legacy to Odoo.webp)
+![Complete data migration workflow from legacy systems to Odoo with detailed field mapping](/assets/images/Data Migration Flow from Legacy to Odoo.webp)
 
 #### Data Migration Risk Assessment
 
@@ -1274,7 +1274,7 @@ Custom modules often break during Odoo version upgrades:
 - **🛡️ [Database Corruption Detector](/scripts/db_corruption_detector.sh)** - Detect issues before they spread
 - **🔄 [Intelligent Rollback System](/scripts/intelligent_rollback.sh)** - Basic rollback for failed customizations
 
-![Step-by-step Odoo module configuration process from basic setup to advanced customization](assets/images/Odoo Module Configuration Workflow.webp)
+![Step-by-step Odoo module configuration process from basic setup to advanced customization](/assets/images/Odoo Module Configuration Workflow.webp)
 
 ---
 
@@ -1634,7 +1634,7 @@ Remote training requires different approaches and tools than in-person sessions.
 - **💗 [Advanced Odoo Health Monitor](/scripts/odoo_health_monitor.sh)** - Monitor system performance for remote users
 - **📈 [Monthly Health Check](/scripts/monthly_health_check.sh)** - Regular system review with remote access validation
 
-![Role-based Odoo training framework with competency tracking and adoption metrics](assets/images/Odoo Training and Adoption Workflow.webp)
+![Role-based Odoo training framework with competency tracking and adoption metrics](/assets/images/Odoo Training and Adoption Workflow.webp)
 
 ---
 
@@ -2280,7 +2280,7 @@ Navigate to Settings > Technical > Database Structure > Models
 - **🌐 [API Diagnostics Tool](/scripts/api_diagnostics.py)** - Basic external API connectivity validation
 - **📧 [SMTP Configuration Tester](/scripts/test_smtp.py)** - Email system integration validation
 
-![Complete Odoo troubleshooting decision tree with diagnostic steps and resolution paths](assets/images/Odoo Troubleshooting Decision Tree.webp)
+![Complete Odoo troubleshooting decision tree with diagnostic steps and resolution paths](/assets/images/Odoo Troubleshooting Decision Tree.webp)
 
 ---
 
@@ -2610,7 +2610,7 @@ Partner presentations at Odoo events reveal expertise levels and communication s
 - Proactive identification and resolution of relationship issues
 - Continuous improvement planning for partnership effectiveness
 
-![Odoo implementation partner evaluation and team building process workflow](assets/images/Partner Selection and Team Building Workflow.webp)
+![Odoo implementation partner evaluation and team building process workflow](/assets/images/Partner Selection and Team Building Workflow.webp)
 
 ---
 
@@ -3075,7 +3075,7 @@ Effective milestone tracking provides early warning of potential issues while ma
 - Task redistribution based on individual strengths and availability
 - Knowledge transfer acceleration to build internal capabilities
 
-![Complete Odoo implementation project management framework with phases and milestones](assets/images/Odoo Implementation Project Management Framework.webp)
+![Complete Odoo implementation project management framework with phases and milestones](/assets/images/Odoo Implementation Project Management Framework.webp)
 
 ---
 
@@ -3319,7 +3319,7 @@ Use each system for its strengths while maintaining data consistency through int
 - Monitoring and logging for integration health
 - Backup and recovery procedures that account for system dependencies
 
-![Hybrid integration architecture patterns for connecting Odoo with legacy systems](assets/images/Network Architecture for Odoo Production Environment.webp)
+![Hybrid integration architecture patterns for connecting Odoo with legacy systems](/assets/images/Network Architecture for Odoo Production Environment.webp)
 
 ---
 
