@@ -138,16 +138,17 @@ This decision alone can make or break your implementation. Here's how to choose 
 
 The market has shifted dramatically toward cloud-first deployments. Here's why:
 
-**Cloud Deployment (Recommended for 90% of businesses):**
-- **Faster implementation**: 2-4 weeks vs 3-6 months for on-premise
-- **Lower upfront costs**: No server hardware, no IT infrastructure
-- **Automatic updates**: New features and security patches handled automatically
-- **Scalability**: Add users instantly without hardware concerns
-
-**On-Premise (Only if you have specific requirements):**
-- **Data sovereignty**: Required in certain industries or countries
-- **Custom integrations**: Deep ERP integration with legacy systems
-- **High user volume**: 100+ concurrent users with heavy customization
+| **Factor** | ***Cloud Deployment*** | **On-Premise** |
+|------------|----------------------|----------------|
+| **Recommendation** | ***Recommended for 90% of businesses*** | Only for specific requirements |
+| **Implementation Time** | ***2-4 weeks*** | 3-6 months |
+| **Upfront Costs** | ***No server hardware or IT infrastructure*** | High capital investment |
+| **Updates & Maintenance** | ***Automatic updates and security patches*** | Manual management required |
+| **Scalability** | ***Add users instantly*** | Hardware planning required |
+| **Data Control** | Managed by provider | ***Full data sovereignty*** |
+| **Custom Integrations** | Standard integrations | ***Deep ERP integration with legacy systems*** |
+| **User Volume** | Optimal for <100 users | ***100+ concurrent users with heavy customization*** |
+| **Best For** | ***Most small to medium businesses*** | Highly regulated industries, complex legacy systems |
 
 ### Competitive Analysis: Why Odoo Over Alternatives
 
@@ -3269,33 +3270,7 @@ Use each system for its strengths while maintaining data consistency through int
 
 **Alternative Solution Decision Matrix:**
 
-Use this framework to evaluate whether Odoo is right for your situation:
-
-```
-Business Fit Assessment:
-□ Standard business processes (Score: +2 for Odoo)
-□ Complex industry-specific requirements (Score: -2 for Odoo)
-□ Multi-entity operations (Score: -1 for Odoo)
-□ Growth-stage business (Score: +1 for Odoo)
-
-Technical Capability Assessment:
-□ Strong internal IT team (Score: +1 for Odoo)
-□ Preference for vendor-managed solutions (Score: -2 for Odoo)
-□ Customization requirements (Score: -1 for Odoo)
-□ Integration complexity (Score: -1 for Odoo)
-
-Budget and Resource Assessment:
-□ Limited implementation budget (Score: +2 for Odoo)
-□ Ongoing support budget concerns (Score: -1 for Odoo)
-□ Need for premium vendor support (Score: -2 for Odoo)
-□ Long-term TCO focus (Score: +1 for Odoo)
-
-Scoring:
-+4 to +6: Odoo is likely a strong fit
-+1 to +3: Odoo could work with careful planning
--1 to -3: Consider alternatives or hybrid approaches
--4 to -6: Alternatives likely better choice
-```
+**📋 [Download Odoo Decision Matrix Framework](/resources/odoo-decision-matrix-framework.pdf)** - Complete evaluation framework to assess whether Odoo is right for your business situation
 
 **Migration Readiness Checklist:**
 
