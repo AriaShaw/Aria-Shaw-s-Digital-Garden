@@ -359,7 +359,7 @@ work_mem = 4MB
 maintenance_work_mem = 64MB
 ```
 
-![Odoo enterprise architecture diagram showing separated application and database tiers with load balancing](assets/images/Odoo Separated Architecture Design.webp)
+![Odoo enterprise architecture diagram showing separated application and database tiers with load balancing](assets\images\Odoo Separated Architecture Design.webp)
 
 #### Operating System Recommendations
 
@@ -822,7 +822,7 @@ Before touching a single record, you need to map exactly what data you have and 
 - Which systems feed data into your current setup and how will migration affect them?
 - What's your acceptable downtime window for business operations?
 
-![Complete data migration workflow from legacy systems to Odoo with detailed field mapping](assets/images/Data Migration Flow from Legacy to Odoo.webp)
+![Complete data migration workflow from legacy systems to Odoo with detailed field mapping](assets\images\Data Migration Flow from Legacy to Odoo.webp)
 
 #### Data Migration Risk Assessment
 
