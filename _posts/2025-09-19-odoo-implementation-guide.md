@@ -123,17 +123,31 @@ This decision alone can make or break your implementation. Here's how to choose 
 
 The market has shifted dramatically toward cloud-first deployments. Here's why:
 
-| **Factor** | ***Cloud Deployment*** | **On-Premise** |
-|------------|----------------------|----------------|
-| **Recommendation** | ***Recommended for 90% of businesses*** | Only for specific requirements |
-| **Implementation Time** | ***2-4 weeks*** | 3-6 months |
-| **Upfront Costs** | ***No server hardware or IT infrastructure*** | High capital investment |
+| **Factor** | **Cloud Deployment** | **On-Premise** |
+|------------|---------------------|----------------|
+| **Overall Recommendation** | ***Recommended for 90% of businesses*** | Only for specific requirements |
+| **Implementation Timeline** | ***2-4 weeks*** | 3-6 months |
+| **Upfront Investment** | ***No server hardware or IT infrastructure*** | High capital investment required |
 | **Updates & Maintenance** | ***Automatic updates and security patches*** | Manual management required |
 | **Scalability** | ***Add users instantly*** | Hardware planning required |
 | **Data Control** | Managed by provider | ***Full data sovereignty*** |
-| **Custom Integrations** | Standard integrations | ***Deep ERP integration with legacy systems*** |
-| **User Volume** | Optimal for <100 users | ***100+ concurrent users with heavy customization*** |
-| **Best For** | ***Most small to medium businesses*** | Highly regulated industries, complex legacy systems |
+| **Custom Integrations** | Standard integrations available | ***Deep ERP integration with legacy systems*** |
+| **Optimal User Volume** | ***Ideal for <100 users*** | ***100+ concurrent users with heavy customization*** |
+| **Primary Use Case** | ***Most small to medium businesses*** | Highly regulated industries, complex legacy systems |
+
+**Key Decision Factors:**
+- **Cloud Advantages**: *Faster deployment, lower costs, automatic maintenance, instant scaling*
+- **On-Premise Advantages**: *Complete data control, deep customization, enterprise-scale performance*
+
+**Total Cost Comparison (5-Year Analysis):**
+
+| **Business Size** | **Cloud Deployment** | **On-Premise** | **Cost Difference** |
+|------------------|---------------------|----------------|---------------------|
+| **Small (10 users)** | ***$15,000 - $25,000*** | $35,000 - $50,000 | ***40-50% savings*** |
+| **Medium (25 users)** | ***$35,000 - $60,000*** | $75,000 - $120,000 | ***50-60% savings*** |
+| **Large (50+ users)** | ***$70,000 - $120,000*** | $150,000 - $300,000 | ***55-65% savings*** |
+
+*Note: On-premise costs include server hardware, IT infrastructure, maintenance, security, and backup systems*
 
 ### Competitive Analysis: Why Odoo Over Alternatives
 
