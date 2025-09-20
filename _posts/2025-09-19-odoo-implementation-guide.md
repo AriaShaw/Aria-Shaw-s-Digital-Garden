@@ -337,10 +337,8 @@ Cons: Single point of failure, limited scalability
 **Multi-Server Architecture (25+ users):**
 This is where professional Odoo implementations start:
 
-```
-[Load Balancer] → [App Server 1] → [Database Server]
-                  [App Server 2] ↗
-```
+![Multi-Server Architecture diagram showing load balancer, application servers, database tier, and storage tier](/assets/images/Multi-Server Architecture.webp)
+*Professional multi-tier Odoo architecture with horizontal scaling capability and high availability design*
 
 **Application Tier:**
 - Dedicated Odoo application servers
