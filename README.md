@@ -24,6 +24,10 @@ Here you will find a growing library of guides. Each one is designed to fill an 
 
 *Master reliable backup and restore procedures for Odoo databases. From web interface methods to automated scripts and cloud integration, this guide covers everything administrators need to protect their business data and recover from disasters with confidence.*
 
+### 🚀 [Odoo Implementation Guide 2025: Avoid $250K+ Failures](/odoo-implementation-guide/)
+
+*The complete Odoo implementation roadmap that prevents costly failures. 6-phase methodology, ready-to-use scripts, and real success strategies from 300+ implementations. Everything you need to transform business chaos into systematic success.*
+
 ---
 *More playbooks are being cultivated and will be published here soon.*
 
@@ -48,9 +52,6 @@ Alongside the guides, I build and maintain a collection of open-source scripts a
 
 * **💼 [Inter-company Transaction Manager](/scripts/intercompany_transaction_manager.py)**
     *Automates complex multi-company accounting that used to require manual journal entries and reconciliation. Saves 40+ hours per month for businesses with multiple entities.*
-
-* **🛡️ [Intelligent Rollback System](/scripts/intelligent_rollback.sh)**
-    *Your migration safety net—preserves new data while rolling back to stable state. The difference between a learning experience and a business crisis.*
 
 * **🚀 [Production Migration Executor](/scripts/production_migration.sh)**
     *Zero-downtime migration execution with automatic validation and rollback. Reduces migration downtime from 8+ hours to under 30 minutes.*

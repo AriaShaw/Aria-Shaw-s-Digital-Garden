@@ -236,6 +236,28 @@ Welcome to the Toolkit, a curated library of open-source scripts and tools I've 
 </div>
 </div>
 
+{% capture implementation_content %}
+<h3>Installation &amp; Setup Scripts</h3>
+<ul>
+<li><strong>🚀 <a href="/scripts/odoo-install.sh">Odoo 18 Production Installation Script</a></strong> - <em>Complete Ubuntu 22.04/24.04 setup script for Odoo 18 with PostgreSQL, nginx, SSL, and production optimizations.</em></li>
+<li><strong>🐳 <a href="/scripts/odoo-docker-compose.yml">Odoo Docker Compose Configuration</a></strong> - <em>Production-ready Docker Compose setup with PostgreSQL, persistent volumes, and environment configuration.</em></li>
+</ul>
+{% endcapture %}
+
+<div class="toolkit-accordion">
+<button class="accordion-header" aria-expanded="false">
+<span class="accordion-icon">🚀</span>
+<span class="accordion-title">Odoo Implementation & Production Scripts</span>
+<span class="accordion-chevron">▼</span>
+</button>
+<div class="accordion-content">
+<div class="accordion-meta">
+📖 <strong>From the complete guide:</strong> <a href="/odoo-implementation-guide/">Odoo Implementation Guide 2025: Avoid $250K+ Failures</a>
+</div>
+{{ implementation_content }}
+</div>
+</div>
+
 <div class="toolkit-accordion">
 <button class="accordion-header" aria-expanded="false">
 <span class="accordion-icon">🧮</span>
