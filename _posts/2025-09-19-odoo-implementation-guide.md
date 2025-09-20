@@ -360,6 +360,7 @@ maintenance_work_mem = 64MB
 ```
 
 ![Odoo enterprise architecture diagram showing separated application and database tiers with load balancing](/assets/images/Odoo Separated Architecture Design.webp)
+*Enterprise-grade Odoo architecture with separated application and database layers for optimal performance and security*
 
 #### Operating System Recommendations
 
@@ -823,6 +824,7 @@ Before touching a single record, you need to map exactly what data you have and 
 - What's your acceptable downtime window for business operations?
 
 ![Complete data migration workflow from legacy systems to Odoo with detailed field mapping](/assets/images/Data Migration Flow from Legacy to Odoo.webp)
+*Comprehensive data migration strategy showing how different data types flow from legacy systems into Odoo modules*
 
 #### Data Migration Risk Assessment
 
@@ -1275,6 +1277,7 @@ Custom modules often break during Odoo version upgrades:
 - **🔄 [Intelligent Rollback System](/scripts/intelligent_rollback.sh)** - Basic rollback for failed customizations
 
 ![Step-by-step Odoo module configuration process from basic setup to advanced customization](/assets/images/Odoo Module Configuration Workflow.webp)
+*Progressive module configuration workflow from basic setup through advanced customization and quality assurance*
 
 ---
 
@@ -1635,6 +1638,7 @@ Remote training requires different approaches and tools than in-person sessions.
 - **📈 [Monthly Health Check](/scripts/monthly_health_check.sh)** - Regular system review with remote access validation
 
 ![Role-based Odoo training framework with competency tracking and adoption metrics](/assets/images/Odoo Training and Adoption Workflow.webp)
+*Comprehensive training framework showing role-specific learning paths and adoption tracking methodologies*
 
 ---
 
@@ -2281,6 +2285,7 @@ Navigate to Settings > Technical > Database Structure > Models
 - **📧 [SMTP Configuration Tester](/scripts/test_smtp.py)** - Email system integration validation
 
 ![Complete Odoo troubleshooting decision tree with diagnostic steps and resolution paths](/assets/images/Odoo Troubleshooting Decision Tree.webp)
+*Systematic troubleshooting flowchart covering performance, integration, access, and data quality issues*
 
 ---
 
@@ -2611,6 +2616,7 @@ Partner presentations at Odoo events reveal expertise levels and communication s
 - Continuous improvement planning for partnership effectiveness
 
 ![Odoo implementation partner evaluation and team building process workflow](/assets/images/Partner Selection and Team Building Workflow.webp)
+*Strategic partner selection framework with evaluation criteria, team structure design, and relationship management*
 
 ---
 
@@ -3076,6 +3082,7 @@ Effective milestone tracking provides early warning of potential issues while ma
 - Knowledge transfer acceleration to build internal capabilities
 
 ![Complete Odoo implementation project management framework with phases and milestones](/assets/images/Odoo Implementation Project Management Framework.webp)
+*End-to-end project management framework showing phases, milestones, risk management, and tracking systems*
 
 ---
 
@@ -3320,6 +3327,7 @@ Use each system for its strengths while maintaining data consistency through int
 - Backup and recovery procedures that account for system dependencies
 
 ![Hybrid integration architecture patterns for connecting Odoo with legacy systems](/assets/images/Network Architecture for Odoo Production Environment.webp)
+*Production network architecture demonstrating secure integration patterns between Odoo and existing legacy systems*
 
 ---
 
