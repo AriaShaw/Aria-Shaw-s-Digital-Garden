@@ -73,20 +73,11 @@ Let me share something that might surprise you: the companies that succeed with 
 **Total Implementation Investment:**
 Based on my analysis of 2025 projects, here's what you should budget:
 
-- **Small Business (5-15 users)**: $5,000 - $15,000 total
-  - Software: $1,800 - $5,400 annually
-  - Implementation: $3,000 - $8,000
-  - Training: $1,000 - $2,000
-
-- **Medium Business (25-50 users)**: $15,000 - $50,000 total
-  - Software: $7,500 - $15,000 annually
-  - Implementation: $8,000 - $25,000
-  - Customization: $3,000 - $15,000
-
-- **Enterprise (50+ users)**: $50,000+ total
-  - Software: $15,000+ annually
-  - Implementation: $25,000 - $100,000+
-  - Integration & Customization: $15,000+
+| Business Size | Users | Total Investment | Software (Annual) | Implementation | Training/Customization |
+|---------------|-------|------------------|-------------------|----------------|----------------------|
+| **Small Business** | 5-15 | $5,000 - $15,000 | $1,800 - $5,400 | $3,000 - $8,000 | $1,000 - $2,000 |
+| **Medium Business** | 25-50 | $15,000 - $50,000 | $7,500 - $15,000 | $8,000 - $25,000 | $3,000 - $15,000 |
+| **Enterprise** | 50+ | $50,000+ | $15,000+ | $25,000 - $100,000+ | $15,000+ |
 
 #### ROI Analysis: Why Odoo Beats the Competition
 
@@ -140,23 +131,8 @@ This decision alone can make or break your implementation. Here's how to choose 
 
 #### Decision Framework: Community vs Enterprise
 
-Ask yourself these questions:
-
-1. **Do you have a dedicated IT person who can manage Linux servers?**
-   - No → Enterprise
-   - Yes → Community is viable
-
-2. **Do you need mobile access for field workers or remote employees?**
-   - Yes → Enterprise (mobile apps not available in Community)
-   - No → Either option works
-
-3. **Will you need custom workflows or forms?**
-   - Yes → Enterprise (for Studio visual builder)
-   - No → Community sufficient
-
-4. **Is downtime during business hours acceptable?**
-   - No → Enterprise (professional support)
-   - Yes → Community acceptable
+![Odoo Edition Decision Tree - Choose Community or Enterprise based on your specific needs](/assets/images/Odoo Edition Decision Tree.webp)
+*Decision tree to help you choose between Odoo Community and Enterprise editions based on your technical capabilities and business requirements*
 
 #### Cloud vs On-Premise: The 2025 Strategic Choice
 
@@ -177,53 +153,27 @@ The market has shifted dramatically toward cloud-first deployments. Here's why:
 
 I've implemented systems across the ERP spectrum. Here's an honest comparison based on 2025 realities.
 
-#### Odoo vs SAP Business One
+| Comparison Factor | **Odoo** | SAP Business One | NetSuite | Microsoft Dynamics 365 |
+|-------------------|----------|------------------|----------|------------------------|
+| **Implementation Timeline** | ***4-12 weeks*** | 6-18 months | 4-8 months | 6-12 months |
+| **5-Year Cost (25 users)** | ***~$75,000*** | ~$125,000 | ~$150,000 | ~$110,000 |
+| **Pricing Model** | ***Flat $24.90/user*** | Per-user + modules | $99/user + add-ons | Per-user + app licenses |
+| **Customization** | ***Visual Studio builder*** | Technical consultants | Limited flexibility | Complex licensing |
+| **User Experience** | ***Modern, consistent*** | Traditional interface | Web-based | Mixed interfaces |
+| **Mobile Access** | ***Included in Enterprise*** | Additional cost | Additional modules | Varies by module |
+| **Integration** | ***Built-in between modules*** | Third-party required | Oracle ecosystem | Additional licenses |
+| **Open Source Foundation** | ***Yes - unlimited flexibility*** | No | No | No |
+| **Best For** | ***SME to mid-market*** | Large enterprises | Oracle ecosystem | Microsoft-centric orgs |
 
-**Implementation Timeline:**
-- Odoo: 4-12 weeks for standard implementation
-- SAP: 6-18 months for comparable functionality
+#### Winner Analysis
 
-**Total Cost (5 years, 25 users):**
-- Odoo: ~$75,000
-- SAP: ~$125,000
-
-**Customization:**
-- Odoo: Visual Studio builder, extensive app marketplace
-- SAP: Requires technical consultants, expensive customization
-
-**Winner**: Odoo for SME businesses. SAP only if you need their specific industry modules.
-
-#### Odoo vs NetSuite
-
-**Pricing Transparency:**
-- Odoo: Flat $24.90/user, all apps included
-- NetSuite: Starts at $99/user, but add-ons quickly multiply costs
-
-**Implementation Complexity:**
-- Odoo: Can be implemented by smaller teams, modular approach
-- NetSuite: Requires Oracle-certified partners, formal methodologies
-
-**Flexibility:**
-- Odoo: Open source foundation, unlimited customization
-- NetSuite: Vendor lock-in, customization restrictions
-
-**Winner**: Odoo for most businesses. NetSuite only for companies already deep in Oracle ecosystem.
-
-#### Odoo vs Microsoft Dynamics 365
-
-**User Experience:**
-- Odoo: Consistent interface, modern web-based design
-- Dynamics: Mixed experience, multiple interfaces depending on modules
-
-**Integration:**
-- Odoo: Built-in integration between all modules
-- Dynamics: Requires additional licenses for full integration
-
-**Mobile Access:**
-- Odoo: Native mobile apps included in Enterprise
-- Dynamics: Mobile access varies by module, additional costs
-
-**Winner**: Odoo for unified experience. Dynamics only if you're heavily Microsoft-centric.
+| **Category** | **Winner** | **Why** |
+|--------------|------------|---------|
+| **Cost Efficiency** | ***Odoo*** | *40-60% lower total cost of ownership* |
+| **Speed to Market** | ***Odoo*** | *Fastest implementation timeline* |
+| **Flexibility** | ***Odoo*** | *Open source foundation allows unlimited customization* |
+| **User Experience** | ***Odoo*** | *Modern, intuitive interface with consistent design* |
+| **All-in-One Value** | ***Odoo*** | *All modules included in flat pricing* |
 
 #### When NOT to Choose Odoo
 
@@ -329,23 +279,11 @@ Remember that photography business owner whose Odoo 18 upgrade became a nightmar
 
 Let me give you the real-world requirements, not the marketing minimum specs.
 
-**Small Deployment (5-15 users):**
-- **CPU**: Dual-core minimum, quad-core recommended
-- **RAM**: 4GB minimum, 8GB recommended
-- **Storage**: 20GB minimum, SSD strongly recommended
-- **Network**: 10Mbps dedicated internet per 5 concurrent users
-
-**Medium Deployment (25-50 users):**
-- **CPU**: Quad-core minimum, 8-core recommended
-- **RAM**: 8GB minimum, 16GB recommended
-- **Storage**: 50GB minimum, SSD required
-- **Database**: Separate PostgreSQL server recommended
-
-**Large Deployment (100+ users):**
-- **Application Server**: 8+ cores, 32GB RAM minimum
-- **Database Server**: 16+ cores, 64GB RAM, NVMe SSD
-- **Load Balancer**: High-availability Nginx setup
-- **Storage**: 500GB+ with daily backup strategy
+| Deployment Size | Users | CPU | RAM | Storage | Network | Additional Requirements |
+|----------------|--------|-----|-----|---------|---------|----------------------|
+| **Small** | 5-15 | **Dual-core** minimum<br>***Quad-core*** recommended | **4GB** minimum<br>***8GB*** recommended | **20GB** minimum<br>***SSD*** strongly recommended | ***10Mbps*** dedicated internet per 5 concurrent users | Basic setup |
+| **Medium** | 25-50 | **Quad-core** minimum<br>***8-core*** recommended | **8GB** minimum<br>***16GB*** recommended | **50GB** minimum<br>***SSD*** required | ***25Mbps+*** dedicated internet | ***Separate PostgreSQL server*** recommended |
+| **Large** | 100+ | ***8+ cores*** for app server | ***32GB RAM*** minimum for app server | ***500GB+*** with daily backup | ***50Mbps+*** dedicated internet | ***Dedicated database server:***<br>16+ cores, 64GB RAM, NVMe SSD<br>***High-availability Nginx*** load balancer |
 
 **The PostgreSQL Reality Check:**
 Odoo 18 ships with PostgreSQL 15 support, and your database configuration is critical. Here's what works in production:
