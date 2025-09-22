@@ -288,9 +288,6 @@ Here's what becomes clear after analyzing user feedback from 80+ self-hosted vs.
 
 **Bottom Line**: Based on user testimonials and cost analyses, while Cloudways costs more upfront, when you factor in time and stress, it's consistently rated as the smarter business decision. You get professional infrastructure management without the learning curve or midnight emergencies.
 
-> 💰 **Ready to Save Your Time & Sanity?**
-> Skip 20+ hours of setup headaches. Get your Odoo running in under 30 minutes with managed hosting.
-
 ### Step-by-Step Server Provisioning
 
 Let's walk through setting up your server on Cloudways (recommended) and I'll also show the Vultr process for those who prefer DIY:
@@ -588,50 +585,20 @@ The download takes 5-10 minutes depending on your connection.
 sudo mkdir /etc/odoo
 sudo chown odoo:odoo /etc/odoo
 
-# Create configuration file
-sudo nano /etc/odoo/odoo.conf
+# Download production-optimized Odoo configuration
+wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/templates/odoo.conf -O /etc/odoo/odoo.conf
+
+# Update database password (replace YOUR_DB_PASSWORD with your PostgreSQL password)
+sudo sed -i 's/YOUR_DB_PASSWORD/your-actual-db-password/g' /etc/odoo/odoo.conf
+
+# Set a strong master password (replace YOUR_MASTER_PASSWORD_HERE)
+sudo sed -i 's/YOUR_MASTER_PASSWORD_HERE/your-secure-master-password/g' /etc/odoo/odoo.conf
+
+# Set proper ownership
+sudo chown odoo:odoo /etc/odoo/odoo.conf
 ```
 
-Add this configuration (replace `YOUR_DB_PASSWORD` with the PostgreSQL password you created):
-
-```ini
-[options]
-# Server settings
-addons_path = /home/odoo/odoo-server/odoo/addons
-admin_passwd = YOUR_MASTER_PASSWORD_HERE
-csv_internal_sep = ,
-data_dir = /home/odoo/.local/share/Odoo
-db_host = localhost
-db_password = YOUR_DB_PASSWORD
-db_port = 5432
-db_user = odoo
-dbfilter = .*
-
-# Performance settings
-limit_memory_hard = 2684354560
-limit_memory_soft = 2147483648
-limit_request = 8192
-limit_time_cpu = 600
-limit_time_real = 1200
-limit_time_real_cron = 0
-max_cron_threads = 1
-workers = 4
-
-# Logging
-log_db = False
-log_handler = :INFO
-log_level = info
-logfile = /var/log/odoo/odoo.log
-logrotate = True
-
-# Network settings
-proxy_mode = True
-interface = 127.0.0.1
-port = 8069
-
-# Security
-list_db = False
-```
+> 💡 **Configuration Features**: The template includes optimized performance settings (4 workers, proper memory limits), security configurations (proxy mode, restricted database access), and production logging setup.
 
 **Configuration explained:**
 - `workers = 4`: Handles concurrent requests (adjust based on your CPU cores)
@@ -746,89 +713,14 @@ sudo apt install -y nginx
 # Remove default site
 sudo rm /etc/nginx/sites-enabled/default
 
-# Create Odoo site configuration
-sudo nano /etc/nginx/sites-available/odoo
+# Download production-ready Nginx configuration
+wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/templates/nginx-odoo.conf -O /etc/nginx/sites-available/odoo
+
+# Edit domain name (replace yourdomain.com with your domain)
+sudo sed -i 's/yourdomain.com/your-actual-domain.com/g' /etc/nginx/sites-available/odoo
 ```
 
-Add this Nginx configuration (replace `yourdomain.com`):
-
-```nginx
-# Upstream configuration
-upstream odoo {
-    server 127.0.0.1:8069;
-}
-
-upstream odoochat {
-    server 127.0.0.1:8072;
-}
-
-# HTTP server (redirects to HTTPS)
-server {
-    listen 80;
-    server_name yourdomain.com www.yourdomain.com;
-    
-    # Redirect all HTTP to HTTPS
-    return 301 https://$server_name$request_uri;
-}
-
-# HTTPS server
-server {
-    listen 443 ssl http2;
-    server_name yourdomain.com www.yourdomain.com;
-    
-    # SSL configuration (we'll add certificates next)
-    ssl_certificate /etc/letsencrypt/live/yourdomain.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/yourdomain.com/privkey.pem;
-    
-    # Security headers
-    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
-    add_header X-Content-Type-Options nosniff;
-    add_header X-Frame-Options DENY;
-    add_header X-XSS-Protection "1; mode=block";
-    add_header Referrer-Policy "strict-origin-when-cross-origin";
-    
-    # Gzip compression
-    gzip on;
-    gzip_types text/css text/less text/plain text/xml application/xml application/json application/javascript;
-    gzip_vary on;
-    
-    # Client max body size (for file uploads)
-    client_max_body_size 100M;
-    
-    # Proxy settings
-    proxy_read_timeout 720s;
-    proxy_connect_timeout 720s;
-    proxy_send_timeout 720s;
-    proxy_set_header X-Forwarded-Host $host;
-    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    proxy_set_header X-Forwarded-Proto $scheme;
-    proxy_set_header X-Real-IP $remote_addr;
-    proxy_redirect off;
-    
-    # Handle longpolling (for real-time features)
-    location /longpolling {
-        proxy_pass http://odoochat;
-    }
-    
-    # Handle all other requests
-    location / {
-        proxy_pass http://odoo;
-    }
-    
-    # Static files caching
-    location ~* /web/static/ {
-        proxy_cache_valid 200 90m;
-        proxy_buffering on;
-        expires 864000;
-        proxy_pass http://odoo;
-    }
-    
-    # Security - hide server information
-    location /web/database/manager {
-        deny all;
-    }
-}
-```
+> 💡 **Template Features**: The configuration includes SSL setup, security headers, gzip compression, static file caching, and proper proxy settings for Odoo's longpolling feature.
 
 **Enable the site:**
 ```bash
