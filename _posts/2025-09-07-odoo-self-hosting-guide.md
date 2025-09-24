@@ -40,20 +40,6 @@ Before we dive into the detailed steps, here's what you'll need to have ready:
 - [ ] **Basic command line comfort** (don't worry, we'll walk through everything)
 - [ ] **Business requirements list** (which modules you'll need)
 
-> 💡 **Pro Tip**: Don't have a server yet? We'll show you how to get one for under $20/month that can handle 50+ users.
->
-> **🎯 Want to DIY This?** If you're looking at these steps and thinking "I want all the tools to do this myself without missing anything," I've got you covered. My **Odoo Self-Hosting Toolkit** gives you everything needed for complete digital sovereignty:
->
-> ✅ **Implementation Checklist** - Every step verified against deployments
-> ✅ **Production-Ready Scripts** - Copy-paste automation for setup, monitoring, and maintenance
-> ✅ **Troubleshooting Playbook** - Solutions for the 12 most common failure points
-> ✅ **Configuration Templates** - Battle-tested configs for security, performance, and reliability
->
-> Perfect for builders who want control and zero vendor dependence.
->
-> 💰 **[Get the Complete Toolkit for $7 →](https://ariashaw.gumroad.com/l/odoohosting)**
-> *Everything you need to DIY • Research-backed • Independence*
-
 ---
 
 ## 🔍 Step 1: Is Odoo Self-Hosting Right for Your Business?
@@ -1915,10 +1901,6 @@ Bookmark this section. You'll come back to it more than you think.
 
 ### Quick Reference Commands
 
-> **💡 Digital Independence Tip**: These commands are great for occasional reference, but experienced system builders need them organized for regular use. The **Command Vault** in my Self-Hosting Toolkit contains all these commands (plus 40+ more) in a searchable .txt file with clear categories and real-world annotations - perfect for building complete system autonomy.
->
-> 💰 **[Get organized commands →](https://ariashaw.gumroad.com/l/odoohosting)** *Complete command library • Battle-tested • Zero dependencies*
-
 #### System Health Check (Run Weekly)
 ```bash
 wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/system_health_check.sh
@@ -2158,19 +2140,6 @@ Last Verified Restore: __________________
 ```
 
 Print this cheat sheet and keep it handy. When systems are down, you don't want to be searching through documentation.
-
-> **🎯 Digital Sovereignty Tip**: While this guide gives you everything you need, experienced builders prefer having all the essential tools in multiple formats for true independence. That's why I created the **Odoo Self-Hosting Toolkit** - distilled from analyzing 500+ real deployments into actionable tools you can use immediately.
->
-> **Perfect for**:
-> - 📱 **Mobile reference** when you're troubleshooting remotely
-> - 🖨️ **Offline backup** when connectivity is unreliable
-> - 👥 **Team enablement** - give your team everything they need to succeed
-> - ⚡ **Rapid deployment** - skip the research phase, implement with confidence
->
-> 💰 **[Get the complete toolkit for $7 →](https://ariashaw.gumroad.com/l/odoohosting)**
-> *Research-backed tools • Complete independence • Zero vendor lock-in*
-
-**You've built more than just an ERP system. You've built a competitive advantage.**
 
 ---
 

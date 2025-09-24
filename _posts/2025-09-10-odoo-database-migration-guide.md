@@ -78,30 +78,6 @@ chmod +x migration_assessment.sh
 
 **Critical Decision Point:** If your assessment shows "HIGH RISK" on multiple factors, consider phased migration or extended downtime windows. Analysis of failed migration reports shows that rushed complex migrations result in extended outages and costly recovery efforts.
 
-**🚨 Not comfortable running these assessments yourself?**
-
-Migration failure reports reveal a pattern: businesses that discover compatibility issues hours before their planned migration report that they would have preferred professional assessment upfront rather than gambling with their business database.
-
-This analysis led to development of the **[Migration Pre-Flight Check Service](https://ariashaw.gumroad.com/l/preflight)**. For $99, professional assessment teams run these assessment scripts on your server and deliver a professional PDF report with recommendations.
-
-**What you get:**
-- **Remote assessment** - Just provide read-only server access, professional teams handle everything
-- **Professional PDF report** - Clean, executive-ready documentation of your migration risks
-- **Written recommendations** - Specific next steps based on your actual data and configuration
-- **48-hour turnaround** - Get your assessment report within 2 business days
-
-**Real example from a recent report:** *"Your PostgreSQL 9.6 version presents critical compatibility risks. Recommendation: Upgrade to PostgreSQL 12.0+ before migration. Estimated risk reduction: 85%."*
-
-Based on analysis of over 200 pre-migration assessments, the average migration project reveals 3-4 issues that would have been missed without evaluation. Professional assessment pays for itself if it prevents even one day of unexpected downtime.
-
-**Perfect for:**
-- Businesses with limited technical expertise
-- Mission-critical systems where mistakes are expensive
-- Teams who want professional validation before committing resources
-- Anyone who values sleep over late-night database debugging
-
-[**Get your Migration Pre-Flight Check here**](https://ariashaw.gumroad.com/l/preflight) - or continue with the DIY approach below if you're comfortable with the technical details.
-
 ### Step 2: Environment Compatibility Verification
 
 Now that you know what you're working with, let's make sure your target environment can handle what you're throwing at it. This is where "quick migrations" turn into week-long disasters.
@@ -601,30 +577,6 @@ sudo ./production_migration.sh
 3. **Performance monitoring** - Track every operation's speed
 4. **Validation** - Seven layers of testing before declaring success
 5. **Audit trail** - Every action logged with timestamps
-
----
-
-**🎯 Overwhelmed by Scripts and Commands?**
-
-After analyzing 100+ migration case studies, research shows this: businesses aren't the most technical—they're the most organized. When PostgreSQL throws errors at 2 AM, you need answers fast.
-
-**The Complete Odoo Migration Toolkit**
-
-Everything from this guide in one organized package:
-
-✅ **Migration Guidebook (PDF)** - Searchable, formatted for easy reference
-
-✅ **Migration Checklist** - Checklist with every step and safety check
-
-✅ **Command Vault** - Text file with all scripts and commands
-
-**Why this matters:** When you're 3 hours into production migration with PostgreSQL errors, you need "flip to page 23" fast, not "search through 15,000-word article" slow.
-
-**Perfect for:** IT managers presenting procedures to stakeholders, business owners wanting everything organized, teams avoiding "where's that command?" panic.
-
-**$19 investment:** Less than 15 minutes of business downtime. Saves 30+ minutes = pays for itself several times over.
-
-[**Get the Complete Odoo Migration Toolkit →**](https://ariashaw.gumroad.com/l/odoomigration)
 
 ---
 
@@ -1311,14 +1263,6 @@ LIMIT 5;"
 **📋 [Download Migration Disaster Prevention Checklist (PDF)](./resources/migration-disaster-prevention-checklist.pdf)**
 
 Essential pre-migration, during-migration, and post-migration verification checklist. Includes emergency contact information and critical system details. Print this and keep it handy during your migration to prevent common disasters.
-
-**💡 Pro Tip: Organization Under Pressure**
-
-Crisis management analysis reveals consistent patterns: teams achieving optimal disaster response maintain comprehensive printed documentation and organized reference materials in advance.
-
-Overwhelmed by checklists and procedures? The [Complete Odoo Migration Toolkit](https://ariashaw.gumroad.com/l/odoomigration) includes printer-friendly versions of all disaster prevention checklists and recovery procedures.
-
-Organization beats panic every time.
 
 ---
 
@@ -2799,8 +2743,6 @@ I find broken, leaking, or missing pipes on the internet—specifically, the gap
 - 400+ security incident reports to identify protection strategies
 
 **My Mission**: Build a comprehensive library of research-backed guides for fellow builders, pragmatists, and business owners who believe in the power of digital sovereignty. Every guide is backed by real research, not marketing claims or fabricated experiences.
-
-**What I Offer**: I provide [Migration Pre-Flight Check](https://ariashaw.gumroad.com/l/preflight) for professional risk assessment and [Complete Odoo Migration Toolkit](https://ariashaw.gumroad.com/l/odoomigration) for organized DIY migrations—both backed by comprehensive analysis of real-world implementations.
 
 **Connect With Me**:
 - 🐦 **Twitter**: [@theAriaShaw](https://twitter.com/theAriaShaw) - Daily insights on digital tools, system architecture, and the art of bridging knowledge gaps

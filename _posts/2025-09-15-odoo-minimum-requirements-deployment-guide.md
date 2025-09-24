@@ -291,36 +291,6 @@ The script checks Python version, PostgreSQL availability, memory requirements, 
 
 **Always provision 20% more storage than your calculations suggest**. Storage expansion under pressure is never fun.
 
-#### 💡 Overwhelmed by Configuration Choices?
-
-**Stop guessing at hardware requirements.**
-
-You're staring at these specs thinking: *"Do I need 8GB or will 4GB work? What about CPU cores? Am I over-engineering or under-provisioning?"*
-
-**Every business is different.** Your user patterns, module choices, and growth timeline create a unique requirement profile that generic recommendations can't address.
-
-That's why I created the **Personalized Hosting Blueprint** service.
-
-**How it works:**
-1. **You answer 3 simple questions** (requires 2 minutes):
-   - Your expected user count
-   - Which core Odoo modules you'll use
-   - Your monthly hosting budget
-
-2. **You receive a custom blueprint** (within 24 hours):
-   - Exact server configuration recommendation
-   - Clear reasoning based on your specific needs
-   - Direct purchase links to get what you need
-   - Future scaling timeline and upgrade path
-
-**Investment: $29** (one-time fee)
-
-**Why this works:** Instead of spending days researching and second-guessing yourself, you get a definitive answer based on analysis of hundreds of Odoo deployment configurations.
-
-**[Get Your Personalized Blueprint →](https://ariashaw.gumroad.com/l/blueprint)**
-
-*User feedback confirms this saves 10+ hours of research and prevents one expensive mistake.*
-
 ---
 
 ## Part 2: Production Environment Best Practices Configuration
