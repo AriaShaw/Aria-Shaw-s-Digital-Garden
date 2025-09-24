@@ -1153,7 +1153,7 @@ crontab -e
 - **Geographic Redundancy**: Your data lives in multiple data centers
 - **Automatic Scheduling**: Set it once, forget it forever
 
-> 🤔 **But How Do You Know Your Backups Are Actually Working?**
+> 🤔 **But How Do You Know Your Backups Are Working?**
 > 67% of backup failures go unnoticed until disaster strikes. Your backup script runs, but are the files getting there? Is your database backup corrupted? Consider setting up monitoring to track backup success.
 
 #### 🥇 **Backblaze B2 (Recommended for Cost-Effective Storage)**

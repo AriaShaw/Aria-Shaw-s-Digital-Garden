@@ -26,7 +26,7 @@ Research and documented case studies inform the methods in this guide, but every
 
 > **🧰 Ready-to-implement toolkit available**: For organizations seeking immediate implementation without the research phase, this guide includes comprehensive scripts, checklists, and automation tools. These DIY resources provide the same methodologies that enterprise teams use, packaged for direct deployment. [Access the complete toolkit below](#🚀-ready-to-take-your-odoo-management-to-the-next-level) or continue reading to understand the underlying strategies.
 
-## Understanding Odoo Database Architecture: What You're Actually Backing Up (And Why Most People Get It Wrong)
+## Understanding Odoo Database Architecture: What You're Backing Up (And Why Most People Get It Wrong)
 
 Before we dive into the how-to steps, you need to understand what you're backing up.
 
@@ -1797,7 +1797,7 @@ sudo systemctl start odoo
 **1. False Sense of Security**
 ```bash
 # Common automation failures documented in field reports:
-- Backups running but not actually working
+- Backups running but not working
 - Storage filling up, backups failing silently
 - Scripts running but missing filestore
 - Cloud uploads failing without notification
@@ -2361,7 +2361,7 @@ chmod +x backup_quality_calculator.sh
 4. **Continuous Improvement**: Track scores over time to demonstrate backup strategy maturation
 5. **Emergency Preparedness**: Keep printed copies in your disaster recovery kit
 
-Remember: A backup you haven't verified is just wishful thinking. These tools transform hope into confidence by ensuring your backup strategy actually works when you need it most.
+Remember: A backup you haven't verified is just wishful thinking. These tools transform hope into confidence by ensuring your backup strategy works when you need it most.
 
 ### Did You Know? Hidden Backup Features in Odoo
 
