@@ -109,7 +109,7 @@ Let's break down what self-hosting costs vs. the alternatives:
 
 ### Decision Tree: Is Self-Hosting Right for You?
 
-![Odoo Self-Hosting Decision Flowchart](/assets/images/Odoo Self-Hosting Decision Flowchart.webp)
+![Flowchart diagram showing decision tree for evaluating whether Odoo self-hosting is suitable based on technical skills, budget, control needs, and team size](/assets/images/Odoo Self-Hosting Decision Flowchart.webp){:loading="lazy"}
 *Decision flowchart to help you determine if Odoo self-hosting is right for your business*
 
 ### Your Readiness Score
@@ -1998,17 +1998,17 @@ location ~* /web/static/ {
 
 #### 🚨 Problem: Odoo Won't Load in Browser
 
-![Odoo Won't Load Troubleshooting Decision Tree](/assets/images/Odoo won't load in browser.webp)
+![Troubleshooting decision tree flowchart for diagnosing why Odoo won't load in browser, covering DNS, firewall, service status, and configuration issues](/assets/images/Odoo won't load in browser.webp){:loading="lazy"}
 *Complete troubleshooting flowchart for when Odoo fails to load in the browser*
 
 #### 🐌 Problem: Odoo is Very Slow
 
-![Odoo Performance Troubleshooting Decision Tree](/assets/images/Odoo is very slow.webp)
+![Performance troubleshooting flowchart showing diagnostic steps for slow Odoo systems, including CPU, memory, database, and network bottleneck identification](/assets/images/Odoo is very slow.webp){:loading="lazy"}
 *Step-by-step performance diagnosis flowchart for slow Odoo systems*
 
 #### 🔒 Problem: Can't Login to Odoo
 
-![Odoo Login Issues Troubleshooting Decision Tree](/assets/images/Can't login to Odoo.webp)
+![Login troubleshooting flowchart for Odoo authentication issues, showing steps to diagnose password problems, database errors, and user permission issues](/assets/images/Can't login to Odoo.webp){:loading="lazy"}
 *Comprehensive login troubleshooting flowchart with password reset procedures*
 
 ### Backup & Recovery Cheat Sheet

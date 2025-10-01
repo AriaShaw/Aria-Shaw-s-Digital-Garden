@@ -130,7 +130,7 @@ This decision alone can make or break your implementation. Choose based on docum
 
 #### Decision Framework: Community vs Enterprise
 
-![Odoo Edition Decision Tree - Choose Community or Enterprise based on your specific needs](/assets/images/Odoo Edition Decision Tree.webp)
+![Odoo Edition Decision Tree - Choose Community or Enterprise based on your specific needs](/assets/images/Odoo Edition Decision Tree.webp){:loading="lazy"}
 *Decision tree to help you choose between Odoo Community and Enterprise editions based on your technical capabilities and business requirements*
 
 #### Cloud vs On-Premise: The 2025 Strategic Choice
@@ -302,7 +302,7 @@ work_mem = 4MB
 maintenance_work_mem = 64MB
 ```
 
-![Odoo enterprise architecture diagram showing separated application and database tiers with load balancing](/assets/images/Odoo Separated Architecture Design.webp)
+![Odoo enterprise architecture diagram showing separated application and database tiers with load balancing](/assets/images/Odoo Separated Architecture Design.webp){:loading="lazy"}
 *Enterprise-grade Odoo architecture with separated application and database layers for optimal performance and security*
 
 #### Operating System Recommendations
@@ -344,7 +344,7 @@ Cons: Single point of failure, limited scalability
 **Multi-Server Architecture (25+ users):**
 Professional Odoo implementations start here:
 
-![Multi-Server Architecture diagram showing load balancer, application servers, database tier, and storage tier](/assets/images/Multi-Server Architecture.webp)
+![Multi-Server Architecture diagram showing load balancer, application servers, database tier, and storage tier](/assets/images/Multi-Server Architecture.webp){:loading="lazy"}
 *Professional multi-tier Odoo architecture with horizontal scaling capability and high availability design*
 
 **Application Tier:**
@@ -782,7 +782,7 @@ Before touching a single record, you must map what data you have and what it mea
 - Which systems feed data into your current setup and how will migration affect them?
 - What's your acceptable downtime window for business operations?
 
-![Complete data migration workflow from legacy systems to Odoo with detailed field mapping](/assets/images/Data Migration Flow from Legacy to Odoo.webp)
+![Complete data migration workflow from legacy systems to Odoo with detailed field mapping](/assets/images/Data Migration Flow from Legacy to Odoo.webp){:loading="lazy"}
 *Comprehensive data migration strategy showing how different data types flow from legacy systems into Odoo modules*
 
 #### Data Migration Risk Assessment
@@ -1241,7 +1241,7 @@ Custom modules shatter during Odoo version upgrades:
 - **🛡️ [Database Corruption Detector](/scripts/db_corruption_detector.sh)** - Detect issues before they spread
 - **🔄 [Intelligent Rollback System](/scripts/intelligent_rollback.sh)** - Basic rollback for failed customizations
 
-![Step-by-step Odoo module configuration process from basic setup to advanced customization](/assets/images/Odoo Module Configuration Workflow.webp)
+![Step-by-step Odoo module configuration process from basic setup to advanced customization](/assets/images/Odoo Module Configuration Workflow.webp){:loading="lazy"}
 *Progressive module configuration workflow from basic setup through advanced customization and quality assurance*
 
 ---
@@ -1615,7 +1615,7 @@ Remote training demands different approaches and tools than in-person sessions.
 - **💗 [Advanced Odoo Health Monitor](/scripts/odoo_health_monitor.sh)** - Monitor system performance for remote users
 - **📈 [Monthly Health Check](/scripts/monthly_health_check.sh)** - Regular system review with remote access validation
 
-![Role-based Odoo training framework with competency tracking and adoption metrics](/assets/images/Odoo Training and Adoption Workflow.webp)
+![Role-based Odoo training framework with competency tracking and adoption metrics](/assets/images/Odoo Training and Adoption Workflow.webp){:loading="lazy"}
 *Comprehensive training framework showing role-specific learning paths and adoption tracking methodologies*
 
 ---
@@ -2191,7 +2191,7 @@ Timing issues when one system updates faster than others can sync, error handlin
 - **🌐 [API Diagnostics Tool](/scripts/api_diagnostics.py)** - Basic external API connectivity validation
 - **📧 [SMTP Configuration Tester](/scripts/test_smtp.py)** - Email system integration validation
 
-![Complete Odoo troubleshooting decision tree with diagnostic steps and resolution paths](/assets/images/Odoo Troubleshooting Decision Tree.webp)
+![Complete Odoo troubleshooting decision tree with diagnostic steps and resolution paths](/assets/images/Odoo Troubleshooting Decision Tree.webp){:loading="lazy"}
 *Systematic troubleshooting flowchart covering performance, integration, access, and data quality issues*
 
 ---
@@ -2474,7 +2474,7 @@ Timeline adherence and milestone completion rates (are we on track?), budget var
 
 Create feedback channels for communication when hierarchy gets in the way, identify and resolve relationship issues before they damage the project, and plan improvement for partnership effectiveness based on what you're learning.
 
-![Odoo implementation partner evaluation and team building process workflow](/assets/images/Partner Selection and Team Building Workflow.webp)
+![Odoo implementation partner evaluation and team building process workflow](/assets/images/Partner Selection and Team Building Workflow.webp){:loading="lazy"}
 *Strategic partner selection framework with evaluation criteria, team structure design, and relationship management*
 
 ---
@@ -2906,7 +2906,7 @@ Milestone tracking provides warning of issues while maintaining focus on busines
 - Task redistribution based on individual strengths and availability
 - Knowledge transfer acceleration to build internal capabilities
 
-![Complete Odoo implementation project management framework with phases and milestones](/assets/images/Odoo Implementation Project Management Framework.webp)
+![Complete Odoo implementation project management framework with phases and milestones](/assets/images/Odoo Implementation Project Management Framework.webp){:loading="lazy"}
 *End-to-end project management framework showing phases, milestones, risk management, and tracking systems*
 
 ---
@@ -3168,7 +3168,7 @@ Use each system for its strengths while maintaining data consistency through int
 - Monitoring and logging for integration health
 - Backup and recovery procedures that account for system dependencies
 
-![Hybrid integration architecture patterns for connecting Odoo with legacy systems](/assets/images/Network Architecture for Odoo Production Environment.webp)
+![Hybrid integration architecture patterns for connecting Odoo with legacy systems](/assets/images/Network Architecture for Odoo Production Environment.webp){:loading="lazy"}
 *Production network architecture demonstrating secure integration patterns between Odoo and existing legacy systems*
 
 ---

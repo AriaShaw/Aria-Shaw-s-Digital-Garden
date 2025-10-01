@@ -65,7 +65,7 @@ chmod +x migration_assessment.sh
 ./migration_assessment.sh your_database_name
 ```
 
-![Odoo Migration Risk Assessment](../assets/images/Odoo Migration Risk Assessment.webp)
+![Risk assessment matrix showing migration complexity factors including database size, custom modules, version gap, and business criticality](../assets/images/Odoo Migration Risk Assessment.webp){:loading="lazy"}
 
 *Comprehensive migration risk assessment covering database analysis, version compatibility, module complexity, and risk classification with response strategies.*
 
@@ -96,7 +96,7 @@ python3 compatibility_check.py --source-server source_ip --target-server target_
 
 **Run this checker on both your source and target servers.** Resolve any mismatches between them before starting the migration.
 
-![Environment Compatibility Check Flow](../assets/images/Environment Compatibility Check Flow.webp)
+![Flowchart for checking compatibility between source and target Odoo environments including Python, PostgreSQL, and dependency versions](../assets/images/Environment Compatibility Check Flow.webp){:loading="lazy"}
 
 *Environment compatibility check workflow showing source and target server detection, version comparison, dependency validation, and compatibility scoring with pass/fail indicators.*
 
@@ -121,7 +121,7 @@ wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/
 python3 data_cleanup.py your_database_name
 ```
 
-![Database Health Status](../assets/images/Database Health Status.webp)
+![Database health dashboard displaying integrity checks, corruption detection, orphaned records, and optimization recommendations](../assets/images/Database Health Status.webp){:loading="lazy"}
 
 *Database health analysis showing duplicate records, orphaned data, large tables, and integrity checks with cleanup recommendations.*
 
@@ -162,7 +162,7 @@ chmod +x backup_database.sh
 ./backup_database.sh your_database_name /path/to/backup/directory
 ```
 
-![PostgreSQL Enterprise Backup Process](../assets/images/PostgreSQL Enterprise Backup Process.webp)
+![Step-by-step diagram of PostgreSQL backup process with validation, compression, encryption, and offsite storage](../assets/images/PostgreSQL Enterprise Backup Process.webp){:loading="lazy"}
 
 *Enterprise-grade PostgreSQL backup workflow with pre-checks, metadata recording, timing information, and quality assurance checkpoints.*
 
@@ -217,7 +217,7 @@ chmod +x backup_configuration.sh
 ./backup_configuration.sh your_database_name /path/to/backup/directory
 ```
 
-![Complete Configuration Backup](../assets/images/Complete Configuration Backup.webp)
+![Configuration backup workflow covering Odoo config files, custom modules, system settings, and environment variables](../assets/images/Complete Configuration Backup.webp){:loading="lazy"}
 
 *Complete configuration backup overview showing main config files, custom module directories, system services, web server settings, and environment dependencies with verification status.*
 
@@ -250,7 +250,7 @@ tar -tzf /secure/backup/odoo_config_*.tar.gz | head -5
 pg_restore --list /secure/backup/odoo_backup_*.backup | head -10
 ```
 
-![Triple Backup Verification Flow](../assets/images/Triple Backup Verification Flow.webp)
+![Three-layer backup verification process showing file integrity checks, restoration tests, and data consistency validation](../assets/images/Triple Backup Verification Flow.webp){:loading="lazy"}
 
 *Triple backup verification process covering database validation, filestore integrity, and configuration verification with MD5 checksums and integrity confirmation.*
 
@@ -397,7 +397,7 @@ chmod +x setup_ubuntu_odoo.sh
 sudo ./setup_ubuntu_odoo.sh
 ```
 
-![Ubuntu Optimization Installation Process](../assets/images/Ubuntu Optimization Installation Process.webp)
+![Installation flowchart for optimizing Ubuntu server for Odoo including kernel tuning, package selection, and security hardening](../assets/images/Ubuntu Optimization Installation Process.webp){:loading="lazy"}
 
 *Ubuntu optimization workflow from system initialization through service management with progress indicators, configuration parameters, and completion confirmations.*
 
@@ -447,7 +447,7 @@ sudo ./tune_postgresql_odoo.sh
 sudo ./tune_postgresql_odoo.sh
 ```
 
-![PostgreSQL Performance Tuning Process](../assets/images/PostgreSQL Performance Tuning Process.webp)
+![PostgreSQL tuning diagram showing memory configuration, connection pooling, query optimization, and index strategies](../assets/images/PostgreSQL Performance Tuning Process.webp){:loading="lazy"}
 
 *PostgreSQL performance optimization workflow covering memory, connection, disk, and query optimizations for 30-50% performance improvement.*
 
@@ -512,7 +512,7 @@ Every failed migration analyzed in post-mortem reports had one thing in common -
 
 **This staging validation process eliminates 95% of migration failures based on case studies.**
 
-![Staged Validation Workflow](../assets/images/Staged Validation Workflow.webp)
+![Staging environment validation workflow with automated testing, performance benchmarking, and rollback procedures](../assets/images/Staged Validation Workflow.webp){:loading="lazy"}
 
 *Staged validation workflow from backup creation through production migration with forward progression and rollback safety paths for emergency recovery.*
 
@@ -566,7 +566,7 @@ chmod +x production_migration.sh
 sudo ./production_migration.sh
 ```
 
-![Production Migration Execution Process](../assets/images/Production Migration Execution Process.webp)
+![Production migration execution timeline showing pre-migration checks, downtime window, data transfer, and post-migration validation](../assets/images/Production Migration Execution Process.webp){:loading="lazy"}
 
 *Production migration execution workflow from pre-check through data sync, service switching, validation, and completion with real-time timing and minimal downtime.*
 
@@ -724,7 +724,7 @@ After 24 hours of stable operation, conduct these business function tests:
    - Check email notifications are being sent
    - Test multi-company setup (if applicable)
 
-![User Acceptance Testing Flow](../assets/images/User Acceptance Testing Flow.webp)
+![UAT workflow diagram covering test case execution, issue tracking, stakeholder approval, and go-live criteria](../assets/images/User Acceptance Testing Flow.webp){:loading="lazy"}
 
 *User acceptance testing workflow covering order processing, inventory management, financial operations, and user permissions with key checkpoints and validation criteria.*
 
@@ -1284,7 +1284,7 @@ Your preparation with this disaster prevention guide means you're already ahead 
 ## Advanced Troubleshooting Decision Tree 🌳
 
 **Use this decision tree when facing complex migration issues:**
-![Migration Issue Decision Tree](../assets/images/Migration Issue Decision Tree.webp)
+![Troubleshooting decision tree for common migration issues including data loss, performance degradation, and module conflicts](../assets/images/Migration Issue Decision Tree.webp){:loading="lazy"}
 
 *Migration issue decision tree for complex problems, categorizing database, module, performance, and integration issues with diagnostic tools and estimated resolution times.*
 
@@ -1836,7 +1836,7 @@ tar -czf - /opt/odoo/filestore/ | \
 gpg --decrypt backup_$(date +%Y%m%d).backup.gpg | pg_restore --list
 ```
 
-![Data Security Protection Encryption Workflow](../assets/images/Data Security Protection Encryption Workflow.webp)
+![Data security workflow showing encryption at rest, in transit, access control, and compliance verification](../assets/images/Data Security Protection Encryption Workflow.webp){:loading="lazy"}
 
 *Data security encryption workflow showing three encryption layers (database, transport, backup) with key management and verification processes for comprehensive data protection.*
 

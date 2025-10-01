@@ -48,7 +48,7 @@ Unlike some applications where "backing up the database" means you've got everyt
 
 Think of it like this: if Odoo were a filing cabinet, the PostgreSQL database would be all the index cards with information, while the filestore would be all the actual documents stored in the folders.
 
-![Odoo Database Architecture Overview](/assets/images/Odoo Database Architecture Overview.webp)
+![Architecture diagram showing Odoo database components including PostgreSQL database, filestore attachments, and configuration files with their relationships](../assets/images/Odoo Database Architecture Overview.webp){:loading="lazy"}
 *Visual representation of Odoo's two-part architecture: PostgreSQL database and filestore components*
 
 Let me show you exactly where these components live on your system.
@@ -173,7 +173,7 @@ ZIP backup:     2.5 GB  (database + filestore + manifest)
 # The ratio depends on how many files you've uploaded to Odoo
 ```
 
-![Odoo Backup Format Comparison Table](/assets/images/Odoo Backup Format Comparison.webp)
+![Comparison table of Odoo backup formats showing ZIP versus SQL dump methods with pros, cons, file sizes, and restoration times](../assets/images/Odoo Backup Format Comparison.webp){:loading="lazy"}
 *Comprehensive comparison of ZIP vs SQL backup formats and their included components*
 
 **Pro Tip**: Use ZIP format unless you have a specific reason not to. Research shows that 73% of restore failures stem from incomplete backups where administrators used SQL format thinking it was "simpler."
@@ -322,7 +322,7 @@ admin_passwd = backup_restore_password
 master_passwd = database_management_password
 ```
 
-![Master Password Troubleshooting Decision Tree](/assets/images/Master Password Troubleshooting Decision Tree.webp)
+![Troubleshooting flowchart for Odoo master password issues covering forgotten passwords, configuration errors, and reset procedures](../assets/images/Master Password Troubleshooting Decision Tree.webp){:loading="lazy"}
 *Step-by-step flowchart for diagnosing and fixing master password configuration issues*
 
 ### Method 2: Odoo Database Backup Command Line
@@ -621,7 +621,7 @@ cd server-tools/auto_backup
 wget https://raw.githubusercontent.com/cybrosys-technologies/odoo-backup/main/odoo_backup_advanced.py
 ```
 
-![Community Scripts Comparison Table](/assets/images/Community Scripts Comparison.webp)
+![Comparison matrix of community backup scripts evaluating features, reliability, maintenance status, and user ratings](../assets/images/Community Scripts Comparison.webp){:loading="lazy"}
 *Feature comparison matrix of popular community backup solutions with supported capabilities*
 
 ## How to Restore Odoo Database: Complete Recovery Guide (Never Lose Data Again)
@@ -1599,7 +1599,7 @@ aws s3 sync /backup/odoo/ s3://your-backup-bucket/
 find /backup/odoo -mtime +$LOCAL_RETENTION -delete
 ```
 
-![Backup and Restore Issue Diagnosis](/assets/images/Backup and Restore Issue Diagnosis.webp)
+![Diagnostic flowchart for troubleshooting backup and restore failures including disk space, permissions, and corruption issues](../assets/images/Backup and Restore Issue Diagnosis.webp){:loading="lazy"}
 *Comprehensive troubleshooting flowchart for common backup and restore problems*
 
 > **🔧 Still running into issues after trying these solutions?** Backup troubleshooting can be frustrating when your business data is on the line. If you've tried the steps above and are still facing problems, or if you want to avoid these headaches, I can audit your current setup and implement a rock-solid backup system that eliminates these common failure points. [Let me fix your backup issues once and for all](#-bulletproof-backup--recovery-setup-service-199) - includes complete troubleshooting and bulletproof implementation.
@@ -1911,7 +1911,7 @@ Monthly:        Automated size monitoring
 # Annually: Complete strategy review
 ```
 
-![Backup Strategy Decision Tree](/assets/images/Backup Strategy Decision Tree.webp)
+![Decision tree for selecting optimal backup strategy based on business size, RTO/RPO requirements, and budget constraints](../assets/images/Backup Strategy Decision Tree.webp){:loading="lazy"}
 *Decision flowchart for selecting optimal backup approach based on organizational needs*
 
 The key is starting with a solid foundation and gradually adding automation as your needs and capabilities grow. Research shows that many organizations attempt to implement complex automated systems from day one, only to have them fail when they're needed most.
@@ -2285,7 +2285,7 @@ sudo -u odoo /opt/odoo/odoo-bin \
 grep -E "module.*updated|module.*installed" /var/log/odoo/odoo.log
 ```
 
-![Odoo Backup Features Comparison Table](/assets/images/Odoo Backup Features Comparison Table.webp)
+![Feature comparison table of backup solutions showing automation, cloud integration, verification, and pricing options](../assets/images/Odoo Backup Features Comparison Table.webp){:loading="lazy"}
 *Evolution of backup and restore capabilities across Odoo versions 16, 17, and 18*
 
 **Key Takeaways for Version Management:**
