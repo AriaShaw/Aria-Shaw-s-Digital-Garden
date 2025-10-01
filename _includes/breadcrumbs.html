@@ -1,0 +1,106 @@
+<!-- Breadcrumb Navigation with Schema.org structured data -->
+{% assign crumbs = page.url | split: '/' %}
+{% assign crumb_path = '' %}
+{% assign crumb_limit = crumbs | size | minus: 1 %}
+
+<!-- Only show breadcrumbs if not on homepage -->
+{% if page.url != "/" and page.url != "/index.html" %}
+<nav aria-label="Breadcrumb" class="breadcrumb-nav">
+  <ol class="breadcrumb" itemscope itemtype="https://schema.org/BreadcrumbList">
+    <!-- Home -->
+    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+      <a href="{{ site.baseurl }}/" itemprop="item">
+        <span itemprop="name">Home</span>
+      </a>
+      <meta itemprop="position" content="1" />
+    </li>
+
+    <!-- Dynamic crumbs -->
+    {% for crumb in crumbs offset: 1 %}
+      {% if forloop.last and crumb != 'index.html' %}
+        <!-- Current page (no link) -->
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem" class="active">
+          <span itemprop="name">
+            {% if page.breadcrumb_title %}
+              {{ page.breadcrumb_title }}
+            {% elsif page.title %}
+              {{ page.title }}
+            {% else %}
+              {{ crumb | replace: '-', ' ' | replace: '.html', '' | capitalize }}
+            {% endif %}
+          </span>
+          <meta itemprop="position" content="{{ forloop.index | plus: 1 }}" />
+        </li>
+      {% elsif crumb != '' and crumb != 'index.html' %}
+        <!-- Intermediate crumbs -->
+        {% assign crumb_path = crumb_path | append: '/' | append: crumb %}
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="{{ site.baseurl }}{{ crumb_path }}/" itemprop="item">
+            <span itemprop="name">{{ crumb | replace: '-', ' ' | capitalize }}</span>
+          </a>
+          <meta itemprop="position" content="{{ forloop.index | plus: 1 }}" />
+        </li>
+      {% endif %}
+    {% endfor %}
+  </ol>
+</nav>
+
+<style>
+  /* Breadcrumb Navigation - Minimal Theme Style */
+  .breadcrumb-nav {
+    margin: 0 0 20px 0;
+    padding: 10px 0;
+    border-bottom: 1px solid #e1e4e8;
+  }
+
+  .breadcrumb {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .breadcrumb li {
+    display: flex;
+    align-items: center;
+    color: #586069;
+  }
+
+  .breadcrumb li:not(:last-child)::after {
+    content: "/";
+    margin: 0 8px;
+    color: #d1d5da;
+  }
+
+  .breadcrumb li a {
+    color: #0969da;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .breadcrumb li a:hover {
+    color: #0550ae;
+    text-decoration: underline;
+  }
+
+  .breadcrumb li.active span {
+    color: #24292f;
+    font-weight: 500;
+  }
+
+  /* Responsive */
+  @media (max-width: 720px) {
+    .breadcrumb {
+      font-size: 12px;
+    }
+
+    .breadcrumb li:not(:last-child)::after {
+      margin: 0 6px;
+    }
+  }
+</style>
+{% endif %}

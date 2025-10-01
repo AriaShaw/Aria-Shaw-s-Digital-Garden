@@ -2,6 +2,7 @@
 layout: product-landing
 title: "Odoo Digital Sovereignty Master Pack - $699"
 description: "Replace $50,000+ consulting fees with professional-grade tools. 5 modules, 68+ tools, 2,000+ pages of documentation for complete Odoo control."
+breadcrumb_title: Products
 permalink: /products/
 ---
 

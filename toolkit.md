@@ -1,6 +1,7 @@
 ---
 layout: default
 title: Toolkit | Open-Source Business Automation Scripts & Tools
+breadcrumb_title: Toolkit
 permalink: /toolkit/
 ---
 
