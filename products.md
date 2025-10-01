@@ -47,7 +47,7 @@ That's less than the cost of a single day with a senior Odoo consultant—but yo
 
 ## The Five Modules
 
-<div class="module-card">
+<div class="module-card" markdown="1">
 
 ### Module 1: Strategic Command Center
 
@@ -67,7 +67,7 @@ The business case tools that consultants use to justify their fees—now yours t
 
 </div>
 
-<div class="module-card">
+<div class="module-card" markdown="1">
 
 ### Module 2: Technical Deployment Arsenal
 
@@ -87,7 +87,7 @@ The battle-tested configs, scripts, and validation tools that turn deployment fr
 
 </div>
 
-<div class="module-card">
+<div class="module-card" markdown="1">
 
 ### Module 3: Migration Command Suite
 
@@ -113,7 +113,7 @@ The proven methodology from 300+ successful migrations—turn 8-hour outages int
   <a href="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty?utm_source=products&utm_medium=mid-modules-cta&utm_campaign=flagship-product" class="btn-outline-cta">Get Instant Access - $699</a>
 </div>
 
-<div class="module-card">
+<div class="module-card" markdown="1">
 
 ### Module 4: Fortress Protection System
 
@@ -133,7 +133,7 @@ Enterprise-grade backup automation and disaster recovery—without enterprise so
 
 </div>
 
-<div class="module-card">
+<div class="module-card" markdown="1">
 
 ### Module 5: Operations Excellence Suite
 
