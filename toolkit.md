@@ -6,6 +6,13 @@ permalink: /toolkit/
 
 Welcome to the Toolkit, a curated library of open-source scripts and tools developed to accompany the comprehensive guides in this Digital Garden. Each tool is designed to be a robust, production-ready solution for a specific business automation problem, based on analysis of real-world deployment challenges.
 
+{% include ctas/inline-simple.html
+   title="Want the Complete Professional Toolkit?"
+   description="These free tools solve specific problems. The Digital Sovereignty Master Pack gives you 68+ tools covering the complete Odoo lifecycle for $699 (vs. $50K+ consulting)."
+   link="/products/?utm_source=toolkit&utm_medium=hero&utm_campaign=free-to-paid"
+   button_text="See What's Inside"
+%}
+
 {% capture migration_content %}
 <h3>Pre-Migration Assessment &amp; Planning</h3>
 <ul>
@@ -275,3 +282,38 @@ Welcome to the Toolkit, a curated library of open-source scripts and tools devel
 ---
 
 **📝 Battle-Tested Reliability:** All scripts include comprehensive error handling, logging, and are designed to fail safely. These tools have been developed through analysis of deployment patterns and are validated across hundreds of documented production environments.
+
+---
+
+## Free Tools vs. Master Pack: What's the Difference?
+
+| Feature | Free Tools | Master Pack |
+|---------|------------|-------------|
+| **Scope** | Single-purpose scripts | Complete lifecycle toolkit (68+ tools) |
+| **Documentation** | Basic usage instructions | 2,000+ pages of guides & playbooks |
+| **Support** | Community (best effort) | Email support + comprehensive docs |
+| **Updates** | Occasional | Quarterly updates (free for life) |
+| **Integration** | Standalone tools | 5 integrated modules working together |
+| **Production-Ready** | Good for testing/learning | Enterprise-grade (tested on 200GB+ databases) |
+| **Strategic Planning** | Basic calculators | Module 1: TCO calculator, failure prevention, vendor evaluation |
+| **Deployment** | Manual configs | Module 2: One-command deployment + 12 production configs |
+| **Migration** | Risk assessment only | Module 3: Zero-downtime execution + rollback |
+| **Backup & Recovery** | Basic backup scripts | Module 4: Multi-cloud automation + sub-15min DR |
+| **Performance** | Performance tips | Module 5: PostgreSQL auto-tuner + optimization suite |
+
+**Free tools:** Great for learning and small deployments
+**Master Pack:** Complete solution for production environments and business-critical systems
+
+{% include ctas/inline-simple.html
+   title="Ready to Level Up?"
+   description="Get the complete professional toolkit—5 modules, 68+ tools, 2,000+ pages. Everything from strategic planning through daily operations for $699."
+   link="/products/?utm_source=toolkit&utm_medium=comparison&utm_campaign=free-to-paid"
+   button_text="Explore the Master Pack"
+%}
+
+---
+
+**Still deciding?** Start with these free guides:
+- [Odoo Self-Hosting Guide](/odoo-self-hosting-guide/) - strategic planning for deployment
+- [Database Backup & Restore Guide](/odoo-database-backup-restore-guide/) - master manual backup
+- [Migration Guide](/odoo-database-migration-guide/) - understand migration complexity

@@ -1,6 +1,19 @@
-This is not a blog. This is a curated digital garden—a collection of definitive, battle-tested guides designed to solve specific, expensive problems. 
+This is not a blog. This is a curated digital garden—a collection of definitive, battle-tested guides designed to solve specific, expensive problems.
 
 Each playbook is a deep-dive, meticulously crafted to be the only resource you need on the subject. I believe the best solution to a complex problem isn't a magic black box, but a crystal-clear set of instructions. This is my attempt to create them.
+
+---
+
+## 🏆 Featured: Digital Sovereignty Toolkit
+
+{% include ctas/product-box.html
+   badge="Featured Product"
+   title="Odoo Digital Sovereignty Master Pack - $699"
+   description="The complete professional playbook for deploying and managing Odoo without $50,000+ consulting fees."
+   features="5 integrated modules|68+ production-ready tools|2,000+ pages of documentation|Zero vendor lock-in"
+   link="/products/?utm_source=homepage&utm_medium=hero&utm_campaign=flagship-product"
+   button_text="See What's Inside"
+%}
 
 ---
 

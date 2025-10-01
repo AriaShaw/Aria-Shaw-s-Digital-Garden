@@ -122,6 +122,15 @@ Based on your assessment:
 
 ---
 
+{% include ctas/inline-simple.html
+   title="Avoid the $48,000 Mistake—Get Strategic Planning Tools"
+   description="This guide explains the risks. Module 1 gives you the tools to prevent them: TCO calculator, vendor evaluation toolkit, and failure prevention framework for $699."
+   link="/products/?utm_source=blog&utm_medium=inline&utm_campaign=self-hosting&utm_content=problem-aware#module-1"
+   button_text="Explore Module 1"
+%}
+
+---
+
 **Now that you know self-hosting is right for your business, let's get you set up with a server that won't let you down when your team needs it...**
 
 ---
@@ -2172,6 +2181,40 @@ I find broken, leaking, or missing pipes on the internet—specifically, the gap
 **Final Thought**: The best digital infrastructure is invisible infrastructure. It just works, day after day, letting you focus on what really matters—growing your business and serving your customers.
 
 Now go build something awesome. 🚀
+
+---
+
+## This Guide vs. The Master Pack
+
+This free guide covered strategic planning—helping you decide if self-hosting is right and what to consider. The **Odoo Digital Sovereignty Master Pack** gives you the complete professional system:
+
+| What This Guide Covered | What the Master Pack Adds |
+|-------------------------|---------------------------|
+| Explains what to consider when choosing self-hosting | **Module 1**: Decision-making tools (Excel TCO calculator with 34 hidden costs) |
+| Lists cost categories to evaluate | **Module 1**: Automated competitive ROI analyzer (Odoo vs. NetSuite/SAP) |
+| Suggests risk assessment approach | **Module 1**: Failure prevention system (28 risk factors, scored assessment) |
+| Recommends vendor evaluation | **Module 1**: Vendor control toolkit (contract templates, oversight framework) |
+| Basic deployment steps | **Module 2**: One-command deployment + 12 production configs |
+| Manual backup instructions | **Module 4**: Intelligent multi-cloud backup automation |
+| Performance tips | **Module 5**: PostgreSQL auto-tuner + optimization suite |
+
+**Plus:** Migration command suite (Module 3) with zero-downtime execution and disaster recovery tools.
+
+**Investment:** $699 for complete toolkit vs. $50,000-$200,000 for equivalent consulting services
+
+{% include ctas/inline-simple.html
+   title="Ready to Own Your Odoo Journey?"
+   description="Get the complete professional playbook—5 modules, 68+ tools, 2,000+ pages. Everything from strategic planning through daily operations for $699."
+   link="/products/?utm_source=blog&utm_medium=bottom&utm_campaign=self-hosting&utm_content=product-aware"
+   button_text="Get the Complete Toolkit"
+%}
+
+---
+
+**Still deciding?** Start with these free guides:
+- [Database Backup & Restore Guide](/odoo-database-backup-restore-guide/) - learn manual backup before automation
+- [Migration Guide](/odoo-database-migration-guide/) - understand migration complexity
+- [Free Toolkit](/toolkit/) - production scripts and calculators
 
 ---
 *Last updated: September 2025 | Find this valuable? Share it with another business owner who's tired of paying monthly software fees.*
