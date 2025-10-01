@@ -51,9 +51,25 @@ jobs:
             exit 1
           fi
 
+      - name: Save current Gemfile
+        run: |
+          if [ -f "Gemfile" ]; then
+            cp Gemfile Gemfile.backup
+            echo "✅ Gemfile backed up"
+          fi
+        continue-on-error: true
+
       - name: Checkout previous commit
         run: |
           git checkout HEAD~1
+        continue-on-error: true
+
+      - name: Restore Gemfile if missing
+        run: |
+          if [ ! -f "Gemfile" ] && [ -f "Gemfile.backup" ]; then
+            cp Gemfile.backup Gemfile
+            echo "✅ Gemfile restored from backup"
+          fi
         continue-on-error: true
 
       - name: Build Jekyll site (previous)
