@@ -1,11 +1,38 @@
 {% if site.google_analytics %}
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id={{ site.google_analytics }}"></script>
+<!-- Google tag (gtag.js) - Deferred for performance -->
 <script>
+  // Defer GTM loading until page is interactive
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
 
-  gtag('config', '{{ site.google_analytics }}');
+  // Load GTM after page load or on first user interaction
+  function loadGTM() {
+    if (window.gtmLoaded) return;
+    window.gtmLoaded = true;
+
+    var script = document.createElement('script');
+    script.async = true;
+    script.src = 'https://www.googletagmanager.com/gtag/js?id={{ site.google_analytics }}';
+    document.head.appendChild(script);
+
+    script.onload = function() {
+      gtag('js', new Date());
+      gtag('config', '{{ site.google_analytics }}');
+    };
+  }
+
+  // Load on page load (after 3 seconds) or on first interaction
+  if (document.readyState === 'complete') {
+    setTimeout(loadGTM, 3000);
+  } else {
+    window.addEventListener('load', function() {
+      setTimeout(loadGTM, 3000);
+    });
+  }
+
+  // Or load immediately on first user interaction
+  ['mousedown', 'touchstart', 'scroll', 'keydown'].forEach(function(event) {
+    document.addEventListener(event, loadGTM, { once: true, passive: true });
+  });
 </script>
 {% endif %}
