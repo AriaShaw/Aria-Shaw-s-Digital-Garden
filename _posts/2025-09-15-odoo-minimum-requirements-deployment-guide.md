@@ -172,7 +172,7 @@ You can't scale the small business config—you need architectural changes.
 - **Database Server**: 4 cores, 16GB RAM, SSD storage
 - **Load Balancer**: Optional but recommended
 
-![Odoo Separated Architecture Design](/assets/images/Odoo Separated Architecture Design.webp)
+![Diagram showing Odoo separated architecture with dedicated application server and database server connected via secure network](/assets/images/Odoo Separated Architecture Design.webp){:loading="lazy"}
 *Separated architecture design showing application and database server configuration*
 
 Architecture analysis reveals: **if you're expecting 40+ concurrent users, plan for separation from day one**.
@@ -248,7 +248,7 @@ python3 --version
 - PostgreSQL 12 default (adequate but not optimal)
 - Security updates until 2025
 
-![Odoo OS Selection Decision Tree](/assets/images/Odoo OS Selection Decision Tree.webp)
+![Flowchart showing decision tree for selecting optimal operating system for Odoo deployment based on team expertise and requirements](/assets/images/Odoo OS Selection Decision Tree.webp){:loading="lazy"}
 *OS selection decision tree for optimal Odoo deployment configuration*
 
 #### Container Deployment Considerations
@@ -453,7 +453,7 @@ The proven architecture for the 50-200 user range:
 - High-performance SSD with good IOPS
 - Dedicated backup storage
 
-![Network Architecture for Odoo Production Environment](/assets/images/Network Architecture for Odoo Production Environment.webp)
+![Network diagram showing production-grade Odoo architecture with load balancer distributing traffic across multiple application servers connected to separate database cluster](/assets/images/Network Architecture for Odoo Production Environment.webp){:loading="lazy"}
 *Production network architecture with load balancer, application servers, and database separation*
 
 #### PostgreSQL Optimization for Separation
@@ -652,7 +652,7 @@ This monitoring script checks:
 - Database connections: < 70% of max_connections
 - Disk I/O wait: < 20%
 
-![Odoo Performance Monitoring Dashboard](/assets/images/Odoo Performance Monitoring Dashboard.webp)
+![Dashboard screenshot displaying Odoo server performance metrics including CPU usage, memory consumption, database response times, and user load statistics](/assets/images/Odoo Performance Monitoring Dashboard.webp){:loading="lazy"}
 *Performance monitoring dashboard with health indicators and critical metrics*
 
 If you're missing these targets, it's time to optimize your configuration or scale your infrastructure.
@@ -779,7 +779,7 @@ sudo ufw status
 sudo iptables -L
 ```
 
-![Odoo Port 8069 Troubleshooting Flowchart](/assets/images/Odoo Port 8069 Troubleshooting Flowchart.webp)
+![Troubleshooting flowchart for diagnosing Odoo port 8069 connection issues, showing decision tree from initial connection attempt through firewall checks to resolution](/assets/images/Odoo Port 8069 Troubleshooting Flowchart.webp){:loading="lazy"}
 *Systematic troubleshooting flowchart for port 8069 accessibility issues*
 
 #### The Complete Port Access Troubleshooting Toolkit
@@ -1328,7 +1328,7 @@ RDS PostgreSQL (Multi-AZ)
 S3 (file attachments)
 ```
 
-![AWS Enterprise Odoo Architecture](/assets/images/AWS Enterprise Odoo Architecture.webp)
+![AWS cloud architecture diagram showing enterprise Odoo deployment across multiple availability zones with RDS database, EC2 instances, load balancers, and S3 storage](/assets/images/AWS Enterprise Odoo Architecture.webp){:loading="lazy"}
 *AWS enterprise architecture showing interconnected services and multi-AZ deployment*
 
 **Who Should Choose AWS:**
@@ -1438,7 +1438,7 @@ services:
 
 Based on analyzing deployment outcomes across different hosting strategies:
 
-![Odoo Hosting Solutions Cost-Complexity Matrix](/assets/images/Odoo Hosting Solutions Cost-Complexity Matrix.webp)
+![Matrix chart plotting various Odoo hosting solutions on cost versus complexity axes, comparing managed hosting, VPS, cloud platforms, and on-premise options](/assets/images/Odoo Hosting Solutions Cost-Complexity Matrix.webp){:loading="lazy"}
 *Cost-complexity matrix comparing different Odoo hosting solutions*
 
 #### Decision Framework Questions
