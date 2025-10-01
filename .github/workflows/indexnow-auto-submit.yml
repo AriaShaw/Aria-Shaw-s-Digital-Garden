@@ -1,0 +1,226 @@
+name: IndexNow Auto Submit
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '_posts/**'
+      - '*.md'
+  workflow_dispatch:
+
+jobs:
+  detect-and-submit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout current commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.1'
+          bundler-cache: true
+
+      - name: Build Jekyll site (current)
+        run: |
+          bundle install
+          bundle exec jekyll build --config _config.yml
+        env:
+          JEKYLL_ENV: production
+
+      - name: Extract URLs from current sitemap
+        run: |
+          if [ -f "_site/sitemap.xml" ]; then
+            echo "✅ Extracting URLs from sitemap.xml..."
+            grep -oP '(?<=<loc>)[^<]+' _site/sitemap.xml | sort | uniq > current_urls.txt
+            echo "Found $(wc -l < current_urls.txt) URLs"
+            echo ""
+            echo "📋 Current URLs:"
+            cat current_urls.txt
+          else
+            echo "❌ Error: sitemap.xml not found!"
+            exit 1
+          fi
+
+      - name: Checkout previous commit
+        run: |
+          git checkout HEAD~1
+        continue-on-error: true
+
+      - name: Build Jekyll site (previous)
+        run: |
+          bundle exec jekyll build --config _config.yml
+        env:
+          JEKYLL_ENV: production
+        continue-on-error: true
+
+      - name: Extract URLs from previous sitemap
+        run: |
+          if [ -f "_site/sitemap.xml" ]; then
+            echo "✅ Extracting URLs from previous sitemap.xml..."
+            grep -oP '(?<=<loc>)[^<]+' _site/sitemap.xml | sort | uniq > previous_urls.txt
+            echo "Found $(wc -l < previous_urls.txt) URLs"
+          else
+            echo "⚠️  Previous sitemap not found, using baseline"
+            touch previous_urls.txt
+          fi
+
+          echo ""
+          echo "📋 Previous URLs:"
+          cat previous_urls.txt
+        continue-on-error: true
+
+      - name: Return to current commit
+        run: |
+          git checkout -
+
+      - name: Detect URL changes
+        id: detect-changes
+        run: |
+          # 如果previous_urls.txt为空，使用baseline
+          if [ ! -s previous_urls.txt ]; then
+            if [ -f ".github/workflows/previous_urls.txt" ]; then
+              echo "📌 Using baseline from .github/workflows/previous_urls.txt"
+              cp .github/workflows/previous_urls.txt previous_urls.txt
+            else
+              echo "⚠️  No baseline found, treating all URLs as new"
+              touch previous_urls.txt
+            fi
+          fi
+
+          # 检测新增的URL
+          comm -13 previous_urls.txt current_urls.txt > new_urls.txt
+
+          # 检测删除的URL
+          comm -23 previous_urls.txt current_urls.txt > deleted_urls.txt
+
+          # 检测修改的URL (sitemap中lastmod变化的)
+          # 简化：只提交新增的URL
+          cp new_urls.txt urls_to_submit.txt
+
+          # 输出统计
+          echo ""
+          echo "📊 URL Changes Detected:"
+          echo "  - New URLs: $(wc -l < new_urls.txt)"
+          echo "  - Deleted URLs: $(wc -l < deleted_urls.txt)"
+          echo "  - To submit: $(wc -l < urls_to_submit.txt)"
+          echo ""
+
+          if [ -s urls_to_submit.txt ]; then
+            echo "🔗 URLs to submit:"
+            cat urls_to_submit.txt
+          else
+            echo "ℹ️  No new URLs to submit"
+          fi
+
+          # 设置输出变量
+          echo "has_changes=$([ -s urls_to_submit.txt ] && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
+          echo "url_count=$(wc -l < urls_to_submit.txt)" >> $GITHUB_OUTPUT
+
+      - name: Submit to IndexNow
+        if: steps.detect-changes.outputs.has_changes == 'true'
+        env:
+          INDEXNOW_KEY: ${{ secrets.INDEXNOW_KEY }}
+        run: |
+          if [ -z "$INDEXNOW_KEY" ]; then
+            echo "❌ Error: INDEXNOW_KEY secret not set"
+            echo "Please add your IndexNow API key to repository secrets"
+            exit 1
+          fi
+
+          HOST="ariashaw.github.io"
+          KEY_LOCATION="https://$HOST/$INDEXNOW_KEY.txt"
+
+          echo "🚀 Submitting ${{ steps.detect-changes.outputs.url_count }} URLs to IndexNow..."
+          echo ""
+
+          SUCCESS_COUNT=0
+          FAIL_COUNT=0
+
+          while IFS= read -r url; do
+            RESPONSE=$(curl -s -w "\n%{http_code}" -X POST "https://api.indexnow.org/indexnow" \
+              -H "Content-Type: application/json; charset=utf-8" \
+              -d "{
+                \"host\": \"$HOST\",
+                \"key\": \"$INDEXNOW_KEY\",
+                \"keyLocation\": \"$KEY_LOCATION\",
+                \"urlList\": [\"$url\"]
+              }")
+
+            HTTP_CODE=$(echo "$RESPONSE" | tail -n1)
+
+            if [ "$HTTP_CODE" == "200" ] || [ "$HTTP_CODE" == "202" ]; then
+              echo "  ✅ $url (HTTP $HTTP_CODE)"
+              SUCCESS_COUNT=$((SUCCESS_COUNT + 1))
+            else
+              echo "  ❌ $url (HTTP $HTTP_CODE)"
+              FAIL_COUNT=$((FAIL_COUNT + 1))
+            fi
+
+            sleep 1
+          done < urls_to_submit.txt
+
+          echo ""
+          echo "📈 Submission Summary:"
+          echo "  - Successful: $SUCCESS_COUNT"
+          echo "  - Failed: $FAIL_COUNT"
+          echo "  - Total: ${{ steps.detect-changes.outputs.url_count }}"
+
+      - name: Create submission report
+        if: steps.detect-changes.outputs.has_changes == 'true'
+        run: |
+          cat > indexnow_report.md << EOF
+          # IndexNow Submission Report
+
+          **Date:** $(date -u +"%Y-%m-%d %H:%M:%S UTC")
+          **Commit:** ${{ github.sha }}
+
+          ## Summary
+
+          - **New URLs:** $(wc -l < new_urls.txt)
+          - **Deleted URLs:** $(wc -l < deleted_urls.txt)
+          - **Submitted:** $(wc -l < urls_to_submit.txt)
+
+          ## Submitted URLs
+
+          \`\`\`
+          $(cat urls_to_submit.txt)
+          \`\`\`
+
+          ## Deleted URLs (Not Submitted)
+
+          \`\`\`
+          $(cat deleted_urls.txt)
+          \`\`\`
+          EOF
+
+          cat indexnow_report.md
+
+      - name: Upload report as artifact
+        if: steps.detect-changes.outputs.has_changes == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: indexnow-report-${{ github.sha }}
+          path: |
+            indexnow_report.md
+            urls_to_submit.txt
+            new_urls.txt
+            deleted_urls.txt
+          retention-days: 30
+
+      - name: Summary
+        run: |
+          if [ "${{ steps.detect-changes.outputs.has_changes }}" == "true" ]; then
+            echo "✅ IndexNow submission completed" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "**Submitted ${{ steps.detect-changes.outputs.url_count }} URLs:**" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            cat urls_to_submit.txt >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+          else
+            echo "ℹ️  No URL changes detected" >> $GITHUB_STEP_SUMMARY
+          fi
