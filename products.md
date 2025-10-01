@@ -1,34 +1,37 @@
 ---
-layout: default
+layout: product-landing
 title: "Odoo Digital Sovereignty Master Pack - $699"
 description: "Replace $50,000+ consulting fees with professional-grade tools. 5 modules, 68+ tools, 2,000+ pages of documentation for complete Odoo control."
 permalink: /products/
 ---
 
-# Odoo Digital Sovereignty Master Pack
+<div class="hero-section">
+  <h1>Odoo Digital Sovereignty Master Pack</h1>
+  <p class="tagline">Replace $50,000+ consulting fees with professional-grade tools</p>
+  <p class="lead">Stop paying consultants $200/hour for knowledge you could own forever. Get the complete toolkit that takes you from strategic planning through daily operations—everything you need to deploy, protect, and optimize Odoo with confidence.</p>
+</div>
 
-**Replace $50,000+ consulting fees with professional-grade tools**
-
-Stop paying consultants $200/hour for knowledge you could own forever. Get the complete toolkit that takes you from strategic planning through daily operations—everything you need to deploy, protect, and optimize Odoo with confidence.
-
-<div style="background: linear-gradient(135deg, #f6f8fa 0%, #ffffff 100%); border: 2px solid #28a745; border-radius: 8px; padding: 2rem; margin: 2rem 0; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-  <p style="margin: 0 0 0.5rem 0; font-size: 1.1rem; color: #28a745; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">Limited Time Offer</p>
-  <p style="margin: 0 0 1rem 0; font-size: 2.5rem; font-weight: 700; color: #0366d6;">$699</p>
-  <p style="margin: 0 0 1.5rem 0; font-size: 1rem; color: #586069;">One-time payment • Instant access • Free lifetime updates</p>
-  <a href="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty?utm_source=products&utm_medium=hero&utm_campaign=flagship-product" style="display: inline-block; background: #28a745; color: white; padding: 1rem 2.5rem; text-decoration: none; border-radius: 6px; font-size: 1.2rem; font-weight: 700; box-shadow: 0 2px 4px rgba(40,167,69,0.3); transition: all 0.3s;">Get Instant Access Now →</a>
-  <p style="margin: 1rem 0 0 0; font-size: 0.9rem; color: #586069;">✅ 14-day money-back guarantee • ✅ Secure payment via Gumroad</p>
+<div class="price-box">
+  <div class="price">$699</div>
+  <p class="price-detail">One-time payment • Lifetime access • Free updates forever</p>
+  <a href="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty?utm_source=products&utm_medium=hero&utm_campaign=flagship-product" class="btn-primary-cta">Get Instant Access</a>
+  <div class="trust-signals">
+    <p>14-day money-back guarantee</p>
+    <p>Instant download after purchase • Secure payment via Gumroad</p>
+  </div>
 </div>
 
 ---
 
 ## What You Get
 
-- **5 integrated modules** covering strategy → deployment → migration → protection → operations
-- **68+ production-ready tools** (Excel calculators, bash scripts, configuration templates)
-- **2,000+ pages** of comprehensive documentation and playbooks
-- **Zero vendor lock-in** - you own the files forever, no subscriptions
-- **14-day money-back guarantee** - if the tools don't match the description
-- **Free updates for life** - continuous improvements and new tools
+<ul class="feature-list">
+  <li><strong>5 integrated modules</strong> covering strategy → deployment → migration → protection → operations</li>
+  <li><strong>68+ production-ready tools</strong> (Excel calculators, bash scripts, configuration templates)</li>
+  <li><strong>2,000+ pages</strong> of comprehensive documentation and playbooks</li>
+  <li><strong>Zero vendor lock-in</strong> - you own the files forever, no subscriptions</li>
+  <li><strong>Free updates for life</strong> - continuous improvements and new tools</li>
+</ul>
 
 ---
 
@@ -40,13 +43,11 @@ vs. $50,000-$200,000 for equivalent consulting services
 
 That's less than the cost of a single day with a senior Odoo consultant—but you get the complete playbook they'd charge you to build over months.
 
-<div style="text-align: center; margin: 2rem 0;">
-  <a href="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty?utm_source=products&utm_medium=investment-cta&utm_campaign=flagship-product" style="display: inline-block; background: #28a745; color: white; padding: 1rem 3rem; text-decoration: none; border-radius: 6px; font-size: 1.3rem; font-weight: 700; box-shadow: 0 2px 4px rgba(40,167,69,0.3);">Purchase Now - $699 →</a>
-</div>
-
 ---
 
 ## The Five Modules
+
+<div class="module-card">
 
 ### Module 1: Strategic Command Center
 
@@ -62,9 +63,11 @@ The business case tools that consultants use to justify their fees—now yours t
 - Vendor Evaluation Toolkit - prevent lock-in before signing contracts
 - Failure Prevention System - assess 28 risk factors that kill 40% of Odoo projects
 
-**Replaces:** $15,000-$30,000 in strategic consulting fees
+<p class="module-value">Replaces: $15,000-$30,000 in strategic consulting fees</p>
 
----
+</div>
+
+<div class="module-card">
 
 ### Module 2: Technical Deployment Arsenal
 
@@ -80,9 +83,11 @@ The battle-tested configs, scripts, and validation tools that turn deployment fr
 - Performance baseline toolkit - measure before problems appear
 - Deployment validation suite - 23 automated checks before go-live
 
-**Replaces:** $20,000-$40,000 in technical deployment consulting
+<p class="module-value">Replaces: $20,000-$40,000 in technical deployment consulting</p>
 
----
+</div>
+
+<div class="module-card">
 
 ### Module 3: Migration Command Suite
 
@@ -98,17 +103,17 @@ The proven methodology from 300+ successful migrations—turn 8-hour outages int
 - Performance preservation system - maintain speed through schema changes
 - Audit trail generator - enterprise compliance logging
 
-**Replaces:** $25,000-$60,000 in migration consulting and disaster recovery costs
+<p class="module-value">Replaces: $25,000-$60,000 in migration consulting and disaster recovery costs</p>
 
-<div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 1.5rem; margin: 2rem 0;">
-  <p style="margin: 0 0 0.5rem 0; font-size: 1rem; color: #856404; font-weight: 600;">📊 Already seeing the value? Lock in your access now.</p>
-  <p style="margin: 0 0 1rem 0; font-size: 0.9rem; color: #856404;">You've just read about tools worth $85,000+ in consulting fees. Get all 5 modules for a one-time $699 payment.</p>
-  <div style="text-align: center;">
-    <a href="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty?utm_source=products&utm_medium=mid-modules-cta&utm_campaign=flagship-product" style="display: inline-block; background: #28a745; color: white; padding: 0.875rem 2rem; text-decoration: none; border-radius: 6px; font-size: 1.1rem; font-weight: 700; box-shadow: 0 2px 4px rgba(40,167,69,0.3);">Get Instant Access - $699 →</a>
-  </div>
 </div>
 
----
+<div class="inline-cta">
+  <p><strong>Already seeing the value?</strong></p>
+  <p>You've just read about tools worth $85,000+ in consulting fees. Get all 5 modules for a one-time $699 payment.</p>
+  <a href="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty?utm_source=products&utm_medium=mid-modules-cta&utm_campaign=flagship-product" class="btn-outline-cta">Get Instant Access - $699</a>
+</div>
+
+<div class="module-card">
 
 ### Module 4: Fortress Protection System
 
@@ -124,9 +129,11 @@ Enterprise-grade backup automation and disaster recovery—without enterprise so
 - Recovery time optimizer - automated rollback for 7 disaster scenarios
 - System health monitor - 47 production checks with multi-channel alerting
 
-**Replaces:** $15,000-$40,000 in backup infrastructure and DR planning
+<p class="module-value">Replaces: $15,000-$40,000 in backup infrastructure and DR planning</p>
 
----
+</div>
+
+<div class="module-card">
 
 ### Module 5: Operations Excellence Suite
 
@@ -142,20 +149,22 @@ The monitoring, optimization, and maintenance tools that keep Odoo fast as your 
 - Capacity planning dashboard - predict when to scale infrastructure
 - Production runbook library - step-by-step guides for 23 common operational scenarios
 
-**Replaces:** $10,000-$30,000 annually in performance consulting and emergency firefighting
+<p class="module-value">Replaces: $10,000-$30,000 annually in performance consulting and emergency firefighting</p>
+
+</div>
 
 ---
 
 ## Who This Is For
 
-**✅ Perfect for:**
+**Perfect for:**
 - Business owners seeking complete control over their Odoo investment
 - Technical leaders tired of consultant dependency
 - IT managers building in-house Odoo expertise
 - Odoo freelancers wanting enterprise-grade tools to serve clients better
 - CFOs who want to slash ongoing consulting costs
 
-**❌ Not for:**
+**Not for:**
 - Complete beginners with zero technical comfort (you need basic Linux familiarity)
 - Businesses wanting someone else to do everything (this is a DIY toolkit)
 - People looking for ongoing hands-on support (documentation is comprehensive, but this isn't consulting)
@@ -164,84 +173,146 @@ The monitoring, optimization, and maintenance tools that keep Odoo fast as your 
 
 ## Frequently Asked Questions
 
-**Q: Is this too complex for non-technical users?**
+<div class="faq-item">
+<strong>Q: Is this too complex for non-technical users?</strong>
 
 Module 1 requires only Excel—no coding. Modules 2-5 require basic Linux command-line comfort. If you can SSH into a server and run `ls`, you can use these tools. Every script includes step-by-step instructions.
+</div>
 
-**Q: What if the tools don't work for my setup?**
+<div class="faq-item">
+<strong>Q: What if the tools don't work for my setup?</strong>
 
 14-day money-back guarantee. If the tools don't match the description or don't work as documented, full refund—no questions asked.
+</div>
 
-**Q: Do I need all five modules?**
+<div class="faq-item">
+<strong>Q: Do I need all five modules?</strong>
 
 Each module solves different lifecycle stages. Most businesses need at least Modules 1, 2, and 4 (strategic planning, deployment, backup). Modules 3 and 5 become critical as you scale.
+</div>
 
-**Q: Will these work with Odoo 18? 17? Community vs. Enterprise?**
+<div class="faq-item">
+<strong>Q: Will these work with Odoo 18? 17? Community vs. Enterprise?</strong>
 
 The tools are version-agnostic where possible. Scripts include compatibility notes for Odoo 14-18. Works with both Community and Enterprise editions.
+</div>
 
-**Q: What if I need help implementing?**
+<div class="faq-item">
+<strong>Q: What if I need help implementing?</strong>
 
 Comprehensive documentation is included (2,000+ pages). For hands-on implementation support, I offer separate consulting services—contact aria@ariashaw.com.
+</div>
 
-**Q: How do updates work?**
+<div class="faq-item">
+<strong>Q: How do updates work?</strong>
 
 Free lifetime updates. When I add new tools or improve existing ones, you get them automatically through the delivery platform.
+</div>
 
-**Q: Can I get a refund if I change my mind?**
+<div class="faq-item">
+<strong>Q: Can I get a refund if I change my mind?</strong>
 
 Yes, 14-day money-back guarantee if the toolkit doesn't match what's described here.
+</div>
 
-**Q: Is this better than hiring a consultant?**
+<div class="faq-item">
+<strong>Q: Is this better than hiring a consultant?</strong>
 
 Different purposes. Consultants do the work for you; this toolkit empowers you to do it yourself. If you want knowledge transfer and permanent capability—this wins. If you want zero involvement—hire a consultant.
+</div>
 
-**Q: What format are the tools delivered in?**
+<div class="faq-item">
+<strong>Q: What format are the tools delivered in?</strong>
 
 Excel files (.xlsx), bash scripts (.sh), Python scripts (.py), Markdown documentation (.md), and configuration files. Everything is plain text and open—no proprietary formats, no DRM.
+</div>
 
-**Q: Do these tools work on Windows?**
+<div class="faq-item">
+<strong>Q: Do these tools work on Windows?</strong>
 
 Excel tools work anywhere. Scripts are Linux-focused (since Odoo runs on Linux). Windows users can use WSL (Windows Subsystem for Linux) or deploy directly on Linux servers.
+</div>
 
 ---
 
 ## Real Value Comparison
 
-| What You Need | Consultant Cost | Master Pack Cost | Your Savings |
-|---------------|----------------|-----------------|--------------|
-| Strategic planning & business case | $15,000-$30,000 | Included | $15,000+ |
-| Technical deployment & config | $20,000-$40,000 | Included | $20,000+ |
-| Migration planning & execution | $25,000-$60,000 | Included | $25,000+ |
-| Backup & disaster recovery setup | $15,000-$40,000 | Included | $15,000+ |
-| Performance tuning & monitoring | $10,000-$30,000 | Included | $10,000+ |
-| **Total consultant fees** | **$85,000-$200,000** | **$699** | **$84,000-$199,000** |
+<table class="comparison-table">
+  <thead>
+    <tr>
+      <th>What You Need</th>
+      <th>Consultant Cost</th>
+      <th>Master Pack Cost</th>
+      <th>Your Savings</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Strategic planning & business case</td>
+      <td>$15,000-$30,000</td>
+      <td>Included</td>
+      <td>$15,000+</td>
+    </tr>
+    <tr>
+      <td>Technical deployment & config</td>
+      <td>$20,000-$40,000</td>
+      <td>Included</td>
+      <td>$20,000+</td>
+    </tr>
+    <tr>
+      <td>Migration planning & execution</td>
+      <td>$25,000-$60,000</td>
+      <td>Included</td>
+      <td>$25,000+</td>
+    </tr>
+    <tr>
+      <td>Backup & disaster recovery setup</td>
+      <td>$15,000-$40,000</td>
+      <td>Included</td>
+      <td>$15,000+</td>
+    </tr>
+    <tr>
+      <td>Performance tuning & monitoring</td>
+      <td>$10,000-$30,000</td>
+      <td>Included</td>
+      <td>$10,000+</td>
+    </tr>
+    <tr>
+      <td><strong>Total consultant fees</strong></td>
+      <td><strong>$85,000-$200,000</strong></td>
+      <td><strong>$699</strong></td>
+      <td><strong>$84,000-$199,000</strong></td>
+    </tr>
+  </tbody>
+</table>
 
 Plus: Consultants leave, taking their knowledge. With the Master Pack, the knowledge stays with you forever.
 
-<div style="background: #e7f4ff; border: 2px solid #0366d6; border-radius: 6px; padding: 1.5rem; margin: 2rem 0; text-align: center;">
-  <p style="margin: 0 0 0.5rem 0; font-size: 1rem; color: #0366d6; font-weight: 600;">💰 Save $84,000-$199,000 in consulting fees</p>
-  <p style="margin: 0 0 1rem 0; font-size: 0.9rem; color: #0366d6;">One-time $699 investment • Lifetime access • 14-day guarantee</p>
-  <a href="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty?utm_source=products&utm_medium=value-comparison-cta&utm_campaign=flagship-product" style="display: inline-block; background: #28a745; color: white; padding: 1rem 2.5rem; text-decoration: none; border-radius: 6px; font-size: 1.2rem; font-weight: 700; box-shadow: 0 2px 4px rgba(40,167,69,0.3);">Get Instant Access Now →</a>
+<div class="inline-cta">
+  <p><strong>Save $84,000-$199,000 in consulting fees</strong></p>
+  <p>One-time $699 investment • Lifetime access • 14-day guarantee</p>
+  <a href="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty?utm_source=products&utm_medium=value-comparison-cta&utm_campaign=flagship-product" class="btn-primary-cta">Get Instant Access Now</a>
 </div>
 
 ---
 
-## Ready to Own Your Odoo Journey?
+<div class="final-cta">
+  <h2>Ready to Own Your Odoo Journey?</h2>
+  <p>Stop renting expertise. Own it.</p>
 
-Stop renting expertise. Own it.
+  <ul class="checklist">
+    <li>Instant download after purchase</li>
+    <li>All 5 modules included</li>
+    <li>68+ production-ready tools</li>
+    <li>2,000+ pages of documentation</li>
+    <li>Free lifetime updates</li>
+    <li>14-day money-back guarantee</li>
+  </ul>
 
-<div style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); border-radius: 8px; padding: 2.5rem; margin: 2rem 0; text-align: center; color: white; box-shadow: 0 4px 8px rgba(40,167,69,0.3);">
-  <p style="margin: 0 0 0.5rem 0; font-size: 1.3rem; font-weight: 700; color: white;">Get Instant Access - $699</p>
-  <p style="margin: 0 0 1.5rem 0; font-size: 1rem; color: rgba(255,255,255,0.9);">One-time payment • Lifetime access • 14-day guarantee</p>
-  <a href="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty?utm_source=products&utm_medium=final-cta&utm_campaign=flagship-product" style="display: inline-block; background: white; color: #28a745; padding: 1rem 3rem; text-decoration: none; border-radius: 6px; font-size: 1.3rem; font-weight: 700; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">Purchase Now →</a>
-  <div style="margin-top: 1.5rem; font-size: 0.95rem; color: rgba(255,255,255,0.95);">
-    <p style="margin: 0.25rem 0;">✅ Instant download after purchase</p>
-    <p style="margin: 0.25rem 0;">✅ All 5 modules included</p>
-    <p style="margin: 0.25rem 0;">✅ 68+ production-ready tools</p>
-    <p style="margin: 0.25rem 0;">✅ 2,000+ pages of documentation</p>
-    <p style="margin: 0.25rem 0;">✅ Free lifetime updates</p>
-    <p style="margin: 0.25rem 0;">✅ 14-day money-back guarantee</p>
+  <a href="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty?utm_source=products&utm_medium=final-cta&utm_campaign=flagship-product" class="btn-primary-cta">Get Instant Access - $699</a>
+
+  <div class="trust-signals">
+    <p>Secure payment via Gumroad • Instant digital delivery</p>
   </div>
 </div>
 
