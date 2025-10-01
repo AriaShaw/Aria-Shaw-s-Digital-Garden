@@ -11,7 +11,13 @@ permalink: /products/
 
 Stop paying consultants $200/hour for knowledge you could own forever. Get the complete toolkit that takes you from strategic planning through daily operations—everything you need to deploy, protect, and optimize Odoo with confidence.
 
-[**Get Instant Access on Gumroad →**](https://ariashaw.gumroad.com/l/odoo-digital-sovereignty)
+<div style="background: linear-gradient(135deg, #f6f8fa 0%, #ffffff 100%); border: 2px solid #28a745; border-radius: 8px; padding: 2rem; margin: 2rem 0; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+  <p style="margin: 0 0 0.5rem 0; font-size: 1.1rem; color: #28a745; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">Limited Time Offer</p>
+  <p style="margin: 0 0 1rem 0; font-size: 2.5rem; font-weight: 700; color: #0366d6;">$699</p>
+  <p style="margin: 0 0 1.5rem 0; font-size: 1rem; color: #586069;">One-time payment • Instant access • Free lifetime updates</p>
+  <a href="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty?utm_source=products&utm_medium=hero&utm_campaign=flagship-product" style="display: inline-block; background: #28a745; color: white; padding: 1rem 2.5rem; text-decoration: none; border-radius: 6px; font-size: 1.2rem; font-weight: 700; box-shadow: 0 2px 4px rgba(40,167,69,0.3); transition: all 0.3s;">Get Instant Access Now →</a>
+  <p style="margin: 1rem 0 0 0; font-size: 0.9rem; color: #586069;">✅ 14-day money-back guarantee • ✅ Secure payment via Gumroad</p>
+</div>
 
 ---
 
@@ -34,7 +40,9 @@ vs. $50,000-$200,000 for equivalent consulting services
 
 That's less than the cost of a single day with a senior Odoo consultant—but you get the complete playbook they'd charge you to build over months.
 
-[**Purchase Now - $699 →**](https://ariashaw.gumroad.com/l/odoo-digital-sovereignty)
+<div style="text-align: center; margin: 2rem 0;">
+  <a href="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty?utm_source=products&utm_medium=investment-cta&utm_campaign=flagship-product" style="display: inline-block; background: #28a745; color: white; padding: 1rem 3rem; text-decoration: none; border-radius: 6px; font-size: 1.3rem; font-weight: 700; box-shadow: 0 2px 4px rgba(40,167,69,0.3);">Purchase Now - $699 →</a>
+</div>
 
 ---
 
@@ -91,6 +99,14 @@ The proven methodology from 300+ successful migrations—turn 8-hour outages int
 - Audit trail generator - enterprise compliance logging
 
 **Replaces:** $25,000-$60,000 in migration consulting and disaster recovery costs
+
+<div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 1.5rem; margin: 2rem 0;">
+  <p style="margin: 0 0 0.5rem 0; font-size: 1rem; color: #856404; font-weight: 600;">📊 Already seeing the value? Lock in your access now.</p>
+  <p style="margin: 0 0 1rem 0; font-size: 0.9rem; color: #856404;">You've just read about tools worth $85,000+ in consulting fees. Get all 5 modules for a one-time $699 payment.</p>
+  <div style="text-align: center;">
+    <a href="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty?utm_source=products&utm_medium=mid-modules-cta&utm_campaign=flagship-product" style="display: inline-block; background: #28a745; color: white; padding: 0.875rem 2rem; text-decoration: none; border-radius: 6px; font-size: 1.1rem; font-weight: 700; box-shadow: 0 2px 4px rgba(40,167,69,0.3);">Get Instant Access - $699 →</a>
+  </div>
+</div>
 
 ---
 
@@ -203,20 +219,31 @@ Excel tools work anywhere. Scripts are Linux-focused (since Odoo runs on Linux).
 
 Plus: Consultants leave, taking their knowledge. With the Master Pack, the knowledge stays with you forever.
 
+<div style="background: #e7f4ff; border: 2px solid #0366d6; border-radius: 6px; padding: 1.5rem; margin: 2rem 0; text-align: center;">
+  <p style="margin: 0 0 0.5rem 0; font-size: 1rem; color: #0366d6; font-weight: 600;">💰 Save $84,000-$199,000 in consulting fees</p>
+  <p style="margin: 0 0 1rem 0; font-size: 0.9rem; color: #0366d6;">One-time $699 investment • Lifetime access • 14-day guarantee</p>
+  <a href="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty?utm_source=products&utm_medium=value-comparison-cta&utm_campaign=flagship-product" style="display: inline-block; background: #28a745; color: white; padding: 1rem 2.5rem; text-decoration: none; border-radius: 6px; font-size: 1.2rem; font-weight: 700; box-shadow: 0 2px 4px rgba(40,167,69,0.3);">Get Instant Access Now →</a>
+</div>
+
 ---
 
 ## Ready to Own Your Odoo Journey?
 
 Stop renting expertise. Own it.
 
-[**Get Instant Access - $699 →**](https://ariashaw.gumroad.com/l/odoo-digital-sovereignty)
-
-- ✅ Instant download after purchase
-- ✅ All 5 modules included
-- ✅ 68+ production-ready tools
-- ✅ 2,000+ pages of documentation
-- ✅ Free lifetime updates
-- ✅ 14-day money-back guarantee
+<div style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); border-radius: 8px; padding: 2.5rem; margin: 2rem 0; text-align: center; color: white; box-shadow: 0 4px 8px rgba(40,167,69,0.3);">
+  <p style="margin: 0 0 0.5rem 0; font-size: 1.3rem; font-weight: 700; color: white;">Get Instant Access - $699</p>
+  <p style="margin: 0 0 1.5rem 0; font-size: 1rem; color: rgba(255,255,255,0.9);">One-time payment • Lifetime access • 14-day guarantee</p>
+  <a href="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty?utm_source=products&utm_medium=final-cta&utm_campaign=flagship-product" style="display: inline-block; background: white; color: #28a745; padding: 1rem 3rem; text-decoration: none; border-radius: 6px; font-size: 1.3rem; font-weight: 700; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">Purchase Now →</a>
+  <div style="margin-top: 1.5rem; font-size: 0.95rem; color: rgba(255,255,255,0.95);">
+    <p style="margin: 0.25rem 0;">✅ Instant download after purchase</p>
+    <p style="margin: 0.25rem 0;">✅ All 5 modules included</p>
+    <p style="margin: 0.25rem 0;">✅ 68+ production-ready tools</p>
+    <p style="margin: 0.25rem 0;">✅ 2,000+ pages of documentation</p>
+    <p style="margin: 0.25rem 0;">✅ Free lifetime updates</p>
+    <p style="margin: 0.25rem 0;">✅ 14-day money-back guarantee</p>
+  </div>
+</div>
 
 ---
 
