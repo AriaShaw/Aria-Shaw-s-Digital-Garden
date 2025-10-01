@@ -12,6 +12,8 @@ on:
 jobs:
   detect-and-submit:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Allow workflow to commit baseline updates
 
     steps:
       - name: Checkout current commit
@@ -232,6 +234,28 @@ jobs:
             new_urls.txt
             deleted_urls.txt
           retention-days: 30
+
+      - name: Update baseline URLs
+        if: steps.detect-changes.outputs.has_changes == 'true'
+        run: |
+          # Update the baseline with current URLs
+          cp current_urls.txt .github/workflows/previous_urls.txt
+          echo "✅ Updated baseline with ${{ steps.detect-changes.outputs.url_count }} new URLs"
+        continue-on-error: true
+
+      - name: Commit updated baseline
+        if: steps.detect-changes.outputs.has_changes == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .github/workflows/previous_urls.txt
+          git diff --staged --quiet || git commit -m "Update IndexNow baseline URLs
+
+          Auto-updated by IndexNow workflow after submitting new URLs.
+
+          [skip ci]"
+          git push
+        continue-on-error: true
 
       - name: Summary
         run: |
