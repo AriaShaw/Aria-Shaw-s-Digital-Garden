@@ -1,3 +1,9 @@
+---
+layout: home
+title: "Aria Shaw's Digital Garden | Definitive Business Solutions"
+description: "Curated digital garden of battle-tested guides for Odoo self-hosting, deployment, and digital sovereignty. Expert playbooks solving expensive business problems."
+---
+
 This is not a blog. This is a curated digital garden—a collection of definitive, battle-tested guides designed to solve specific, expensive problems.
 
 Each playbook is a deep-dive, meticulously crafted to be the only resource you need on the subject. I believe the best solution to a complex problem isn't a magic black box, but a crystal-clear set of instructions. This is my attempt to create them.

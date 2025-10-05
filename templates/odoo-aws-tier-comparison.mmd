@@ -1,0 +1,47 @@
+graph TB
+    Users[Users<br/>Web Browser]
+
+    subgraph "Tier 1: Single-Server - $100-120/month"
+        direction LR
+        EC2_1["<b>EC2 t3.medium</b><br/>━━━━━━━━━━<br/>Nginx ▶ Odoo ▶ PostgreSQL<br/>(All in one instance)<br/>━━━━━━━━━━<br/>⚠️ No separation<br/>⚠️ Manual backup"]
+        EC2_1 -.->|Daily| EBS1[EBS<br/>Snapshots]
+    end
+
+    subgraph "Tier 2: Separated - $180-220/month"
+        direction LR
+        EC2_2["<b>EC2 t3.large</b><br/>━━━━━━━━━━<br/>Nginx ▶ Odoo<br/>(App server only)"]
+        RDS_2[("<b>RDS db.t3.medium</b><br/>PostgreSQL 15<br/>━━━━━━━━━━<br/>✓ Auto backups<br/>✓ Point-in-time")]
+        S3_2[("<b>S3 Bucket</b><br/>Filestore<br/>━━━━━━━━━━<br/>✓ 3.5x cheaper")]
+        EC2_2 -->|Private<br/>Network| RDS_2
+        EC2_2 -->|boto3| S3_2
+    end
+
+    subgraph "Tier 3: High-Availability - $350-420/month"
+        direction TB
+        ALB["<b>Load Balancer</b><br/>━━━━━━━━━━<br/>Sticky sessions<br/>Health checks"]
+
+        subgraph "Multi-AZ Deployment"
+            EC2_3a["EC2 AZ-1a<br/>Odoo + Nginx"]
+            EC2_3b["EC2 AZ-1b<br/>Odoo + Nginx"]
+        end
+
+        RDS_3[("<b>RDS Multi-AZ</b><br/>db.t3.large<br/>━━━━━━━━━━<br/>✓ Auto failover<br/>✓ <2min downtime")]
+
+        ALB --> EC2_3a
+        ALB --> EC2_3b
+        EC2_3a --> RDS_3
+        EC2_3b --> RDS_3
+    end
+
+    Users -->|HTTPS| EC2_1
+    Users -->|HTTPS| EC2_2
+    Users -->|HTTPS| ALB
+
+    style EC2_1 fill:#ffccbc,stroke:#d84315,stroke-width:3px
+    style EC2_2 fill:#fff9c4,stroke:#f57f17,stroke-width:3px
+    style RDS_2 fill:#bbdefb,stroke:#1976d2,stroke-width:2px
+    style S3_2 fill:#fff9c4,stroke:#f9a825,stroke-width:2px
+    style ALB fill:#f8bbd0,stroke:#c2185b,stroke-width:3px
+    style EC2_3a fill:#c8e6c9,stroke:#388e3c,stroke-width:2px
+    style EC2_3b fill:#c8e6c9,stroke:#388e3c,stroke-width:2px
+    style RDS_3 fill:#bbdefb,stroke:#1976d2,stroke-width:3px
