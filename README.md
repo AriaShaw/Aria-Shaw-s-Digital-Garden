@@ -91,5 +91,5 @@ I build these playbooks for fellow builders, pragmatists, and business owners wh
 You can follow my work and thoughts on building and digital plumbing here:
 
 * **GitHub:** [@AriaShaw](https://github.com/AriaShaw)
-* **X (Twitter):** [@theAriaShaw](https://x.com/theAriaShaw) 
-* **Email:**aria@ariashaw.com
+* **X (Twitter):** [@theAriaShaw](https://x.com/theAriaShaw)
+* **Email:** [aria@ariashaw.com](mailto:aria@ariashaw.com)
