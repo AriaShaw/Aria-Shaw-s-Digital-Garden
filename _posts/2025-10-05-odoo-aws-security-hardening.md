@@ -1184,6 +1184,6 @@ What you get:
 
 ---
 
-**Questions?** Open [GitHub issue](https://github.com/AriaShaw/AriaShaw.github.io/issues) or email aria@digitalplumber.dev.
+**Questions?** Open [GitHub issue](https://github.com/AriaShaw/AriaShaw.github.io/issues) or email [aria@ariashaw.com](mailto:aria@ariashaw.com).
 
 **Found this useful?** Share security hardening checklist with your DevOps team.

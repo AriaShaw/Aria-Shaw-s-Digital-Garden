@@ -616,6 +616,6 @@ Covers:
 
 ---
 
-**Questions?** Open [GitHub issue](https://github.com/AriaShaw/AriaShaw.github.io/issues) or email aria@ariashaw.com.
+**Questions?** Open [GitHub issue](https://github.com/AriaShaw/AriaShaw.github.io/issues) or email [aria@ariashaw.com](mailto:aria@ariashaw.com).
 
 **Found this useful?** Share architecture decision framework with your team.
