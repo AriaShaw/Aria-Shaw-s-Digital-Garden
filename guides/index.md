@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "Complete Odoo Guides Library | Aria Shaw's Digital Garden"
-description: "Comprehensive collection of battle-tested Odoo guides covering AWS deployment, self-hosting, database operations, and implementation strategies. Expert playbooks for business owners and system administrators."
+description: "Battle-tested Odoo guides on AWS deployment, self-hosting, database management, and implementation—expert strategies for businesses and admins."
 ---
 
 # Complete Guides Library
