@@ -17,32 +17,23 @@ Each playbook is a deep-dive, meticulously crafted to be the only resource you n
 
 ---
 
-## The Playbooks
+## Latest Guides
 
-Here you will find a growing library of guides. Each one is designed to fill an information vacuum and provide a clear path to a powerful outcome.
+New battle-tested playbooks for deploying Odoo on AWS with enterprise-grade reliability.
 
-### 📖 [Avoid $48,000 Loss: Odoo Self-Hosting Guide for 2025](/odoo-self-hosting-guide/)
+### 🚀 [Odoo AWS Deployment Guide 2025: Avoid $37K Mistakes](/odoo-aws-deployment-guide/)
 
-*A step-by-step blueprint for deploying a secure, scalable Odoo instance from scratch, while navigating the common pitfalls that can lead to a $48,000 disaster.*
+*The definitive AWS deployment playbook. Complete implementation roadmap from VPC design to production launch, with cost optimization strategies that prevent expensive architectural mistakes.*
 
-### 🚀 [Odoo Database Migration 2025: Zero-Downtime Made Easy](/odoo-database-migration-guide/)
+### 🏗️ [Odoo AWS Architecture Guide: 3 Tiers from $100 to $350/mo](/odoo-aws-architecture-design-guide/)
 
-*The definitive guide to migrating Odoo databases with zero data loss and minimal downtime. Battle-tested methodology from 300+ successful migrations, covering everything from risk assessment to disaster recovery.*
+*Deep-dive into AWS architecture patterns for Odoo. Compare single-server, separated-tier, and high-availability designs with real cost breakdowns and performance benchmarks.*
 
-### ⚙️ [Odoo Minimum Requirements 2025: Complete Deployment Guide](/odoo-minimum-requirements-deployment-guide/)
+### 🔒 [Odoo AWS Security: Lock Down Production in 6 Hours](/odoo-aws-security-hardening/)
 
-*The comprehensive guide to Odoo system requirements, hosting decisions, and production deployment. From hardware sizing to security hardening, everything you need to avoid expensive deployment failures and build a bulletproof Odoo infrastructure.*
+*Complete security hardening checklist for AWS-hosted Odoo. 30+ critical security controls with implementation scripts and validation tests.*
 
-### 💾 [Odoo Database Backup ＆ Restore: The Step-by-Step Guide 2025](/odoo-database-backup-restore-guide/)
-
-*Master reliable backup and restore procedures for Odoo databases. From web interface methods to automated scripts and cloud integration, this guide covers everything administrators need to protect their business data and recover from disasters with confidence.*
-
-### 🚀 [Odoo Implementation Guide 2025: Avoid $250K+ Failures](/odoo-implementation-guide/)
-
-*The complete Odoo implementation roadmap that prevents costly failures. 6-phase methodology, ready-to-use scripts, and real success strategies from 300+ implementations. Everything you need to transform business chaos into systematic success.*
-
----
-*More playbooks are being cultivated and will be published here soon.*
+**[→ Browse All Guides by Topic](/guides/)** | Self-Hosting • Database Operations • Implementation Strategies
 
 ---
 
