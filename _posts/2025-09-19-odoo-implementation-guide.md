@@ -1261,6 +1261,15 @@ Before moving to user training, ensure core business processes are configured an
 
 Remember: perfect configuration is the enemy of good configuration. Start with 80% of your requirements working smoothly, then iterate and improve based on real user feedback. A system that works well for most processes beats a configured system that never gets deployed.
 
+{% include ctas/inline-simple.html
+   title="Turn Users Into Odoo Champions (Without $15K Training Programs)"
+   description="The Master Pack includes role-based training frameworks, adoption tracking tools, and change management checklists. Get 90%+ user adoption rates."
+   button_text="Get Training Tools"
+   location="implementation-guide-early"
+%}
+
+---
+
 ## Phase 5: User Training & Change Management
 
 The brutal truth about Odoo implementations: you can have the most configured system in the world, but if your users don't adopt it, you've built an expensive monument to failure.
@@ -2201,6 +2210,15 @@ Timing issues when one system updates faster than others can sync, error handlin
 Before starting your Odoo implementation, verify that you define clear business objectives, you have a realistic timeline, you select an experienced implementation partner, and you properly size technical infrastructure.
 
 Remember: implementation mistakes cost heavily to fix after go-live, but they're preventable with planning and execution. The most successful Odoo implementations aren't the ones that never encounter problems—they're the ones that anticipate problems and have systems in place to resolve them.
+
+{% include ctas/inline-simple.html
+   title="Replace $50K-$200K Consultants With Professional DIY Tools"
+   description="The Master Pack gives you everything implementation partners charge $150/hour for: TCO calculators, module templates, migration scripts, training frameworks. You execute, you own."
+   button_text="See What Partners Won't Tell You"
+   location="implementation-guide-mid"
+%}
+
+---
 
 ## Partner Selection and Team Building
 

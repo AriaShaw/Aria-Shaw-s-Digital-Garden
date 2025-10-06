@@ -581,21 +581,16 @@ Covers:
 
 ### Get Production-Ready Tools
 
-**Technical Architecture Module ($199 standalone, included in Master Pack):**
+Skip 20+ hours of AWS trial-and-error with production-tested templates and calculators:
 
-What you get:
-- **EC2 Sizing Calculator** (Excel): Input user count + workload type → Get exact instance type + worker count + cost projection
-- **RDS Parameter Optimizer** (SQL script): Apply Odoo-specific PostgreSQL tuning (shared_buffers, work_mem, effective_cache_size)
-- **Cost Comparison Spreadsheet**: 3-year TCO model with growth projections (10%, 20%, 30% annual scenarios)
-- **CloudFormation Templates**: One-click deployment for Tier 2 and Tier 3 (VPC, EC2, RDS, ALB, ASG pre-configured)
-- **Migration Runbook** (PDF): Step-by-step Tier 1 → Tier 2 migration with zero-data-loss validation
-
-**Why buy vs build yourself:**
-- Calculator includes 47 instance types (save 6 hours of manual benchmarking)
-- CloudFormation templates pre-tuned for Odoo (save 12 hours of trial-and-error)
-- RDS optimizer based on 300+ production deployments (avoid common misconfigurations)
-
-**Purchase:** <a href="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty" onclick="gtag('event', 'cta_click', {'event_category': 'CTA', 'event_label': 'Get the Master Pack on Gumroad', 'cta_location': 'aws-architecture-guide-inline', 'destination': 'gumroad'});">Get the Master Pack on Gumroad</a> - $699 for all 5 modules with lifetime updates.
+{% include ctas/product-box.html
+   badge="Technical Architecture Module"
+   title="Deploy Production-Grade AWS Architecture in Hours"
+   description="The Master Pack includes EC2 sizing calculators, RDS optimizers, CloudFormation templates for all 3 tiers, and 3-year TCO models. Deploy Tier 2 architecture in 4 hours vs 2+ days of manual configuration."
+   features="EC2 Sizing Calculator (47 instance types)|RDS Parameter Optimizer (PostgreSQL tuning)|3-Year TCO Spreadsheet (growth scenarios)|CloudFormation Templates (Tier 2 & 3)|Tier 1→2 Migration Runbook"
+   button_text="Get AWS Architecture Tools - $699"
+   location="aws-architecture-guide-bottom"
+%}
 
 ### Secure Your Deployment
 

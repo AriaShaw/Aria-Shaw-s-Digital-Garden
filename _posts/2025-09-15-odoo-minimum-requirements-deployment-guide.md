@@ -659,6 +659,13 @@ If you're missing these targets, it's time to optimize your configuration or sca
 
 The next section will show you when and how to make that decision.
 
+{% include ctas/inline-simple.html
+   title="Avoid 90% of Deployment Errors Before They Happen"
+   description="This guide shows you the errors. The Master Pack includes pre-configured infrastructure templates, compatibility checkers, and one-command deployment scripts that eliminate common mistakes."
+   button_text="Get Deployment Tools"
+   location="deployment-guide-mid"
+%}
+
 ---
 
 ## Part 3: Common Error Traps and Solutions

@@ -928,22 +928,16 @@ cd prowler
 
 ### Get Production Security Tools
 
-**Fortress Protection Module ($299 standalone, included in Master Pack):**
+Replace $20K+ security consultants with battle-tested automation and compliance frameworks:
 
-What you get:
-- **Security Hardening Checklist** (PDF): 87-point validation (network, access, encryption, monitoring)
-- **CloudWatch Dashboard Templates** (JSON): Pre-configured dashboards for RDS, EC2, ALB metrics
-- **GuardDuty Runbooks** (PDF): Response procedures for 15 common threats
-- **Compliance Audit Scripts** (Bash): Automated GDPR/SOC2/HIPAA validation
-- **Backup Orchestration Scripts** (14 production scripts, 15,474 lines): Multi-cloud sync (AWS S3, Backblaze B2, Google Drive)
-- **Disaster Recovery Drill Framework** (Excel): Test plans for 6 failure scenarios (RDS crash, AZ outage, region failure)
-
-**Why buy vs build yourself:**
-- Checklist compiled from 300+ production deployments (save 20 hours of research)
-- Runbooks tested in real incidents (save hours during crisis)
-- DR framework covers edge cases (S3 CRR lag, DNS propagation delay)
-
-**Purchase:** <a href="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty" onclick="gtag('event', 'cta_click', {'event_category': 'CTA', 'event_label': 'Get the Master Pack on Gumroad', 'cta_location': 'aws-security-guide-inline', 'destination': 'gumroad'});">Get the Master Pack on Gumroad</a> - $699 for all 5 modules with lifetime updates.
+{% include ctas/product-box.html
+   badge="Fortress Protection Module"
+   title="Enterprise Security Without Enterprise Consultants"
+   description="The Master Pack includes 87-point security checklists, CloudWatch dashboards, GuardDuty runbooks, compliance scripts (GDPR/SOC2/HIPAA), and 14 disaster recovery scripts (15,474 lines). Build enterprise-grade security yourself."
+   features="87-Point Security Checklist|CloudWatch Dashboard Templates|GuardDuty Response Runbooks|GDPR/SOC2/HIPAA Compliance Scripts|14 DR Automation Scripts (15,474 lines)|Disaster Recovery Drill Framework"
+   button_text="Get Security Tools - $699"
+   location="aws-security-guide-bottom"
+%}
 
 ### Continue Learning
 
@@ -952,17 +946,6 @@ What you get:
 
 **Architecture planning:**
 [Odoo AWS Architecture Guide: 3 Tiers from $100 to $350/mo](/odoo-aws-architecture-design-guide/)
-
----
-
-{% include ctas/product-box.html
-   badge="Complete DIY Toolkit"
-   title="Own Your Odoo Security Infrastructure"
-   description="Master Pack: 68+ production scripts, security hardening checklists, compliance validation tools, DR drill frameworks. Build enterprise-grade security yourself—configure cloud backups, automate monitoring, test disaster recovery. Replace $20,000+ security consultants."
-   features="14 DR scripts (15,474 lines)|Security audit automation|CloudWatch dashboards|GDPR/SOC2/HIPAA checklists|Lifetime access"
-   button_text="Get the Master Pack - $699"
-   location="aws-security-guide-bottom"
-%}
 
 ---
 
