@@ -1878,36 +1878,11 @@ Don't let this guide become another bookmark that you never act on. I recommend 
 
 ---
 
-## 👨‍💻 About the Author
-
-Hey there! I'm **Aria Shaw**, and I'm a Digital Plumber.
-
-I find broken, leaking, or missing pipes on the internet—the gaps in knowledge between powerful tools and the ambitious people who need to use them. I thrive on untangling complexity and turning it into clear, repeatable processes.
-
-**My Philosophy**: The best solutions emerge when you fill knowledge gaps with rigorous research, not guesswork.
-
-**What I Do**: I research, analyze, and distill complex technical implementations into guides that work. Think of me as a digital archaeologist—I dig through hundreds of forum posts, Stack Overflow questions, GitHub issues, and user reports to find the patterns that lead to success and failure.
-
-**Why I Wrote This Guide**: After analyzing 1,500+ Odoo deployment discussions across Reddit, GitHub, and business forums, I discovered that most failures aren't technical—they're caused by knowledge gaps. People follow incomplete tutorials, miss critical configuration steps, or choose the wrong hosting approach for their situation. This guide fills those gaps.
-
-**My Research Process**: For this requirements guide, I analyzed:
-- 1,500+ forum posts and troubleshooting discussions
-- 670+ G2 reviews and user satisfaction data
-- 1,972+ Trustpilot ratings across hosting providers
-- 50+ documented production deployment case studies
-- Performance data from monitoring real-world implementations
-
-**My Mission**: Build a comprehensive library of research-backed guides for fellow builders, pragmatists, and business owners who believe in the power of digital sovereignty. Real research backs every guide, not marketing claims or fabricated experiences.
-
-**Connect With Me**:
-- 🐦 **Twitter**: [@theAriaShaw](https://twitter.com/theAriaShaw) - Daily insights on digital tools, system architecture, and the art of bridging knowledge gaps
-- 💼 **What I'm Building**: Research-backed toolkits and guides that give you everything needed to implement complex systems independently
-
-**A Promise**: If you implement this guide and run into issues, tweet at me. I read every message and I'll do my best to point you in the right direction. We're all in this together—every business that achieves digital sovereignty makes the entire ecosystem stronger.
-
-**Final Thought**: The best software is the software that disappears. It just works, day after day, letting you focus on what matters—growing your business and serving your customers.
-
-Now go build something awesome. 🚀
+{% include ctas/inline-simple.html
+   title="Skip the Hardware Guesswork"
+   description="The Master Pack includes infrastructure sizing calculators, production configs, and one-command deployment scripts. Get production-ready in hours, not weeks. $699 one-time payment."
+   button_text="Get Deployment Tools"
+%}
 
 ---
 *Last updated: September 2025 | Found this helpful? Share it with another business owner who's planning an Odoo deployment.*

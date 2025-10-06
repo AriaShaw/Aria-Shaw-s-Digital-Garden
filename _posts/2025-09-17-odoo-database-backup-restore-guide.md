@@ -26,9 +26,8 @@ Research and documented case studies inform the methods in this guide, but every
 
 {% include ctas/inline-simple.html
    title="Manual Backups Are Essential Knowledge—But Production Needs Automation"
-   description="This guide teaches reliable manual processes. Module 4 includes 14 production-ready scripts for intelligent backup scheduling, multi-cloud sync, and sub-15 minute disaster recovery for $699."
-   link="/products/?utm_source=blog&utm_medium=inline&utm_campaign=backup-guide&utm_content=problem-aware#module-4"
-   button_text="Explore Module 4"
+   description="This guide teaches reliable manual processes. The Master Pack includes 14 production-ready scripts for intelligent backup scheduling, multi-cloud sync, and sub-15 minute disaster recovery for $699."
+   button_text="Get the Master Pack"
 %}
 
 ## Understanding Odoo Database Architecture: What You're Backing Up (And Why Most People Get It Wrong)
@@ -2561,45 +2560,6 @@ These hidden features have saved me hours over the years. The backup validation 
 
 ---
 
-## 👨‍💻 About the Author
-
-Hey there! I'm **Aria Shaw**, and I'm a Digital Plumber.
-
-I find broken, leaking, or missing pipes on the internet—the gaps in knowledge between powerful tools and ambitious people trying to build something meaningful.
-
-Research revealed that **73% of Odoo backup failures** stem from incomplete understanding of the two-part architecture (database + filestore), indicating a critical knowledge gap that needed filling.
-
-Organizations were implementing backup strategies without understanding what they were protecting.
-
-**My Research Methodology**: Every strategy, script, and recommendation in this guide comes from analyzing documented deployments, community reports, and systematic testing across different Odoo configurations.
-
-I don't rely on personal anecdotes—I rely on data patterns that emerge when you examine hundreds of implementations.
-
-**What I Build**: Comprehensive DIY toolkits that bridge the gap between enterprise-grade solutions and practical implementation.
-
-Think of it as translating complex enterprise methodologies into actionable resources that growing businesses can deploy.
-
-**Why These Guides Matter**: The difference between a functioning backup system and a disaster waiting to happen comes down to understanding nuances that aren't covered in official documentation.
-
-These gaps create risk for organizations that don't know what they don't know.
-
-**Research Focus Areas**:
-- Systematic analysis of backup failure patterns across Odoo deployments
-- Documentation of version-specific implementation differences
-- Development of verification methodologies that prevent silent failures
-- Creation of automated testing frameworks for backup reliability
-
-**The Goal**: Transform complex enterprise backup strategies into accessible, implementable resources that operate reliably under pressure.
-
-Every organization deserves bulletproof data protection, regardless of their technical expertise or budget constraints.
-
-**Connect for Updates:**
-- 🐦 **Twitter**: [@theAriaShaw](https://twitter.com/theAriaShaw) - Research insights on business systems reliability and the hidden complexities that cause critical failures
-
-Remember: The sophisticated backup system is worthless if it fails when you need it most. 🔧
-
----
-
 ## This Guide vs. The Master Pack
 
 This free guide covered manual backup and restore procedures—the foundation every Odoo administrator needs. The **Odoo Digital Sovereignty Master Pack** automates and enhances these processes for production environments:
@@ -2625,8 +2585,7 @@ This free guide covered manual backup and restore procedures—the foundation ev
 
 {% include ctas/inline-simple.html
    title="Ready for Enterprise-Grade Backup Automation?"
-   description="Get the complete Fortress Protection System (Module 4) plus 4 additional modules covering the complete Odoo lifecycle. 68+ tools, 2,000+ pages, $699."
-   link="/products/?utm_source=blog&utm_medium=bottom&utm_campaign=backup-guide&utm_content=product-aware"
+   description="Get the complete Fortress Protection System plus 4 additional modules covering the complete Odoo lifecycle. 68+ tools, 2,000+ pages, $699."
    button_text="Get the Complete Toolkit"
 %}
 

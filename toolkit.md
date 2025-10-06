@@ -9,8 +9,7 @@ Welcome to the Toolkit, a curated library of open-source scripts and tools devel
 
 {% include ctas/inline-simple.html
    title="Want the Complete Professional Toolkit?"
-   description="These free tools solve specific problems. The Digital Sovereignty Master Pack gives you 68+ tools covering the complete Odoo lifecycle for $699 (vs. $50K+ consulting)."
-   link="/products/?utm_source=toolkit&utm_medium=hero&utm_campaign=free-to-paid"
+   description="These free tools solve specific problems. The Master Pack gives you 68+ DIY tools covering the complete Odoo lifecycle for $699 (vs. $50K+ consulting). You execute, you own."
    button_text="See What's Inside"
 %}
 
@@ -307,8 +306,7 @@ Welcome to the Toolkit, a curated library of open-source scripts and tools devel
 
 {% include ctas/inline-simple.html
    title="Ready to Level Up?"
-   description="Get the complete professional toolkit—5 modules, 68+ tools, 2,000+ pages. Everything from strategic planning through daily operations for $699."
-   link="/products/?utm_source=toolkit&utm_medium=comparison&utm_campaign=free-to-paid"
+   description="Get the complete DIY toolkit—5 modules, 68+ tools, 2,000+ pages. Build your own Odoo expertise from strategic planning through daily operations for $699."
    button_text="Explore the Master Pack"
 %}
 

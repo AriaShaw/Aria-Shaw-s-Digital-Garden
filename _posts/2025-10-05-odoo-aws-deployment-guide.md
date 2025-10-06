@@ -1158,7 +1158,7 @@ A: Check RDS security group: RDS Console → odoo-production-db → VPC security
 
 **Q: How do I migrate existing Odoo database from another server to AWS RDS?**
 
-A: Export existing database: `pg_dump -U odoo -h old-server odoo_db > odoo_backup.sql`. Upload to EC2: `scp odoo_backup.sql ubuntu@ec2-ip:/tmp/`. Import to RDS: `psql -h odoo-production-db.abc123.rds.amazonaws.com -U odoo_admin -d odoo_production < /tmp/odoo_backup.sql`. Verify: Login to Odoo and check data integrity. Full migration guide with downtime minimization: [Data Migration Module](/products/) (Module 3 - $299).
+A: Export existing database: `pg_dump -U odoo -h old-server odoo_db > odoo_backup.sql`. Upload to EC2: `scp odoo_backup.sql ubuntu@ec2-ip:/tmp/`. Import to RDS: `psql -h odoo-production-db.abc123.rds.amazonaws.com -U odoo_admin -d odoo_production < /tmp/odoo_backup.sql`. Verify: Login to Odoo and check data integrity. Full migration guide with downtime minimization: [Odoo Database Migration 2025: Zero-Downtime Made Easy](/odoo-database-migration-guide/).
 
 ---
 
@@ -1235,10 +1235,9 @@ After 30 days of production usage, analyze metrics and adjust:
 {% include ctas/product-box.html
    badge="DIY Deployment Toolkit"
    title="Deploy Faster with Production-Tested Scripts"
-   description="Module 2 (Technical Architecture): CloudFormation templates for 1-click deployment, RDS parameter calculator, cost estimation spreadsheet, and security hardening checklist. Configure once, deploy in 90 minutes vs. 6 hours manual setup."
+   description="The Master Pack includes CloudFormation templates for 1-click deployment, RDS parameter calculator, cost estimation spreadsheet, and security hardening checklist. Configure once, deploy in 90 minutes vs. 6 hours manual setup."
    features="CloudFormation 1-click deployment|RDS parameter calculator|Security hardening checklist (28 items)|Cost estimation spreadsheet"
-   link="/products/?utm_source=blog&utm_medium=product-box&utm_campaign=odoo-aws-deployment"
-   button_text="Get Module 2 - $299"
+   button_text="Get the Master Pack - $699"
 %}
 
 Your Odoo AWS deployment is live. Start configuring your business workflows.

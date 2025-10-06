@@ -2723,36 +2723,11 @@ Now go forth and migrate with confidence. 🚀
 
 ---
 
-## 👨‍💻 About the Author
-
-Hey there! I'm **Aria Shaw**, and I'm a Digital Plumber.
-
-I find broken, leaking, or missing pipes on the internet—specifically, the gaps in knowledge between powerful tools and the ambitious people who need to use them. I thrive on untangling complexity and turning it into clear, repeatable processes.
-
-**My Philosophy**: The best solutions emerge when you fill knowledge gaps with rigorous research, not guesswork.
-
-**What I Do**: I research, analyze, and distill complex technical implementations into practical guides that actually work. Think of me as a digital archaeologist—I dig through hundreds of forum posts, Stack Overflow questions, GitHub issues, and migration reports to find the patterns that lead to success and failure.
-
-**Why I Wrote This Guide**: After analyzing 800+ Odoo migration case studies across Reddit, Stack Overflow, and business forums, I discovered that most migration failures aren't technical—they're caused by knowledge gaps. People follow incomplete tutorials, miss critical configuration steps, or choose inappropriate approaches for their specific situations. This guide fills those gaps systematically.
-
-**My Research Process**: For this migration guide, I analyzed:
-- 500+ migration failure reports across multiple platforms
-- 300+ successful migration case studies and their common patterns
-- 200+ disaster recovery scenarios and their resolution approaches
-- 150+ hosting provider performance comparisons and user experiences
-- 400+ security incident reports to identify protection strategies
-
-**My Mission**: Build a comprehensive library of research-backed guides for fellow builders, pragmatists, and business owners who believe in the power of digital sovereignty. Every guide is backed by real research, not marketing claims or fabricated experiences.
-
-**Connect With Me**:
-- 🐦 **Twitter**: [@theAriaShaw](https://twitter.com/theAriaShaw) - Daily insights on digital tools, system architecture, and the art of bridging knowledge gaps
-- 💼 **What I'm Building**: Research-backed toolkits and guides that give you everything needed to implement complex systems independently
-
-**A Promise**: If you implement this guide and run into issues, tweet at me. I read every message and I'll do my best to point you in the right direction. We're all in this together—every business that achieves digital sovereignty makes the entire ecosystem stronger.
-
-**Final Thought**: The best technology is invisible technology. It should just work, day after day, letting you focus on what really matters—growing your business and serving your customers. A successful migration gives you that invisibility.
-
-Now go take control of your data. You've got this. 💪
+{% include ctas/inline-simple.html
+   title="Stop Doing Migrations Manually"
+   description="The Master Pack includes zero-downtime migration scripts, risk assessment tools, and automated rollback systems. Get the complete professional toolkit for $699."
+   button_text="Get the Migration Toolkit"
+%}
 
 ---
 *Last updated: September 2025 | Found this guide valuable? Share it with another business owner who deserves to control their own data.*

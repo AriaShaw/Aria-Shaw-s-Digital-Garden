@@ -9,9 +9,8 @@ Each playbook is a deep-dive, meticulously crafted to be the only resource you n
 {% include ctas/product-box.html
    badge="Featured Product"
    title="Odoo Digital Sovereignty Master Pack - $699"
-   description="The complete professional playbook for deploying and managing Odoo without $50,000+ consulting fees."
+   description="The complete DIY toolkit for deploying and managing Odoo without $50,000+ consulting fees. You execute, you own."
    features="5 integrated modules|68+ production-ready tools|2,000+ pages of documentation|Zero vendor lock-in"
-   link="/products/?utm_source=homepage&utm_medium=hero&utm_campaign=flagship-product"
    button_text="See What's Inside"
 %}
 

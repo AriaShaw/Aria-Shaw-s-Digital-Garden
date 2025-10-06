@@ -960,8 +960,7 @@ What you get:
    title="Own Your Odoo Security Infrastructure"
    description="Master Pack: 68+ production scripts, security hardening checklists, compliance validation tools, DR drill frameworks. Build enterprise-grade security yourself—configure cloud backups, automate monitoring, test disaster recovery. Replace $20,000+ security consultants."
    features="14 DR scripts (15,474 lines)|Security audit automation|CloudWatch dashboards|GDPR/SOC2/HIPAA checklists|Lifetime access"
-   link="/products/?utm_source=blog&utm_medium=product-box&utm_campaign=aws-security-guide"
-   button_text="Get Master Pack - $699"
+   button_text="Get the Master Pack - $699"
 %}
 
 ---

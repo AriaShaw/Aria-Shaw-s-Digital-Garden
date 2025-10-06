@@ -124,9 +124,8 @@ Based on your assessment:
 
 {% include ctas/inline-simple.html
    title="Avoid the $48,000 Mistake—Get Strategic Planning Tools"
-   description="This guide explains the risks. Module 1 gives you the tools to prevent them: TCO calculator, vendor evaluation toolkit, and failure prevention framework for $699."
-   link="/products/?utm_source=blog&utm_medium=inline&utm_campaign=self-hosting&utm_content=problem-aware#module-1"
-   button_text="Explore Module 1"
+   description="This guide explains the risks. The Master Pack gives you the tools to prevent them: TCO calculator, vendor evaluation toolkit, and failure prevention framework for $699."
+   button_text="Get the Master Pack"
 %}
 
 ---
@@ -2152,38 +2151,6 @@ Print this cheat sheet and keep it handy. When systems are down, you don't want 
 
 ---
 
-## 👨‍💻 About the Author
-
-Hey there! I'm **Aria Shaw**, and I'm a Digital Plumber.
-
-I find broken, leaking, or missing pipes on the internet—specifically, the gaps in knowledge between powerful tools and the ambitious people who need to use them. I thrive on untangling complexity and turning it into clear, repeatable processes.
-
-**My Philosophy**: The best solutions emerge when you fill knowledge gaps with rigorous research, not guesswork.
-
-**What I Do**: I research, analyze, and distill complex technical implementations into practical guides that work. Think of me as a digital archaeologist—I dig through hundreds of forum posts, Stack Overflow questions, and community discussions to find the patterns that lead to success and failure.
-
-**Why I Wrote This Guide**: After analyzing 500+ Odoo implementation discussions across Reddit, GitHub, and business forums, I discovered that most failures aren't technical—they're caused by knowledge gaps. People follow incomplete tutorials, miss critical configuration steps, or choose the wrong hosting approach for their situation. This guide fills those gaps.
-
-**My Research Process**: For this guide alone, I analyzed:
-- 200+ implementation failure stories across multiple platforms
-- 150+ deployment discussions and user performance reports
-- 300+ hosting provider reviews and user experiences
-- 80+ self-hosted vs. managed hosting comparisons
-
-**My Mission**: Build a library of practical guides for fellow builders, pragmatists, and business owners who believe in the power of digital sovereignty. Every guide is backed by research, not marketing fluff.
-
-**Connect With Me**:
-- 🐦 **Twitter**: [@theAriaShaw](https://twitter.com/theAriaShaw) - Daily insights on digital tools, system architecture, and the art of bridging knowledge gaps
-- 💼 **What I'm Building**: Research-backed toolkits and guides that give you what's needed to implement complex systems independently
-
-**A Promise**: If you implement this guide and run into issues, tweet at me. I read every message and I'll do my best to point you in the right direction. We're all in this together.
-
-**Final Thought**: The best digital infrastructure is invisible infrastructure. It just works, day after day, letting you focus on what really matters—growing your business and serving your customers.
-
-Now go build something awesome. 🚀
-
----
-
 ## This Guide vs. The Master Pack
 
 This free guide covered strategic planning—helping you decide if self-hosting is right and what to consider. The **Odoo Digital Sovereignty Master Pack** gives you the complete professional system:
@@ -2205,7 +2172,6 @@ This free guide covered strategic planning—helping you decide if self-hosting 
 {% include ctas/inline-simple.html
    title="Ready to Own Your Odoo Journey?"
    description="Get the complete professional playbook—5 modules, 68+ tools, 2,000+ pages. Everything from strategic planning through daily operations for $699."
-   link="/products/?utm_source=blog&utm_medium=bottom&utm_campaign=self-hosting&utm_content=product-aware"
    button_text="Get the Complete Toolkit"
 %}
 

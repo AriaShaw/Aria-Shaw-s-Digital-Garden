@@ -3345,30 +3345,9 @@ Your future self—the one running a more efficient, profitable, scalable busine
 
 ---
 
-## 👨‍💻 About the Author
-
-Hey there! I'm **Aria Shaw**, and I'm a Digital Plumber.
-
-I find broken, leaking, or missing pipes on the internet—specifically, the gaps in knowledge between powerful tools and ambitious people trying to build something meaningful.
-
-When research revealed that **78% of ERP implementation failures** stem from preventable planning problems rather than technical issues, I knew there was a critical knowledge gap that needed filling. Too many businesses were approaching complex implementations without understanding the systematic methodology required for success.
-
-**My Research Methodology**: Every strategy, framework, and recommendation in this comprehensive guide comes from analyzing documented implementations, community reports, and systematic testing across different business configurations. I don't rely on personal anecdotes—I rely on data patterns that emerge when you examine hundreds of implementation case studies.
-
-**What I Build**: Comprehensive DIY toolkits that bridge the gap between enterprise-grade methodologies and practical implementation. Think of it as translating complex enterprise implementation strategies into actionable resources that growing businesses can deploy themselves.
-
-**Why This Guide Matters**: The difference between a successful Odoo implementation and a expensive disaster often comes down to understanding nuances that aren't covered in official documentation. These gaps create unnecessary risk for organizations that simply don't know what they don't know.
-
-**Research Focus Areas**:
-- Systematic analysis of implementation failure patterns across business sizes and industries
-- Documentation of methodology frameworks that consistently produce successful outcomes
-- Development of readiness assessment tools that prevent predictable implementation disasters
-- Creation of scalable frameworks that adapt to different organizational capabilities and constraints
-
-**My Goal**: Transform complex enterprise implementation methodologies into accessible, implementable resources that work reliably under real-world pressure. Every organization deserves bulletproof implementation guidance, regardless of their consulting budget or technical expertise.
-
-**Research Insights**: Analysis shows that implementation success correlates strongly with three factors: realistic readiness assessment, systematic methodology adherence, and proactive risk management. This guide provides frameworks for all three, based on documented patterns from successful implementations.
-
-**Connect for Updates:**
-- 🐦 **Twitter**: [@theAriaShaw](https://twitter.com/theAriaShaw) - Research insights on business systems reliability and the hidden implementation complexities that cause project failures
+{% include ctas/inline-simple.html
+   title="Replace $50,000 Consultants with Professional Tools"
+   description="Get the complete Odoo implementation toolkit—TCO calculators, deployment scripts, migration tools, backup automation, and performance tuners. Everything from strategic planning through daily operations for $699."
+   button_text="Get the Complete Toolkit"
+%}
 
