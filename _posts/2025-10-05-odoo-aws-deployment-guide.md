@@ -1238,6 +1238,7 @@ After 30 days of production usage, analyze metrics and adjust:
    description="The Master Pack includes CloudFormation templates for 1-click deployment, RDS parameter calculator, cost estimation spreadsheet, and security hardening checklist. Configure once, deploy in 90 minutes vs. 6 hours manual setup."
    features="CloudFormation 1-click deployment|RDS parameter calculator|Security hardening checklist (28 items)|Cost estimation spreadsheet"
    button_text="Get the Master Pack - $699"
+   location="aws-deployment-guide-bottom"
 %}
 
 Your Odoo AWS deployment is live. Start configuring your business workflows.

@@ -3349,5 +3349,6 @@ Your future self—the one running a more efficient, profitable, scalable busine
    title="Replace $50,000 Consultants with Professional Tools"
    description="Get the complete Odoo implementation toolkit—TCO calculators, deployment scripts, migration tools, backup automation, and performance tuners. Everything from strategic planning through daily operations for $699."
    button_text="Get the Complete Toolkit"
+   location="implementation-guide-bottom"
 %}
 

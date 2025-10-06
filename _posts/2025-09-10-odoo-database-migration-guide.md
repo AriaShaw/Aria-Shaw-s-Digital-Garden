@@ -2727,6 +2727,7 @@ Now go forth and migrate with confidence. 🚀
    title="Stop Doing Migrations Manually"
    description="The Master Pack includes zero-downtime migration scripts, risk assessment tools, and automated rollback systems. Get the complete professional toolkit for $699."
    button_text="Get the Migration Toolkit"
+   location="migration-guide-bottom"
 %}
 
 ---

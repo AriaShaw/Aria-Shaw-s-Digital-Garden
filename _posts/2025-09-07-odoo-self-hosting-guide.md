@@ -126,6 +126,7 @@ Based on your assessment:
    title="Avoid the $48,000 Mistake—Get Strategic Planning Tools"
    description="This guide explains the risks. The Master Pack gives you the tools to prevent them: TCO calculator, vendor evaluation toolkit, and failure prevention framework for $699."
    button_text="Get the Master Pack"
+   location="self-hosting-guide-mid-article"
 %}
 
 ---
@@ -2173,6 +2174,7 @@ This free guide covered strategic planning—helping you decide if self-hosting 
    title="Ready to Own Your Odoo Journey?"
    description="Get the complete professional playbook—5 modules, 68+ tools, 2,000+ pages. Everything from strategic planning through daily operations for $699."
    button_text="Get the Complete Toolkit"
+   location="self-hosting-guide-bottom"
 %}
 
 ---

@@ -28,6 +28,7 @@ Research and documented case studies inform the methods in this guide, but every
    title="Manual Backups Are Essential Knowledge—But Production Needs Automation"
    description="This guide teaches reliable manual processes. The Master Pack includes 14 production-ready scripts for intelligent backup scheduling, multi-cloud sync, and sub-15 minute disaster recovery for $699."
    button_text="Get the Master Pack"
+   location="backup-guide-top"
 %}
 
 ## Understanding Odoo Database Architecture: What You're Backing Up (And Why Most People Get It Wrong)
@@ -2587,6 +2588,7 @@ This free guide covered manual backup and restore procedures—the foundation ev
    title="Ready for Enterprise-Grade Backup Automation?"
    description="Get the complete Fortress Protection System plus 4 additional modules covering the complete Odoo lifecycle. 68+ tools, 2,000+ pages, $699."
    button_text="Get the Complete Toolkit"
+   location="backup-guide-bottom"
 %}
 
 ---

@@ -595,7 +595,7 @@ What you get:
 - CloudFormation templates pre-tuned for Odoo (save 12 hours of trial-and-error)
 - RDS optimizer based on 300+ production deployments (avoid common misconfigurations)
 
-**Purchase:** [Get the Master Pack on Gumroad](https://ariashaw.gumroad.com/l/odoo-digital-sovereignty) - $699 for all 5 modules with lifetime updates.
+**Purchase:** <a href="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty" onclick="gtag('event', 'cta_click', {'event_category': 'CTA', 'event_label': 'Get the Master Pack on Gumroad', 'cta_location': 'aws-architecture-guide-inline', 'destination': 'gumroad'});">Get the Master Pack on Gumroad</a> - $699 for all 5 modules with lifetime updates.
 
 ### Secure Your Deployment
 

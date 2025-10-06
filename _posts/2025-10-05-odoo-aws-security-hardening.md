@@ -943,7 +943,7 @@ What you get:
 - Runbooks tested in real incidents (save hours during crisis)
 - DR framework covers edge cases (S3 CRR lag, DNS propagation delay)
 
-**Purchase:** [Get the Master Pack on Gumroad](https://ariashaw.gumroad.com/l/odoo-digital-sovereignty) - $699 for all 5 modules with lifetime updates.
+**Purchase:** <a href="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty" onclick="gtag('event', 'cta_click', {'event_category': 'CTA', 'event_label': 'Get the Master Pack on Gumroad', 'cta_location': 'aws-security-guide-inline', 'destination': 'gumroad'});">Get the Master Pack on Gumroad</a> - $699 for all 5 modules with lifetime updates.
 
 ### Continue Learning
 
@@ -961,6 +961,7 @@ What you get:
    description="Master Pack: 68+ production scripts, security hardening checklists, compliance validation tools, DR drill frameworks. Build enterprise-grade security yourself—configure cloud backups, automate monitoring, test disaster recovery. Replace $20,000+ security consultants."
    features="14 DR scripts (15,474 lines)|Security audit automation|CloudWatch dashboards|GDPR/SOC2/HIPAA checklists|Lifetime access"
    button_text="Get the Master Pack - $699"
+   location="aws-security-guide-bottom"
 %}
 
 ---

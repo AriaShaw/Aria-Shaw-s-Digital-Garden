@@ -1882,6 +1882,7 @@ Don't let this guide become another bookmark that you never act on. I recommend 
    title="Skip the Hardware Guesswork"
    description="The Master Pack includes infrastructure sizing calculators, production configs, and one-command deployment scripts. Get production-ready in hours, not weeks. $699 one-time payment."
    button_text="Get Deployment Tools"
+   location="deployment-guide-bottom"
 %}
 
 ---

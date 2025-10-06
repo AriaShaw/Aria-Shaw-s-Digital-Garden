@@ -12,6 +12,7 @@ Each playbook is a deep-dive, meticulously crafted to be the only resource you n
    description="The complete DIY toolkit for deploying and managing Odoo without $50,000+ consulting fees. You execute, you own."
    features="5 integrated modules|68+ production-ready tools|2,000+ pages of documentation|Zero vendor lock-in"
    button_text="See What's Inside"
+   location="homepage-hero"
 %}
 
 ---

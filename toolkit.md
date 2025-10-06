@@ -11,6 +11,7 @@ Welcome to the Toolkit, a curated library of open-source scripts and tools devel
    title="Want the Complete Professional Toolkit?"
    description="These free tools solve specific problems. The Master Pack gives you 68+ DIY tools covering the complete Odoo lifecycle for $699 (vs. $50K+ consulting). You execute, you own."
    button_text="See What's Inside"
+   location="toolkit-top"
 %}
 
 {% capture migration_content %}
@@ -308,6 +309,7 @@ Welcome to the Toolkit, a curated library of open-source scripts and tools devel
    title="Ready to Level Up?"
    description="Get the complete DIY toolkit—5 modules, 68+ tools, 2,000+ pages. Build your own Odoo expertise from strategic planning through daily operations for $699."
    button_text="Explore the Master Pack"
+   location="toolkit-bottom"
 %}
 
 ---
