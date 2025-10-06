@@ -136,70 +136,39 @@ aws ec2 associate-route-table \
   --subnet-id $PUBLIC_SUBNET_ID
 ```
 
-### Security Groups
+### Complete VPC & Security Groups Setup
 
-**Principle:** Least-privilege access. Allow only required ports from specific sources.
+**Automated Setup Script:**
 
-**EC2 Security Group (odoo-app-sg):**
+📥 **[Download: setup-vpc-security-groups.sh](/scripts/aws-security/setup-vpc-security-groups.sh)**
 
-```bash
-# Create security group
-aws ec2 create-security-group \
-  --group-name odoo-app-sg \
-  --description "Odoo application server security group" \
-  --vpc-id $VPC_ID
+This script creates a production-ready VPC with:
+- VPC (10.0.0.0/16) with DNS enabled
+- Public and private subnets in us-east-1a
+- Internet Gateway and route tables
+- Security groups for ALB, EC2, and RDS
 
-APP_SG_ID="sg-0app123456"
-
-# Allow HTTPS from internet (443)
-aws ec2 authorize-security-group-ingress \
-  --group-id $APP_SG_ID \
-  --protocol tcp \
-  --port 443 \
-  --cidr 0.0.0.0/0
-
-# Allow HTTP (redirect to HTTPS)
-aws ec2 authorize-security-group-ingress \
-  --group-id $APP_SG_ID \
-  --protocol tcp \
-  --port 80 \
-  --cidr 0.0.0.0/0
-
-# Allow SSH from YOUR_IP only (replace with your office IP)
-aws ec2 authorize-security-group-ingress \
-  --group-id $APP_SG_ID \
-  --protocol tcp \
-  --port 22 \
-  --cidr YOUR_OFFICE_IP/32
-
-# Allow all outbound (for apt updates, pip installs)
-aws ec2 authorize-security-group-egress \
-  --group-id $APP_SG_ID \
-  --protocol -1 \
-  --cidr 0.0.0.0/0
-```
-
-**RDS Security Group (odoo-db-sg):**
+**Quick install:**
 
 ```bash
-# Create RDS security group
-aws ec2 create-security-group \
-  --group-name odoo-db-sg \
-  --description "Odoo RDS PostgreSQL security group" \
-  --vpc-id $VPC_ID
-
-DB_SG_ID="sg-0db123456"
-
-# Allow PostgreSQL (5432) ONLY from EC2 security group
-aws ec2 authorize-security-group-ingress \
-  --group-id $DB_SG_ID \
-  --protocol tcp \
-  --port 5432 \
-  --source-group $APP_SG_ID
-
-# CRITICAL: No public access
-# Do NOT add rule: --cidr 0.0.0.0/0
+wget https://ariashaw.github.io/scripts/aws-security/setup-vpc-security-groups.sh
+chmod +x setup-vpc-security-groups.sh
+./setup-vpc-security-groups.sh
 ```
+
+**What the script creates:**
+
+| Resource | Purpose | Configuration |
+|----------|---------|---------------|
+| **ALB Security Group** | Load balancer | Ports 80, 443 from 0.0.0.0/0 |
+| **EC2 Security Group** | Application server | Port 8069 from ALB only, SSH from your IP |
+| **RDS Security Group** | Database | Port 5432 from EC2 only |
+
+**Security principles applied:**
+- ✅ Least-privilege access
+- ✅ No direct database internet access
+- ✅ Traffic flows: Internet → ALB → EC2 → RDS
+- ⚠️ **Remember:** Update SSH rule with your IP after running script
 
 **Validation:**
 
@@ -216,55 +185,28 @@ aws ec2 describe-security-groups --group-ids $DB_SG_ID \
 
 **Use case:** Additional layer beyond security groups for compliance requirements.
 
-**Public subnet NACL:**
+**Automated Setup:**
+
+📥 **[Download: setup-network-acls.sh](/scripts/aws-security/setup-network-acls.sh)**
+
+This script creates Network ACLs for public and private subnets with least-privilege rules.
+
+**Quick install:**
 
 ```bash
-# Create NACL
-aws ec2 create-network-acl \
-  --vpc-id $VPC_ID \
-  --tag-specifications 'ResourceType=network-acl,Tags=[{Key=Name,Value=odoo-public-nacl}]'
-
-PUBLIC_NACL_ID="acl-0public123"
-
-# Allow inbound HTTPS
-aws ec2 create-network-acl-entry \
-  --network-acl-id $PUBLIC_NACL_ID \
-  --rule-number 100 \
-  --protocol 6 \
-  --port-range From=443,To=443 \
-  --cidr-block 0.0.0.0/0 \
-  --ingress \
-  --rule-action allow
-
-# Allow inbound HTTP
-aws ec2 create-network-acl-entry \
-  --network-acl-id $PUBLIC_NACL_ID \
-  --rule-number 110 \
-  --protocol 6 \
-  --port-range From=80,To=80 \
-  --cidr-block 0.0.0.0/0 \
-  --ingress \
-  --rule-action allow
-
-# Allow return traffic (ephemeral ports)
-aws ec2 create-network-acl-entry \
-  --network-acl-id $PUBLIC_NACL_ID \
-  --rule-number 120 \
-  --protocol 6 \
-  --port-range From=1024,To=65535 \
-  --cidr-block 0.0.0.0/0 \
-  --ingress \
-  --rule-action allow
+wget https://ariashaw.github.io/scripts/aws-security/setup-network-acls.sh
+chmod +x setup-network-acls.sh
+./setup-network-acls.sh <VPC_ID> <PUBLIC_SUBNET_ID> <PRIVATE_SUBNET_ID>
 ```
 
 **When to use NACLs:**
-- Compliance requirement (PCI-DSS, HIPAA)
-- DDoS mitigation (block IP ranges)
-- Defense against compromised security groups
+- ✅ Compliance requirement (PCI-DSS, HIPAA)
+- ✅ DDoS mitigation (block IP ranges)
+- ✅ Defense against compromised security groups
 
 **When to skip:**
-- Tier 1 deployments (security groups sufficient)
-- Non-regulated industries
+- ❌ Tier 1 deployments (security groups sufficient)
+- ❌ Non-regulated industries
 
 ---
 
@@ -279,90 +221,35 @@ aws ec2 create-network-acl-entry \
 - Secrets Manager read for database password
 - CloudWatch write for logs
 
-**Create IAM policy:**
+**Automated Setup:**
 
-```json
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": [
-        "s3:GetObject",
-        "s3:PutObject",
-        "s3:DeleteObject"
-      ],
-      "Resource": "arn:aws:s3:::odoo-filestore-bucket/*"
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "s3:ListBucket"
-      ],
-      "Resource": "arn:aws:s3:::odoo-filestore-bucket"
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "secretsmanager:GetSecretValue"
-      ],
-      "Resource": "arn:aws:secretsmanager:us-east-1:ACCOUNT_ID:secret:odoo/db/password-*"
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "logs:CreateLogGroup",
-        "logs:CreateLogStream",
-        "logs:PutLogEvents"
-      ],
-      "Resource": "arn:aws:logs:us-east-1:ACCOUNT_ID:log-group:/aws/ec2/odoo:*"
-    }
-  ]
-}
-```
+📥 **[Download: setup-iam-roles.sh](/scripts/aws-security/setup-iam-roles.sh)**
+📋 **[IAM Policy Template: odoo-ec2-policy.json](/scripts/aws-security/odoo-ec2-policy.json)**
 
-**Create and attach role:**
+This script creates IAM policy, role, and instance profile with least-privilege permissions.
+
+**Quick install:**
 
 ```bash
-# Save policy to file
-cat > odoo-ec2-policy.json << 'EOF'
-{JSON_POLICY_FROM_ABOVE}
-EOF
+wget https://ariashaw.github.io/scripts/aws-security/setup-iam-roles.sh
+chmod +x setup-iam-roles.sh
+./setup-iam-roles.sh <S3_BUCKET_NAME> <SECRET_NAME> <AWS_ACCOUNT_ID>
+```
 
-# Create policy
-aws iam create-policy \
-  --policy-name OdooEC2Policy \
-  --policy-document file://odoo-ec2-policy.json
+**Example:**
 
-POLICY_ARN="arn:aws:iam::ACCOUNT_ID:policy/OdooEC2Policy"
+```bash
+./setup-iam-roles.sh odoo-filestore-bucket odoo/db/password 123456789012
+```
 
-# Create IAM role
-aws iam create-role \
-  --role-name OdooEC2Role \
-  --assume-role-policy-document '{
-    "Version": "2012-10-17",
-    "Statement": [{
-      "Effect": "Allow",
-      "Principal": {"Service": "ec2.amazonaws.com"},
-      "Action": "sts:AssumeRole"
-    }]
-  }'
+**What gets created:**
+- IAM policy: `OdooEC2Policy` (S3, Secrets Manager, CloudWatch access)
+- IAM role: `OdooEC2Role`
+- Instance profile: `OdooEC2InstanceProfile`
 
-# Attach policy to role
-aws iam attach-role-policy \
-  --role-name OdooEC2Role \
-  --policy-arn $POLICY_ARN
+**Attach to EC2 instance:**
 
-# Create instance profile
-aws iam create-instance-profile \
-  --instance-profile-name OdooEC2InstanceProfile
-
-# Add role to instance profile
-aws iam add-role-to-instance-profile \
-  --instance-profile-name OdooEC2InstanceProfile \
-  --role-name OdooEC2Role
-
-# Attach to EC2 instance
+```bash
 aws ec2 associate-iam-instance-profile \
   --instance-id i-0your-instance-id \
   --iam-instance-profile Name=OdooEC2InstanceProfile
@@ -370,29 +257,35 @@ aws ec2 associate-iam-instance-profile \
 
 ### Secrets Manager for Database Password
 
-**Store RDS password:**
+**Automated Setup:**
+
+📥 **[Download: setup-secrets-manager.sh](/scripts/aws-security/setup-secrets-manager.sh)**
+
+This script generates a secure password and stores it in AWS Secrets Manager.
+
+**Quick install:**
 
 ```bash
-# Generate secure password
-DB_PASSWORD=$(openssl rand -base64 32)
-
-# Store in Secrets Manager
-aws secretsmanager create-secret \
-  --name odoo/db/password \
-  --description "Odoo RDS PostgreSQL master password" \
-  --secret-string "{\"password\":\"$DB_PASSWORD\"}"
-
-# Note the ARN
-SECRET_ARN="arn:aws:secretsmanager:us-east-1:ACCOUNT_ID:secret:odoo/db/password-AbCdEf"
+wget https://ariashaw.github.io/scripts/aws-security/setup-secrets-manager.sh
+chmod +x setup-secrets-manager.sh
+./setup-secrets-manager.sh [SECRET_NAME]
 ```
+
+**Example:**
+
+```bash
+./setup-secrets-manager.sh odoo/db/password
+```
+
+**What the script does:**
+- Generates cryptographically secure password (32 characters)
+- Creates/updates secret in Secrets Manager
+- Outputs retrieval commands for Odoo startup script
 
 **Retrieve password in Odoo startup script:**
 
 ```bash
 # Add to /opt/odoo/start.sh
-#!/bin/bash
-
-# Retrieve RDS password from Secrets Manager
 DB_PASSWORD=$(aws secretsmanager get-secret-value \
   --secret-id odoo/db/password \
   --query SecretString \
@@ -405,26 +298,7 @@ sed -i "s/^db_password = .*/db_password = $DB_PASSWORD/" /opt/odoo/odoo.conf
 /opt/odoo/odoo-venv/bin/python3 /opt/odoo/odoo17/odoo-bin -c /opt/odoo/odoo.conf
 ```
 
-**Rotate password (90-day cycle):**
-
-```bash
-# Generate new password
-NEW_PASSWORD=$(openssl rand -base64 32)
-
-# Update Secrets Manager
-aws secretsmanager update-secret \
-  --secret-id odoo/db/password \
-  --secret-string "{\"password\":\"$NEW_PASSWORD\"}"
-
-# Update RDS master password
-aws rds modify-db-instance \
-  --db-instance-identifier odoo-production-db \
-  --master-user-password $NEW_PASSWORD \
-  --apply-immediately
-
-# Restart Odoo (will fetch new password from Secrets Manager)
-sudo systemctl restart odoo
-```
+**Password rotation:** See script output for 90-day rotation commands.
 
 ### MFA Enforcement
 
@@ -636,64 +510,53 @@ aws ec2 create-image \
 
 ### Nginx SSL Configuration
 
-**📋 [Download Production Nginx Configuration Template](/templates/nginx-odoo-ssl.conf)**
-*Quick download: `wget https://ariashaw.github.io/templates/nginx-odoo-ssl.conf -O /etc/nginx/sites-available/odoo`*
+**📋 [Download Production Nginx Configuration Template](/scripts/aws-security/nginx-ssl.conf)**
 
-**Key settings (from template):**
+This template provides A+ SSL Labs rating with security headers.
 
-```nginx
-# TLS 1.3 only (backwards compatibility: add TLSv1.2)
-ssl_protocols TLSv1.3 TLSv1.2;
+**Quick download:**
 
-# Strong cipher suites
-ssl_ciphers 'ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384';
-ssl_prefer_server_ciphers off;
-
-# OCSP stapling (validates certificate chain)
-ssl_stapling on;
-ssl_stapling_verify on;
-resolver 8.8.8.8 8.8.4.4 valid=300s;
-
-# HSTS (forces HTTPS for 2 years)
-add_header Strict-Transport-Security "max-age=63072000; includeSubDomains; preload" always;
-
-# Security headers
-add_header X-Frame-Options "SAMEORIGIN" always;
-add_header X-Content-Type-Options "nosniff" always;
-add_header X-XSS-Protection "1; mode=block" always;
+```bash
+wget https://ariashaw.github.io/scripts/aws-security/nginx-ssl.conf
+sudo cp nginx-ssl.conf /etc/nginx/sites-available/odoo
+# Update: server_name, ssl_certificate paths, upstream odoo port
+sudo ln -s /etc/nginx/sites-available/odoo /etc/nginx/sites-enabled/
+sudo nginx -t && sudo systemctl reload nginx
 ```
+
+**Key features:**
+- TLS 1.3 + 1.2 protocols
+- Strong cipher suites (GCM only)
+- OCSP stapling
+- Security headers (HSTS, X-Frame-Options, etc.)
 
 ### Let's Encrypt SSL Certificate
 
-**Install Certbot:**
+**Automated Setup:**
+
+📥 **[Download: setup-ssl-certbot.sh](/scripts/aws-security/setup-ssl-certbot.sh)**
+
+This script installs Certbot, obtains SSL certificate, and configures auto-renewal.
+
+**Quick install:**
 
 ```bash
-sudo apt install certbot python3-certbot-nginx -y
+wget https://ariashaw.github.io/scripts/aws-security/setup-ssl-certbot.sh
+chmod +x setup-ssl-certbot.sh
+sudo ./setup-ssl-certbot.sh <DOMAIN> <EMAIL>
 ```
 
-**Obtain certificate:**
+**Example:**
 
 ```bash
-sudo certbot --nginx -d yourdomain.com -d www.yourdomain.com \
-  --non-interactive \
-  --agree-tos \
-  --email admin@yourdomain.com \
-  --redirect
+sudo ./setup-ssl-certbot.sh odoo.example.com admin@example.com
 ```
 
-**Auto-renewal (90-day cycle):**
-
-```bash
-# Test renewal
-sudo certbot renew --dry-run
-
-# Certbot installs cron job automatically at:
-# /etc/cron.d/certbot
-
-# Verify
-cat /etc/cron.d/certbot
-# Should contain: 0 */12 * * * root test -x /usr/bin/certbot -a \! -d /run/systemd/system && perl -e 'sleep int(rand(43200))' && certbot -q renew
-```
+**What the script does:**
+- Installs Certbot and Nginx plugin
+- Obtains SSL certificate from Let's Encrypt
+- Configures auto-renewal (90-day cycle)
+- Updates Nginx with security headers for A+ rating
 
 **Manual renewal (if needed):**
 
@@ -730,78 +593,44 @@ curl -X GET "https://api.ssllabs.com/api/v3/analyze?host=yourdomain.com&publish=
 
 ### CloudWatch Agent Installation
 
-```bash
-# SSH to EC2
-wget https://s3.amazonaws.com/amazoncloudwatch-agent/ubuntu/amd64/latest/amazon-cloudwatch-agent.deb
-sudo dpkg -i amazon-cloudwatch-agent.deb
-```
+**Automated Setup:**
 
-**Configure agent:**
+📥 **[Download: setup-cloudwatch-monitoring.sh](/scripts/aws-security/setup-cloudwatch-monitoring.sh)**
+📋 **[CloudWatch Config: cloudwatch-config.json](/scripts/aws-security/cloudwatch-config.json)**
 
-```bash
-sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-config-wizard
-```
+This script installs CloudWatch Agent, configures metrics/logs collection, and creates alarms.
 
-**Recommended configuration:**
-
-```json
-{
-  "metrics": {
-    "namespace": "Odoo/Production",
-    "metrics_collected": {
-      "cpu": {
-        "measurement": [{"name": "cpu_usage_idle", "rename": "CPU_IDLE", "unit": "Percent"}],
-        "metrics_collection_interval": 60,
-        "totalcpu": false
-      },
-      "disk": {
-        "measurement": [
-          {"name": "used_percent", "rename": "DISK_USED", "unit": "Percent"}
-        ],
-        "metrics_collection_interval": 60,
-        "resources": ["/"]
-      },
-      "mem": {
-        "measurement": [{"name": "mem_used_percent", "rename": "MEM_USED", "unit": "Percent"}],
-        "metrics_collection_interval": 60
-      }
-    }
-  },
-  "logs": {
-    "logs_collected": {
-      "files": {
-        "collect_list": [
-          {
-            "file_path": "/var/log/odoo/odoo.log",
-            "log_group_name": "/aws/ec2/odoo/application",
-            "log_stream_name": "{instance_id}"
-          },
-          {
-            "file_path": "/var/log/nginx/access.log",
-            "log_group_name": "/aws/ec2/odoo/nginx-access",
-            "log_stream_name": "{instance_id}"
-          },
-          {
-            "file_path": "/var/log/nginx/error.log",
-            "log_group_name": "/aws/ec2/odoo/nginx-error",
-            "log_stream_name": "{instance_id}"
-          }
-        ]
-      }
-    }
-  }
-}
-```
-
-**Start agent:**
+**Quick install:**
 
 ```bash
-sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl \
-  -a fetch-config \
-  -m ec2 \
-  -s \
-  -c file:/opt/aws/amazon-cloudwatch-agent/etc/config.json
+wget https://ariashaw.github.io/scripts/aws-security/setup-cloudwatch-monitoring.sh
+chmod +x setup-cloudwatch-monitoring.sh
+sudo ./setup-cloudwatch-monitoring.sh <RDS_IDENTIFIER> <SNS_TOPIC_ARN>
 ```
+
+**Example:**
+
+```bash
+sudo ./setup-cloudwatch-monitoring.sh odoo-production-db arn:aws:sns:us-east-1:123456789012:odoo-alerts
+```
+
+**What the script does:**
+- Installs CloudWatch Agent
+- Downloads and applies configuration (CPU, memory, disk metrics)
+- Sets up log forwarding (Odoo, Nginx logs)
+- Creates CloudWatch alarms for RDS and EC2
+
+**Manual configuration download:**
+
+```bash
+wget https://ariashaw.github.io/scripts/aws-security/cloudwatch-config.json
+sudo mv cloudwatch-config.json /opt/aws/amazon-cloudwatch-agent/etc/config.json
+```
+
+**What gets monitored:**
+- **Metrics:** CPU, memory, disk usage, network stats
+- **Logs:** `/var/log/odoo/odoo.log`, `/var/log/nginx/*.log`
+- **Namespace:** `Odoo/Production`
 
 ### CloudWatch Alarms
 
@@ -858,30 +687,30 @@ aws cloudwatch put-metric-alarm \
 
 ### GuardDuty Threat Detection
 
-**Enable GuardDuty:**
+**Automated Setup:**
+
+📥 **[Download: setup-guardduty.sh](/scripts/aws-security/setup-guardduty.sh)**
+
+This script enables GuardDuty and configures alerts for high-severity findings.
+
+**Quick install:**
 
 ```bash
-aws guardduty create-detector --enable --region us-east-1
+wget https://ariashaw.github.io/scripts/aws-security/setup-guardduty.sh
+chmod +x setup-guardduty.sh
+./setup-guardduty.sh <SNS_TOPIC_ARN>
 ```
 
-**Configure findings notifications:**
+**Example:**
 
 ```bash
-# Create EventBridge rule for HIGH severity findings
-aws events put-rule \
-  --name odoo-guardduty-high \
-  --description "GuardDuty HIGH severity findings" \
-  --event-pattern '{
-    "source": ["aws.guardduty"],
-    "detail-type": ["GuardDuty Finding"],
-    "detail": {"severity": [7, 8, 9]}
-  }'
-
-# Target SNS topic
-aws events put-targets \
-  --rule odoo-guardduty-high \
-  --targets "Id"="1","Arn"="arn:aws:sns:us-east-1:ACCOUNT_ID:odoo-security-alerts"
+./setup-guardduty.sh arn:aws:sns:us-east-1:123456789012:odoo-security-alerts
 ```
+
+**What the script does:**
+- Enables GuardDuty in specified region
+- Creates EventBridge rule for HIGH severity findings (score 7-9)
+- Connects findings to SNS topic for alerting
 
 **Common threats GuardDuty detects:**
 - Brute-force SSH attempts (Recon:EC2/SSHBruteForce)
@@ -889,7 +718,6 @@ aws events put-targets \
 - Data exfiltration (Exfiltration:S3/ObjectRead.Unusual)
 - Compromised credentials (UnauthorizedAccess:IAMUser/InstanceCredentialExfiltration)
 - Malware detection (Execution:EC2/MaliciousFile)
-- Container compromise (Container:Kubernetes/MaliciousIPCaller.Custom)
 
 ---
 
@@ -1011,112 +839,66 @@ SELECT pg_reload_conf();
 
 ## Security Incident Response
 
-### Runbook: Compromised AWS Credentials
+**Interactive Playbook:**
 
-**Indicators:**
-- GuardDuty alert: UnauthorizedAccess:IAMUser/InstanceCredentialExfiltration
-- Unusual AWS API calls in CloudTrail
-- Unknown EC2 instances launched
+📥 **[Download: incident-response-playbook.sh](/scripts/aws-security/incident-response-playbook.sh)**
 
-**Response (5-minute timeline):**
+This interactive script guides you through incident response for common AWS security scenarios.
 
-![Security incident response workflow for compromised AWS credentials showing contain, assess, remediate, and prevent phases](/assets/images/security-incident-response-credentials.webp){:loading="lazy"}
+**Quick download:**
 
-**Minute 1: Contain**
 ```bash
-# Disable compromised IAM user
+wget https://ariashaw.github.io/scripts/aws-security/incident-response-playbook.sh
+chmod +x incident-response-playbook.sh
+./incident-response-playbook.sh
+```
+
+⚠️ **WARNING:** Only run during active security incidents. This script performs destructive actions.
+
+**Scenarios covered:**
+
+1. **Compromised AWS Credentials**
+   - Indicators: UnauthorizedAccess GuardDuty alert, unusual API calls
+   - Actions: Disable IAM user, assess resource creation, remediate
+
+2. **RDS Data Breach**
+   - Indicators: Security group modification, unusual connections
+   - Actions: Block public access, forensics, PITR restore
+
+3. **EC2 Instance Compromise**
+   - Indicators: Malware detection, unauthorized processes
+   - Actions: Create forensic snapshot, isolate instance, rebuild
+
+4. **S3 Bucket Public Access**
+   - Indicators: Public ACL detected, unusual access patterns
+   - Actions: Block public access, review logs, implement policies
+
+**Manual response examples:**
+
+**Compromised credentials (containment):**
+```bash
+# Disable IAM user
 aws iam update-access-key \
   --user-name compromised-user \
   --access-key-id AKIAIOSFODNN7EXAMPLE \
   --status Inactive
-
-# Attach deny-all policy
-aws iam put-user-policy \
-  --user-name compromised-user \
-  --policy-name DenyAll \
-  --policy-document '{"Version":"2012-10-17","Statement":[{"Effect":"Deny","Action":"*","Resource":"*"}]}'
 ```
 
-**Minute 2-3: Assess**
-```bash
-# List all resources created by compromised credentials
-aws cloudtrail lookup-events \
-  --lookup-attributes AttributeKey=Username,AttributeValue=compromised-user \
-  --start-time 2025-10-05T00:00:00Z \
-  --query 'Events[?Resources[?ResourceType==`AWS::EC2::Instance`]].CloudTrailEvent' \
-  --output text | jq .
-```
-
-**Minute 4-5: Remediate**
-```bash
-# Terminate unauthorized EC2 instances
-aws ec2 terminate-instances --instance-ids i-unauthorized-1 i-unauthorized-2
-
-# Delete unauthorized S3 buckets
-aws s3 rb s3://unauthorized-bucket --force
-
-# Revoke IAM role trust policy changes
-aws iam update-assume-role-policy \
-  --role-name OdooEC2Role \
-  --policy-document file://original-trust-policy.json
-```
-
-**Post-incident:**
-- Rotate all secrets (Secrets Manager passwords)
-- Review IAM policies (remove excessive permissions)
-- Enable AWS Config for drift detection
-
-### Runbook: RDS Data Breach
-
-**Indicators:**
-- Security group modified (port 5432 opened to 0.0.0.0/0)
-- GuardDuty alert: Exfiltration:RDS/MaliciousIPCaller
-- Unusual database connection count
-
-**Response:**
-
-**Immediate:**
-```bash
-# Revert security group change
-aws ec2 revoke-security-group-ingress \
-  --group-id sg-0db123456 \
-  --protocol tcp \
-  --port 5432 \
-  --cidr 0.0.0.0/0
-
-# Force disconnect all database sessions
-aws rds reboot-db-instance \
-  --db-instance-identifier odoo-production-db
-```
-
-**Forensics:**
+**RDS breach (forensics):**
 ```sql
 -- Review recent connections
 SELECT datname, usename, client_addr, state, query_start
 FROM pg_stat_activity
 WHERE datname = 'odoo_production'
 ORDER BY query_start DESC LIMIT 50;
-
--- Check for data dumps
-SELECT schemaname, tablename, n_tup_del
-FROM pg_stat_user_tables
-WHERE n_tup_del > 10000
-ORDER BY n_tup_del DESC;
 ```
 
-**Recovery:**
-```bash
-# Restore from PITR (5 minutes before breach)
-aws rds restore-db-instance-to-point-in-time \
-  --source-db-instance-identifier odoo-production-db \
-  --target-db-instance-identifier odoo-restored-db \
-  --restore-time 2025-10-05T10:25:00Z
-```
-
-**Notification:**
-- Incident report to compliance team (GDPR 72-hour notification requirement)
-- Customer notification if PII exfiltrated
-- Law enforcement contact (if criminal activity suspected)
+**Post-incident checklist:**
+- ☐ Document incident timeline
+- ☐ Rotate all credentials
+- ☐ Review IAM policies
+- ☐ Notify stakeholders (compliance, legal)
+- ☐ Conduct post-incident review
 
 ---
 
