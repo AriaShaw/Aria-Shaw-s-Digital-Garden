@@ -22,7 +22,7 @@ Stop paying consultants $200/hour for knowledge you could own. Get the complete 
 <div class="price-box">
   <div class="price">$699</div>
   <p class="price-detail">One-time payment • Lifetime access • Free updates forever</p>
-  <a href="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty?utm_source=products&utm_medium=hero&utm_campaign=flagship-product" class="btn-primary-cta">Get Instant Access</a>
+  <a href="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty" class="btn-primary-cta">Get Instant Access</a>
   <div class="trust-signals">
     <p>14-day money-back guarantee</p>
     <p>Instant download after purchase • Secure payment via Gumroad</p>
@@ -186,7 +186,7 @@ The proven methodology from 300+ successful migrations—turn 8-hour outages int
 <div class="inline-cta">
   <p><strong>Already seeing the value?</strong></p>
   <p>You've just read about tools worth $85,000+ in consulting fees. Get all 5 modules for a one-time $699 payment.</p>
-  <a href="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty?utm_source=products&utm_medium=mid-modules-cta&utm_campaign=flagship-product" class="btn-outline-cta">Get Instant Access - $699</a>
+  <a href="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty" class="btn-outline-cta">Get Instant Access - $699</a>
 </div>
 
 <div class="module-card" markdown="1">
@@ -442,7 +442,7 @@ Plus: Consultants leave, taking their knowledge. With the Master Pack, the knowl
 <div class="inline-cta">
   <p><strong>Save $84,000-$199,000 in consulting fees</strong></p>
   <p>One-time $699 investment • Lifetime access • 14-day guarantee</p>
-  <a href="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty?utm_source=products&utm_medium=value-comparison-cta&utm_campaign=flagship-product" class="btn-primary-cta">Get Instant Access Now</a>
+  <a href="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty" class="btn-primary-cta">Get Instant Access Now</a>
 </div>
 
 ---
@@ -487,7 +487,7 @@ If at any point you feel the toolkit doesn't deliver the described value, one em
     <li>14-day money-back guarantee</li>
   </ul>
 
-  <a href="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty?utm_source=products&utm_medium=final-cta&utm_campaign=flagship-product" class="btn-primary-cta">Get Instant Access - $699</a>
+  <a href="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty" class="btn-primary-cta">Get Instant Access - $699</a>
 
   <div class="trust-signals">
     <p>Secure payment via Gumroad • Instant digital delivery</p>

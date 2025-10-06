@@ -943,7 +943,7 @@ What you get:
 - Runbooks tested in real incidents (save hours during crisis)
 - DR framework covers edge cases (S3 CRR lag, DNS propagation delay)
 
-**Purchase:** [Fortress Protection Module](/products/?utm_source=blog&utm_medium=inline-cta&utm_campaign=aws-security-guide#module4) or [Master Pack](/products/?utm_source=blog&utm_medium=inline-cta&utm_campaign=aws-security-guide) ($699 for all 5 modules).
+**Purchase:** [Get the Master Pack on Gumroad](https://ariashaw.gumroad.com/l/odoo-digital-sovereignty) - $699 for all 5 modules with lifetime updates.
 
 ### Continue Learning
 
