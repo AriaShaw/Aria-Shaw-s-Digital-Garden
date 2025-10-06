@@ -32,7 +32,7 @@ New battle-tested playbooks for deploying Odoo on AWS with enterprise-grade reli
 
 *Complete security hardening checklist for AWS-hosted Odoo. 30+ critical security controls with implementation scripts and validation tests.*
 
-**[→ Browse All Guides by Topic](/guides/)** | Self-Hosting • Database Operations • Implementation Strategies
+**[→ Browse All Guides by Topic](/guides/)** • Self-Hosting • Database Operations • Implementation Strategies
 
 ---
 
