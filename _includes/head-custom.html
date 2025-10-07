@@ -1080,7 +1080,148 @@
             }
         }
     }
+
+    // Back to Top Button - Mobile UX Enhancement
+    function initBackToTop() {
+        // Create button with full accessibility support
+        const backToTopBtn = document.createElement('button');
+        backToTopBtn.className = 'back-to-top';
+        backToTopBtn.setAttribute('aria-label', 'Back to top');
+        backToTopBtn.setAttribute('title', 'Back to top');
+        backToTopBtn.innerHTML = '↑';
+        document.body.appendChild(backToTopBtn);
+
+        // Show/hide based on scroll position
+        let ticking = false;
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    if (window.pageYOffset > 300) {
+                        backToTopBtn.classList.add('visible');
+                        backToTopBtn.setAttribute('aria-hidden', 'false');
+                    } else {
+                        backToTopBtn.classList.remove('visible');
+                        backToTopBtn.setAttribute('aria-hidden', 'true');
+                    }
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        }, { passive: true });
+
+        // Smooth scroll to top
+        backToTopBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+            // Focus management for screen readers
+            const mainHeading = document.querySelector('h1');
+            if (mainHeading) {
+                mainHeading.focus();
+            }
+        });
+    }
+
+    // Initialize on DOM ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initBackToTop);
+    } else {
+        initBackToTop();
+    }
+
+    // Active navigation state - highlight current page
+    function initActiveNav() {
+        const currentPath = window.location.pathname;
+        const navLinks = document.querySelectorAll('.home-nav-links a');
+
+        navLinks.forEach(link => {
+            const linkPath = new URL(link.href).pathname;
+
+            // Check if current page matches link
+            if (currentPath === linkPath ||
+                (linkPath !== '/' && currentPath.startsWith(linkPath))) {
+                link.classList.add('active');
+                link.setAttribute('aria-current', 'page');
+            }
+        });
+    }
+
+    // Initialize on DOM ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initActiveNav);
+    } else {
+        initActiveNav();
+    }
 </script>
+
+<style>
+    /* Back to Top Button - Mobile Optimized */
+    .back-to-top {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 48px;
+        height: 48px;
+        background: #0969da;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        font-size: 20px;
+        font-weight: bold;
+        cursor: pointer;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(10px);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 999;
+        box-shadow: 0 4px 12px rgba(9, 105, 218, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .back-to-top.visible {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
+    .back-to-top:hover {
+        background: #0550ae;
+        transform: scale(1.05);
+        box-shadow: 0 6px 16px rgba(9, 105, 218, 0.4);
+    }
+
+    .back-to-top:active {
+        transform: scale(0.95);
+    }
+
+    /* Mobile specific styles */
+    @media (max-width: 768px) {
+        .back-to-top {
+            bottom: 15px;
+            right: 15px;
+            width: 44px;
+            height: 44px;
+            font-size: 18px;
+        }
+    }
+
+    /* High contrast mode support */
+    @media (prefers-contrast: high) {
+        .back-to-top {
+            border: 2px solid currentColor;
+        }
+    }
+
+    /* Reduced motion support */
+    @media (prefers-reduced-motion: reduce) {
+        .back-to-top {
+            transition: opacity 0.3s;
+        }
+    }
+</style>
 
 {% include performance-optimizations.html %}
 

@@ -134,6 +134,34 @@ td a {
   display: inline !important;
 }
 
+/* Mobile: Use negative margin trick to expand touch area without visual spacing */
+@media (max-width: 768px) {
+  p a,
+  li:not(.toc-item) a,
+  td a {
+    padding: 10px 6px !important;
+    margin: -10px -6px !important;
+    /* Negative margin offsets the padding, maintaining visual layout */
+    /* But the actual touch target is 44px+ as per WCAG 2.1 AAA */
+    min-height: 44px !important;
+    display: inline !important;
+    line-height: inherit !important;
+  }
+
+  /* Navigation and standalone links get full touch targets */
+  nav a,
+  .breadcrumbs a,
+  .home-nav-links a {
+    min-height: 44px !important;
+    min-width: 44px !important;
+    padding: 10px 16px !important;
+    margin: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+}
+
 /* Code copy buttons - styles are in head-custom.html */
 button[data-clipboard-target] {
   min-height: 48px;
@@ -455,22 +483,35 @@ h1, h2, h3, h4, h5, h6 {
     hyphens: auto !important;
   }
 
-  /* Headings should be readable on mobile */
+  /* Fluid typography - scales smoothly across all mobile devices */
+  /* Uses clamp() for responsive font sizes without media query breakpoints */
+  body {
+    font-size: clamp(14px, 4vw, 16px) !important;
+    line-height: 1.6 !important;
+  }
+
   h1 {
-    font-size: 24px !important;
-    line-height: 1.3 !important;
-    margin: 15px 0 !important;
+    font-size: clamp(22px, 6vw, 28px) !important;
+    line-height: 1.2 !important;
+    margin: clamp(12px, 3vw, 16px) 0 !important;
   }
 
   h2 {
-    font-size: 20px !important;
+    font-size: clamp(18px, 5vw, 24px) !important;
     line-height: 1.3 !important;
-    margin: 12px 0 !important;
+    margin: clamp(10px, 2.5vw, 14px) 0 !important;
   }
 
   h3 {
-    font-size: 18px !important;
+    font-size: clamp(16px, 4.5vw, 20px) !important;
     line-height: 1.3 !important;
+    margin: clamp(8px, 2vw, 12px) 0 !important;
+  }
+
+  /* Better paragraph spacing */
+  p {
+    margin-bottom: 1.2em !important;
+    line-height: 1.65 !important;
   }
 
   /* Home page specific fixes - HORIZONTAL navigation on mobile */
@@ -548,20 +589,102 @@ h1, h2, h3, h4, h5, h6 {
     box-sizing: border-box !important;
   }
 
-  /* Code blocks should be scrollable, not overflow */
+  /* Code blocks must fit container, not viewport */
   pre, code {
-    max-width: calc(100vw - 30px) !important;
+    max-width: 100% !important;
     overflow-x: auto !important;
     word-wrap: normal !important;
     box-sizing: border-box !important;
   }
 
-  /* Tables should be scrollable on mobile */
+  /* Add visual indicator for code blocks */
+  pre {
+    border-left: 3px solid #0969da !important;
+    padding-left: 12px !important;
+    background: #f6f8fa !important;
+    border-radius: 6px !important;
+  }
+
+  /* Ensure parent containers don't cause page-level horizontal scroll */
+  .post-layout section,
+  .full-width-layout section,
+  .home-content {
+    overflow-x: hidden !important;
+  }
+
+  /* Responsive tables - Card layout for better mobile UX */
   table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    margin: 15px 0 !important;
+    font-size: 14px !important;
+  }
+
+  /* Small tables with 2-3 columns: keep traditional layout but scrollable */
+  table:not(.card-table) {
     display: block !important;
     overflow-x: auto !important;
-    max-width: calc(100vw - 30px) !important;
-    box-sizing: border-box !important;
+    -webkit-overflow-scrolling: touch !important;
+    border: 1px solid #e1e4e8 !important;
+    border-radius: 6px !important;
+  }
+
+  /* Large tables: convert to card layout for readability */
+  table.card-table {
+    display: block !important;
+    border: 0 !important;
+  }
+
+  table.card-table thead {
+    display: none !important;
+  }
+
+  table.card-table tbody {
+    display: block !important;
+  }
+
+  table.card-table tr {
+    display: block !important;
+    margin-bottom: 15px !important;
+    border: 1px solid #e1e4e8 !important;
+    border-radius: 6px !important;
+    padding: 12px !important;
+    background: #f6f8fa !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
+  }
+
+  table.card-table td {
+    display: flex !important;
+    justify-content: space-between !important;
+    padding: 8px 0 !important;
+    border: 0 !important;
+    border-bottom: 1px solid #e1e4e8 !important;
+    text-align: right !important;
+  }
+
+  table.card-table td:last-child {
+    border-bottom: 0 !important;
+  }
+
+  /* Add data labels using data-label attribute */
+  table.card-table td::before {
+    content: attr(data-label) !important;
+    font-weight: 600 !important;
+    color: #24292e !important;
+    text-align: left !important;
+    margin-right: 10px !important;
+  }
+
+  /* Scroll indicator for horizontal scrolling tables */
+  table:not(.card-table)::after {
+    content: '' !important;
+    position: absolute !important;
+    right: 0 !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    width: 30px !important;
+    background: linear-gradient(to left, rgba(255,255,255,0.9), transparent) !important;
+    pointer-events: none !important;
   }
 
   /* CTA buttons should be full-width on mobile for better UX */
