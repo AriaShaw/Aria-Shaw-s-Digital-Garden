@@ -3302,10 +3302,13 @@ You now control the same frameworks and assessments that prevent the 73% failure
 - Run the TCO calculator with your actual modules and user count (not the demo configuration)
 - Identify your highest-risk phase (data migration? user training? module configuration?)
 
-{% include ctas/inline-simple.html
-   title="Replace $50K-$200K Consultants With Professional DIY Tools"
-   description="The Master Pack gives you everything implementation partners charge $150/hour for: TCO calculators, module templates, migration scripts, training frameworks. You execute, you own."
-   button_text="See What Partners Won't Tell You"
+{% include ctas/product-box.html
+   badge="Implementation Toolkit"
+   title="Odoo Digital Sovereignty Master Pack"
+   description="Replace $50K+ consulting with professional DIY tools and frameworks. Plan, deploy, migrate, protect, and operate — on your terms. $699."
+   features="TCO & vendor due‑diligence|Readiness & failure‑prevention|Migration & rollback playbooks|30‑60‑90 day adoption plan"
+   link="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty"
+   button_text="Unlock Now"
    location="implementation-guide-bottom"
 %}
 

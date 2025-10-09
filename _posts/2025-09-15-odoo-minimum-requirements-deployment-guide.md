@@ -1792,10 +1792,13 @@ You now understand the requirements that kill 90% of failed Odoo deployments bef
 - Review the production checklist with your team (identify gaps now, not during deployment)
 - Choose your hosting path (DIY self-hosting or managed infrastructure)
 
-{% include ctas/inline-simple.html
-   title="Skip the Hardware Guesswork"
-   description="The Master Pack includes infrastructure sizing calculators, production configs, and one-command deployment scripts. Get production-ready in hours, not weeks. $699 one-time payment."
-   button_text="Get Deployment Tools"
+{% include ctas/product-box.html
+   badge="Deployment Tools"
+   title="Odoo Digital Sovereignty Master Pack"
+   description="Right‑size hardware, deploy production configs, validate with diagnostics — be production‑ready fast. $699."
+   features="Server sizing calculator|Production config library|Deployment walkthrough|Pre‑deployment diagnostics"
+   link="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty"
+   button_text="Unlock Now"
    location="deployment-guide-bottom"
 %}
 

@@ -2593,10 +2593,13 @@ This free guide covered manual backup and restore procedures—the foundation ev
 
 **Investment:** $699 for complete toolkit vs. $50,000-$200,000 for equivalent consulting services
 
-{% include ctas/inline-simple.html
-   title="Ready for Enterprise-Grade Backup Automation?"
-   description="Get the complete Fortress Protection System plus 4 additional modules covering the complete Odoo lifecycle. 68+ tools, 2,000+ pages, $699."
-   button_text="Get the Complete Toolkit"
+{% include ctas/product-box.html
+   badge="Backup & DR"
+   title="Odoo Digital Sovereignty Master Pack"
+   description="Intelligent backups, multi‑cloud sync, disaster recovery drills — with full validation. $699."
+   features="Multi‑cloud backup architecture|Automated restore testing|DR runbooks for 7 scenarios|Health & alerts monitoring"
+   link="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty"
+   button_text="Unlock Now"
    location="backup-guide-bottom"
 %}
 

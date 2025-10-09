@@ -2683,10 +2683,13 @@ You now control the exact processes enterprise consultants charge $15K+ to execu
 - Schedule migration during low-traffic periods (weekends, after business hours)
 - Keep notes on your specific edge cases (custom modules, integrations, quirks)
 
-{% include ctas/inline-simple.html
-   title="Stop Doing Migrations Manually"
-   description="The Master Pack includes zero-downtime migration scripts, risk assessment tools, and automated rollback systems. Get the complete professional toolkit for $699."
-   button_text="Get the Migration Toolkit"
+{% include ctas/product-box.html
+   badge="Migration Kit"
+   title="Odoo Digital Sovereignty Master Pack"
+   description="Minimal‑downtime methods, risk assessment, rollback drills — plus 4 more modules. $699 one‑time."
+   features="Risk assessment framework|Incremental sync playbook|Rapid rollback procedures|Consistency validation checklist"
+   link="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty"
+   button_text="Unlock Now"
    location="migration-guide-bottom"
 %}
 

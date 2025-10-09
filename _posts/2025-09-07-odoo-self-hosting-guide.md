@@ -2170,10 +2170,13 @@ This free guide covered strategic planning—helping you decide if self-hosting 
 
 **Investment:** $699 for complete toolkit vs. $50,000-$200,000 for equivalent consulting services
 
-{% include ctas/inline-simple.html
-   title="Ready to Own Your Odoo Journey?"
-   description="Get the complete professional playbook—5 modules, 68+ tools, 2,000+ pages. Everything from strategic planning through daily operations for $699."
-   button_text="Get the Complete Toolkit"
+{% include ctas/product-box.html
+   badge="DIY Toolkit"
+   title="Odoo Digital Sovereignty Master Pack"
+   description="5 modules, 68+ tools, 2,000+ pages. Own your Odoo from plan to operations — $699."
+   features="TCO & ROI calculators|Production deployment configs|Multi‑cloud backup framework|Performance tuning suite"
+   link="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty"
+   button_text="Unlock Now"
    location="self-hosting-guide-bottom"
 %}
 
