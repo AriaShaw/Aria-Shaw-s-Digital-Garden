@@ -1231,3 +1231,263 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
 <link rel="manifest" href="/site.webmanifest">
+
+<!-- Floating CTA: Desktop FAB + Mobile Bottom Bar -->
+<style>
+    .floating-cta {
+        position: fixed;
+        right: 20px;
+        bottom: 20px;
+        z-index: 1000; /* Above back-to-top (999), below lightbox (9999) */
+        display: none; /* Shown by JS after delay & frequency checks */
+        font-family: inherit;
+    }
+
+    .floating-cta__fab {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        max-width: 360px;
+        padding: 12px 16px;
+        border-radius: 999px;
+        background: #0969da;
+        color: #ffffff;
+        text-decoration: none;
+        box-shadow: 0 8px 24px rgba(9, 105, 218, 0.35);
+        transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+        line-height: 1.25;
+        font-weight: 600;
+        font-size: 14px;
+        white-space: nowrap;
+    }
+
+    .floating-cta__fab:hover {
+        background: #0550ae;
+        transform: translateY(-1px);
+        box-shadow: 0 10px 28px rgba(9, 105, 218, 0.45);
+    }
+
+    .floating-cta__close {
+        background: rgba(255, 255, 255, 0.2);
+        color: #ffffff;
+        border: none;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.2s ease, transform 0.15s ease;
+    }
+
+    .floating-cta__close:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: scale(1.05);
+    }
+
+    /* Bottom bar for mobile / narrow screens */
+    .floating-cta--bar {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+        background: rgba(255, 255, 255, 0.96);
+        border-top: 1px solid #e1e4e8;
+        display: none; /* controlled by JS */
+        z-index: 1000;
+        box-shadow: 0 -6px 18px rgba(0, 0, 0, 0.08);
+        backdrop-filter: saturate(140%) blur(6px);
+        font-family: inherit;
+    }
+
+    .floating-cta--bar__inner {
+        max-width: 1000px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .floating-cta--bar__text {
+        flex: 1 1 auto;
+        color: #24292f;
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 1.3;
+    }
+
+    .floating-cta--bar__button {
+        flex: 0 0 auto;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 14px;
+        border-radius: 8px;
+        background: #0969da;
+        color: #ffffff;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 14px;
+        white-space: nowrap;
+        box-shadow: 0 6px 18px rgba(9, 105, 218, 0.35);
+        transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+    }
+
+    .floating-cta--bar__button:hover {
+        background: #0550ae;
+        transform: translateY(-1px);
+        box-shadow: 0 8px 22px rgba(9, 105, 218, 0.45);
+    }
+
+    .floating-cta--bar__close {
+        background: none;
+        border: none;
+        width: 32px;
+        height: 32px;
+        border-radius: 6px;
+        color: #656d76;
+        cursor: pointer;
+    }
+
+    .floating-cta--bar__close:hover { background: #f6f8fa; }
+
+    @media (prefers-color-scheme: dark) {
+        .floating-cta--bar {
+            background: rgba(22, 27, 34, 0.9);
+            border-top-color: #30363d;
+        }
+        .floating-cta--bar__text { color: #c9d1d9; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .floating-cta__fab,
+        .floating-cta--bar__button {
+            transition: none;
+        }
+    }
+</style>
+
+<script>
+    (function() {
+        var DISMISS_KEY = 'floatingCtaDismissedUntil';
+        var DISMISS_DAYS = 7; // frequency cap
+        var DELAY_MS = 2000; // delayed appearance
+        var TARGET_URL = 'https://ariashaw.gumroad.com/l/odoo-digital-sovereignty';
+        var TEXT = 'Odoo Digital Sovereignty Master Pack | $699 – Unlock your digital freedom';
+
+        function nowTs() { return Date.now(); }
+        function daysMs(n) { return n * 24 * 60 * 60 * 1000; }
+
+        function isDismissed() {
+            try {
+                var until = localStorage.getItem(DISMISS_KEY);
+                if (!until) return false;
+                return nowTs() < parseInt(until, 10);
+            } catch (e) { return false; }
+        }
+
+        function setDismissDays(days) {
+            try { localStorage.setItem(DISMISS_KEY, (nowTs() + daysMs(days)).toString()); } catch (e) {}
+        }
+
+        function sendAnalyticsClick(placement) {
+            try {
+                if (typeof gtag === 'function') {
+                    gtag('event', 'cta_click', {
+                        event_category: 'CTA',
+                        event_label: 'floating_cta',
+                        cta_location: placement
+                    });
+                }
+            } catch (e) {}
+            try {
+                if (window.hj) { window.hj('event', 'floating_cta_click'); }
+            } catch (e) {}
+        }
+
+        function mountFab() {
+            var container = document.createElement('div');
+            container.className = 'floating-cta';
+
+            var link = document.createElement('a');
+            link.className = 'floating-cta__fab';
+            link.href = TARGET_URL;
+            link.setAttribute('aria-label', TEXT);
+            link.rel = 'noopener';
+            link.textContent = TEXT;
+
+            var close = document.createElement('button');
+            close.className = 'floating-cta__close';
+            close.setAttribute('aria-label', 'Close CTA');
+            close.type = 'button';
+            close.innerHTML = '×';
+
+            link.addEventListener('click', function() { sendAnalyticsClick('fab'); });
+            close.addEventListener('click', function(e) {
+                e.stopPropagation();
+                e.preventDefault();
+                setDismissDays(DISMISS_DAYS);
+                container.remove();
+            });
+
+            container.appendChild(link);
+            container.appendChild(close);
+            document.body.appendChild(container);
+            container.style.display = 'block';
+        }
+
+        function mountBar() {
+            var bar = document.createElement('div');
+            bar.className = 'floating-cta--bar';
+
+            var inner = document.createElement('div');
+            inner.className = 'floating-cta--bar__inner';
+
+            var text = document.createElement('div');
+            text.className = 'floating-cta--bar__text';
+            text.textContent = TEXT;
+
+            var btn = document.createElement('a');
+            btn.className = 'floating-cta--bar__button';
+            btn.href = TARGET_URL;
+            btn.textContent = 'Buy Now';
+            btn.setAttribute('aria-label', TEXT);
+            btn.rel = 'noopener';
+
+            var close = document.createElement('button');
+            close.className = 'floating-cta--bar__close';
+            close.type = 'button';
+            close.setAttribute('aria-label', 'Close CTA');
+            close.innerHTML = '×';
+
+            btn.addEventListener('click', function() { sendAnalyticsClick('bottom-bar'); });
+            close.addEventListener('click', function() {
+                setDismissDays(DISMISS_DAYS);
+                bar.remove();
+            });
+
+            inner.appendChild(close);
+            inner.appendChild(text);
+            inner.appendChild(btn);
+            bar.appendChild(inner);
+            document.body.appendChild(bar);
+            bar.style.display = 'block';
+        }
+
+        function initFloatingCta() {
+            if (isDismissed()) return;
+            var isNarrow = window.matchMedia('(max-width: 1024px)').matches;
+            if (isNarrow) { mountBar(); } else { mountFab(); }
+        }
+
+        function onReady(fn) {
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', fn);
+            } else { fn(); }
+        }
+
+        onReady(function() { setTimeout(initFloatingCta, DELAY_MS); });
+    })();
+</script>
