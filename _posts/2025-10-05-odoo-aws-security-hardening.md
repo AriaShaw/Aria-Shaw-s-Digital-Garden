@@ -22,6 +22,13 @@ This guide prevents that. You'll implement defense-in-depth security before expo
 
 **Time investment:** 6 hours to implement all security controls, 2 hours to validate with compliance checklist.
 
+{% include ctas/inline-simple.html
+   title="Lock Down Production in Hours"
+   description="Hardened configs, monitoring checklists, and DR drills — secure Odoo on AWS with a proven DIY toolkit. $699."
+   button_text="Unlock Now"
+   location="aws-security-after-intro"
+%}
+
 ---
 
 ## Security Architecture Overview
@@ -720,6 +727,13 @@ chmod +x setup-guardduty.sh
 - Malware detection (Execution:EC2/MaliciousFile)
 
 ---
+
+{% include ctas/inline-simple.html
+   title="Catch Incidents Before Users Do"
+   description="Monitoring dashboards, multi‑channel alerts, and DR drills — elevate your AWS security operations. $699."
+   button_text="Unlock Now"
+   location="aws-security-after-monitoring"
+%}
 
 ## Compliance Validation
 

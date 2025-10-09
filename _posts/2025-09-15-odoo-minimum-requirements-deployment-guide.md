@@ -61,6 +61,13 @@ Ready? Let's turn your Odoo deployment nightmare into a success story.
 
 > 🚀 **New to Odoo self-hosting?** If you need complete step-by-step implementation guidance, start with our **[Odoo Self-Hosting: The Definitive Guide (2025)](/odoo-self-hosting-guide/)** then return here for deep technical specifications.
 
+{% include ctas/inline-simple.html
+   title="Get Production‑Ready Numbers"
+   description="Server sizing, tuned configs, and validation diagnostics — stop guessing, start deploying. $699."
+   button_text="Unlock Now"
+   location="deploy-after-intro"
+%}
+
 ---
 
 ## Part 1: 2025 Odoo Minimum Requirements Landscape

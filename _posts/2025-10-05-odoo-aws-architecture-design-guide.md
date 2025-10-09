@@ -24,6 +24,13 @@ This guide prevents that. You'll design the correct architecture before deployme
 
 ---
 
+{% include ctas/inline-simple.html
+   title="Pick the Right Architecture From Day One"
+   description="Validated AWS designs, TCO models, and risk frameworks — choose with confidence. $699."
+   button_text="Unlock Now"
+   location="aws-arch-after-intro"
+%}
+
 ## Three Architecture Tiers Explained
 
 AWS provides three distinct paths for Odoo deployment. Each tier balances cost, performance, and operational complexity.
@@ -374,6 +381,13 @@ Hourly Impact = (Affected Employees × Avg Hourly Cost) + Direct Revenue Loss
 ### Step 2: Apply Decision Tree
 
 ![Architecture decision tree based on downtime cost calculation and production status](/assets/images/architecture-decision-tree.webp){:loading="lazy"}
+
+{% include ctas/inline-simple.html
+   title="Choose With Confidence"
+   description="TCO models, risk assessments, and validated architectures — make the right call for your team. $699."
+   button_text="Unlock Now"
+   location="aws-arch-before-decision"
+%}
 
 ### Step 3: Validate with Growth Projections
 

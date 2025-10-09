@@ -50,6 +50,13 @@ By the time you finish reading, you'll master exactly how to plan and execute yo
 
 **📋 [Download: Comprehensive Implementation Checklist](/resources/odoo-comprehensive-implementation-checklist.pdf)** - Complete phase-by-phase checklist to track your progress throughout the entire implementation journey
 
+{% include ctas/inline-simple.html
+   title="Implement With Sovereignty"
+   description="TCO & vendor due‑diligence, failure prevention, and 30‑60‑90 adoption plans — execute with your team. $699."
+   button_text="Unlock Now"
+   location="implementation-after-intro"
+%}
+
 ## Phase 1: Strategic Decision & Business Case
 
 ### What Is Odoo Implementation Process and Why It Matters

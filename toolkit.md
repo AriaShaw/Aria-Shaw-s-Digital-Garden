@@ -308,7 +308,7 @@ Welcome to the Toolkit, a curated library of open-source scripts and tools devel
 {% include ctas/inline-simple.html
    title="Ready to Level Up?"
    description="Get the complete DIY toolkit—5 modules, 68+ tools, 2,000+ pages. Build your own Odoo expertise from strategic planning through daily operations for $699."
-   button_text="Explore the Master Pack"
+   button_text="Unlock Now"
    location="toolkit-bottom"
 %}
 

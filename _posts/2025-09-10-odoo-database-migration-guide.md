@@ -44,6 +44,13 @@ This isn't theory—it's guidance for business owners and IT managers who need r
 
 Ready? Let's turn your Odoo database migration crisis into a routine task.
 
+{% include ctas/inline-simple.html
+   title="Migrate With Confidence"
+   description="Minimal‑downtime playbooks, risk assessment, and rapid rollback — in one DIY toolkit. $699."
+   button_text="Unlock Now"
+   location="migration-after-intro"
+%}
+
 ---
 
 ## Complete Pre-Migration Preparation (Steps 1-3)

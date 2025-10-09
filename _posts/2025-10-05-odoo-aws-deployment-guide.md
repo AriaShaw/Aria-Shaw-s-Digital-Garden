@@ -54,6 +54,13 @@ But before we launch a single EC2 instance, we need to answer the critical quest
 
 ---
 
+{% include ctas/inline-simple.html
+   title="Deploy Production, Not Demos"
+   description="Tuned configs, validation checklists, and ops runbooks — get production‑ready fast. $699."
+   button_text="Unlock Now"
+   location="aws-deploy-after-intro"
+%}
+
 ## Quick Start Checklist: What You Need Before Deploying Odoo on AWS
 
 Before you launch your first EC2 instance, gather these requirements. Missing one item delays your deployment by hours or days.
@@ -255,6 +262,13 @@ Compare three production-ready architectures side-by-side. Each tier trades cost
 **Need detailed sizing guidance?** [AWS Architecture Design Guide](/odoo-aws-architecture-design-guide/) covers EC2 instance sizing calculator, RDS parameter tuning for different workloads, cost optimization strategies, and VPC design patterns.
 
 Architecture chosen. Now let's provision your AWS resources...
+
+{% include ctas/inline-simple.html
+   title="Launch With Production Templates"
+   description="CloudFormation, tuned configs, and sizing tools — skip copy‑paste and deploy correctly. $699."
+   button_text="Unlock Now"
+   location="aws-deploy-after-arch-decision"
+%}
 
 ---
 
@@ -743,6 +757,13 @@ Expected: Odoo database creation screen. Create test database:
 Click "Create Database". Initial setup takes 2-3 minutes. Odoo dashboard loads when complete.
 
 Odoo running on EC2 + RDS! Next: Configure Nginx reverse proxy for SSL termination...
+
+{% include ctas/inline-simple.html
+   title="Harden and Monitor Before Go‑Live"
+   description="SSL automation, CloudWatch alarms, and DR drills — finish production hardening fast. $699."
+   button_text="Unlock Now"
+   location="aws-deploy-after-step5"
+%}
 
 ---
 
