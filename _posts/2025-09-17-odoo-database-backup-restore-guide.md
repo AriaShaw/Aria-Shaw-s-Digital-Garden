@@ -24,13 +24,6 @@ Analysis shows that the common issues stem from incomplete understanding of Odoo
 
 Research and documented case studies inform the methods in this guide, but every Odoo installation is unique.
 
-{% include ctas/inline-simple.html
-   title="Manual Backups Are Essential Knowledge—But Production Needs Automation"
-   description="This guide teaches reliable manual processes. The Master Pack includes 14 production-ready scripts for intelligent backup scheduling, multi-cloud sync, and sub-15 minute disaster recovery for $699."
-   button_text="Get the Master Pack"
-   location="backup-guide-top"
-%}
-
 ## Understanding Odoo Database Architecture: What You're Backing Up (And Why Most People Get It Wrong)
 
 Before we dive into the how-to steps, you need to understand what you're backing up.

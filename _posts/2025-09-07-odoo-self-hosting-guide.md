@@ -28,13 +28,6 @@ By the time you're done reading this, you'll know whether self-hosting is right 
 
 Let's dive in.
 
-{% include ctas/inline-simple.html
-   title="Own Your Odoo From Day One"
-   description="DIY toolkit with planning, deployment, backup/DR, and ops runbooks — $699 one‑time."
-   button_text="Unlock Now"
-   location="self-hosting-after-intro"
-%}
-
 ---
 
 ## ⚡ Quick Start Checklist

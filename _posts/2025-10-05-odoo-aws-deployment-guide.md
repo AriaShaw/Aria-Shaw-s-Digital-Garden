@@ -54,13 +54,6 @@ But before we launch a single EC2 instance, we need to answer the critical quest
 
 ---
 
-{% include ctas/inline-simple.html
-   title="Deploy Production, Not Demos"
-   description="Tuned configs, validation checklists, and ops runbooks — get production‑ready fast. $699."
-   button_text="Unlock Now"
-   location="aws-deploy-after-intro"
-%}
-
 ## Quick Start Checklist: What You Need Before Deploying Odoo on AWS
 
 Before you launch your first EC2 instance, gather these requirements. Missing one item delays your deployment by hours or days.
