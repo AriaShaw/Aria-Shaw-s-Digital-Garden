@@ -580,6 +580,13 @@ sudo ./production_migration.sh
 
 ---
 
+{% include ctas/inline-simple.html
+   title="Cut Downtime, Not Corners"
+   description="Risk assessment, incremental sync, and rapid rollback playbooks — included in the Master Pack. $699."
+   button_text="Unlock Now"
+   location="migration-after-zdd-strategy"
+%}
+
 ## Step 12: Post-Migration Performance Validation
 
 Your migration is complete, but the job isn't finished. The next 24 hours are for ensuring your new server performs better than the old one. This validation system monitors performance, identifies bottlenecks, and provides optimization recommendations.

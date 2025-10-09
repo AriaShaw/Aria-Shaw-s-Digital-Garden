@@ -946,6 +946,13 @@ Monitor these key indicators throughout your migration:
 
 Remember: successful data migration isn't just about moving data—it's about transforming how your business operates while maintaining complete operational continuity. The investment in proper migration methodology pays dividends through reduced risk, faster implementation, and higher user adoption rates.
 
+{% include ctas/inline-simple.html
+   title="Plan Migration Like a Pro"
+   description="Risk matrices, migration playbooks, and rollback runbooks — included in the Master Pack. $699."
+   button_text="Unlock Now"
+   location="impl-after-phase3"
+%}
+
 ## Phase 4: Module Configuration & Business Process Implementation
 
 Most Odoo implementations either soar or explode here.

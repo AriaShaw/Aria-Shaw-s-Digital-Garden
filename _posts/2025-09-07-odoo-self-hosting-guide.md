@@ -695,6 +695,13 @@ sudo journalctl -u odoo -f
 
 ---
 
+{% include ctas/inline-simple.html
+   title="Deploy Right the First Time"
+   description="Production configs, deployment walkthrough, and diagnostics — part of the Master Pack. $699 one‑time."
+   button_text="Unlock Now"
+   location="self-hosting-after-install"
+%}
+
 ## 🔒 Step 4: Securing Your Self-Hosted Odoo Installation
 
 Your Odoo runs, but it's not ready for production yet. This step separates the professionals from the amateurs.
@@ -1736,6 +1743,13 @@ htop  # Look for processes you don't recognize
 **Recovery Mindset**: If you skipped steps and things aren't working perfectly, go back and do them correctly. This approach saves time compared to debugging mysterious issues later.
 
 ---
+
+{% include ctas/inline-simple.html
+   title="Own The Full Stack, Not Just the Server"
+   description="From TCO planning to backup & DR and operations runbooks — everything in one DIY toolkit. $699."
+   button_text="Unlock Now"
+   location="self-hosting-before-compare"
+%}
 
 ## 🆚 Odoo Online vs Self-Hosting: Cost Comparison 2025
 
