@@ -22,7 +22,7 @@ Stop paying consultants $200/hour for knowledge you could own. Get the complete 
 <div class="price-box">
   <div class="price">$699</div>
   <p class="price-detail">One-time payment • Lifetime access • Free updates forever</p>
-  <a href="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty" class="btn-primary-cta" onclick="gtag('event', 'cta_click', {'event_category': 'CTA', 'event_label': 'Get Instant Access - Hero', 'cta_location': 'products-hero', 'destination': 'gumroad'});">Get Instant Access</a>
+  <a href="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty" class="btn-primary-cta" onclick="gtag('event', 'cta_click', {'event_category': 'CTA', 'event_label': 'Get Instant Access - Hero', 'cta_location': 'products-hero', 'destination': 'gumroad'});">Get Access Now</a>
   <div class="trust-signals">
     <p>14-day money-back guarantee</p>
     <p>Instant download after purchase • Secure payment via Gumroad</p>
@@ -186,7 +186,7 @@ The proven methodology from 300+ successful migrations—turn 8-hour outages int
 <div class="inline-cta">
   <p><strong>Already seeing the value?</strong></p>
   <p>You've just read about tools worth $85,000+ in consulting fees. Get all 5 modules for a one-time $699 payment.</p>
-  <a href="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty" class="btn-outline-cta" onclick="gtag('event', 'cta_click', {'event_category': 'CTA', 'event_label': 'Get Instant Access - Mid-page', 'cta_location': 'products-mid-page', 'destination': 'gumroad'});">Get Instant Access - $699</a>
+  <a href="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty" class="btn-outline-cta" onclick="gtag('event', 'cta_click', {'event_category': 'CTA', 'event_label': 'Get Instant Access - Mid-page', 'cta_location': 'products-mid-page', 'destination': 'gumroad'});">Unlock Now</a>
 </div>
 
 <div class="module-card" markdown="1">
@@ -442,7 +442,7 @@ Plus: Consultants leave, taking their knowledge. With the Master Pack, the knowl
 <div class="inline-cta">
   <p><strong>Save $84,000-$199,000 in consulting fees</strong></p>
   <p>One-time $699 investment • Lifetime access • 14-day guarantee</p>
-  <a href="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty" class="btn-primary-cta" onclick="gtag('event', 'cta_click', {'event_category': 'CTA', 'event_label': 'Get Instant Access Now', 'cta_location': 'products-pre-faq', 'destination': 'gumroad'});">Get Instant Access Now</a>
+  <a href="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty" class="btn-primary-cta" onclick="gtag('event', 'cta_click', {'event_category': 'CTA', 'event_label': 'Get Instant Access Now', 'cta_location': 'products-pre-faq', 'destination': 'gumroad'});">Get Access Now</a>
 </div>
 
 ---
@@ -487,7 +487,7 @@ If at any point you feel the toolkit doesn't deliver the described value, one em
     <li>14-day money-back guarantee</li>
   </ul>
 
-  <a href="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty" class="btn-primary-cta" onclick="gtag('event', 'cta_click', {'event_category': 'CTA', 'event_label': 'Get Instant Access - Bottom', 'cta_location': 'products-bottom', 'destination': 'gumroad'});">Get Instant Access - $699</a>
+  <a href="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty" class="btn-primary-cta" onclick="gtag('event', 'cta_click', {'event_category': 'CTA', 'event_label': 'Get Instant Access - Bottom', 'cta_location': 'products-bottom', 'destination': 'gumroad'});">Unlock Now</a>
 
   <div class="trust-signals">
     <p>Secure payment via Gumroad • Instant digital delivery</p>
