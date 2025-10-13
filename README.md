@@ -17,23 +17,28 @@ Each playbook is a deep-dive, meticulously crafted to be the only resource you n
 
 ---
 
-## Latest Guides
+## Complete Guides Library
 
-New battle-tested playbooks for deploying Odoo on AWS with enterprise-grade reliability.
+Definitive playbooks for every stage of your Odoo journey—from strategic planning to daily operations.
 
-### 🚀 [Odoo AWS Deployment Guide 2025: Avoid $37K Mistakes](/odoo-aws-deployment-guide/)
-
-*The definitive AWS deployment playbook. Complete implementation roadmap from VPC design to production launch, with cost optimization strategies that prevent expensive architectural mistakes.*
-
-### 🏗️ [Odoo AWS Architecture Guide: 3 Tiers from $100 to $350/mo](/odoo-aws-architecture-design-guide/)
-
-*Deep-dive into AWS architecture patterns for Odoo. Compare single-server, separated-tier, and high-availability designs with real cost breakdowns and performance benchmarks.*
-
-### 🔒 [Odoo AWS Security: Lock Down Production in 6 Hours](/odoo-aws-security-hardening/)
-
-*Complete security hardening checklist for AWS-hosted Odoo. 30+ critical security controls with implementation scripts and validation tests.*
-
-**[→ Browse All Guides by Topic](/guides/)** • Self-Hosting • Database Operations • Implementation Strategies
+<div class="posts-grid-section">
+<div class="posts-grid">
+{% for post in site.posts %}
+  <article class="post-card">
+    <h3 class="post-card-title">
+      <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+    </h3>
+    <div class="post-card-meta">
+      <span class="post-card-meta-date">{{ post.date | date: "%b %d, %Y" }}</span>
+    </div>
+    <p class="post-card-description">{{ post.description | truncate: 160 }}</p>
+    <div class="post-card-footer">
+      <a href="{{ post.url | relative_url }}" class="post-card-readmore">Read full guide</a>
+    </div>
+  </article>
+{% endfor %}
+</div>
+</div>
 
 ---
 
