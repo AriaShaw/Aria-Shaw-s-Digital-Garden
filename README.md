@@ -23,17 +23,30 @@ Definitive playbooks for every stage of your Odoo journey—from strategic plann
 
 <div class="posts-grid-section">
 <div class="posts-grid">
+{% assign post_images = "code.webp,keyboard.webp,electronic.webp,earphone.webp,digital.webp,data center.webp,computer.webp,technology.webp" | split: "," %}
+{% assign featured_posts = "odoo-self-hosting-guide,odoo-database-backup-restore-guide" | split: "," %}
 {% for post in site.posts %}
-  <article class="post-card">
-    <h3 class="post-card-title">
-      <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
-    </h3>
-    <div class="post-card-meta">
-      <span class="post-card-meta-date">{{ post.date | date: "%b %d, %Y" }}</span>
-    </div>
-    <p class="post-card-description">{{ post.description | truncate: 160 }}</p>
-    <div class="post-card-footer">
-      <a href="{{ post.url | relative_url }}" class="post-card-readmore">Read full guide</a>
+  {% assign index = forloop.index0 %}
+  {% assign is_featured = false %}
+  {% for featured_slug in featured_posts %}
+    {% if post.url contains featured_slug %}
+      {% assign is_featured = true %}
+    {% endif %}
+  {% endfor %}
+  <article class="post-card{% if is_featured %} featured{% endif %}">
+    <img src="/assets/images/{{ post_images[index] }}" alt="{{ post.title }}" class="post-card-image" loading="lazy">
+    <div class="post-card-content">
+      <h3 class="post-card-title">
+        <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+      </h3>
+      {% if is_featured %}
+        <p class="post-card-description">{{ post.description | truncate: 200 }}</p>
+      {% else %}
+        <p class="post-card-description">{{ post.description | truncate: 120 }}</p>
+      {% endif %}
+      <div class="post-card-footer">
+        <a href="{{ post.url | relative_url }}" class="post-card-readmore">Read full guide</a>
+      </div>
     </div>
   </article>
 {% endfor %}
