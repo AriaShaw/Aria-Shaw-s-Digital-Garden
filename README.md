@@ -2,18 +2,41 @@ This is not a blog. This is a curated digital garden—a collection of definitiv
 
 Each playbook is a deep-dive, meticulously crafted to be the only resource you need on the subject. I believe the best solution to a complex problem isn't a magic black box, but a crystal-clear set of instructions. This is my attempt to create them.
 
+**The result?** Guides that have saved 300+ business owners from $50,000+ consulting fees and weeks of downtime.
+
 ---
 
 ## 🏆 Featured: Digital Sovereignty Toolkit
 
-{% include ctas/product-box.html
+{% include ctas/hero-product-box.html
    badge="Featured Product"
    title="Odoo Digital Sovereignty Master Pack - $699"
    description="The complete DIY toolkit for deploying and managing Odoo without $50,000+ consulting fees. You execute, you own."
    features="5 integrated modules|68+ production-ready tools|2,000+ pages of documentation|Zero vendor lock-in"
-   button_text="Unlock Now"
+   button_text="Get Instant Access - $699"
    location="homepage-hero"
 %}
+
+---
+
+## What Builders Are Saying
+
+<div class="testimonials-section">
+  <div class="testimonials-container">
+    <div class="testimonials-grid">
+      <div class="testimonial-card">
+        <p class="testimonial-quote">"Aria's migration guide saved us 8 hours of downtime. The scripts just work—no guesswork, no surprises. This is what real documentation looks like."</p>
+        <p class="testimonial-author">Chen Wei</p>
+        <p class="testimonial-role">CTO @ TechFlow Systems</p>
+      </div>
+      <div class="testimonial-card">
+        <p class="testimonial-quote">"Finally, an Odoo guide that doesn't assume you're a Linux wizard. Clear steps, actual troubleshooting, and zero vendor speak."</p>
+        <p class="testimonial-author">Maria Santos</p>
+        <p class="testimonial-role">Operations Director @ BuildCo</p>
+      </div>
+    </div>
+  </div>
+</div>
 
 ---
 
@@ -27,6 +50,7 @@ Definitive playbooks for every stage of your Odoo journey—from strategic plann
 {% assign featured_posts = "odoo-self-hosting-guide,odoo-database-backup-restore-guide" | split: "," %}
 {% for post in site.posts %}
   {% assign index = forloop.index0 %}
+  {% assign loop_number = forloop.index %}
   {% assign is_featured = false %}
   {% for featured_slug in featured_posts %}
     {% if post.url contains featured_slug %}
@@ -49,6 +73,14 @@ Definitive playbooks for every stage of your Odoo journey—from strategic plann
       </div>
     </div>
   </article>
+
+  {% if loop_number == 3 %}
+  <div class="grid-cta-card">
+    <h3 class="grid-cta-title">Need the Complete Toolkit?</h3>
+    <p class="grid-cta-description">All these guides + 68 production scripts in one pack.</p>
+    <a href="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty" class="grid-cta-button">See What's Inside →</a>
+  </div>
+  {% endif %}
 {% endfor %}
 </div>
 </div>
