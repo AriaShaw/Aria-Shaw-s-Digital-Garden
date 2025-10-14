@@ -6,7 +6,7 @@ description: Terms of service for Aria Shaw's Digital Garden products and conten
 
 # Terms of Service
 
-**Last Updated:** January 2025
+**Last Updated:** October 2025
 
 ## Agreement to Terms
 

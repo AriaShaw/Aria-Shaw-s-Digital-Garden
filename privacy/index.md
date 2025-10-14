@@ -6,7 +6,7 @@ description: Privacy policy for Aria Shaw's Digital Garden - How we handle your 
 
 # Privacy Policy
 
-**Last Updated:** January 2025
+**Last Updated:** October 2025
 
 ## Overview
 
