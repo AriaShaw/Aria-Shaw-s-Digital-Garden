@@ -2,6 +2,7 @@
 layout: home
 title: Complete Guides Library | Aria Shaw's Digital Garden
 description: Comprehensive collection of battle-tested Odoo guides covering deployment, security, migration, backup, and operations. Definitive playbooks for every stage of your Odoo journey.
+breadcrumb_title: Guides
 permalink: /guides/
 ---
 

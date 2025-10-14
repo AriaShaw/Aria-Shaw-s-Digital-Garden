@@ -43,33 +43,29 @@
       </div>
     </div>
 
-    <!-- Right: Product Visual -->
+    <!-- Right: Product Modules -->
     <div class="hero-visual">
       <div class="product-modules-stack">
         <div class="module-card module-1">
-          <span class="module-number">MODULE 1</span>
+          <span class="module-number">01</span>
           <span class="module-name">Strategic Command</span>
         </div>
         <div class="module-card module-2">
-          <span class="module-number">MODULE 2</span>
+          <span class="module-number">02</span>
           <span class="module-name">Technical Architecture</span>
         </div>
         <div class="module-card module-3">
-          <span class="module-number">MODULE 3</span>
+          <span class="module-number">03</span>
           <span class="module-name">Data Migration</span>
         </div>
         <div class="module-card module-4">
-          <span class="module-number">MODULE 4</span>
+          <span class="module-number">04</span>
           <span class="module-name">Fortress Protection</span>
         </div>
         <div class="module-card module-5">
-          <span class="module-number">MODULE 5</span>
+          <span class="module-number">05</span>
           <span class="module-name">Operations Console</span>
         </div>
-      </div>
-      <div class="product-badge">
-        <strong>68+</strong> Tools<br>
-        <strong>2,000+</strong> Pages
       </div>
     </div>
   </div>
@@ -156,7 +152,9 @@
 <!-- Final CTA Section -->
 <section class="final-cta-section" id="final-cta">
   <div class="final-cta-content">
-    <h2>Deploy Odoo with Confidence. Starting Today.</h2>
+    <h2>Deploy Odoo with Confidence</h2>
+
+    <p style="font-size: 16px; color: #666; margin: 0 0 24px 0;">Complete toolkit for digital sovereignty</p>
 
     <ul class="final-cta-features">
       <li>5 Integrated Modules covering strategy to operations</li>
@@ -166,6 +164,8 @@
       <li>One-Time Payment—no subscriptions, no recurring fees</li>
     </ul>
 
+    <div class="final-cta-divider"></div>
+
     <p class="final-cta-price">$699</p>
     <p class="final-cta-price-label">One-time investment. Lifetime access.</p>
 
@@ -174,7 +174,7 @@
     </a>
 
     <p class="final-cta-guarantee">
-      30-day money-back guarantee. If it doesn't save you at least $10,000 in consulting fees, get a full refund.
+      30-day money-back guarantee
     </p>
   </div>
 </section>
