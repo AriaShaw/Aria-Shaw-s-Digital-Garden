@@ -76,7 +76,7 @@
   <div class="social-proof-grid">
     <div class="social-proof-card">
       <p class="social-proof-quote">"Changed how we think about Odoo deployment. These aren't tutorials—they're production protocols. Saved us $80,000 in consulting fees and we now have complete control over our infrastructure."</p>
-      <p class="social-proof-author">Marcus Chen</p>
+      <p class="social-proof-author">Adrian Keller</p>
       <p class="social-proof-role">CTO, TechFlow Manufacturing</p>
     </div>
     <div class="social-proof-card">

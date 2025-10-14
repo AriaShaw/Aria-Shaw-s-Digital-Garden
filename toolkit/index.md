@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: home
 title: Interactive Planning Tools | Free Business Calculators
 breadcrumb_title: Toolkit
 permalink: /toolkit/
