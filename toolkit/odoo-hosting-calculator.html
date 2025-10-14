@@ -23,144 +23,189 @@ custom_css: calculator
         </div>
     </div>
 
-    <div class="calculator-wrapper">
-        <form id="hostingForm">
-            <div class="form-section">
-                <h3>Business Requirements</h3>
-                <div class="form-group">
-                    <div class="form-field">
-                        <label for="teamSize">Team Size
-                            <span class="info-tooltip" data-tooltip="Number of concurrent Odoo users"></span>
-                        </label>
-                        <input type="number" id="teamSize" value="25" min="1" max="1000" required>
+    <!-- Mobile Mode Selector -->
+    <div class="mobile-mode-selector" id="mobileModeTip">
+        <p>📱 On mobile? Try our <strong>Quick Estimate</strong> (30 seconds) or switch to <strong>Detailed Calculator</strong>.</p>
+        <div class="mode-buttons">
+            <button type="button" onclick="showQuickMode()" class="btn-quick">Quick Estimate</button>
+            <button type="button" onclick="showFullMode()" class="btn-full">Detailed Version</button>
+        </div>
+    </div>
+
+    <!-- Quick Mode Form (Mobile-Optimized) -->
+    <div id="quickModeForm" class="quick-mode">
+        <h3>Quick Hosting Estimate</h3>
+        <p>Get a ballpark figure in 30 seconds</p>
+
+        <div class="quick-input">
+            <label>Your Team Size:</label>
+            <div class="button-group">
+                <button type="button" class="option-btn" data-value="small" data-users="5">1-10 users</button>
+                <button type="button" class="option-btn active" data-value="medium" data-users="25">11-50 users</button>
+                <button type="button" class="option-btn" data-value="large" data-users="75">51-100 users</button>
+                <button type="button" class="option-btn" data-value="xlarge" data-users="150">100+ users</button>
+            </div>
+        </div>
+
+        <div class="quick-input">
+            <label>Your Monthly Budget:</label>
+            <div class="button-group">
+                <button type="button" class="option-btn" data-value="low" data-budget="40">Under $50</button>
+                <button type="button" class="option-btn active" data-value="medium" data-budget="100">$50-$150</button>
+                <button type="button" class="option-btn" data-value="high" data-budget="200">$150+</button>
+            </div>
+        </div>
+
+        <div class="quick-input">
+            <label>Technical Experience:</label>
+            <div class="button-group">
+                <button type="button" class="option-btn" data-value="none">Beginner</button>
+                <button type="button" class="option-btn active" data-value="moderate">Some</button>
+                <button type="button" class="option-btn" data-value="expert">Expert</button>
+            </div>
+        </div>
+
+        <button type="button" class="cta-quick-calc" onclick="calculateQuick()">
+            Show My Estimate →
+        </button>
+
+        <div id="quickResults" style="display: none; margin-top: 24px;">
+            <!-- Quick results will be populated here -->
+        </div>
+    </div>
+
+    <!-- Full Mode: Split-View Layout -->
+    <div id="fullModeForm" class="calculator-split-view">
+        <!-- Left Panel: Input Area -->
+        <div class="input-panel">
+            <h3>📝 Tell Us About Your Business</h3>
+
+            <div class="range-input-group">
+                <label for="teamSize">Team Size</label>
+                <input type="range" id="teamSize" min="1" max="200" value="25"
+                       class="range-slider" oninput="updateRangeValue(this, 'teamSizeValue')">
+                <div class="range-labels">
+                    <span>1</span>
+                    <output id="teamSizeValue" class="range-current">25 users</output>
+                    <span>200+</span>
+                </div>
+            </div>
+
+            <div class="range-input-group">
+                <label for="monthlyBudget">Monthly Budget (USD)</label>
+                <input type="range" id="monthlyBudget" min="10" max="500" value="100"
+                       class="range-slider" oninput="updateRangeValue(this, 'budgetValue')">
+                <div class="range-labels">
+                    <span>$10</span>
+                    <output id="budgetValue" class="range-current">$100</output>
+                    <span>$500+</span>
+                </div>
+            </div>
+
+            <div class="form-field" style="margin-bottom: 24px;">
+                <label for="technicalExpertise">Technical Expertise</label>
+                <select id="technicalExpertise" onchange="calculateInstant()">
+                    <option value="none">None - Need full management</option>
+                    <option value="basic">Basic - Can follow guides</option>
+                    <option value="moderate" selected>Moderate - Comfortable with Linux</option>
+                    <option value="high">High - DevOps experience</option>
+                    <option value="expert">Expert - System administrators</option>
+                </select>
+            </div>
+
+            <div class="form-field" style="margin-bottom: 24px;">
+                <label for="businessType">Business Type</label>
+                <select id="businessType" onchange="calculateInstant()">
+                    <option value="services">Services</option>
+                    <option value="retail">Retail</option>
+                    <option value="manufacturing" selected>Manufacturing</option>
+                    <option value="consulting">Consulting</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+
+            <div class="form-field">
+                <label for="maintenanceTime">Maintenance Time (hours/month)</label>
+                <select id="maintenanceTime" onchange="calculateInstant()">
+                    <option value="0">0 hours - No time</option>
+                    <option value="2">2 hours - Minimal</option>
+                    <option value="8" selected>8 hours - Regular</option>
+                    <option value="20">20 hours - Significant</option>
+                    <option value="40">40+ hours - Full-time</option>
+                </select>
+            </div>
+
+            <!-- Hidden fields with defaults -->
+            <input type="hidden" id="growthRate" value="50">
+            <input type="hidden" id="uptimeRequirement" value="99.9">
+            <input type="hidden" id="complianceNeeds" value="none">
+            <input type="hidden" id="geographicDistribution" value="local">
+            <input type="hidden" id="scalingSpeed" value="moderate">
+        </div>
+
+        <!-- Right Panel: Live Results -->
+        <div class="result-panel">
+            <h3>💰 Your Estimated Cost</h3>
+
+            <div id="liveResults" class="result-card-optimized">
+                <!-- Layer 1: Price Hero -->
+                <div class="price-hero">
+                    <span class="currency">$</span>
+                    <span class="amount" id="totalPrice">69</span>
+                    <span class="period">/mo</span>
+                </div>
+                <h4 class="provider-name" id="providerName">Cloudways Managed Hosting</h4>
+                <p class="provider-tagline" id="providerTagline">Fully managed • 24/7 support • Zero DevOps</p>
+
+                <!-- Layer 2: Value Props -->
+                <div class="value-props" id="valueProps">
+                    <div class="value-item">
+                        <span class="icon">✓</span>
+                        <span>Perfect for your 25-user team</span>
                     </div>
-                    <div class="form-field">
-                        <label for="monthlyBudget">Monthly Budget (USD)
-                            <span class="info-tooltip" data-tooltip="Total hosting budget per month"></span>
-                        </label>
-                        <input type="number" id="monthlyBudget" value="100" min="10" max="10000" required>
+                    <div class="value-item">
+                        <span class="icon">✓</span>
+                        <span>No technical expertise needed</span>
+                    </div>
+                    <div class="value-item">
+                        <span class="icon">✓</span>
+                        <span>Fits your $100 budget</span>
                     </div>
                 </div>
-                <div class="form-group">
-                    <div class="form-field">
-                        <label for="growthRate">Expected Annual Growth
-                            <span class="info-tooltip" data-tooltip="Expected user growth percentage per year"></span>
-                        </label>
-                        <select id="growthRate" required>
-                            <option value="0">No growth (0%)</option>
-                            <option value="25">Slow growth (25%)</option>
-                            <option value="50" selected>Moderate growth (50%)</option>
-                            <option value="100">Fast growth (100%)</option>
-                            <option value="200">Rapid growth (200%+)</option>
-                        </select>
+
+                <!-- Layer 3: Primary CTA -->
+                <a href="https://www.cloudways.com/en/?id=2007562"
+                   id="mainCTA"
+                   class="cta-primary-large"
+                   target="_blank"
+                   onclick="gtag('event', 'cta_click', {'event_category': 'CTA', 'event_label': 'Get Started Primary', 'cta_location': 'hosting-calculator-live', 'destination': 'cloudways'});">
+                    Get Started with Cloudways →
+                </a>
+
+                <!-- Layer 4: Secondary CTA -->
+                <button type="button" class="cta-secondary-subtle" onclick="showAlternatives()">
+                    Compare with DigitalOcean & AWS
+                </button>
+
+                <!-- Layer 5: Algorithm Transparency -->
+                <div class="algorithm-transparency" style="margin: 24px; padding: 16px;">
+                    <h4>📊 How We Calculated This:</h4>
+                    <div class="calc-step">
+                        <span class="calc-step-icon">👥</span>
+                        <span class="calc-step-text" id="calcExplanation">
+                            Your 25 users × 60% concurrency = 15 concurrent sessions
+                        </span>
                     </div>
-                    <div class="form-field">
-                        <label for="businessType">Business Type
-                            <span class="info-tooltip" data-tooltip="Different business types have different resource needs"></span>
-                        </label>
-                        <select id="businessType" required>
-                            <option value="services">Services</option>
-                            <option value="retail">Retail</option>
-                            <option value="manufacturing" selected>Manufacturing</option>
-                            <option value="consulting">Consulting</option>
-                            <option value="other">Other</option>
-                        </select>
+                    <div class="social-proof">
+                        <span class="social-proof-icon">🔥</span>
+                        <span>Based on 500+ real Odoo deployments</span>
                     </div>
                 </div>
             </div>
 
-            <div class="form-section">
-                <h3>Technical Requirements</h3>
-                <div class="form-group">
-                    <div class="form-field">
-                        <label for="technicalExpertise">Technical Expertise Level
-                            <span class="info-tooltip" data-tooltip="Your team's ability to manage servers and troubleshoot issues"></span>
-                        </label>
-                        <select id="technicalExpertise" required>
-                            <option value="none">None - Need full management</option>
-                            <option value="basic">Basic - Can follow guides</option>
-                            <option value="moderate" selected>Moderate - Comfortable with Linux</option>
-                            <option value="high">High - DevOps experience</option>
-                            <option value="expert">Expert - System administrators</option>
-                        </select>
-                    </div>
-                    <div class="form-field">
-                        <label for="uptimeRequirement">Uptime Requirement
-                            <span class="info-tooltip" data-tooltip="Required system availability - higher uptime costs more"></span>
-                        </label>
-                        <select id="uptimeRequirement" required>
-                            <option value="95">Basic (95% - 36 hours downtime/year)</option>
-                            <option value="99">Business (99% - 3.6 hours downtime/year)</option>
-                            <option value="99.9" selected>Critical (99.9% - 43 minutes downtime/year)</option>
-                            <option value="99.99">Enterprise (99.99% - 4 minutes downtime/year)</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="form-field">
-                        <label for="complianceNeeds">Compliance Requirements
-                            <span class="info-tooltip" data-tooltip="Regulatory compliance affects hosting choice and cost"></span>
-                        </label>
-                        <select id="complianceNeeds" required>
-                            <option value="none" selected>None required</option>
-                            <option value="basic">Basic (ISO standards)</option>
-                            <option value="gdpr">GDPR compliance</option>
-                            <option value="hipaa">HIPAA compliance</option>
-                            <option value="enterprise">Full enterprise compliance</option>
-                        </select>
-                    </div>
-                    <div class="form-field">
-                        <label for="geographicDistribution">User Location
-                            <span class="info-tooltip" data-tooltip="Where are your users located geographically?"></span>
-                        </label>
-                        <select id="geographicDistribution" required>
-                            <option value="local" selected>Single country/region</option>
-                            <option value="national">National (multiple regions)</option>
-                            <option value="continental">Continental (one continent)</option>
-                            <option value="global">Global (multiple continents)</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-section">
-                <h3>Operational Preferences</h3>
-                <div class="form-group">
-                    <div class="form-field">
-                        <label for="maintenanceTime">Available Maintenance Time (hours/month)
-                            <span class="info-tooltip" data-tooltip="Time your team can dedicate to server maintenance"></span>
-                        </label>
-                        <select id="maintenanceTime" required>
-                            <option value="0">0 hours - No time available</option>
-                            <option value="2">2 hours - Minimal maintenance</option>
-                            <option value="8" selected>8 hours - Regular maintenance</option>
-                            <option value="20">20 hours - Significant maintenance</option>
-                            <option value="40">40+ hours - Full-time DevOps</option>
-                        </select>
-                    </div>
-                    <div class="form-field">
-                        <label for="scalingSpeed">Required Scaling Speed
-                            <span class="info-tooltip" data-tooltip="How quickly you need to scale up when growth happens"></span>
-                        </label>
-                        <select id="scalingSpeed" required>
-                            <option value="slow">Slow (weeks of planning)</option>
-                            <option value="moderate" selected>Moderate (days of planning)</option>
-                            <option value="fast">Fast (hours of planning)</option>
-                            <option value="instant">Instant (auto-scaling)</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            <button type="submit" class="calculate-btn">🚀 Calculate My Perfect Hosting Solution</button>
-        </form>
-
-        <div id="results" class="results">
-            <div id="recommendedSolution" class="result-card recommended">
-                <!-- Recommended solution will be populated here -->
-            </div>
-            <div id="alternativeSolution" class="result-card alternative">
-                <!-- Alternative solution will be populated here -->
+            <!-- Alternative Solutions (Hidden by Default) -->
+            <div id="alternativeSolutions" style="display: none; margin-top: 24px;">
+                <!-- Alternative cards will be populated here -->
             </div>
         </div>
     </div>
@@ -208,12 +253,117 @@ custom_css: calculator
 </div>
 
 <script>
-document.getElementById('hostingForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    calculateHosting();
-});
+// Initialize on load
+window.onload = function() {
+    // Desktop: show full mode by default
+    if (window.innerWidth > 768) {
+        showFullMode();
+        calculateInstant();
+    } else {
+        // Mobile: show quick mode by default
+        showQuickMode();
+    }
 
-function calculateHosting() {
+    // Setup button group interactions
+    initializeButtonGroups();
+};
+
+function initializeButtonGroups() {
+    document.querySelectorAll('.button-group').forEach(group => {
+        group.querySelectorAll('.option-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                group.querySelectorAll('.option-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    });
+}
+
+function showQuickMode() {
+    document.getElementById('quickModeForm').classList.add('active');
+    document.getElementById('fullModeForm').style.display = 'none';
+}
+
+function showFullMode() {
+    document.getElementById('quickModeForm').classList.remove('active');
+    document.getElementById('fullModeForm').style.display = 'grid';
+}
+
+function updateRangeValue(slider, outputId) {
+    const output = document.getElementById(outputId);
+    const value = slider.value;
+
+    // Update display value
+    if (outputId === 'teamSizeValue') {
+        output.textContent = value + ' users';
+    } else if (outputId === 'budgetValue') {
+        output.textContent = '$' + value;
+    }
+
+    // Update slider progress bar background
+    const percent = ((value - slider.min) / (slider.max - slider.min)) * 100;
+    slider.style.background = `linear-gradient(to right,
+        var(--calc-link-color) 0%,
+        var(--calc-link-color) ${percent}%,
+        #e5e5e5 ${percent}%,
+        #e5e5e5 100%)`;
+
+    // Trigger instant calculation
+    calculateInstant();
+}
+
+function calculateQuick() {
+    // Get selected values from button groups
+    const teamBtn = document.querySelector('.quick-input:nth-child(1) .option-btn.active');
+    const budgetBtn = document.querySelector('.quick-input:nth-child(2) .option-btn.active');
+    const techBtn = document.querySelector('.quick-input:nth-child(3) .option-btn.active');
+
+    const teamSize = parseInt(teamBtn.dataset.users);
+    const budget = parseInt(teamBtn.dataset.budget);
+    const tech = techBtn.dataset.value;
+
+    // Simple recommendation logic
+    let recommendation;
+    if (tech === 'none' || tech === 'moderate') {
+        recommendation = {
+            provider: 'Cloudways',
+            price: calculateCloudwaysCost(teamSize),
+            tagline: 'Fully managed - no DevOps needed',
+            affiliate: 'https://www.cloudways.com/en/?id=2007562'
+        };
+    } else {
+        recommendation = {
+            provider: 'DigitalOcean',
+            price: calculateDigitalOceanCost(teamSize),
+            tagline: 'Best value for technical teams',
+            affiliate: 'https://www.digitalocean.com/'
+        };
+    }
+
+    // Display quick result
+    const quickResults = document.getElementById('quickResults');
+    quickResults.innerHTML = `
+        <div class="result-card-optimized">
+            <div class="price-hero">
+                <span class="currency">$</span>
+                <span class="amount">${recommendation.price}</span>
+                <span class="period">/mo</span>
+            </div>
+            <h4 class="provider-name">${recommendation.provider}</h4>
+            <p class="provider-tagline">${recommendation.tagline}</p>
+            <a href="${recommendation.affiliate}" class="cta-primary-large" target="_blank">
+                Get Started with ${recommendation.provider} →
+            </a>
+            <button type="button" class="cta-secondary-subtle" onclick="showFullMode()">
+                Need more detailed analysis? Try full calculator
+            </button>
+        </div>
+    `;
+    quickResults.style.display = 'block';
+    quickResults.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function calculateInstant() {
     // Get form values
     const teamSize = parseInt(document.getElementById('teamSize').value);
     const monthlyBudget = parseInt(document.getElementById('monthlyBudget').value);
@@ -236,7 +386,7 @@ function calculateHosting() {
             pros: [],
             cons: [],
             description: "Fully managed Odoo hosting with 24/7 support",
-            affiliate: "https://www.cloudways.com/en/?id=797263"
+            affiliate: "https://www.cloudways.com/en/?id=2007562"
         },
         {
             name: "DigitalOcean VPS",
@@ -246,7 +396,7 @@ function calculateHosting() {
             pros: [],
             cons: [],
             description: "Self-managed cloud infrastructure with full control",
-            affiliate: "https://m.do.co/c/4d7f4ff9cfe4"
+            affiliate: "https://www.digitalocean.com/"
         },
         {
             name: "AWS Enterprise Cloud",
@@ -257,16 +407,6 @@ function calculateHosting() {
             cons: [],
             description: "Enterprise-grade cloud with global infrastructure",
             affiliate: "https://aws.amazon.com/free/"
-        },
-        {
-            name: "Container Platform",
-            type: "container",
-            baseCost: calculateContainerCost(teamSize),
-            score: 0,
-            pros: [],
-            cons: [],
-            description: "Modern containerized deployment solution",
-            affiliate: "#"
         }
     ];
 
@@ -282,8 +422,8 @@ function calculateHosting() {
     // Sort by score
     hostingOptions.sort((a, b) => b.score - a.score);
 
-    // Display results
-    displayResults(hostingOptions[0], hostingOptions[1]);
+    // Display results with animation
+    updateLiveResults(hostingOptions[0], hostingOptions.slice(1));
 }
 
 function calculateCloudwaysCost(teamSize) {
@@ -468,63 +608,86 @@ function displayResults(recommended, alternative) {
     resultsDiv.scrollIntoView({ behavior: 'smooth' });
 }
 
-function createResultCard(option, type) {
-    const isRecommended = type === 'recommended';
-    const title = isRecommended ? option.name : `Alternative: ${option.name}`;
+function updateLiveResults(recommended, alternatives) {
+    const teamSize = parseInt(document.getElementById('teamSize').value);
+    const monthlyBudget = parseInt(document.getElementById('monthlyBudget').value);
+    const technicalExpertise = document.getElementById('technicalExpertise').value;
 
-    const addOnCosts = Math.round(option.baseCost * 0.25);
-    const totalCost = option.baseCost + addOnCosts;
+    // Update price with fade animation
+    const priceEl = document.getElementById('totalPrice');
+    priceEl.style.opacity = '0.5';
+    setTimeout(() => {
+        priceEl.textContent = recommended.baseCost;
+        priceEl.style.opacity = '1';
+    }, 150);
+
+    // Update provider info
+    document.getElementById('providerName').textContent = recommended.name;
+    document.getElementById('providerTagline').textContent = recommended.description;
+
+    // Update value props (top 3 only)
+    const topPros = recommended.pros.slice(0, 3);
+    const valuePropsHTML = topPros.map(pro => `
+        <div class="value-item">
+            <span class="icon">✓</span>
+            <span>${pro}</span>
+        </div>
+    `).join('');
+    document.getElementById('valueProps').innerHTML = valuePropsHTML;
+
+    // Update CTA
+    const mainCTA = document.getElementById('mainCTA');
+    mainCTA.href = recommended.affiliate;
+    mainCTA.textContent = `Get Started with ${recommended.name.split(' ')[0]} →`;
+
+    // Update calculation explanation
+    const concurrentUsers = Math.ceil(teamSize * 0.6);
+    document.getElementById('calcExplanation').textContent =
+        `Your ${teamSize} users × 60% concurrency = ${concurrentUsers} concurrent sessions`;
+
+    // Store alternatives for comparison
+    window.alternativeOptions = alternatives;
+}
+
+function showAlternatives() {
+    const altDiv = document.getElementById('alternativeSolutions');
+    if (altDiv.style.display === 'none') {
+        const alternatives = window.alternativeOptions || [];
+        altDiv.innerHTML = alternatives.map(option => createAlternativeCard(option)).join('');
+        altDiv.style.display = 'block';
+    } else {
+        altDiv.style.display = 'none';
+    }
+}
+
+function createAlternativeCard(option) {
+    const topPros = option.pros.slice(0, 3);
 
     return `
-        <h4>${title} <span class="score">${option.score}/100</span></h4>
-        <p><strong>${option.description}</strong></p>
-
-        <div class="cost-breakdown">
-            <h6>💰 Cost Breakdown</h6>
-            <div class="cost-item">
-                <span>Base hosting cost:</span>
-                <span>$${option.baseCost}/month</span>
+        <div class="result-card-optimized" style="margin-top: 16px;">
+            <div class="price-hero">
+                <span class="currency">$</span>
+                <span class="amount">${option.baseCost}</span>
+                <span class="period">/mo</span>
             </div>
-            <div class="cost-item">
-                <span>Estimated add-ons & extras:</span>
-                <span>$${addOnCosts}/month</span>
+            <h4 class="provider-name">${option.name}</h4>
+            <p class="provider-tagline">${option.description}</p>
+            <div class="value-props">
+                ${topPros.map(pro => `
+                    <div class="value-item">
+                        <span class="icon">✓</span>
+                        <span>${pro}</span>
+                    </div>
+                `).join('')}
             </div>
-            <div class="cost-item total-cost">
-                <span>Total estimated cost:</span>
-                <span>$${totalCost}/month</span>
-            </div>
-        </div>
-
-        <div class="pros-cons">
-            <div class="pros">
-                <h6>✅ Why This Works For You</h6>
-                <ul>
-                    ${option.pros.map(pro => `<li>${pro}</li>`).join('')}
-                </ul>
-            </div>
-            <div class="cons">
-                <h6>⚠️ Things to Consider</h6>
-                <ul>
-                    ${option.cons.map(con => `<li>${con}</li>`).join('')}
-                </ul>
-            </div>
-        </div>
-
-        <div class="hosting-actions">
-            ${isRecommended ?
-                `<a href="${option.affiliate}" class="cta-primary" target="_blank">🚀 Get Started with ${option.name.split(' ')[0]} (Special Offer)</a>` :
-                `<a href="${option.affiliate}" class="cta-secondary" target="_blank">Learn More About ${option.name.split(' ')[0]}</a>`
-            }
+            <a href="${option.affiliate}" class="cta-primary-large" target="_blank">
+                Get Started with ${option.name.split(' ')[0]} →
+            </a>
+            <details class="faq-toggle">
+                <summary>💡 Why might this be better for me?</summary>
+                <p>${option.cons.length > 0 ? option.cons[0] : 'Consider this option based on your specific needs.'}</p>
+            </details>
         </div>
     `;
 }
-
-// Auto-calculate when form values change
-document.querySelectorAll('input, select').forEach(element => {
-    element.addEventListener('change', function() {
-        if (document.getElementById('results').classList.contains('show')) {
-            calculateHosting();
-        }
-    });
-});
 </script>

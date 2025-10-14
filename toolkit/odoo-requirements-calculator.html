@@ -19,145 +19,159 @@ custom_css: calculator
         <p><strong>How to use it:</strong> Fill in your current situation in the input fields below. The calculator automatically updates your requirements in real-time. Pay special attention to the hosting recommendations—they're based on current 2025 pricing and performance data.</p>
     </div>
 
-    <div class="calculator-section">
-        <table class="calc-table">
-            <tr class="table-header">
-                <td colspan="4"><strong>INPUT PARAMETERS</strong></td>
-            </tr>
-            <tr>
-                <th>Parameter</th>
-                <th>Value</th>
-                <th>Unit</th>
-                <th>Description</th>
-            </tr>
-            <tr class="input-row">
-                <td>Current Users</td>
-                <td><input type="number" id="currentUsers" value="25" onchange="calculate()"></td>
-                <td>users</td>
-                <td>Number of current active users</td>
-            </tr>
-            <tr class="input-row">
-                <td>Projected Users (12 months)</td>
-                <td><input type="number" id="projectedUsers" value="40" onchange="calculate()"></td>
-                <td>users</td>
-                <td>Expected user count in 12 months</td>
-            </tr>
-            <tr class="input-row">
-                <td>Business Type</td>
-                <td>
-                    <select id="businessType" onchange="calculate()">
-                        <option value="Manufacturing" selected>Manufacturing</option>
-                        <option value="Retail">Retail</option>
-                        <option value="Services">Services</option>
-                        <option value="Consulting">Consulting</option>
-                        <option value="Other">Other</option>
-                    </select>
-                </td>
-                <td>-</td>
-                <td>Type of business (affects resource needs)</td>
-            </tr>
-            <tr class="input-row">
-                <td>Usage Intensity</td>
-                <td>
-                    <select id="usageIntensity" onchange="calculate()">
-                        <option value="Basic">Basic (CRM + Sales)</option>
-                        <option value="Standard" selected>Standard (+ Accounting)</option>
-                        <option value="Heavy">Heavy (+ MRP/PLM)</option>
-                    </select>
-                </td>
-                <td>-</td>
-                <td>Module complexity and usage patterns</td>
-            </tr>
-            <tr class="input-row">
-                <td>Monthly Transactions</td>
-                <td><input type="number" id="monthlyTransactions" value="5000" onchange="calculate()"></td>
-                <td>transactions</td>
-                <td>Sales orders, purchases, invoices per month</td>
-            </tr>
-            <tr class="input-row">
-                <td>File Storage per User</td>
-                <td><input type="number" id="fileAttachments" value="500" onchange="calculate()"></td>
-                <td>MB/user</td>
-                <td>Documents, images, attachments per user</td>
-            </tr>
-            <tr class="input-row">
-                <td>Odoo Version</td>
-                <td>
-                    <select id="odooVersion" onchange="calculate()">
-                        <option value="16">16 (LTS)</option>
-                        <option value="17" selected>17 (Current)</option>
-                        <option value="18">18 (Latest)</option>
-                    </select>
-                </td>
-                <td>-</td>
-                <td>Odoo version affects base requirements</td>
-            </tr>
-        </table>
+    <!-- Split-View Layout for Requirements Calculator -->
+    <div class="calculator-split-view">
+        <!-- Left Panel: Inputs -->
+        <div class="input-panel">
+            <h3>📝 Your Odoo Configuration</h3>
 
-        <table class="calc-table">
-            <tr class="table-header">
-                <td colspan="5"><strong>CALCULATED REQUIREMENTS</strong></td>
-            </tr>
-            <tr>
-                <th>Resource Type</th>
-                <th>Current Needs</th>
-                <th>12-Month Projection</th>
-                <th>Recommended</th>
-                <th>Comments</th>
-            </tr>
+            <div class="range-input-group">
+                <label for="currentUsers">Current Users</label>
+                <input type="range" id="currentUsers" min="1" max="200" value="25"
+                       class="range-slider" oninput="updateReqRangeValue(this, 'currentUsersValue')">
+                <div class="range-labels">
+                    <span>1</span>
+                    <output id="currentUsersValue" class="range-current">25 users</output>
+                    <span>200+</span>
+                </div>
+            </div>
 
-            <tr class="table-section">
-                <td colspan="5"><strong>CPU REQUIREMENTS</strong></td>
-            </tr>
-            <tr>
-                <td>CPU Cores</td>
-                <td class="result-value" id="totalCpuCurrent">4</td>
-                <td class="result-value" id="totalCpuProjected">6</td>
-                <td class="result-value" id="recommendedCpu">8</td>
-                <td>Includes business type and usage multipliers</td>
-            </tr>
+            <div class="range-input-group">
+                <label for="projectedUsers">Projected Users (12 months)</label>
+                <input type="range" id="projectedUsers" min="1" max="200" value="40"
+                       class="range-slider" oninput="updateReqRangeValue(this, 'projectedUsersValue')">
+                <div class="range-labels">
+                    <span>1</span>
+                    <output id="projectedUsersValue" class="range-current">40 users</output>
+                    <span>200+</span>
+                </div>
+            </div>
 
-            <tr class="table-section">
-                <td colspan="5"><strong>MEMORY REQUIREMENTS</strong></td>
-            </tr>
-            <tr>
-                <td>Total RAM (MB)</td>
-                <td class="result-value" id="totalMemoryCurrent">4000</td>
-                <td class="result-value" id="totalMemoryProjected">7000</td>
-                <td>-</td>
-                <td>Calculated memory needs</td>
-            </tr>
-            <tr>
-                <td>Recommended RAM (GB)</td>
-                <td class="result-value" id="recommendedRamCurrent">8</td>
-                <td class="result-value" id="recommendedRamProjected">16</td>
-                <td>-</td>
-                <td>Rounded to standard RAM sizes</td>
-            </tr>
+            <div class="form-field" style="margin-bottom: 24px;">
+                <label for="businessType">Business Type</label>
+                <select id="businessType" onchange="calculate()">
+                    <option value="Manufacturing" selected>Manufacturing</option>
+                    <option value="Retail">Retail</option>
+                    <option value="Services">Services</option>
+                    <option value="Consulting">Consulting</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
 
-            <tr class="table-section">
-                <td colspan="5"><strong>STORAGE REQUIREMENTS</strong></td>
-            </tr>
-            <tr>
-                <td>Total Storage (GB)</td>
-                <td class="result-value" id="storageGBCurrent">120</td>
-                <td class="result-value" id="storageGBProjected">200</td>
-                <td>-</td>
-                <td>Includes backups and 30% growth buffer</td>
-            </tr>
+            <div class="form-field" style="margin-bottom: 24px;">
+                <label for="usageIntensity">Usage Intensity</label>
+                <select id="usageIntensity" onchange="calculate()">
+                    <option value="Basic">Basic (CRM + Sales)</option>
+                    <option value="Standard" selected>Standard (+ Accounting)</option>
+                    <option value="Heavy">Heavy (+ MRP/PLM)</option>
+                </select>
+            </div>
 
-            <tr class="table-section">
-                <td colspan="5"><strong>NETWORK REQUIREMENTS</strong></td>
-            </tr>
-            <tr>
-                <td>Minimum Bandwidth (Mbps)</td>
-                <td class="result-value" id="minBandwidthCurrent">45</td>
-                <td class="result-value" id="minBandwidthProjected">75</td>
-                <td class="result-value" id="recommendedBandwidth">100</td>
-                <td>For optimal performance</td>
-            </tr>
-        </table>
+            <div class="range-input-group">
+                <label for="monthlyTransactions">Monthly Transactions</label>
+                <input type="range" id="monthlyTransactions" min="100" max="50000" value="5000" step="100"
+                       class="range-slider" oninput="updateReqRangeValue(this, 'transactionsValue')">
+                <div class="range-labels">
+                    <span>100</span>
+                    <output id="transactionsValue" class="range-current">5000</output>
+                    <span>50K+</span>
+                </div>
+            </div>
 
+            <div class="range-input-group">
+                <label for="fileAttachments">File Storage per User (MB)</label>
+                <input type="range" id="fileAttachments" min="100" max="5000" value="500" step="100"
+                       class="range-slider" oninput="updateReqRangeValue(this, 'fileStorageValue')">
+                <div class="range-labels">
+                    <span>100</span>
+                    <output id="fileStorageValue" class="range-current">500 MB</output>
+                    <span>5000+</span>
+                </div>
+            </div>
+
+            <div class="form-field">
+                <label for="odooVersion">Odoo Version</label>
+                <select id="odooVersion" onchange="calculate()">
+                    <option value="16">16 (LTS)</option>
+                    <option value="17" selected>17 (Current)</option>
+                    <option value="18">18 (Latest)</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Right Panel: Live Results -->
+        <div class="result-panel">
+            <h3>💻 Your Server Requirements</h3>
+
+            <div class="result-card-optimized">
+                <!-- CPU Requirements -->
+                <div style="padding: 24px; border-bottom: 1px solid var(--calc-border-color);">
+                    <h4 style="color: var(--calc-heading-color); margin: 0 0 16px 0; font-size: 16px;">⚙️ CPU Cores</h4>
+                    <div class="price-hero" style="border: none; padding: 16px 0;">
+                        <span class="amount" id="recommendedCpu" style="font-size: 48px;">8</span>
+                        <span class="period" style="font-size: 20px;">cores</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 13px; color: var(--calc-text-color);">
+                        <span>Current: <strong id="totalCpuCurrent">4</strong></span>
+                        <span>12-Month: <strong id="totalCpuProjected">6</strong></span>
+                    </div>
+                </div>
+
+                <!-- RAM Requirements -->
+                <div style="padding: 24px; border-bottom: 1px solid var(--calc-border-color);">
+                    <h4 style="color: var(--calc-heading-color); margin: 0 0 16px 0; font-size: 16px;">🧠 Memory (RAM)</h4>
+                    <div class="price-hero" style="border: none; padding: 16px 0;">
+                        <span class="amount" id="recommendedRamProjected" style="font-size: 48px;">16</span>
+                        <span class="period" style="font-size: 20px;">GB</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 13px; color: var(--calc-text-color);">
+                        <span>Current: <strong id="recommendedRamCurrent">8</strong> GB</span>
+                        <span>Total MB: <strong id="totalMemoryProjected">7000</strong></span>
+                    </div>
+                </div>
+
+                <!-- Storage Requirements -->
+                <div style="padding: 24px; border-bottom: 1px solid var(--calc-border-color);">
+                    <h4 style="color: var(--calc-heading-color); margin: 0 0 16px 0; font-size: 16px;">💾 Storage</h4>
+                    <div class="price-hero" style="border: none; padding: 16px 0;">
+                        <span class="amount" id="storageGBProjected" style="font-size: 48px;">200</span>
+                        <span class="period" style="font-size: 20px;">GB</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 13px; color: var(--calc-text-color);">
+                        <span>Current: <strong id="storageGBCurrent">120</strong> GB</span>
+                        <span>Includes backups + 30% buffer</span>
+                    </div>
+                </div>
+
+                <!-- Network Requirements -->
+                <div style="padding: 24px;">
+                    <h4 style="color: var(--calc-heading-color); margin: 0 0 16px 0; font-size: 16px;">🌐 Network Bandwidth</h4>
+                    <div class="price-hero" style="border: none; padding: 16px 0;">
+                        <span class="amount" id="recommendedBandwidth" style="font-size: 48px;">100</span>
+                        <span class="period" style="font-size: 20px;">Mbps</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 13px; color: var(--calc-text-color);">
+                        <span>Current: <strong id="minBandwidthCurrent">45</strong> Mbps</span>
+                        <span>12-Month: <strong id="minBandwidthProjected">75</strong> Mbps</span>
+                    </div>
+                </div>
+
+                <!-- Risk Assessment -->
+                <div class="algorithm-transparency" style="margin: 0;">
+                    <h4>⚠️ Risk Assessment</h4>
+                    <div class="calc-step">
+                        <span class="calc-step-text">
+                            Under-provisioning Risk: <strong id="riskLevel" style="color: #ffc107;">Medium</strong>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hosting Recommendations Table (Compact) -->
+    <div class="calculator-section" style="margin-top: 32px;">
+        <h3 style="color: var(--calc-heading-color); margin-bottom: 16px;">💰 Hosting Recommendations & Pricing</h3>
         <table class="calc-table">
             <tr class="table-header">
                 <td colspan="2"><strong>HOSTING RECOMMENDATIONS & PRICING</strong></td>
@@ -266,6 +280,36 @@ custom_css: calculator
 </div>
 
 <script>
+// Initialize range sliders
+window.onload = function() {
+    calculate();
+};
+
+function updateReqRangeValue(slider, outputId) {
+    const output = document.getElementById(outputId);
+    const value = slider.value;
+
+    // Update display value based on field type
+    if (outputId.includes('Users')) {
+        output.textContent = value + ' users';
+    } else if (outputId === 'transactionsValue') {
+        output.textContent = parseInt(value).toLocaleString();
+    } else if (outputId === 'fileStorageValue') {
+        output.textContent = value + ' MB';
+    }
+
+    // Update slider progress bar background
+    const percent = ((value - slider.min) / (slider.max - slider.min)) * 100;
+    slider.style.background = `linear-gradient(to right,
+        var(--calc-link-color) 0%,
+        var(--calc-link-color) ${percent}%,
+        #e5e5e5 ${percent}%,
+        #e5e5e5 100%)`;
+
+    // Trigger calculation
+    calculate();
+}
+
 function calculate() {
     // Get input values
     const currentUsers = parseInt(document.getElementById('currentUsers').value) || 25;
