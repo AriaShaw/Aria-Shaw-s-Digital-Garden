@@ -30,11 +30,6 @@
         Get Instant Access — $699
       </a>
 
-      <!-- Secondary CTA -->
-      <a href="#final-cta" class="cta-secondary">
-        → See what's inside the Master Pack
-      </a>
-
       <!-- Trust Signals -->
       <div class="trust-signals">
         <span>🔒 Secure checkout</span>
@@ -84,6 +79,12 @@
       <p class="social-proof-author">Sarah Martinez</p>
       <p class="social-proof-role">Operations Director, BuildCo</p>
     </div>
+  </div>
+
+  <!-- Link to detailed comparison -->
+  <div class="section-container" style="text-align: center; margin-top: 48px;">
+    <p style="color: #727272; font-size: 14px; margin-bottom: 8px;">Need more details before deciding?</p>
+    <a href="/products/" style="color: #267CB9; text-decoration: none; font-size: 16px; font-weight: 500;">→ Compare DIY vs. Hiring Consultant (with case studies & FAQ)</a>
   </div>
 </section>
 
