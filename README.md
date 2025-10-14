@@ -47,6 +47,7 @@ Definitive playbooks for every stage of your Odoo journey—from strategic plann
 <div class="posts-grid-section">
 <div class="posts-grid">
 {% assign post_images = "code.webp,keyboard.webp,electronic.webp,earphone.webp,digital.webp,data center.webp,computer.webp,technology.webp" | split: "," %}
+{% assign post_image_alts = "Python code editor showing colorful syntax highlighting with class methods and function definitions,Close-up of blue PCB circuit board with golden contacts and integrated circuits,Top view of electronic circuit board with colorful resistors capacitors and microchips,Black wireless headphones on vibrant yellow background,Digital network visualization with glowing blue connection lines and nodes on dark background,Data center network switches with blue ethernet cables connected to multiple ports,Hands typing on laptop keyboard in blurred office workspace environment,Glowing cyan circuit board chip architecture in transparent perspective view" | split: "," %}
 {% assign featured_posts = "odoo-self-hosting-guide,odoo-database-backup-restore-guide" | split: "," %}
 {% for post in site.posts %}
   {% assign index = forloop.index0 %}
@@ -58,7 +59,7 @@ Definitive playbooks for every stage of your Odoo journey—from strategic plann
     {% endif %}
   {% endfor %}
   <article class="post-card{% if is_featured %} featured{% endif %}">
-    <img src="/assets/images/{{ post_images[index] }}" alt="{{ post.title }}" class="post-card-image" loading="lazy">
+    <img src="/assets/images/{{ post_images[index] }}" alt="{{ post_image_alts[index] }}" class="post-card-image" loading="lazy">
     <div class="post-card-content">
       <h3 class="post-card-title">
         <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
