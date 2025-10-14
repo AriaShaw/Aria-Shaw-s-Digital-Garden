@@ -140,7 +140,7 @@ aws ec2 associate-route-table \
 
 **Automated Setup Script:**
 
-📥 **[Download: setup-vpc-security-groups.sh](/scripts/aws-security/setup-vpc-security-groups.sh)**
+📥 **[Download: setup-vpc-security-groups.sh](/scripts/setup-vpc-security-groups.sh)**
 
 This script creates a production-ready VPC with:
 - VPC (10.0.0.0/16) with DNS enabled
@@ -151,7 +151,7 @@ This script creates a production-ready VPC with:
 **Quick install:**
 
 ```bash
-wget https://ariashaw.github.io/scripts/aws-security/setup-vpc-security-groups.sh
+wget https://ariashaw.github.io/scripts/setup-vpc-security-groups.sh
 chmod +x setup-vpc-security-groups.sh
 ./setup-vpc-security-groups.sh
 ```
@@ -187,14 +187,14 @@ aws ec2 describe-security-groups --group-ids $DB_SG_ID \
 
 **Automated Setup:**
 
-📥 **[Download: setup-network-acls.sh](/scripts/aws-security/setup-network-acls.sh)**
+📥 **[Download: setup-network-acls.sh](/scripts/setup-network-acls.sh)**
 
 This script creates Network ACLs for public and private subnets with least-privilege rules.
 
 **Quick install:**
 
 ```bash
-wget https://ariashaw.github.io/scripts/aws-security/setup-network-acls.sh
+wget https://ariashaw.github.io/scripts/setup-network-acls.sh
 chmod +x setup-network-acls.sh
 ./setup-network-acls.sh <VPC_ID> <PUBLIC_SUBNET_ID> <PRIVATE_SUBNET_ID>
 ```
@@ -223,15 +223,15 @@ chmod +x setup-network-acls.sh
 
 **Automated Setup:**
 
-📥 **[Download: setup-iam-roles.sh](/scripts/aws-security/setup-iam-roles.sh)**
-📋 **[IAM Policy Template: odoo-ec2-policy.json](/scripts/aws-security/odoo-ec2-policy.json)**
+📥 **[Download: setup-iam-roles.sh](/scripts/setup-iam-roles.sh)**
+📋 **[IAM Policy Template: odoo-ec2-policy.json](/scripts/odoo-ec2-policy.json)**
 
 This script creates IAM policy, role, and instance profile with least-privilege permissions.
 
 **Quick install:**
 
 ```bash
-wget https://ariashaw.github.io/scripts/aws-security/setup-iam-roles.sh
+wget https://ariashaw.github.io/scripts/setup-iam-roles.sh
 chmod +x setup-iam-roles.sh
 ./setup-iam-roles.sh <S3_BUCKET_NAME> <SECRET_NAME> <AWS_ACCOUNT_ID>
 ```
@@ -259,14 +259,14 @@ aws ec2 associate-iam-instance-profile \
 
 **Automated Setup:**
 
-📥 **[Download: setup-secrets-manager.sh](/scripts/aws-security/setup-secrets-manager.sh)**
+📥 **[Download: setup-secrets-manager.sh](/scripts/setup-secrets-manager.sh)**
 
 This script generates a secure password and stores it in AWS Secrets Manager.
 
 **Quick install:**
 
 ```bash
-wget https://ariashaw.github.io/scripts/aws-security/setup-secrets-manager.sh
+wget https://ariashaw.github.io/scripts/setup-secrets-manager.sh
 chmod +x setup-secrets-manager.sh
 ./setup-secrets-manager.sh [SECRET_NAME]
 ```
@@ -510,14 +510,14 @@ aws ec2 create-image \
 
 ### Nginx SSL Configuration
 
-**📋 [Download Production Nginx Configuration Template](/scripts/aws-security/nginx-ssl.conf)**
+**📋 [Download Production Nginx Configuration Template](/scripts/nginx-ssl.conf)**
 
 This template provides A+ SSL Labs rating with security headers.
 
 **Quick download:**
 
 ```bash
-wget https://ariashaw.github.io/scripts/aws-security/nginx-ssl.conf
+wget https://ariashaw.github.io/scripts/nginx-ssl.conf
 sudo cp nginx-ssl.conf /etc/nginx/sites-available/odoo
 # Update: server_name, ssl_certificate paths, upstream odoo port
 sudo ln -s /etc/nginx/sites-available/odoo /etc/nginx/sites-enabled/
@@ -534,14 +534,14 @@ sudo nginx -t && sudo systemctl reload nginx
 
 **Automated Setup:**
 
-📥 **[Download: setup-ssl-certbot.sh](/scripts/aws-security/setup-ssl-certbot.sh)**
+📥 **[Download: setup-ssl-certbot.sh](/scripts/setup-ssl-certbot.sh)**
 
 This script installs Certbot, obtains SSL certificate, and configures auto-renewal.
 
 **Quick install:**
 
 ```bash
-wget https://ariashaw.github.io/scripts/aws-security/setup-ssl-certbot.sh
+wget https://ariashaw.github.io/scripts/setup-ssl-certbot.sh
 chmod +x setup-ssl-certbot.sh
 sudo ./setup-ssl-certbot.sh <DOMAIN> <EMAIL>
 ```
@@ -595,15 +595,15 @@ curl -X GET "https://api.ssllabs.com/api/v3/analyze?host=yourdomain.com&publish=
 
 **Automated Setup:**
 
-📥 **[Download: setup-cloudwatch-monitoring.sh](/scripts/aws-security/setup-cloudwatch-monitoring.sh)**
-📋 **[CloudWatch Config: cloudwatch-config.json](/scripts/aws-security/cloudwatch-config.json)**
+📥 **[Download: setup-cloudwatch-monitoring.sh](/scripts/setup-cloudwatch-monitoring.sh)**
+📋 **[CloudWatch Config: cloudwatch-config.json](/scripts/cloudwatch-config.json)**
 
 This script installs CloudWatch Agent, configures metrics/logs collection, and creates alarms.
 
 **Quick install:**
 
 ```bash
-wget https://ariashaw.github.io/scripts/aws-security/setup-cloudwatch-monitoring.sh
+wget https://ariashaw.github.io/scripts/setup-cloudwatch-monitoring.sh
 chmod +x setup-cloudwatch-monitoring.sh
 sudo ./setup-cloudwatch-monitoring.sh <RDS_IDENTIFIER> <SNS_TOPIC_ARN>
 ```
@@ -623,7 +623,7 @@ sudo ./setup-cloudwatch-monitoring.sh odoo-production-db arn:aws:sns:us-east-1:1
 **Manual configuration download:**
 
 ```bash
-wget https://ariashaw.github.io/scripts/aws-security/cloudwatch-config.json
+wget https://ariashaw.github.io/scripts/cloudwatch-config.json
 sudo mv cloudwatch-config.json /opt/aws/amazon-cloudwatch-agent/etc/config.json
 ```
 
@@ -689,14 +689,14 @@ aws cloudwatch put-metric-alarm \
 
 **Automated Setup:**
 
-📥 **[Download: setup-guardduty.sh](/scripts/aws-security/setup-guardduty.sh)**
+📥 **[Download: setup-guardduty.sh](/scripts/setup-guardduty.sh)**
 
 This script enables GuardDuty and configures alerts for high-severity findings.
 
 **Quick install:**
 
 ```bash
-wget https://ariashaw.github.io/scripts/aws-security/setup-guardduty.sh
+wget https://ariashaw.github.io/scripts/setup-guardduty.sh
 chmod +x setup-guardduty.sh
 ./setup-guardduty.sh <SNS_TOPIC_ARN>
 ```
@@ -848,14 +848,14 @@ SELECT pg_reload_conf();
 
 **Interactive Playbook:**
 
-📥 **[Download: incident-response-playbook.sh](/scripts/aws-security/incident-response-playbook.sh)**
+📥 **[Download: incident-response-playbook.sh](/scripts/incident-response-playbook.sh)**
 
 This interactive script guides you through incident response for common AWS security scenarios.
 
 **Quick download:**
 
 ```bash
-wget https://ariashaw.github.io/scripts/aws-security/incident-response-playbook.sh
+wget https://ariashaw.github.io/scripts/incident-response-playbook.sh
 chmod +x incident-response-playbook.sh
 ./incident-response-playbook.sh
 ```

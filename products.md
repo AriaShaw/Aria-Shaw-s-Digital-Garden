@@ -173,7 +173,7 @@ The proven methodology from 300+ successful migrations—turn 8-hour outages int
 
 **What you get:**
 - Migration risk assessor - identifies the 3 critical errors that destroy DIY migrations
-- Zero-downtime executor - production-tested scripts with automatic rollback
+- Minimal-downtime executor - production-tested scripts with automatic rollback
 - Data validation framework - 47-point quality checklist
 - Custom module migrator - handles the complexity consultants charge $10K to untangle
 - Performance preservation system - maintain speed through schema changes

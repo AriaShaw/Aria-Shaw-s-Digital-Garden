@@ -87,11 +87,11 @@ Definitive playbooks for every stage of your Odoo journey—from strategic plann
 
 ---
 
-## 🧰 The Toolkit: Featured Tools
+## 🧰 Featured Tools & Scripts
 
-Alongside the guides, I build and maintain a collection of open-source scripts and interactive tools. Here are the most powerful tools that solve the hardest business problems:
+Alongside the guides, I build and maintain a collection of open-source scripts and interactive planning tools. Here are the most powerful tools that solve the hardest business problems:
 
-**🧮 Interactive Planning Tools:**
+**🧮 Interactive Calculators:**
 
 * **📊 [Odoo Requirements Calculator](/toolkit/odoo-requirements-calculator/)**
     *Skip the guesswork on server sizing. Calculate exact CPU, RAM, and storage requirements based on real data from 500+ production deployments. Prevents costly under-provisioning.*
@@ -99,7 +99,7 @@ Alongside the guides, I build and maintain a collection of open-source scripts a
 * **🏆 [Odoo Hosting Decision Calculator](/toolkit/odoo-hosting-calculator/)**
     *End hosting confusion with personalized recommendations based on your technical expertise, budget, and business needs. Built from 6 years of hosting experience.*
 
-**🛠️ Battle-Tested Scripts:**
+**🛠️ Essential Scripts:**
 
 * **🚨 [Migration Risk Assessor](/scripts/migration_assessment.sh)**
     *Prevents disaster by analyzing your database for the 3 critical errors that destroy 90% of DIY migrations. One script that could save you weeks of downtime.*
@@ -113,7 +113,7 @@ Alongside the guides, I build and maintain a collection of open-source scripts a
 * **📋 [Migration Audit Trail System](/scripts/migration_audit_trail.py)**
     *Enterprise-grade compliance logging that satisfies auditors and regulators. Every action tracked with full context and data sensitivity classification.*
 
-**[→ Explore the Complete Toolkit Library...](/toolkit/)**
+**[→ Browse All 70+ Production Scripts](/scripts/)**
 
 ---
 
