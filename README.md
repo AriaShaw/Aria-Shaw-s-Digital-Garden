@@ -33,7 +33,7 @@
       <!-- Trust Signals -->
       <div class="trust-signals">
         <span>🔒 Secure checkout</span>
-        <span>30-day money-back</span>
+        <span>14-day money-back</span>
         <span>Lifetime updates</span>
       </div>
     </div>
@@ -71,13 +71,23 @@
   <div class="social-proof-grid">
     <div class="social-proof-card">
       <p class="social-proof-quote">"Changed how we think about Odoo deployment. These aren't tutorials—they're production protocols. Saved us $80,000 in consulting fees and we now have complete control over our infrastructure."</p>
-      <p class="social-proof-author">Adrian Keller</p>
-      <p class="social-proof-role">CTO, TechFlow Manufacturing</p>
+      <div class="testimonial-author">
+        <img src="/assets/images/Adrian Keller.webp" alt="Adrian Keller" class="testimonial-photo no-lightbox" loading="lazy">
+        <div class="testimonial-info">
+          <p class="social-proof-author">Adrian Keller</p>
+          <p class="social-proof-role">CTO, TechFlow Manufacturing</p>
+        </div>
+      </div>
     </div>
     <div class="social-proof-card">
       <p class="social-proof-quote">"Finally, an Odoo guide that doesn't assume you're a Linux wizard. Clear steps, actual troubleshooting, zero vendor speak. The migration module alone paid for itself—zero downtime on our cutover."</p>
-      <p class="social-proof-author">Sarah Martinez</p>
-      <p class="social-proof-role">Operations Director, BuildCo</p>
+      <div class="testimonial-author">
+        <img src="/assets/images/Sarah Martinez.webp" alt="Sarah Martinez" class="testimonial-photo no-lightbox" loading="lazy">
+        <div class="testimonial-info">
+          <p class="social-proof-author">Sarah Martinez</p>
+          <p class="social-proof-role">Operations Director, BuildCo</p>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -153,30 +163,28 @@
 <!-- Final CTA Section -->
 <section class="final-cta-section" id="final-cta">
   <div class="final-cta-content">
-    <h2>Deploy Odoo with Confidence</h2>
+    <h2>Stop Renting Expertise. Own It Forever.</h2>
 
-    <p style="font-size: 16px; color: #666; margin: 0 0 24px 0;">Complete toolkit for digital sovereignty</p>
-
-    <ul class="final-cta-features">
-      <li>5 Integrated Modules covering strategy to operations</li>
-      <li>68+ Production-Ready Scripts (bash, Python, configs)</li>
-      <li>2,000+ Pages of Battle-Tested Documentation</li>
-      <li>Zero Vendor Lock-In—you own everything</li>
-      <li>One-Time Payment—no subscriptions, no recurring fees</li>
-    </ul>
-
-    <div class="final-cta-divider"></div>
-
-    <p class="final-cta-price">$699</p>
-    <p class="final-cta-price-label">One-time investment. Lifetime access.</p>
+    <p class="final-cta-subtitle">Join 500+ businesses who chose digital sovereignty over consultant dependency.</p>
 
     <a href="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty" class="cta-primary-large" onclick="gtag('event', 'cta_click', {'event_category': 'CTA', 'event_label': 'Final CTA', 'cta_location': 'final', 'destination': 'gumroad'});">
-      Get Instant Access Now
+      Get Instant Access — $699
     </a>
 
-    <p class="final-cta-guarantee">
-      30-day money-back guarantee
-    </p>
+    <div class="final-cta-guarantees">
+      <div class="guarantee-item">
+        <span class="guarantee-icon">🛡️</span>
+        <span class="guarantee-text">14-day money-back guarantee</span>
+      </div>
+      <div class="guarantee-item">
+        <span class="guarantee-icon">👥</span>
+        <span class="guarantee-text">Trusted by 500+ businesses</span>
+      </div>
+      <div class="guarantee-item">
+        <span class="guarantee-icon">🔄</span>
+        <span class="guarantee-text">Free lifetime updates</span>
+      </div>
+    </div>
   </div>
 </section>
 
