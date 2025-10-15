@@ -6,46 +6,77 @@ breadcrumb_title: Products
 permalink: /products/
 ---
 
-# Odoo Consultant Alternative: Complete DIY Toolkit for $699 (vs. $50K-$200K)
+<div style="text-align: center; max-width: 900px; margin: 0 auto 60px auto;">
 
-**Replace expensive consultants with professional-grade tools you own forever**
+  <!-- Main Headline - Shorter, Punchier -->
+  <h1 style="font-size: 48px; font-weight: 700; line-height: 1.2; color: #222; margin: 0 0 24px 0;">
+    Deploy Odoo Like a $200K Consultant—<br>Without the $200K Fee
+  </h1>
 
-Stop paying consultants $200/hour for knowledge you could own. Get the complete DIY toolkit that takes you from strategic planning through daily operations—everything you need to deploy, protect, and optimize Odoo with confidence.
+  <!-- Subtitle - Single Line -->
+  <p style="font-size: 20px; line-height: 1.5; color: #555; margin: 0 0 48px 0;">
+    The complete DIY blueprint for technical teams who want total control. Build enterprise-grade Odoo without permanent consultant dependency.
+  </p>
 
-**68+ production-ready tools** • **5 integrated modules** • **2,000+ pages of documentation** • **Zero vendor lock-in**
-
----
-
-**Quick Navigation:**
-[Why DIY vs. Consultant?](#why-choose-diy-tools-over-hiring-an-odoo-consultant) • [What's Included](#what-you-get-in-the-master-pack) • [Case Studies](#proven-results-how-businesses-save-with-the-master-pack) • [5 Modules](#the-five-modules) • [Pricing](#real-value-comparison) • [FAQ](#frequently-asked-questions) • [Guarantee](#zero-risk-guarantee)
-
-<!-- Hero CTA Section -->
-<section class="hero-conversion-section" style="padding: 48px 20px; background: #f6f8fa; border-radius: 8px; margin: 40px 0;">
-  <div style="max-width: 600px; margin: 0 auto; text-align: center;">
-
-    <!-- Price Comparison -->
-    <div class="hero-price-compare" style="display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 32px; padding: 24px; background: linear-gradient(135deg, #f0f7ff 0%, #ffffff 100%); border: 2px solid #e3f2fd; border-radius: 8px;">
-      <span style="font-size: 20px; color: #666; text-decoration: line-through;">$50,000+ consulting</span>
-      <span style="font-size: 32px; color: #999;">→</span>
-      <span style="font-size: 48px; color: #22863a; font-weight: 700;">$699</span>
-      <span style="font-size: 16px; color: #666;">one-time</span>
+  <!-- Stats Bar - Visual, Not Bullet Points -->
+  <div style="display: flex; justify-content: center; gap: 48px; flex-wrap: wrap; margin-bottom: 48px;">
+    <div style="text-align: center;">
+      <div style="font-size: 36px; font-weight: 700; color: #267CB9;">68+</div>
+      <div style="font-size: 14px; color: #727272; margin-top: 4px;">Production Tools</div>
     </div>
-
-    <!-- Primary CTA -->
-    <a href="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty" class="cta-primary-large" style="background: linear-gradient(135deg, #267CB9 0%, #1e6ba6 100%); color: #fff; padding: 20px 40px; font-size: 18px; font-weight: 600; text-decoration: none; display: inline-block; border-radius: 6px; box-shadow: 0 4px 12px rgba(38, 124, 185, 0.25); transition: all 0.2s ease;" onclick="gtag('event', 'cta_click', {'event_category': 'CTA', 'event_label': 'Get Instant Access - Hero', 'cta_location': 'products-hero', 'destination': 'gumroad'});">
-      Get Instant Access — $699
-    </a>
-
-    <!-- Trust Signals -->
-    <div style="margin-top: 24px; font-size: 14px; color: #666; display: flex; justify-content: center; gap: 32px; flex-wrap: wrap;">
-      <span>14-day money-back guarantee</span>
-      <span style="color: #e5e5e5;">•</span>
-      <span>Trusted by 500+ businesses</span>
-      <span style="color: #e5e5e5;">•</span>
-      <span>Free lifetime updates</span>
+    <div style="text-align: center;">
+      <div style="font-size: 36px; font-weight: 700; color: #267CB9;">5</div>
+      <div style="font-size: 14px; color: #727272; margin-top: 4px;">Integrated Modules</div>
+    </div>
+    <div style="text-align: center;">
+      <div style="font-size: 36px; font-weight: 700; color: #267CB9;">2,000+</div>
+      <div style="font-size: 14px; color: #727272; margin-top: 4px;">Pages of Docs</div>
+    </div>
+    <div style="text-align: center;">
+      <div style="font-size: 36px; font-weight: 700; color: #267CB9;">$0</div>
+      <div style="font-size: 14px; color: #727272; margin-top: 4px;">Vendor Lock-in</div>
     </div>
   </div>
-</section>
+
+  <!-- Price Comparison - Larger, More Visual -->
+  <div style="display: flex; align-items: center; justify-content: center; gap: 24px; margin-bottom: 40px; padding: 32px; background: linear-gradient(135deg, #f0f7ff 0%, #ffffff 100%); border: 2px solid #e3f2fd; border-radius: 12px; flex-wrap: wrap;">
+    <span style="font-size: 24px; color: #999; text-decoration: line-through;">$50,000+ consulting</span>
+    <span style="font-size: 40px; color: #267CB9;">→</span>
+    <div style="text-align: center;">
+      <div style="font-size: 56px; color: #22863a; font-weight: 700; line-height: 1;">$699</div>
+      <div style="font-size: 16px; color: #727272; margin-top: 4px;">one-time payment</div>
+    </div>
+  </div>
+
+  <!-- Primary CTA -->
+  <a href="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty" class="cta-primary-large" style="background: linear-gradient(135deg, #267CB9 0%, #1e6ba6 100%); color: #fff; padding: 20px 48px; font-size: 18px; font-weight: 600; text-decoration: none; display: inline-block; border-radius: 8px; box-shadow: 0 4px 16px rgba(38, 124, 185, 0.3); transition: all 0.2s ease; margin-bottom: 24px;" onclick="gtag('event', 'cta_click', {'event_category': 'CTA', 'event_label': 'Get Instant Access - Hero', 'cta_location': 'products-hero', 'destination': 'gumroad'});">
+    Get Instant Access — $699
+  </a>
+
+  <!-- Trust Signals -->
+  <div style="font-size: 14px; color: #727272; display: flex; justify-content: center; gap: 32px; flex-wrap: wrap;">
+    <span>14-day money-back guarantee</span>
+    <span style="color: #e5e5e5;">•</span>
+    <span>Trusted by 500+ businesses</span>
+    <span style="color: #e5e5e5;">•</span>
+    <span>Free lifetime updates</span>
+  </div>
+
+</div>
+
+<!-- Quick Navigation -->
+<div style="background: #fafafa; border-radius: 8px; padding: 20px; text-align: center; margin-bottom: 60px;">
+  <span style="font-size: 14px; font-weight: 600; color: #555; margin-right: 16px;">Quick Navigation:</span>
+  <a href="#why-choose-diy-tools-over-hiring-an-odoo-consultant" style="color: #267CB9; text-decoration: none; font-size: 14px; margin: 0 12px;">Why DIY?</a>
+  <span style="color: #e5e5e5;">•</span>
+  <a href="#proven-results-how-businesses-save-with-the-master-pack" style="color: #267CB9; text-decoration: none; font-size: 14px; margin: 0 12px;">Case Studies</a>
+  <span style="color: #e5e5e5;">•</span>
+  <a href="#the-five-modules" style="color: #267CB9; text-decoration: none; font-size: 14px; margin: 0 12px;">5 Modules</a>
+  <span style="color: #e5e5e5;">•</span>
+  <a href="#frequently-asked-questions" style="color: #267CB9; text-decoration: none; font-size: 14px; margin: 0 12px;">FAQ</a>
+  <span style="color: #e5e5e5;">•</span>
+  <a href="#zero-risk-guarantee" style="color: #267CB9; text-decoration: none; font-size: 14px; margin: 0 12px;">Guarantee</a>
+</div>
 
 ---
 
@@ -74,68 +105,173 @@ Most businesses face a difficult choice when implementing Odoo: pay $50,000-$200
 
 ### When to Choose What: Decision Guide
 
-**Choose the DIY Master Pack if you:**
-- Have basic Linux command-line comfort (can SSH and run commands)
-- Want to build permanent in-house Odoo expertise
-- Budget is $5,000-$50,000 range (toolkit saves $84,000-$199,000)
-- Need complete control over your system without dependencies
-- Prefer learning by doing with comprehensive guides
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin: 40px 0;">
 
-**Consider hiring a consultant if you:**
-- Have absolutely zero technical capability and can't build any
-- Budget exceeds $100,000 and speed matters more than cost savings
-- Need extensive custom module development beyond configuration
-- Want completely hands-off implementation (but sacrifice knowledge)
+  <!-- DIY Path -->
+  <div style="background: linear-gradient(135deg, #f0f7ff 0%, #ffffff 100%); border: 2px solid #267CB9; border-radius: 8px; padding: 32px; position: relative;">
+    <div style="position: absolute; top: -16px; left: 24px; background: #267CB9; color: #fff; padding: 6px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;">Recommended</div>
+    <h4 style="margin: 0 0 20px 0; font-size: 20px; font-weight: 600; color: #267CB9;">✓ Choose DIY Master Pack</h4>
+    <ul style="list-style: none; padding: 0; margin: 0;">
+      <li style="margin-bottom: 12px; padding-left: 24px; position: relative; font-size: 15px; line-height: 1.6; color: #222;">
+        <span style="position: absolute; left: 0; color: #267CB9; font-weight: 700;">✓</span>
+        Basic Linux command-line comfort (can SSH and run commands)
+      </li>
+      <li style="margin-bottom: 12px; padding-left: 24px; position: relative; font-size: 15px; line-height: 1.6; color: #222;">
+        <span style="position: absolute; left: 0; color: #267CB9; font-weight: 700;">✓</span>
+        Want to build permanent in-house expertise
+      </li>
+      <li style="margin-bottom: 12px; padding-left: 24px; position: relative; font-size: 15px; line-height: 1.6; color: #222;">
+        <span style="position: absolute; left: 0; color: #267CB9; font-weight: 700;">✓</span>
+        Budget $5K-$50K range (saves $84K-$199K)
+      </li>
+      <li style="margin-bottom: 12px; padding-left: 24px; position: relative; font-size: 15px; line-height: 1.6; color: #222;">
+        <span style="position: absolute; left: 0; color: #267CB9; font-weight: 700;">✓</span>
+        Need complete control without dependencies
+      </li>
+      <li style="margin-bottom: 0; padding-left: 24px; position: relative; font-size: 15px; line-height: 1.6; color: #222;">
+        <span style="position: absolute; left: 0; color: #267CB9; font-weight: 700;">✓</span>
+        Prefer learning by doing with comprehensive guides
+      </li>
+    </ul>
+  </div>
 
-**Best of both worlds:** Many businesses use the Master Pack to build core competency, then hire consultants only for specific complex customizations—reducing consulting spend by 70-90%.
+  <!-- Consultant Path -->
+  <div style="background: #fafafa; border: 1px solid #e5e5e5; border-radius: 8px; padding: 32px;">
+    <h4 style="margin: 0 0 20px 0; font-size: 20px; font-weight: 600; color: #555;">Consider Hiring Consultant</h4>
+    <ul style="list-style: none; padding: 0; margin: 0;">
+      <li style="margin-bottom: 12px; padding-left: 24px; position: relative; font-size: 15px; line-height: 1.6; color: #555;">
+        <span style="position: absolute; left: 0; color: #999;">→</span>
+        Absolutely zero technical capability and can't build any
+      </li>
+      <li style="margin-bottom: 12px; padding-left: 24px; position: relative; font-size: 15px; line-height: 1.6; color: #555;">
+        <span style="position: absolute; left: 0; color: #999;">→</span>
+        Budget exceeds $100,000 and speed matters more than cost
+      </li>
+      <li style="margin-bottom: 12px; padding-left: 24px; position: relative; font-size: 15px; line-height: 1.6; color: #555;">
+        <span style="position: absolute; left: 0; color: #999;">→</span>
+        Need extensive custom module development beyond configuration
+      </li>
+      <li style="margin-bottom: 0; padding-left: 24px; position: relative; font-size: 15px; line-height: 1.6; color: #555;">
+        <span style="position: absolute; left: 0; color: #999;">→</span>
+        Want completely hands-off implementation (sacrifice knowledge)
+      </li>
+    </ul>
+  </div>
+
+</div>
+
+<div style="background: linear-gradient(135deg, #fff9e6 0%, #ffffff 100%); border-left: 4px solid #ffc107; border-radius: 8px; padding: 24px; margin-top: 32px;">
+  <p style="margin: 0; font-size: 16px; line-height: 1.6; color: #222;">
+    <strong style="color: #d97706;">Hybrid Approach:</strong> Many businesses use the Master Pack for 80% of implementation (saving 80-90% on costs), then hire consultants only for specific complex customizations. This builds capability while leveraging expert help where truly needed.
+  </p>
+</div>
 
 ---
 
 ## What You Get in the Master Pack
 
-<ul class="feature-list">
-  <li><strong>5 integrated modules</strong> covering strategy → deployment → migration → protection → operations</li>
-  <li><strong>68+ production-ready tools</strong> (Excel calculators, bash scripts, configuration templates)</li>
-  <li><strong>2,000+ pages</strong> of comprehensive documentation and playbooks</li>
-  <li><strong>Zero vendor lock-in</strong> - you own the files forever, no subscriptions</li>
-  <li><strong>Free updates for life</strong> - continuous improvements and new tools</li>
-</ul>
-
----
-
-## The Investment
-
-**$699 one-time payment**
-
-vs. $50,000-$200,000 for equivalent consulting services
-
-That's less than the cost of a single day with a senior Odoo consultant—but you get the complete playbook they'd charge you to build over months.
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin: 40px 0;">
+  <div style="background: linear-gradient(135deg, #f6f8fa 0%, #ffffff 100%); border: 1px solid #e5e5e5; border-radius: 8px; padding: 28px; text-align: center;">
+    <div style="width: 48px; height: 48px; margin: 0 auto 16px auto; background: #267CB9; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 24px; font-weight: 700;">5</div>
+    <div style="font-size: 18px; font-weight: 600; color: #222; margin-bottom: 8px;">Integrated Modules</div>
+    <div style="font-size: 14px; color: #727272; line-height: 1.4;">Strategy → Deployment → Migration → Protection → Operations</div>
+  </div>
+  <div style="background: linear-gradient(135deg, #f6f8fa 0%, #ffffff 100%); border: 1px solid #e5e5e5; border-radius: 8px; padding: 28px; text-align: center;">
+    <div style="width: 48px; height: 48px; margin: 0 auto 16px auto; background: #267CB9; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 20px; font-weight: 700;">68+</div>
+    <div style="font-size: 18px; font-weight: 600; color: #222; margin-bottom: 8px;">Production Tools</div>
+    <div style="font-size: 14px; color: #727272; line-height: 1.4;">Excel calculators, bash scripts, configuration templates</div>
+  </div>
+  <div style="background: linear-gradient(135deg, #f6f8fa 0%, #ffffff 100%); border: 1px solid #e5e5e5; border-radius: 8px; padding: 28px; text-align: center;">
+    <div style="width: 48px; height: 48px; margin: 0 auto 16px auto; background: #267CB9; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 16px; font-weight: 700;">2K+</div>
+    <div style="font-size: 18px; font-weight: 600; color: #222; margin-bottom: 8px;">Documentation Pages</div>
+    <div style="font-size: 14px; color: #727272; line-height: 1.4;">Comprehensive playbooks and guides</div>
+  </div>
+  <div style="background: linear-gradient(135deg, #f6f8fa 0%, #ffffff 100%); border: 1px solid #e5e5e5; border-radius: 8px; padding: 28px; text-align: center;">
+    <div style="width: 48px; height: 48px; margin: 0 auto 16px auto; background: #267CB9; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 24px; font-weight: 700;">$0</div>
+    <div style="font-size: 18px; font-weight: 600; color: #222; margin-bottom: 8px;">Vendor Lock-in</div>
+    <div style="font-size: 14px; color: #727272; line-height: 1.4;">You own the files forever, no subscriptions</div>
+  </div>
+  <div style="background: linear-gradient(135deg, #f6f8fa 0%, #ffffff 100%); border: 1px solid #e5e5e5; border-radius: 8px; padding: 28px; text-align: center;">
+    <div style="width: 48px; height: 48px; margin: 0 auto 16px auto; background: #267CB9; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 24px; font-weight: 700;">∞</div>
+    <div style="font-size: 18px; font-weight: 600; color: #222; margin-bottom: 8px;">Lifetime Updates</div>
+    <div style="font-size: 14px; color: #727272; line-height: 1.4;">Continuous improvements and new tools</div>
+  </div>
+</div>
 
 ---
 
 ## Proven Results: How Businesses Save with the Master Pack
 
-**Trusted by 500+ businesses worldwide** • **Tested on 300+ production Odoo deployments** • **Based on 6+ years of implementation experience**
+<div style="background: linear-gradient(135deg, #f0f7ff 0%, #ffffff 100%); border-radius: 8px; padding: 32px; text-align: center; margin-bottom: 48px;">
+  <div style="display: flex; justify-content: center; gap: 48px; flex-wrap: wrap;">
+    <div>
+      <div style="font-size: 42px; font-weight: 700; color: #267CB9;">500+</div>
+      <div style="font-size: 14px; color: #555; margin-top: 4px;">Businesses Worldwide</div>
+    </div>
+    <div>
+      <div style="font-size: 42px; font-weight: 700; color: #267CB9;">300+</div>
+      <div style="font-size: 14px; color: #555; margin-top: 4px;">Production Deployments</div>
+    </div>
+    <div>
+      <div style="font-size: 42px; font-weight: 700; color: #267CB9;">6+</div>
+      <div style="font-size: 14px; color: #555; margin-top: 4px;">Years Experience</div>
+    </div>
+  </div>
+</div>
 
 ### Real Cost Savings: Anonymized Case Studies
 
-**Case Study 1: 50-User Manufacturing Company**
-- **Consultant Quote:** $120,000 for full implementation
-- **Master Pack Approach:** $699 toolkit + 12 weeks internal effort
-- **Total Savings:** $119,301 (99.4% cost reduction)
-- **Outcome:** In-house team now confidently maintains and extends system without external dependencies
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; margin: 40px 0;">
 
-**Case Study 2: 25-User Retail Business**
-- **Consultant Quote:** $65,000 for deployment + migration
-- **Master Pack Approach:** $699 toolkit + 8 weeks part-time work
-- **Total Savings:** $64,301 (98.9% cost reduction)
-- **Outcome:** Completed migration with zero downtime, team trained to handle future upgrades independently
+  <!-- Case Study 1 -->
+  <div style="background: #ffffff; border: 2px solid #e5e5e5; border-radius: 8px; padding: 28px; transition: transform 0.2s ease, box-shadow 0.2s ease;">
+    <div style="font-size: 14px; font-weight: 600; color: #267CB9; margin-bottom: 12px;">50-User Manufacturing Company</div>
+    <div style="margin-bottom: 20px;">
+      <div style="font-size: 36px; font-weight: 700; color: #22863a; line-height: 1;">$119,301</div>
+      <div style="font-size: 14px; color: #727272; margin-top: 4px;">saved (99.4% cost reduction)</div>
+    </div>
+    <div style="font-size: 14px; color: #555; line-height: 1.6; margin-bottom: 16px;">
+      <div style="margin-bottom: 8px;"><strong>Quote:</strong> $120,000 consulting</div>
+      <div style="margin-bottom: 8px;"><strong>Used:</strong> $699 toolkit + 12 weeks internal</div>
+    </div>
+    <div style="font-size: 13px; color: #727272; line-height: 1.5; font-style: italic;">
+      In-house team now maintains system without external dependencies
+    </div>
+  </div>
 
-**Case Study 3: 100-User Services Company**
-- **Consultant Fees:** $180,000 implementation + $4,000/month retainer
-- **Master Pack Approach:** $699 toolkit + hired consultant for 40 hours custom development only
-- **Total Savings:** $172,301 Year 1 + $48,000/year ongoing (96% reduction)
-- **Outcome:** Built internal DevOps capability, uses consultants only for complex custom features
+  <!-- Case Study 2 -->
+  <div style="background: #ffffff; border: 2px solid #e5e5e5; border-radius: 8px; padding: 28px; transition: transform 0.2s ease, box-shadow 0.2s ease;">
+    <div style="font-size: 14px; font-weight: 600; color: #267CB9; margin-bottom: 12px;">25-User Retail Business</div>
+    <div style="margin-bottom: 20px;">
+      <div style="font-size: 36px; font-weight: 700; color: #22863a; line-height: 1;">$64,301</div>
+      <div style="font-size: 14px; color: #727272; margin-top: 4px;">saved (98.9% cost reduction)</div>
+    </div>
+    <div style="font-size: 14px; color: #555; line-height: 1.6; margin-bottom: 16px;">
+      <div style="margin-bottom: 8px;"><strong>Quote:</strong> $65,000 consulting</div>
+      <div style="margin-bottom: 8px;"><strong>Used:</strong> $699 toolkit + 8 weeks part-time</div>
+    </div>
+    <div style="font-size: 13px; color: #727272; line-height: 1.5; font-style: italic;">
+      Zero-downtime migration, team trained for future upgrades
+    </div>
+  </div>
+
+  <!-- Case Study 3 -->
+  <div style="background: #ffffff; border: 2px solid #e5e5e5; border-radius: 8px; padding: 28px; transition: transform 0.2s ease, box-shadow 0.2s ease;">
+    <div style="font-size: 14px; font-weight: 600; color: #267CB9; margin-bottom: 12px;">100-User Services Company</div>
+    <div style="margin-bottom: 20px;">
+      <div style="font-size: 36px; font-weight: 700; color: #22863a; line-height: 1;">$172,301</div>
+      <div style="font-size: 14px; color: #727272; margin-top: 4px;">saved Year 1 + $48K/yr ongoing</div>
+    </div>
+    <div style="font-size: 14px; color: #555; line-height: 1.6; margin-bottom: 16px;">
+      <div style="margin-bottom: 8px;"><strong>Quote:</strong> $180K + $4K/month retainer</div>
+      <div style="margin-bottom: 8px;"><strong>Used:</strong> $699 + 40hrs consultant only</div>
+    </div>
+    <div style="font-size: 13px; color: #727272; line-height: 1.5; font-style: italic;">
+      Built DevOps capability, uses consultants only for custom features
+    </div>
+  </div>
+
+</div>
 
 <!-- Inline CTA after Case Studies -->
 <div style="background: #f0f7ff; border-left: 4px solid #267CB9; padding: 32px; margin: 48px 0; border-radius: 6px; text-align: center;">
