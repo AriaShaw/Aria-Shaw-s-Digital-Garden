@@ -1651,7 +1651,7 @@ Cost savings: $35/month
 Trade-off: Requires 4+ hours monthly maintenance
 ```
 
-**Access:** [Hosting Decision Calculator (Interactive Web Tool)](https://ariashaw.github.io/toolkit/odoo-hosting-calculator)
+**Access:** [Odoo Hosting Advisor (Interactive Web Tool)](https://ariashaw.github.io/toolkit/odoo-hosting-advisor)
 
 ---
 
@@ -1764,7 +1764,7 @@ For your convenience, here are all the exclusive resources mentioned in this gui
 **Planning & Assessment:**
 - [Odoo Requirements Calculator (CSV)](https://ariashaw.github.io/resources/odoo-requirements-calculator.csv) 
 | [Web Version](https://ariashaw.github.io/toolkit/odoo-requirements-calculator)
-- [Hosting Decision Calculator (Web Tool)](https://ariashaw.github.io/toolkit/odoo-hosting-calculator)
+- [Odoo Hosting Advisor (Web Tool)](https://ariashaw.github.io/toolkit/odoo-hosting-advisor)
 
 **Implementation & Deployment:**
 - [Production Environment Checklist (PDF)](https://ariashaw.github.io/resources/odoo-production-checklist.pdf)

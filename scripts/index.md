@@ -212,7 +212,7 @@ Open-source, production-tested automation scripts for self-hosting Odoo. Every s
 Before running scripts, calculate your requirements:
 
 - **[Odoo Requirements Calculator](/toolkit/odoo-requirements-calculator/)** - Calculate exact CPU, RAM, storage needs
-- **[Hosting Decision Calculator](/toolkit/odoo-hosting-calculator/)** - Get personalized hosting recommendations
+- **[Odoo Hosting Advisor](/toolkit/odoo-hosting-advisor/)** - Get personalized hosting recommendations
 
 ---
 

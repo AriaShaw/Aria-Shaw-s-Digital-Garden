@@ -490,8 +490,8 @@ Most businesses face a difficult choice when implementing Odoo: pay $50,000-$200
         <span style="font-size: 13px; color: #727272; display: block; margin-top: 4px;">Calculate exact hardware specs needed</span>
       </div>
       <div>
-        <a href="/toolkit/odoo-hosting-calculator/" style="color: #222; text-decoration: none; font-weight: 500; display: block; line-height: 1.5;">Odoo Hosting Decision Calculator</a>
-        <span style="font-size: 13px; color: #727272; display: block; margin-top: 4px;">Find your optimal hosting solution</span>
+        <a href="/toolkit/odoo-hosting-advisor/" style="color: #222; text-decoration: none; font-weight: 500; display: block; line-height: 1.5;">Odoo Hosting Advisor</a>
+        <span style="font-size: 13px; color: #727272; display: block; margin-top: 4px;">Find your optimal hosting strategy</span>
       </div>
     </div>
   </div>

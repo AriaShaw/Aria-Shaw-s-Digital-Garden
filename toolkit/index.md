@@ -40,7 +40,7 @@ Professional calculators built from 500+ production deployments. Use directly in
 - Risk assessment for each option
 - TCO calculator with hidden costs
 
-**[Launch Calculator →](/toolkit/odoo-hosting-calculator/)**
+**[Launch Hosting Advisor →](/toolkit/odoo-hosting-advisor/)**
 
 ---
 
