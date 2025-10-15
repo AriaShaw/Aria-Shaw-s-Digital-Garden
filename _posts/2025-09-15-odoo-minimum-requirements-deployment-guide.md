@@ -1616,39 +1616,49 @@ A battle-tested suite of 7 monitoring scripts that I've refined through years of
 
 ---
 
-### 🎁 Exclusive Resource #4: Hosting Decision Calculator
+### 🎁 Exclusive Resource #4: Odoo Hosting Advisor
 
 **The Problem It Solves:**
-Everyone asks me "Which hosting should I choose?" Instead of giving generic advice, I built this calculator that considers your specific situation and budget.
+Most businesses choose Odoo hosting backward—they focus on price, then discover hidden costs, complexity, or vendor lock-in months later. This advisor matches your *actual* constraints to the hosting model with the lowest true total cost of ownership.
 
 **How It Works:**
-The calculator weighs 12 factors:
-- Team technical expertise level
-- Budget constraints and TCO considerations
-- Growth projections and scaling requirements
-- Compliance and security needs
-- Geographic distribution requirements
-- Integration complexity needs
+The Hosting Advisor analyzes 6 critical decision factors:
+- **Technical Capacity:** Who manages your IT infrastructure today?
+- **Budget Reality:** Monthly spend including staff time opportunity cost
+- **User Count:** Current and projected active users
+- **Growth Trajectory:** Where will your business be in 18 months?
+- **Biggest Fear:** What keeps you up at night about hosting?
+- **Uptime Requirements:** How critical is 24/7 availability?
+
+**What You Get:**
+- **3-Year TCO Calculation:** True total cost including hidden expenses (admin time, bandwidth overages, storage growth)
+- **Risk Disclosure:** Honest warnings about what could go wrong with each option
+- **Comparison Table:** Side-by-side view of Self-Hosted VPS, Managed Hosting, and Odoo.sh
+- **Exit Strategy:** Migration complexity and cost estimates before you commit
+- **Alternative Scenarios:** "What if I chose differently?" analysis
 
 **Sample Output:**
 ```
-Based on your inputs:
-- Team Size: 25 users
-- Technical Expertise: Moderate
-- Budget: $100/month
-- Growth: 50% annually
+Your Recommended Infrastructure: Managed Odoo Hosting
 
-Recommendation: Cloudways Managed DigitalOcean (Score: 94/100)
+Why This Fits You:
+Based on your limited IT capacity and need for predictable costs,
+managed hosting gives you professional-grade infrastructure without
+the 2AM emergencies. Turnkey setup, automatic backups, and expert support.
 
-Reasoning:
-✓ Fits within budget with room for growth
-✓ No DevOps expertise required
-✓ Can handle projected user growth for 18 months
-⚠ May need migration to dedicated servers by month 20
+3-Year Total Cost of Ownership: $14,400
+- Monthly hosting: $350
+- Setup fee: $500 (one-time)
+- Admin overhead: ~$1,800 (36 months @ 1 hr/month)
 
-Alternative: DigitalOcean Self-Managed (Score: 78/100)
-Cost savings: $35/month
-Trade-off: Requires 4+ hours monthly maintenance
+What Could Go Wrong:
+⚠ Bandwidth overages above 1TB/month (~400GB expected for your users)
+⚠ Storage growth: Budget for upgrades by Year 2
+⚠ Support tiers: Confirm SLA includes urgent response
+
+Exit Strategy:
+Migration complexity: Moderate (4-8 hours)
+Estimated cost: $500-1,200 (DIY) or $2,000-4,000 (consultant-led)
 ```
 
 **Access:** [Odoo Hosting Advisor (Interactive Web Tool)](https://ariashaw.github.io/toolkit/odoo-hosting-advisor)
