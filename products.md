@@ -37,10 +37,12 @@ Stop paying consultants $200/hour for knowledge you could own. Get the complete 
     </a>
 
     <!-- Trust Signals -->
-    <div style="margin-top: 24px; font-size: 14px; color: #666;">
-      <span style="margin: 0 12px;">🛡️ 14-day money-back guarantee</span>
-      <span style="margin: 0 12px;">👥 Trusted by 500+ businesses</span>
-      <span style="margin: 0 12px;">🔄 Free lifetime updates</span>
+    <div style="margin-top: 24px; font-size: 14px; color: #666; display: flex; justify-content: center; gap: 32px; flex-wrap: wrap;">
+      <span>14-day money-back guarantee</span>
+      <span style="color: #e5e5e5;">•</span>
+      <span>Trusted by 500+ businesses</span>
+      <span style="color: #e5e5e5;">•</span>
+      <span>Free lifetime updates</span>
     </div>
   </div>
 </section>
@@ -72,20 +74,20 @@ Most businesses face a difficult choice when implementing Odoo: pay $50,000-$200
 
 ### When to Choose What: Decision Guide
 
-**✅ Choose the DIY Master Pack if you:**
+**Choose the DIY Master Pack if you:**
 - Have basic Linux command-line comfort (can SSH and run commands)
 - Want to build permanent in-house Odoo expertise
 - Budget is $5,000-$50,000 range (toolkit saves $84,000-$199,000)
 - Need complete control over your system without dependencies
 - Prefer learning by doing with comprehensive guides
 
-**⚠️ Consider hiring a consultant if you:**
+**Consider hiring a consultant if you:**
 - Have absolutely zero technical capability and can't build any
 - Budget exceeds $100,000 and speed matters more than cost savings
 - Need extensive custom module development beyond configuration
 - Want completely hands-off implementation (but sacrifice knowledge)
 
-**💡 Best of both worlds:** Many businesses use the Master Pack to build core competency, then hire consultants only for specific complex customizations—reducing consulting spend by 70-90%.
+**Best of both worlds:** Many businesses use the Master Pack to build core competency, then hire consultants only for specific complex customizations—reducing consulting spend by 70-90%.
 
 ---
 
@@ -144,6 +146,39 @@ That's less than the cost of a single day with a senior Odoo consultant—but yo
   </a>
 </div>
 
+<!-- Author Proof Section -->
+<section class="author-proof-section" style="padding: 80px 20px; background: #fafafa; border-top: 1px solid #e5e5e5; border-bottom: 1px solid #e5e5e5; margin: 48px 0;">
+  <div style="max-width: 700px; margin: 0 auto; text-align: center;">
+
+    <!-- Avatar -->
+    <img src="{{ "/assets/images/Aria Shaw.webp" | relative_url }}"
+         alt="Aria Shaw"
+         loading="lazy"
+         class="no-lightbox"
+         style="width: 96px; height: 96px; border-radius: 50%; margin: 0 auto 24px auto; display: block; border: 2px solid #e5e5e5;">
+
+    <!-- Title -->
+    <p style="margin: 0 0 20px 0; font-size: 13px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: #727272;">
+      Built by Aria Shaw
+    </p>
+
+    <!-- First-person statement -->
+    <blockquote style="margin: 0 0 32px 0; padding: 0; border: none; font-size: 20px; line-height: 1.6; font-weight: 400; color: #222; font-style: normal;">
+      "After watching hundreds of businesses struggle with expensive consultants who create dependency rather than capability, I built the Master Pack to democratize access to professional-grade Odoo implementation tools. Every tool comes from real-world challenges I've solved across manufacturing, retail, and services businesses."
+    </blockquote>
+
+    <!-- Credibility indicators -->
+    <div style="display: flex; justify-content: center; gap: 32px; font-size: 14px; color: #727272; flex-wrap: wrap;">
+      <span>6+ Years Implementing Odoo</span>
+      <span style="color: #e5e5e5;">•</span>
+      <span>500+ Production Deployments</span>
+      <span style="color: #e5e5e5;">•</span>
+      <span>Author of 10+ Guides</span>
+    </div>
+
+  </div>
+</section>
+
 ---
 
 ## The Five Modules
@@ -182,46 +217,26 @@ For detailed breakdown of each module's tools and features, [see the homepage](/
 
 Before purchasing, explore these comprehensive free resources to understand the methodology behind the Master Pack:
 
-**📖 Strategic Planning & Decision-Making:**
+**Strategic Planning & Decision-Making:**
 - [Odoo Self-Hosting Guide: Avoid the $48,000 Mistake](/odoo-self-hosting-guide/) - Learn the strategic planning framework from Module 1
 - [Odoo Implementation Guide: Avoid $250K+ Failures](/odoo-implementation-guide/) - Complete implementation roadmap and risk prevention
 
-**🔧 Technical Deployment:**
+**Technical Deployment:**
 - [Odoo Minimum Requirements & Deployment Guide](/odoo-minimum-requirements-deployment-guide/) - Infrastructure sizing methodology from Module 2
 - [Odoo AWS Deployment Guide 2025](/odoo-aws-deployment-guide/) - Cloud deployment best practices
 
-**🔄 Migration & Data Management:**
+**Migration & Data Management:**
 - [Odoo Database Migration Guide: Zero-Downtime](/odoo-database-migration-guide/) - Migration methodology from Module 3
 
-**💾 Backup & Recovery:**
+**Backup & Recovery:**
 - [Odoo Database Backup & Restore Guide](/odoo-database-backup-restore-guide/) - Manual backup process before automation (Module 4)
 
-**🧮 Free Interactive Tools:**
+**Free Interactive Tools:**
 - [Odoo Requirements Calculator](/toolkit/odoo-requirements-calculator/) - Calculate exact hardware specs needed
 - [Odoo Hosting Decision Calculator](/toolkit/odoo-hosting-calculator/) - Find your optimal hosting solution
 
-**💡 How the free guides compare:**
+**How the free guides compare:**
 Free guides teach you the manual processes. The Master Pack provides production-ready automation tools, advanced Excel calculators, and complete integration across the entire Odoo lifecycle.
-
----
-
-## About the Creator: Aria Shaw - The Digital Plumber
-
-**6+ years implementing Odoo systems** • **Author of 10+ comprehensive Odoo guides** • **Tools used by 1,000+ businesses worldwide**
-
-I'm Aria Shaw, known as "The Digital Plumber"—I find knowledge gaps in Odoo implementation and build clear, repeatable processes to fill them.
-
-After watching hundreds of businesses struggle with expensive consultants who create dependency rather than capability, I built the Master Pack to democratize access to professional-grade Odoo implementation tools.
-
-**My Approach:**
-- No vendor lock-in—you own every tool forever
-- No recurring fees—one-time purchase, lifetime value
-- No black boxes—every script is documented and modifiable
-- No dependencies—build true in-house expertise
-
-Every tool in the Master Pack comes from real-world implementation challenges I've solved across manufacturing, retail, services, and consulting businesses.
-
-**Contact:** aria@ariashaw.com (I read and respond to every message personally)
 
 ---
 
@@ -384,9 +399,11 @@ Plus: Consultants leave, taking their knowledge. With the Master Pack, the knowl
 
 Not sure if the DIY approach is right for you? Here's how our guarantee works:
 
-✅ **Download all 5 modules immediately** - Get instant access to all 68+ tools and 2,000+ pages of documentation
-✅ **Use the tools for 14 full days** - Test the Excel calculators, run the scripts, review the playbooks
-✅ **Full refund if not satisfied** - If the toolkit doesn't match the description or doesn't work as documented, email aria@ariashaw.com for immediate full refund—no questions asked
+**Download all 5 modules immediately** - Get instant access to all 68+ tools and 2,000+ pages of documentation
+
+**Use the tools for 14 full days** - Test the Excel calculators, run the scripts, review the playbooks
+
+**Full refund if not satisfied** - If the toolkit doesn't match the description or doesn't work as documented, email aria@ariashaw.com for immediate full refund—no questions asked
 
 **Why I offer this guarantee:**
 
@@ -416,19 +433,12 @@ If at any point you feel the toolkit doesn't deliver the described value, one em
       Get Instant Access — $699
     </a>
 
-    <div style="display: flex; justify-content: center; align-items: center; gap: 32px; flex-wrap: wrap;">
-      <div style="display: flex; align-items: center; gap: 8px;">
-        <span style="font-size: 20px;">🛡️</span>
-        <span style="font-size: 14px; color: #727272;">14-day money-back guarantee</span>
-      </div>
-      <div style="display: flex; align-items: center; gap: 8px;">
-        <span style="font-size: 20px;">👥</span>
-        <span style="font-size: 14px; color: #727272;">Trusted by 500+ businesses</span>
-      </div>
-      <div style="display: flex; align-items: center; gap: 8px;">
-        <span style="font-size: 20px;">🔄</span>
-        <span style="font-size: 14px; color: #727272;">Free lifetime updates</span>
-      </div>
+    <div style="display: flex; justify-content: center; align-items: center; gap: 32px; flex-wrap: wrap; font-size: 14px; color: #727272;">
+      <span>14-day money-back guarantee</span>
+      <span style="color: #e5e5e5;">•</span>
+      <span>Trusted by 500+ businesses</span>
+      <span style="color: #e5e5e5;">•</span>
+      <span>Free lifetime updates</span>
     </div>
   </div>
 </section>
