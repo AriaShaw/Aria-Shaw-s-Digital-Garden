@@ -98,6 +98,41 @@
   </div>
 </section>
 
+<!-- Author Proof Section -->
+<section class="author-proof-section" style="padding: 80px 20px; background: #fafafa; border-top: 1px solid #e5e5e5; border-bottom: 1px solid #e5e5e5;">
+  <div style="max-width: 700px; margin: 0 auto; text-align: center;">
+
+    <!-- Avatar: Large, visual focus -->
+    <img src="{{ "/assets/images/Aria Shaw.webp" | relative_url }}"
+         alt="Aria Shaw"
+         loading="lazy"
+         class="no-lightbox"
+         style="width: 96px; height: 96px; border-radius: 50%; margin: 0 auto 24px auto; display: block; border: 2px solid #e5e5e5;">
+
+    <!-- Title: Identity positioning -->
+    <p style="margin: 0 0 20px 0; font-size: 13px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: #727272;">
+      Built by Aria Shaw
+    </p>
+
+    <!-- First-person statement: 2-3 sentences, core values -->
+    <blockquote style="margin: 0 0 32px 0; padding: 0; border: none; font-size: 20px; line-height: 1.6; font-weight: 400; color: #222; font-style: normal;">
+      "I find broken pipes in knowledge systems—the gaps between powerful tools and the people who need them.
+      This playbook is my answer to fragmented documentation and consultant dependency.
+      I build for pragmatists who believe systems should serve people, not the other way around."
+    </blockquote>
+
+    <!-- Credibility indicators: Pure text, minimal -->
+    <div style="display: flex; justify-content: center; gap: 32px; font-size: 14px; color: #727272; flex-wrap: wrap;">
+      <span>Systems Engineer</span>
+      <span style="color: #e5e5e5;">•</span>
+      <span>500+ Implementations</span>
+      <span style="color: #e5e5e5;">•</span>
+      <span>Open Source Advocate</span>
+    </div>
+
+  </div>
+</section>
+
 <!-- Problem Statement Section -->
 <section class="problem-section">
   <div class="section-container">
@@ -173,15 +208,12 @@
 
     <div class="final-cta-guarantees">
       <div class="guarantee-item">
-        <span class="guarantee-icon">🛡️</span>
         <span class="guarantee-text">14-day money-back guarantee</span>
       </div>
       <div class="guarantee-item">
-        <span class="guarantee-icon">👥</span>
         <span class="guarantee-text">Trusted by 500+ businesses</span>
       </div>
       <div class="guarantee-item">
-        <span class="guarantee-icon">🔄</span>
         <span class="guarantee-text">Free lifetime updates</span>
       </div>
     </div>
@@ -189,19 +221,3 @@
 </section>
 
 ---
-
-## About This Garden and Its Gardener
-
-My name is Aria, and I'm a **Digital Plumber**.
-
-I find broken, leaking, or missing pipes on the internet—specifically, the gaps in knowledge between powerful tools and the ambitious people who need to use them. I thrive on untangling complexity and turning it into clear, repeatable processes.
-
-This garden is my answer to the frustration of fragmented documentation, superficial tutorials, and the endless search for a straight answer. It's a quiet corner of the internet dedicated to the craft of building robust, independent systems.
-
-**I build these playbooks for fellow builders, pragmatists, and business owners who believe in digital sovereignty.**
-
-### Connect
-
-- **GitHub:** [@AriaShaw](https://github.com/AriaShaw)
-- **X (Twitter):** [@theAriaShaw](https://x.com/theAriaShaw)
-- **Email:** [aria@ariashaw.com](mailto:aria@ariashaw.com)
