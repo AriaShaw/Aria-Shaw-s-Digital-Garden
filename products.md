@@ -183,152 +183,339 @@ That's less than the cost of a single day with a senior Odoo consultant—but yo
 
 ## The Five Modules
 
-The Master Pack includes 5 integrated modules covering the complete Odoo lifecycle—from strategic planning through daily operations.
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin: 40px 0;">
 
-**Quick Overview:**
+  <div style="background: linear-gradient(135deg, #f6f8fa 0%, #ffffff 100%); border: 1px solid #e5e5e5; border-radius: 8px; padding: 24px; transition: transform 0.2s ease, box-shadow 0.2s ease;">
+    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+      <span style="background: #267CB9; color: #fff; font-size: 14px; font-weight: 700; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">01</span>
+      <h3 style="margin: 0; font-size: 18px; font-weight: 600; color: #222;">Strategic Command</h3>
+    </div>
+    <p style="margin: 0; font-size: 14px; line-height: 1.6; color: #555;">Business case tools, TCO calculators, CFO presentations</p>
+  </div>
 
-1. **Strategic Command Center** - Business case tools, TCO calculators, CFO presentations
-2. **Technical Deployment Arsenal** - Production configs, deployment scripts, security hardening
-3. **Migration Command Suite** - Zero-downtime migration tools, data validation, audit trails
-4. **Fortress Protection System** - Multi-cloud backup automation, disaster recovery drills
-5. **Operations Excellence Suite** - Performance tuning, monitoring, capacity planning
+  <div style="background: linear-gradient(135deg, #f6f8fa 0%, #ffffff 100%); border: 1px solid #e5e5e5; border-radius: 8px; padding: 24px; transition: transform 0.2s ease, box-shadow 0.2s ease;">
+    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+      <span style="background: #267CB9; color: #fff; font-size: 14px; font-weight: 700; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">02</span>
+      <h3 style="margin: 0; font-size: 18px; font-weight: 600; color: #222;">Technical Deployment</h3>
+    </div>
+    <p style="margin: 0; font-size: 14px; line-height: 1.6; color: #555;">Production configs, deployment scripts, security hardening</p>
+  </div>
 
-For detailed breakdown of each module's tools and features, [see the homepage](/).
+  <div style="background: linear-gradient(135deg, #f6f8fa 0%, #ffffff 100%); border: 1px solid #e5e5e5; border-radius: 8px; padding: 24px; transition: transform 0.2s ease, box-shadow 0.2s ease;">
+    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+      <span style="background: #267CB9; color: #fff; font-size: 14px; font-weight: 700; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">03</span>
+      <h3 style="margin: 0; font-size: 18px; font-weight: 600; color: #222;">Migration Command</h3>
+    </div>
+    <p style="margin: 0; font-size: 14px; line-height: 1.6; color: #555;">Zero-downtime migration tools, data validation, audit trails</p>
+  </div>
+
+  <div style="background: linear-gradient(135deg, #f6f8fa 0%, #ffffff 100%); border: 1px solid #e5e5e5; border-radius: 8px; padding: 24px; transition: transform 0.2s ease, box-shadow 0.2s ease;">
+    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+      <span style="background: #267CB9; color: #fff; font-size: 14px; font-weight: 700; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">04</span>
+      <h3 style="margin: 0; font-size: 18px; font-weight: 600; color: #222;">Fortress Protection</h3>
+    </div>
+    <p style="margin: 0; font-size: 14px; line-height: 1.6; color: #555;">Multi-cloud backup automation, disaster recovery drills</p>
+  </div>
+
+  <div style="background: linear-gradient(135deg, #f6f8fa 0%, #ffffff 100%); border: 1px solid #e5e5e5; border-radius: 8px; padding: 24px; transition: transform 0.2s ease, box-shadow 0.2s ease;">
+    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+      <span style="background: #267CB9; color: #fff; font-size: 14px; font-weight: 700; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">05</span>
+      <h3 style="margin: 0; font-size: 18px; font-weight: 600; color: #222;">Operations Excellence</h3>
+    </div>
+    <p style="margin: 0; font-size: 14px; line-height: 1.6; color: #555;">Performance tuning, monitoring, capacity planning</p>
+  </div>
+
+</div>
+
+<div style="text-align: center; margin-top: 32px;">
+  <a href="/" style="color: #267CB9; text-decoration: none; font-size: 16px; font-weight: 500;">→ See detailed breakdown of tools and features</a>
+</div>
 
 ---
 
 ## Who This Is For
 
-**Perfect for:**
-- Business owners seeking complete control over their Odoo investment
-- Technical leaders tired of consultant dependency
-- IT managers building in-house Odoo expertise
-- Odoo freelancers wanting enterprise-grade tools to serve clients better
-- CFOs who want to slash ongoing consulting costs
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 32px; margin: 40px 0;">
 
-**Not for:**
-- Complete beginners with zero technical comfort (you need basic Linux familiarity)
-- Businesses wanting someone else to do everything (this is a DIY toolkit)
-- People looking for ongoing hands-on support (documentation is comprehensive, but this isn't consulting)
+  <!-- Perfect For Card -->
+  <div style="background: linear-gradient(135deg, #f0f7ff 0%, #ffffff 100%); border: 2px solid #267CB9; border-radius: 8px; padding: 32px;">
+    <h3 style="margin: 0 0 20px 0; font-size: 20px; font-weight: 600; color: #267CB9;">✓ Perfect For</h3>
+    <ul style="list-style: none; padding: 0; margin: 0;">
+      <li style="margin-bottom: 12px; padding-left: 24px; position: relative; font-size: 15px; line-height: 1.6; color: #222;">
+        <span style="position: absolute; left: 0; color: #267CB9; font-weight: 700;">→</span>
+        Business owners seeking complete control over their Odoo investment
+      </li>
+      <li style="margin-bottom: 12px; padding-left: 24px; position: relative; font-size: 15px; line-height: 1.6; color: #222;">
+        <span style="position: absolute; left: 0; color: #267CB9; font-weight: 700;">→</span>
+        Technical leaders tired of consultant dependency
+      </li>
+      <li style="margin-bottom: 12px; padding-left: 24px; position: relative; font-size: 15px; line-height: 1.6; color: #222;">
+        <span style="position: absolute; left: 0; color: #267CB9; font-weight: 700;">→</span>
+        IT managers building in-house Odoo expertise
+      </li>
+      <li style="margin-bottom: 12px; padding-left: 24px; position: relative; font-size: 15px; line-height: 1.6; color: #222;">
+        <span style="position: absolute; left: 0; color: #267CB9; font-weight: 700;">→</span>
+        Odoo freelancers wanting enterprise-grade tools
+      </li>
+      <li style="margin-bottom: 0; padding-left: 24px; position: relative; font-size: 15px; line-height: 1.6; color: #222;">
+        <span style="position: absolute; left: 0; color: #267CB9; font-weight: 700;">→</span>
+        CFOs who want to slash ongoing consulting costs
+      </li>
+    </ul>
+  </div>
+
+  <!-- Not For Card -->
+  <div style="background: #fafafa; border: 1px solid #e5e5e5; border-radius: 8px; padding: 32px;">
+    <h3 style="margin: 0 0 20px 0; font-size: 20px; font-weight: 600; color: #555;">Not Ideal For</h3>
+    <ul style="list-style: none; padding: 0; margin: 0;">
+      <li style="margin-bottom: 12px; padding-left: 24px; position: relative; font-size: 15px; line-height: 1.6; color: #555;">
+        <span style="position: absolute; left: 0; color: #999;">×</span>
+        Complete beginners with zero technical comfort (need basic Linux familiarity)
+      </li>
+      <li style="margin-bottom: 12px; padding-left: 24px; position: relative; font-size: 15px; line-height: 1.6; color: #555;">
+        <span style="position: absolute; left: 0; color: #999;">×</span>
+        Businesses wanting someone else to do everything (this is a DIY toolkit)
+      </li>
+      <li style="margin-bottom: 0; padding-left: 24px; position: relative; font-size: 15px; line-height: 1.6; color: #555;">
+        <span style="position: absolute; left: 0; color: #999;">×</span>
+        People looking for ongoing hands-on support (documentation is comprehensive, not consulting)
+      </li>
+    </ul>
+  </div>
+
+</div>
 
 ---
 
 ## Learn More: Free Odoo Implementation Guides
 
-Before purchasing, explore these comprehensive free resources to understand the methodology behind the Master Pack:
+<p style="font-size: 16px; color: #555; margin-bottom: 32px;">Before purchasing, explore these comprehensive free resources to understand the methodology behind the Master Pack:</p>
 
-**Strategic Planning & Decision-Making:**
-- [Odoo Self-Hosting Guide: Avoid the $48,000 Mistake](/odoo-self-hosting-guide/) - Learn the strategic planning framework from Module 1
-- [Odoo Implementation Guide: Avoid $250K+ Failures](/odoo-implementation-guide/) - Complete implementation roadmap and risk prevention
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; margin-bottom: 40px;">
 
-**Technical Deployment:**
-- [Odoo Minimum Requirements & Deployment Guide](/odoo-minimum-requirements-deployment-guide/) - Infrastructure sizing methodology from Module 2
-- [Odoo AWS Deployment Guide 2025](/odoo-aws-deployment-guide/) - Cloud deployment best practices
+  <!-- Strategic Planning -->
+  <div style="background: #f6f8fa; border-left: 4px solid #267CB9; border-radius: 6px; padding: 24px;">
+    <h4 style="margin: 0 0 16px 0; font-size: 16px; font-weight: 600; color: #267CB9;">Strategic Planning & Decision-Making</h4>
+    <ul style="list-style: none; padding: 0; margin: 0;">
+      <li style="margin-bottom: 12px;">
+        <a href="/odoo-self-hosting-guide/" style="color: #222; text-decoration: none; font-weight: 500; display: block; line-height: 1.5;">Odoo Self-Hosting Guide: Avoid the $48,000 Mistake</a>
+        <span style="font-size: 13px; color: #727272; display: block; margin-top: 4px;">Learn the strategic planning framework from Module 1</span>
+      </li>
+      <li>
+        <a href="/odoo-implementation-guide/" style="color: #222; text-decoration: none; font-weight: 500; display: block; line-height: 1.5;">Odoo Implementation Guide: Avoid $250K+ Failures</a>
+        <span style="font-size: 13px; color: #727272; display: block; margin-top: 4px;">Complete implementation roadmap and risk prevention</span>
+      </li>
+    </ul>
+  </div>
 
-**Migration & Data Management:**
-- [Odoo Database Migration Guide: Zero-Downtime](/odoo-database-migration-guide/) - Migration methodology from Module 3
+  <!-- Technical Deployment -->
+  <div style="background: #f6f8fa; border-left: 4px solid #267CB9; border-radius: 6px; padding: 24px;">
+    <h4 style="margin: 0 0 16px 0; font-size: 16px; font-weight: 600; color: #267CB9;">Technical Deployment</h4>
+    <ul style="list-style: none; padding: 0; margin: 0;">
+      <li style="margin-bottom: 12px;">
+        <a href="/odoo-minimum-requirements-deployment-guide/" style="color: #222; text-decoration: none; font-weight: 500; display: block; line-height: 1.5;">Odoo Minimum Requirements & Deployment Guide</a>
+        <span style="font-size: 13px; color: #727272; display: block; margin-top: 4px;">Infrastructure sizing methodology from Module 2</span>
+      </li>
+      <li>
+        <a href="/odoo-aws-deployment-guide/" style="color: #222; text-decoration: none; font-weight: 500; display: block; line-height: 1.5;">Odoo AWS Deployment Guide 2025</a>
+        <span style="font-size: 13px; color: #727272; display: block; margin-top: 4px;">Cloud deployment best practices</span>
+      </li>
+    </ul>
+  </div>
 
-**Backup & Recovery:**
-- [Odoo Database Backup & Restore Guide](/odoo-database-backup-restore-guide/) - Manual backup process before automation (Module 4)
+  <!-- Migration & Backup -->
+  <div style="background: #f6f8fa; border-left: 4px solid #267CB9; border-radius: 6px; padding: 24px;">
+    <h4 style="margin: 0 0 16px 0; font-size: 16px; font-weight: 600; color: #267CB9;">Migration & Data Management</h4>
+    <ul style="list-style: none; padding: 0; margin: 0;">
+      <li>
+        <a href="/odoo-database-migration-guide/" style="color: #222; text-decoration: none; font-weight: 500; display: block; line-height: 1.5;">Odoo Database Migration Guide: Zero-Downtime</a>
+        <span style="font-size: 13px; color: #727272; display: block; margin-top: 4px;">Migration methodology from Module 3</span>
+      </li>
+    </ul>
+  </div>
 
-**Free Interactive Tools:**
-- [Odoo Requirements Calculator](/toolkit/odoo-requirements-calculator/) - Calculate exact hardware specs needed
-- [Odoo Hosting Decision Calculator](/toolkit/odoo-hosting-calculator/) - Find your optimal hosting solution
+  <!-- Backup & Recovery -->
+  <div style="background: #f6f8fa; border-left: 4px solid #267CB9; border-radius: 6px; padding: 24px;">
+    <h4 style="margin: 0 0 16px 0; font-size: 16px; font-weight: 600; color: #267CB9;">Backup & Recovery</h4>
+    <ul style="list-style: none; padding: 0; margin: 0;">
+      <li>
+        <a href="/odoo-database-backup-restore-guide/" style="color: #222; text-decoration: none; font-weight: 500; display: block; line-height: 1.5;">Odoo Database Backup & Restore Guide</a>
+        <span style="font-size: 13px; color: #727272; display: block; margin-top: 4px;">Manual backup process before automation (Module 4)</span>
+      </li>
+    </ul>
+  </div>
 
-**How the free guides compare:**
-Free guides teach you the manual processes. The Master Pack provides production-ready automation tools, advanced Excel calculators, and complete integration across the entire Odoo lifecycle.
+  <!-- Free Tools -->
+  <div style="background: linear-gradient(135deg, #f0f7ff 0%, #ffffff 100%); border: 2px solid #267CB9; border-radius: 6px; padding: 24px; grid-column: span 2;">
+    <h4 style="margin: 0 0 16px 0; font-size: 16px; font-weight: 600; color: #267CB9;">Free Interactive Tools</h4>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
+      <div>
+        <a href="/toolkit/odoo-requirements-calculator/" style="color: #222; text-decoration: none; font-weight: 500; display: block; line-height: 1.5;">Odoo Requirements Calculator</a>
+        <span style="font-size: 13px; color: #727272; display: block; margin-top: 4px;">Calculate exact hardware specs needed</span>
+      </div>
+      <div>
+        <a href="/toolkit/odoo-hosting-calculator/" style="color: #222; text-decoration: none; font-weight: 500; display: block; line-height: 1.5;">Odoo Hosting Decision Calculator</a>
+        <span style="font-size: 13px; color: #727272; display: block; margin-top: 4px;">Find your optimal hosting solution</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div style="background: #fafafa; border-radius: 6px; padding: 24px; text-align: center;">
+  <p style="margin: 0; font-size: 15px; color: #555; line-height: 1.6;">
+    <strong>How the free guides compare:</strong> Free guides teach you the manual processes. The Master Pack provides production-ready automation tools, advanced Excel calculators, and complete integration across the entire Odoo lifecycle.
+  </p>
+</div>
 
 ---
 
 ## Frequently Asked Questions
 
-### How much does an Odoo consultant typically cost?
+<div class="toolkit-accordion">
+  <button class="accordion-header" aria-expanded="false">
+    <h3 class="accordion-title">How much does an Odoo consultant typically cost?</h3>
+    <span class="accordion-chevron">▼</span>
+  </button>
+  <div class="accordion-content">
+    <p>Odoo consultants typically charge $50,000-$200,000 for complete implementation projects, with hourly rates ranging from $150-$300/hour. Monthly retainers for ongoing support run $2,000-$5,000/month. The Master Pack provides equivalent tools and methodologies for a one-time $699 payment, saving $84,000-$199,000 in consulting fees.</p>
+  </div>
+</div>
 
-Odoo consultants typically charge $50,000-$200,000 for complete implementation projects, with hourly rates ranging from $150-$300/hour. Monthly retainers for ongoing support run $2,000-$5,000/month. The Master Pack provides equivalent tools and methodologies for a one-time $699 payment, saving $84,000-$199,000 in consulting fees.
+<div class="toolkit-accordion">
+  <button class="accordion-header" aria-expanded="false">
+    <h3 class="accordion-title">Can I implement Odoo without a consultant?</h3>
+    <span class="accordion-chevron">▼</span>
+  </button>
+  <div class="accordion-content">
+    <p>Yes, you can implement Odoo without a consultant if you have basic Linux command-line skills. The Master Pack provides all the tools consultants use—Excel calculators, deployment scripts, migration tools, and 2,000+ pages of documentation. Businesses with Module 1 (strategic planning) require only Excel skills. Modules 2-5 require ability to SSH into a server and run commands. Over 500 businesses have successfully implemented Odoo using the Master Pack DIY approach.</p>
+  </div>
+</div>
 
-### Can I implement Odoo without a consultant?
+<div class="toolkit-accordion">
+  <button class="accordion-header" aria-expanded="false">
+    <h3 class="accordion-title">Is the Odoo DIY toolkit too complex for non-technical users?</h3>
+    <span class="accordion-chevron">▼</span>
+  </button>
+  <div class="accordion-content">
+    <p>Module 1 (Strategic Command Center) requires only Excel skills—no coding required. It includes TCO calculators, ROI analyzers, and CFO presentation frameworks accessible to any business user.</p>
+    <p>Modules 2-5 require basic Linux command-line comfort. If you can SSH into a server and run commands like <code>ls</code> or <code>cd</code>, you can use these tools. Every script includes step-by-step copy-paste instructions.</p>
+    <p><strong>Skill progression:</strong> Start with Module 1 for business planning. As your team gains confidence, progress to technical modules with comprehensive guides.</p>
+  </div>
+</div>
 
-Yes, you can implement Odoo without a consultant if you have basic Linux command-line skills. The Master Pack provides all the tools consultants use—Excel calculators, deployment scripts, migration tools, and 2,000+ pages of documentation. Businesses with Module 1 (strategic planning) require only Excel skills. Modules 2-5 require ability to SSH into a server and run commands. Over 500 businesses have successfully implemented Odoo using the Master Pack DIY approach.
+<div class="toolkit-accordion">
+  <button class="accordion-header" aria-expanded="false">
+    <h3 class="accordion-title">What's included in the $699 Odoo Master Pack?</h3>
+    <span class="accordion-chevron">▼</span>
+  </button>
+  <div class="accordion-content">
+    <p>The $699 Master Pack includes:</p>
+    <ul>
+      <li><strong>5 integrated modules</strong> covering strategic planning, deployment, migration, backup/recovery, and operations</li>
+      <li><strong>68+ production-ready tools</strong> including Excel calculators, bash scripts, Python scripts, and configuration templates</li>
+      <li><strong>2,000+ pages of documentation</strong> with step-by-step implementation guides</li>
+      <li><strong>Lifetime free updates</strong> - all future improvements included</li>
+      <li><strong>14-day money-back guarantee</strong> - full refund if tools don't match description</li>
+      <li><strong>Zero recurring fees</strong> - one-time payment, own forever</li>
+    </ul>
+    <p>All tools are provided in open formats (Excel .xlsx, bash .sh, Python .py, Markdown .md) with no DRM or proprietary lock-in.</p>
+  </div>
+</div>
 
-### Is the Odoo DIY toolkit too complex for non-technical users?
+<div class="toolkit-accordion">
+  <button class="accordion-header" aria-expanded="false">
+    <h3 class="accordion-title">How much money can I save using DIY tools instead of hiring an Odoo consultant?</h3>
+    <span class="accordion-chevron">▼</span>
+  </button>
+  <div class="accordion-content">
+    <p>Typical savings range from $84,000 to $199,000 compared to consultant fees:</p>
+    <ul>
+      <li><strong>Strategic planning consulting:</strong> Save $15,000-$30,000 (Module 1 included)</li>
+      <li><strong>Technical deployment:</strong> Save $20,000-$40,000 (Module 2 included)</li>
+      <li><strong>Migration services:</strong> Save $25,000-$60,000 (Module 3 included)</li>
+      <li><strong>Backup/DR setup:</strong> Save $15,000-$40,000 (Module 4 included)</li>
+      <li><strong>Performance tuning:</strong> Save $10,000-$30,000 annually (Module 5 included)</li>
+      <li><strong>Monthly retainers:</strong> Save $2,000-$5,000/month ($24,000-$60,000/year)</li>
+    </ul>
+    <p><strong>Total consultant cost:</strong> $85,000-$200,000 vs. <strong>Master Pack:</strong> $699 one-time</p>
+  </div>
+</div>
 
-Module 1 (Strategic Command Center) requires only Excel skills—no coding required. It includes TCO calculators, ROI analyzers, and CFO presentation frameworks accessible to any business user.
+<div class="toolkit-accordion">
+  <button class="accordion-header" aria-expanded="false">
+    <h3 class="accordion-title">What Odoo versions does the Master Pack support?</h3>
+    <span class="accordion-chevron">▼</span>
+  </button>
+  <div class="accordion-content">
+    <p>The Master Pack tools support Odoo versions 14 through 18, including both Community and Enterprise editions. Most tools are version-agnostic by design. Scripts that are version-specific include clear compatibility notes and recommendations.</p>
+    <p><strong>Migration tools</strong> specifically handle upgrades across major versions (e.g., Odoo 14→17, 16→18).</p>
+  </div>
+</div>
 
-Modules 2-5 require basic Linux command-line comfort. If you can SSH into a server and run commands like `ls` or `cd`, you can use these tools. Every script includes step-by-step copy-paste instructions.
+<div class="toolkit-accordion">
+  <button class="accordion-header" aria-expanded="false">
+    <h3 class="accordion-title">Do I get a refund if the Odoo toolkit doesn't work?</h3>
+    <span class="accordion-chevron">▼</span>
+  </button>
+  <div class="accordion-content">
+    <p>Yes, the Master Pack comes with a 14-day money-back guarantee. If the tools don't match the description, don't work as documented, or you're unsatisfied for any reason, contact aria@ariashaw.com for a full refund—no questions asked.</p>
+    <p>This guarantee lets you download all 5 modules, review the content, and test the tools risk-free for two weeks.</p>
+  </div>
+</div>
 
-**Skill progression:** Start with Module 1 for business planning. As your team gains confidence, progress to technical modules with comprehensive guides.
+<div class="toolkit-accordion">
+  <button class="accordion-header" aria-expanded="false">
+    <h3 class="accordion-title">Can I use Odoo DIY tools on Windows?</h3>
+    <span class="accordion-chevron">▼</span>
+  </button>
+  <div class="accordion-content">
+    <p>Excel calculators work on Windows, Mac, and Linux. Deployment and operational scripts are Linux-focused because Odoo itself runs on Linux servers.</p>
+    <p><strong>Windows users have two options:</strong></p>
+    <ol>
+      <li><strong>WSL (Windows Subsystem for Linux)</strong> - Run scripts locally on Windows 10/11</li>
+      <li><strong>Deploy directly on Linux servers</strong> - SSH from Windows to your cloud server (recommended)</li>
+    </ol>
+    <p>All documentation includes examples for both approaches.</p>
+  </div>
+</div>
 
-### What's included in the $699 Odoo Master Pack?
+<div class="toolkit-accordion">
+  <button class="accordion-header" aria-expanded="false">
+    <h3 class="accordion-title">How do lifetime updates work for the Master Pack?</h3>
+    <span class="accordion-chevron">▼</span>
+  </button>
+  <div class="accordion-content">
+    <p>When you purchase the Master Pack, you get free lifetime updates forever. As I add new tools, improve existing scripts, or expand documentation, updates are automatically available through the Gumroad delivery platform.</p>
+    <p><strong>Update frequency:</strong> Quarterly major updates + periodic tool additions<br>
+    <strong>Notification:</strong> Email when significant updates are released<br>
+    <strong>Access:</strong> Download latest version anytime from your Gumroad library</p>
+  </div>
+</div>
 
-The $699 Master Pack includes:
-- **5 integrated modules** covering strategic planning, deployment, migration, backup/recovery, and operations
-- **68+ production-ready tools** including Excel calculators, bash scripts, Python scripts, and configuration templates
-- **2,000+ pages of documentation** with step-by-step implementation guides
-- **Lifetime free updates** - all future improvements included
-- **14-day money-back guarantee** - full refund if tools don't match description
-- **Zero recurring fees** - one-time payment, own forever
-
-All tools are provided in open formats (Excel .xlsx, bash .sh, Python .py, Markdown .md) with no DRM or proprietary lock-in.
-
-### How much money can I save using DIY tools instead of hiring an Odoo consultant?
-
-Typical savings range from $84,000 to $199,000 compared to consultant fees:
-
-- **Strategic planning consulting:** Save $15,000-$30,000 (Module 1 included)
-- **Technical deployment:** Save $20,000-$40,000 (Module 2 included)
-- **Migration services:** Save $25,000-$60,000 (Module 3 included)
-- **Backup/DR setup:** Save $15,000-$40,000 (Module 4 included)
-- **Performance tuning:** Save $10,000-$30,000 annually (Module 5 included)
-- **Monthly retainers:** Save $2,000-$5,000/month ($24,000-$60,000/year)
-
-**Total consultant cost:** $85,000-$200,000 vs. **Master Pack:** $699 one-time
-
-### What Odoo versions does the Master Pack support?
-
-The Master Pack tools support Odoo versions 14 through 18, including both Community and Enterprise editions. Most tools are version-agnostic by design. Scripts that are version-specific include clear compatibility notes and recommendations.
-
-**Migration tools** specifically handle upgrades across major versions (e.g., Odoo 14→17, 16→18).
-
-### Do I get refund if the Odoo toolkit doesn't work?
-
-Yes, the Master Pack comes with a 14-day money-back guarantee. If the tools don't match the description, don't work as documented, or you're unsatisfied for any reason, contact aria@ariashaw.com for a full refund—no questions asked.
-
-This guarantee lets you download all 5 modules, review the content, and test the tools risk-free for two weeks.
-
-### Can I use Odoo DIY tools on Windows?
-
-Excel calculators work on Windows, Mac, and Linux. Deployment and operational scripts are Linux-focused because Odoo itself runs on Linux servers.
-
-**Windows users have two options:**
-1. **WSL (Windows Subsystem for Linux)** - Run scripts locally on Windows 10/11
-2. **Deploy directly on Linux servers** - SSH from Windows to your cloud server (recommended)
-
-All documentation includes examples for both approaches.
-
-### How do lifetime updates work for the Master Pack?
-
-When you purchase the Master Pack, you get free lifetime updates forever. As I add new tools, improve existing scripts, or expand documentation, updates are automatically available through the Gumroad delivery platform.
-
-**Update frequency:** Quarterly major updates + periodic tool additions
-**Notification:** Email when significant updates are released
-**Access:** Download latest version anytime from your Gumroad library
-
-### Is DIY toolkit better than hiring an Odoo consultant?
-
-The toolkit and consultants serve different purposes:
-
-**Choose the DIY Master Pack for:**
-- Building permanent in-house expertise (knowledge stays forever)
-- Cost savings of $84,000-$199,000
-- Complete control without vendor dependencies
-- Learning by doing with comprehensive guides
-
-**Choose consultants for:**
-- Zero involvement (hands-off implementation)
-- Extensive custom module development beyond configuration
-- Very tight timelines where budget exceeds $100,000
-
-**Best approach:** Many businesses use the Master Pack for 80% of implementation (saving 80-90% on costs), then hire consultants only for specific complex customizations. This builds capability while leveraging expert help where truly needed.
+<div class="toolkit-accordion">
+  <button class="accordion-header" aria-expanded="false">
+    <h3 class="accordion-title">Is the DIY toolkit better than hiring an Odoo consultant?</h3>
+    <span class="accordion-chevron">▼</span>
+  </button>
+  <div class="accordion-content">
+    <p>The toolkit and consultants serve different purposes:</p>
+    <p><strong>Choose the DIY Master Pack for:</strong></p>
+    <ul>
+      <li>Building permanent in-house expertise (knowledge stays forever)</li>
+      <li>Cost savings of $84,000-$199,000</li>
+      <li>Complete control without vendor dependencies</li>
+      <li>Learning by doing with comprehensive guides</li>
+    </ul>
+    <p><strong>Choose consultants for:</strong></p>
+    <ul>
+      <li>Zero involvement (hands-off implementation)</li>
+      <li>Extensive custom module development beyond configuration</li>
+      <li>Very tight timelines where budget exceeds $100,000</li>
+    </ul>
+    <p><strong>Best approach:</strong> Many businesses use the Master Pack for 80% of implementation (saving 80-90% on costs), then hire consultants only for specific complex customizations. This builds capability while leveraging expert help where truly needed.</p>
+  </div>
+</div>
 
 ---
 
@@ -442,22 +629,3 @@ If at any point you feel the toolkit doesn't deliver the described value, one em
     </div>
   </div>
 </section>
-
----
-
-## Still Deciding?
-
-**Start with the free guides:**
-- [Odoo Self-Hosting Guide](/odoo-self-hosting-guide/) - see how we approach strategic planning
-- [Database Backup & Restore Guide](/odoo-database-backup-restore-guide/) - learn the manual process before automation
-- [Migration Guide](/odoo-database-migration-guide/) - understand migration complexity
-
-These free guides give you immense value. The Master Pack gives you the complete professional system.
-
----
-
-## Questions?
-
-Email aria@ariashaw.com
-
-I read and respond to every message personally.
