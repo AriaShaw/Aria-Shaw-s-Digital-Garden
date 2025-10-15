@@ -123,111 +123,17 @@ That's less than the cost of a single day with a senior Odoo consultant—but yo
 
 ## The Five Modules
 
-<div class="module-card" markdown="1">
+The Master Pack includes 5 integrated modules covering the complete Odoo lifecycle—from strategic planning through daily operations.
 
-### Module 1: Strategic Command Center
+**Quick Overview:**
 
-**Get approval and prevent $48,000 disasters before they happen**
+1. **Strategic Command Center** - Business case tools, TCO calculators, CFO presentations
+2. **Technical Deployment Arsenal** - Production configs, deployment scripts, security hardening
+3. **Migration Command Suite** - Zero-downtime migration tools, data validation, audit trails
+4. **Fortress Protection System** - Multi-cloud backup automation, disaster recovery drills
+5. **Operations Excellence Suite** - Performance tuning, monitoring, capacity planning
 
-The business case tools that consultants use to justify their fees—now yours to build unstoppable internal momentum.
-
-**What you get:**
-- Hidden Costs Discovery Tool (Excel) - identifies 34 cost categories consultants hide
-- Total Cost of Ownership Calculator - 5-year projection with scenario modeling
-- Competitive ROI Analyzer - compare Odoo vs. NetSuite/SAP/Dynamics
-- CFO Presentation Framework - get approval in one meeting, not six months
-- Vendor Evaluation Toolkit - prevent lock-in before signing contracts
-- Failure Prevention System - assess 28 risk factors that kill 40% of Odoo projects
-
-<p class="module-value">Replaces: $15,000-$30,000 in strategic consulting fees</p>
-
-</div>
-
-<div class="module-card" markdown="1">
-
-### Module 2: Technical Deployment Arsenal
-
-**Production-grade deployment in 3-5 hours instead of 2 weeks of trial-and-error**
-
-The battle-tested configs, scripts, and validation tools that turn deployment from nightmare to checklist.
-
-**What you get:**
-- One-command deployment script - PostgreSQL + Nginx + SSL in minutes
-- Production configuration library - 12 battle-tested configs for every scenario
-- Infrastructure sizing calculator - prevent over-provisioning waste
-- Security hardening checklist - 47 critical settings consultants charge $5K to configure
-- Performance baseline toolkit - measure before problems appear
-- Deployment validation suite - 23 automated checks before go-live
-
-<p class="module-value">Replaces: $20,000-$40,000 in technical deployment consulting</p>
-
-</div>
-
-<div class="module-card" markdown="1">
-
-### Module 3: Migration Command Suite
-
-**60-90% migration downtime reduction**
-
-The proven methodology from 300+ successful migrations—turn 8-hour outages into 30-minute maintenance windows.
-
-**What you get:**
-- Migration risk assessor - identifies the 3 critical errors that destroy DIY migrations
-- Minimal-downtime executor - production-tested scripts with automatic rollback
-- Data validation framework - 47-point quality checklist
-- Custom module migrator - handles the complexity consultants charge $10K to untangle
-- Performance preservation system - maintain speed through schema changes
-- Audit trail generator - enterprise compliance logging
-
-<p class="module-value">Replaces: $25,000-$60,000 in migration consulting and disaster recovery costs</p>
-
-</div>
-
-<div class="inline-cta">
-  <p><strong>Already seeing the value?</strong></p>
-  <p>You've just read about tools worth $85,000+ in consulting fees. Get all 5 modules for a one-time $699 payment.</p>
-  <a href="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty" class="btn-outline-cta" onclick="gtag('event', 'cta_click', {'event_category': 'CTA', 'event_label': 'Get Instant Access - Mid-page', 'cta_location': 'products-mid-page', 'destination': 'gumroad'});">Unlock Now</a>
-</div>
-
-<div class="module-card" markdown="1">
-
-### Module 4: Fortress Protection System
-
-**Sub-15 minute disaster recovery instead of "hope our backup works"**
-
-Enterprise-grade backup automation and disaster recovery—without enterprise software costs.
-
-**What you get:**
-- Intelligent backup scheduler - automatic timing optimization for minimal performance impact
-- Multi-cloud sync engine - simultaneous backup to 3+ destinations (AWS, Backblaze, Google Drive)
-- Incremental backup optimizer - 90% storage reduction for large databases
-- Disaster recovery drill system - test recovery before disaster strikes
-- Recovery time optimizer - automated rollback for 7 disaster scenarios
-- System health monitor - 47 production checks with multi-channel alerting
-
-<p class="module-value">Replaces: $15,000-$40,000 in backup infrastructure and DR planning</p>
-
-</div>
-
-<div class="module-card" markdown="1">
-
-### Module 5: Operations Excellence Suite
-
-**20-40% performance improvement**
-
-The monitoring, optimization, and maintenance tools that keep Odoo fast as your business scales.
-
-**What you get:**
-- PostgreSQL performance tuner - automatic query optimization and index recommendations
-- Resource usage analyzer - identify bottlenecks before users complain
-- Automated maintenance scheduler - vacuum, analyze, reindex on optimal schedule
-- Performance regression detector - catch slowdowns within hours, not months
-- Capacity planning dashboard - predict when to scale infrastructure
-- Production runbook library - step-by-step guides for 23 common operational scenarios
-
-<p class="module-value">Replaces: $10,000-$30,000 annually in performance consulting and emergency firefighting</p>
-
-</div>
+For detailed breakdown of each module's tools and features, [see the homepage](/).
 
 ---
 
