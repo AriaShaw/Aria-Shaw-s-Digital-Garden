@@ -19,15 +19,31 @@ Stop paying consultants $200/hour for knowledge you could own. Get the complete 
 **Quick Navigation:**
 [Why DIY vs. Consultant?](#why-choose-diy-tools-over-hiring-an-odoo-consultant) • [What's Included](#what-you-get-in-the-master-pack) • [Case Studies](#proven-results-how-businesses-save-with-the-master-pack) • [5 Modules](#the-five-modules) • [Pricing](#real-value-comparison) • [FAQ](#frequently-asked-questions) • [Guarantee](#zero-risk-guarantee)
 
-<div class="price-box">
-  <div class="price">$699</div>
-  <p class="price-detail">One-time payment • Lifetime access • Free updates forever</p>
-  <a href="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty" class="btn-primary-cta" onclick="gtag('event', 'cta_click', {'event_category': 'CTA', 'event_label': 'Get Instant Access - Hero', 'cta_location': 'products-hero', 'destination': 'gumroad'});">Get Access Now</a>
-  <div class="trust-signals">
-    <p>14-day money-back guarantee</p>
-    <p>Instant download after purchase • Secure payment via Gumroad</p>
+<!-- Hero CTA Section -->
+<section class="hero-conversion-section" style="padding: 48px 20px; background: #f6f8fa; border-radius: 8px; margin: 40px 0;">
+  <div style="max-width: 600px; margin: 0 auto; text-align: center;">
+
+    <!-- Price Comparison -->
+    <div class="hero-price-compare" style="display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 32px; padding: 24px; background: linear-gradient(135deg, #f0f7ff 0%, #ffffff 100%); border: 2px solid #e3f2fd; border-radius: 8px;">
+      <span style="font-size: 20px; color: #666; text-decoration: line-through;">$50,000+ consulting</span>
+      <span style="font-size: 32px; color: #999;">→</span>
+      <span style="font-size: 48px; color: #22863a; font-weight: 700;">$699</span>
+      <span style="font-size: 16px; color: #666;">one-time</span>
+    </div>
+
+    <!-- Primary CTA -->
+    <a href="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty" class="cta-primary-large" style="background: linear-gradient(135deg, #267CB9 0%, #1e6ba6 100%); color: #fff; padding: 20px 40px; font-size: 18px; font-weight: 600; text-decoration: none; display: inline-block; border-radius: 6px; box-shadow: 0 4px 12px rgba(38, 124, 185, 0.25); transition: all 0.2s ease;" onclick="gtag('event', 'cta_click', {'event_category': 'CTA', 'event_label': 'Get Instant Access - Hero', 'cta_location': 'products-hero', 'destination': 'gumroad'});">
+      Get Instant Access — $699
+    </a>
+
+    <!-- Trust Signals -->
+    <div style="margin-top: 24px; font-size: 14px; color: #666;">
+      <span style="margin: 0 12px;">🛡️ 14-day money-back guarantee</span>
+      <span style="margin: 0 12px;">👥 Trusted by 500+ businesses</span>
+      <span style="margin: 0 12px;">🔄 Free lifetime updates</span>
+    </div>
   </div>
-</div>
+</section>
 
 ---
 
@@ -118,6 +134,15 @@ That's less than the cost of a single day with a senior Odoo consultant—but yo
 - **Master Pack Approach:** $699 toolkit + hired consultant for 40 hours custom development only
 - **Total Savings:** $172,301 Year 1 + $48,000/year ongoing (96% reduction)
 - **Outcome:** Built internal DevOps capability, uses consultants only for complex custom features
+
+<!-- Inline CTA after Case Studies -->
+<div style="background: #f0f7ff; border-left: 4px solid #267CB9; padding: 32px; margin: 48px 0; border-radius: 6px; text-align: center;">
+  <p style="font-size: 20px; font-weight: 600; color: #222; margin: 0 0 16px 0;">Already seeing the value?</p>
+  <p style="font-size: 16px; color: #666; margin: 0 0 24px 0;">Join 500+ businesses who saved $84,000-$199,000 in consulting fees</p>
+  <a href="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty" style="background: #267CB9; color: #fff; padding: 16px 32px; font-size: 16px; font-weight: 600; text-decoration: none; display: inline-block; border-radius: 6px; box-shadow: 0 2px 8px rgba(38, 124, 185, 0.2); transition: all 0.2s ease;" onclick="gtag('event', 'cta_click', {'event_category': 'CTA', 'event_label': 'Get Instant Access - Mid-page', 'cta_location': 'products-mid-page', 'destination': 'gumroad'});">
+    Get Instant Access — $699
+  </a>
+</div>
 
 ---
 
@@ -380,25 +405,33 @@ If at any point you feel the toolkit doesn't deliver the described value, one em
 
 ---
 
-<div class="final-cta">
-  <h2>Ready to Own Your Odoo Journey?</h2>
-  <p>Stop renting expertise. Own it.</p>
+<!-- Final CTA Section - Same style as homepage -->
+<section class="final-cta-section" id="final-cta" style="background: #ffffff; padding: 80px 20px; margin: 60px 0 0 0;">
+  <div style="max-width: 600px; margin: 0 auto; text-align: center;">
+    <h2 style="font-size: 36px; font-weight: 700; color: #222; margin: 0 0 16px 0; line-height: 1.3;">Stop Renting Expertise. Own It Forever.</h2>
 
-  <ul class="checklist">
-    <li>Instant download after purchase</li>
-    <li>All 5 modules included</li>
-    <li>68+ production-ready tools</li>
-    <li>2,000+ pages of documentation</li>
-    <li>Free lifetime updates</li>
-    <li>14-day money-back guarantee</li>
-  </ul>
+    <p style="font-size: 18px; line-height: 1.6; color: #727272; margin: 0 0 40px 0;">Join 500+ businesses who chose digital sovereignty over consultant dependency.</p>
 
-  <a href="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty" class="btn-primary-cta" onclick="gtag('event', 'cta_click', {'event_category': 'CTA', 'event_label': 'Get Instant Access - Bottom', 'cta_location': 'products-bottom', 'destination': 'gumroad'});">Unlock Now</a>
+    <a href="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty" class="cta-primary-large" style="background: linear-gradient(135deg, #267CB9 0%, #1e6ba6 100%); color: #fff; padding: 20px 40px; font-size: 18px; font-weight: 600; text-decoration: none; display: inline-block; border-radius: 6px; box-shadow: 0 4px 12px rgba(38, 124, 185, 0.25); transition: all 0.2s ease; margin-bottom: 32px;" onclick="gtag('event', 'cta_click', {'event_category': 'CTA', 'event_label': 'Get Instant Access - Bottom', 'cta_location': 'products-bottom', 'destination': 'gumroad'});">
+      Get Instant Access — $699
+    </a>
 
-  <div class="trust-signals">
-    <p>Secure payment via Gumroad • Instant digital delivery</p>
+    <div style="display: flex; justify-content: center; align-items: center; gap: 32px; flex-wrap: wrap;">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 20px;">🛡️</span>
+        <span style="font-size: 14px; color: #727272;">14-day money-back guarantee</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 20px;">👥</span>
+        <span style="font-size: 14px; color: #727272;">Trusted by 500+ businesses</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 20px;">🔄</span>
+        <span style="font-size: 14px; color: #727272;">Free lifetime updates</span>
+      </div>
+    </div>
   </div>
-</div>
+</section>
 
 ---
 
