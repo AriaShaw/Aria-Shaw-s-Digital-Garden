@@ -108,28 +108,28 @@ Most businesses face a difficult choice when implementing Odoo: pay $50,000-$200
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin: 40px 0;">
 
   <!-- DIY Path -->
-  <div style="background: linear-gradient(135deg, #f0f7ff 0%, #ffffff 100%); border: 2px solid #267CB9; border-radius: 8px; padding: 32px; position: relative;">
+  <div style="background: linear-gradient(135deg, #f0f7ff 0%, #ffffff 100%); border: 2px solid #267CB9; border-radius: 12px; padding: 32px; position: relative; box-shadow: 0 8px 24px rgba(38,124,185,0.12);">
     <div style="position: absolute; top: -16px; left: 24px; background: #267CB9; color: #fff; padding: 6px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;">Recommended</div>
-    <h4 style="margin: 0 0 20px 0; font-size: 20px; font-weight: 600; color: #267CB9;">✓ Choose DIY Master Pack</h4>
+    <h4 style="margin: 0 0 20px 0; font-size: 22px; font-weight: 700; color: #1a1a1a;">Choose DIY Master Pack</h4>
     <ul style="list-style: none; padding: 0; margin: 0;">
-      <li style="margin-bottom: 12px; padding-left: 24px; position: relative; font-size: 15px; line-height: 1.6; color: #222;">
-        <span style="position: absolute; left: 0; color: #267CB9; font-weight: 700;">✓</span>
+      <li style="margin-bottom: 12px; font-size: 15px; line-height: 1.6; color: #222; display: inline-flex; align-items: center; gap: 10px;">
+        <span style="display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; border-radius:4px; background:#e6f2fb; border:1px solid #e3f2fd; color:#267CB9; font-weight:700; font-size:12px; line-height:1;">✓</span>
         Basic Linux command-line comfort (can SSH and run commands)
       </li>
-      <li style="margin-bottom: 12px; padding-left: 24px; position: relative; font-size: 15px; line-height: 1.6; color: #222;">
-        <span style="position: absolute; left: 0; color: #267CB9; font-weight: 700;">✓</span>
+      <li style="margin-bottom: 12px; font-size: 15px; line-height: 1.6; color: #222; display: inline-flex; align-items: center; gap: 10px;">
+        <span style="display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; border-radius:4px; background:#e6f2fb; border:1px solid #e3f2fd; color:#267CB9; font-weight:700; font-size:12px; line-height:1;">✓</span>
         Want to build permanent in-house expertise
       </li>
-      <li style="margin-bottom: 12px; padding-left: 24px; position: relative; font-size: 15px; line-height: 1.6; color: #222;">
-        <span style="position: absolute; left: 0; color: #267CB9; font-weight: 700;">✓</span>
+      <li style="margin-bottom: 12px; font-size: 15px; line-height: 1.6; color: #222; display: inline-flex; align-items: center; gap: 10px;">
+        <span style="display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; border-radius:4px; background:#e6f2fb; border:1px solid #e3f2fd; color:#267CB9; font-weight:700; font-size:12px; line-height:1;">✓</span>
         Budget $5K-$50K range (saves $84K-$199K)
       </li>
-      <li style="margin-bottom: 12px; padding-left: 24px; position: relative; font-size: 15px; line-height: 1.6; color: #222;">
-        <span style="position: absolute; left: 0; color: #267CB9; font-weight: 700;">✓</span>
+      <li style="margin-bottom: 12px; font-size: 15px; line-height: 1.6; color: #222; display: inline-flex; align-items: center; gap: 10px;">
+        <span style="display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; border-radius:4px; background:#e6f2fb; border:1px solid #e3f2fd; color:#267CB9; font-weight:700; font-size:12px; line-height:1;">✓</span>
         Need complete control without dependencies
       </li>
-      <li style="margin-bottom: 0; padding-left: 24px; position: relative; font-size: 15px; line-height: 1.6; color: #222;">
-        <span style="position: absolute; left: 0; color: #267CB9; font-weight: 700;">✓</span>
+      <li style="margin-bottom: 0; font-size: 15px; line-height: 1.6; color: #222; display: inline-flex; align-items: center; gap: 10px;">
+        <span style="display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; border-radius:4px; background:#e6f2fb; border:1px solid #e3f2fd; color:#267CB9; font-weight:700; font-size:12px; line-height:1;">✓</span>
         Prefer learning by doing with comprehensive guides
       </li>
     </ul>
