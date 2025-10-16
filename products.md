@@ -882,30 +882,69 @@ Plus: Consultants leave, taking their knowledge. With the Master Pack, the knowl
 
 ## Zero-Risk Guarantee
 
-**Try the Complete Master Pack for 14 Days - Risk-Free**
+<section style="background: #ffffff; border: 1px solid #e1e4e8; border-radius: 12px; padding: 32px; margin: 24px 0;">
+  <!-- Guarantee Badge + Headline -->
+  <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
+    <div style="display: inline-flex; align-items: center; justify-content: center; width: 56px; height: 56px; border-radius: 50%; background: #f0f7ff; border: 2px solid #e3f2fd; color: #267CB9; font-weight: 700;">14</div>
+    <div>
+      <h3 style="margin: 0 0 6px 0; font-size: 22px; color: #1a1a1a;">Try Everything for 14 Days — 100% Risk‑Free</h3>
+      <p style="margin: 0; color: #4a4a4a; font-size: 15px;">Immediate access. Full functionality. No questions asked refund within 14 days.</p>
+    </div>
+  </div>
 
-Not sure if the DIY approach is right for you? Here's how our guarantee works:
+  <!-- Trust Grid: three highlights -->
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin: 16px 0 8px 0;">
+    <div style="background: #f8f9fa; border: 1px solid #e1e4e8; border-radius: 8px; padding: 16px;">
+      <div style="font-weight: 700; color: #1a1a1a; margin-bottom: 6px;">Instant Full Access</div>
+      <div style="color: #6c757d; font-size: 14px;">Download all 5 modules, 68+ tools, and 2,000+ pages immediately.</div>
+    </div>
+    <div style="background: #f8f9fa; border: 1px solid #e1e4e8; border-radius: 8px; padding: 16px;">
+      <div style="font-weight: 700; color: #1a1a1a; margin-bottom: 6px;">Real-World Trial</div>
+      <div style="color: #6c757d; font-size: 14px;">Use everything for 14 days in your environment—no feature limits.</div>
+    </div>
+    <div style="background: #f8f9fa; border: 1px solid #e1e4e8; border-radius: 8px; padding: 16px;">
+      <div style="font-weight: 700; color: #1a1a1a; margin-bottom: 6px;">Full Refund, Fast</div>
+      <div style="color: #6c757d; font-size: 14px;">Not a fit? Email <a href="mailto:aria@ariashaw.com" style="color:#267CB9; text-decoration:none;">aria@ariashaw.com</a> for immediate refund.</div>
+    </div>
+  </div>
 
-**Download all 5 modules immediately** - Get instant access to all 68+ tools and 2,000+ pages of documentation
+  <!-- 3-step timeline -->
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin: 16px 0 8px 0;">
+    <div style="border-left: 3px solid #267CB9; background: #f6f8fa; border-radius: 6px; padding: 12px 12px 12px 16px;">
+      <div style="font-weight: 700; color: #1a1a1a;">1) Download</div>
+      <div style="color: #6c757d; font-size: 14px;">Get all files instantly via Gumroad. No throttles, no locks.</div>
+    </div>
+    <div style="border-left: 3px solid #267CB9; background: #f6f8fa; border-radius: 6px; padding: 12px 12px 12px 16px;">
+      <div style="font-weight: 700; color: #1a1a1a;">2) Validate</div>
+      <div style="color: #6c757d; font-size: 14px;">Test calculators, run scripts in test, review playbooks with your team.</div>
+    </div>
+    <div style="border-left: 3px solid #267CB9; background: #f6f8fa; border-radius: 6px; padding: 12px 12px 12px 16px;">
+      <div style="font-weight: 700; color: #1a1a1a;">3) Decide</div>
+      <div style="color: #6c757d; font-size: 14px;">Keep it and build in-house capability, or get a fast full refund.</div>
+    </div>
+  </div>
 
-**Use the tools for 14 full days** - Test the Excel calculators, run the scripts, review the playbooks
+  <!-- Checklist of what to try in 14 days -->
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-top: 8px;">
+    <ul style="list-style: none; padding: 16px; margin: 0; background: #ffffff; border: 1px solid #e1e4e8; border-radius: 8px;">
+      <li style="margin: 8px 0; padding-left: 22px; position: relative; color: #4a4a4a; font-size: 14px;"><span style="position:absolute; left:0; color:#22863a; font-weight:700;">✓</span> Review module docs and tool descriptions</li>
+      <li style="margin: 8px 0; padding-left: 22px; position: relative; color: #4a4a4a; font-size: 14px;"><span style="position:absolute; left:0; color:#22863a; font-weight:700;">✓</span> Test calculators with your business data</li>
+      <li style="margin: 8px 0; padding-left: 22px; position: relative; color: #4a4a4a; font-size: 14px;"><span style="position:absolute; left:0; color:#22863a; font-weight:700;">✓</span> Run deploy scripts in a test environment</li>
+      <li style="margin: 8px 0; padding-left: 22px; position: relative; color: #4a4a4a; font-size: 14px;"><span style="position:absolute; left:0; color:#22863a; font-weight:700;">✓</span> Confirm version compatibility (Odoo 14–18)</li>
+      <li style="margin: 8px 0; padding-left: 22px; position: relative; color: #4a4a4a; font-size: 14px;"><span style="position:absolute; left:0; color:#22863a; font-weight:700;">✓</span> Align with your technical team on rollout plan</li>
+    </ul>
+    <div style="background: linear-gradient(135deg, #f0f7ff 0%, #ffffff 100%); border: 1px solid #e3f2fd; border-radius: 8px; padding: 16px;">
+      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+        <span style="display:inline-flex; align-items:center; justify-content:center; width:24px; height:24px; border-radius:50%; background:#e6f2fb; color:#267CB9; font-weight:700;">i</span>
+        <strong style="color:#1a1a1a;">Why this guarantee exists</strong>
+      </div>
+      <p style="margin: 0; color: #6c757d; font-size: 14px;">The toolkit routinely replaces $50,000+ in consulting value. The guarantee removes risk so your team can properly evaluate fit and quality.</p>
+      <div style="margin-top: 12px; font-size: 13px; color: #6c757d;">Trusted by 500+ businesses • Refund rate < 2%</div>
+    </div>
+  </div>
 
-**Full refund if not satisfied** - If the toolkit doesn't match the description or doesn't work as documented, email aria@ariashaw.com for immediate full refund—no questions asked
-
-**Why I offer this guarantee:**
-
-I'm confident the Master Pack delivers more value than $50,000+ in consulting fees. The 14-day guarantee removes all your risk and lets you evaluate the tools thoroughly before committing.
-
-Over 500 businesses have purchased the Master Pack. Refund rate: less than 2% (usually due to misunderstanding technical requirements, not quality issues).
-
-**What you can do in 14 days:**
-- Review all module documentation and tool descriptions
-- Test Excel calculators with your actual business data
-- Run deployment scripts in a test environment
-- Validate that tools match your Odoo version and setup
-- Consult with your technical team about implementation approach
-
-If at any point you feel the toolkit doesn't deliver the described value, one email gets you a full refund.
+  <div style="margin-top: 16px; text-align: center; color: #6c757d; font-size: 13px;">If it’s not exactly what you need, one email gets you a full refund.</div>
+</section>
 
 ---
 
