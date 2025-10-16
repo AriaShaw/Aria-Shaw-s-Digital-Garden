@@ -44,7 +44,7 @@ Definitive playbooks for every stage of your Odoo journey—from strategic plann
 
 ---
 
-## 🧰 Production Scripts & Tools
+## Production Scripts & Tools
 
 Looking for ready-to-use automation? Browse the complete collection of production scripts.
 
@@ -52,7 +52,7 @@ Looking for ready-to-use automation? Browse the complete collection of productio
 
 ---
 
-## 🏆 Need the Complete Toolkit?
+## Need the Complete Toolkit?
 
 These guides are just the beginning. The **Odoo Digital Sovereignty Master Pack** includes:
 

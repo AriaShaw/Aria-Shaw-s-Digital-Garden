@@ -12,9 +12,9 @@ Professional calculators built from 500+ production deployments. Use directly in
 
 ---
 
-## 🧮 Available Calculators
+## Available Calculators
 
-### 📊 Odoo Requirements Calculator
+### Odoo Requirements Calculator
 
 **Stop guessing server specs.** Calculate exact CPU, RAM, and storage requirements based on your user count, modules, and data volume.
 
@@ -29,7 +29,7 @@ Professional calculators built from 500+ production deployments. Use directly in
 
 ---
 
-### 🏆 Odoo Hosting Decision Calculator
+### Odoo Hosting Decision Calculator
 
 **End hosting confusion.** Get personalized recommendations based on your technical expertise, budget, and business needs.
 
@@ -44,7 +44,7 @@ Professional calculators built from 500+ production deployments. Use directly in
 
 ---
 
-## 🛠️ Need Automation Scripts?
+## Need Automation Scripts?
 
 For production-ready automation (backup, migration, monitoring, security):
 
@@ -54,7 +54,7 @@ For production-ready automation (backup, migration, monitoring, security):
 
 ---
 
-## 🆚 Free Tools vs. Master Pack
+## Free Tools vs. Master Pack
 
 | Feature | Free Calculators | Master Pack ($699) |
 |---------|------------------|-------------------|
@@ -79,7 +79,7 @@ For production-ready automation (backup, migration, monitoring, security):
 
 ---
 
-## 💰 Stop Paying Consultants to Use Their Tools
+## Stop Paying Consultants to Use Their Tools
 
 **The consultant model:** Pay $50,000-$200,000 for Odoo implementation. Get locked into yearly retainers. Lose knowledge when they leave.
 
@@ -125,7 +125,7 @@ For production-ready automation (backup, migration, monitoring, security):
 
 ---
 
-## 📖 Related Guides
+## Related Guides
 
 These calculators are built on insights from comprehensive guides:
 
@@ -135,7 +135,7 @@ These calculators are built on insights from comprehensive guides:
 
 ---
 
-## 💡 How These Calculators Were Built
+## How These Calculators Were Built
 
 These tools aren't based on vendor marketing materials or theoretical calculations. They're built from:
 
@@ -148,7 +148,7 @@ Every recommendation is battle-tested, not guesswork.
 
 ---
 
-## 🔮 Coming Soon
+## Coming Soon
 
 We're building more planning tools based on user feedback:
 
