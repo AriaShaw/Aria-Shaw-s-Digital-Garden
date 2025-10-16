@@ -181,15 +181,15 @@ custom_css: calculator
                 <td colspan="2"><strong>HOSTING RECOMMENDATIONS & PRICING</strong></td>
             </tr>
             <tr>
-                <td><strong>DigitalOcean (Self-Managed)</strong></td>
-                <td class="result-value" id="doRecommendation">Standard Droplet: $40-60/month</td>
+                <td><strong>DigitalOcean (Self-Managed VPS)</strong></td>
+                <td class="result-value" id="doRecommendation">Standard Droplet: $48/month</td>
             </tr>
             <tr>
-                <td><strong>Cloudways (Managed)</strong></td>
-                <td class="result-value" id="cloudwaysRecommendation">Business Plan: $35-55/month</td>
+                <td><strong>Cloudways (Managed Cloud)</strong></td>
+                <td class="result-value" id="cloudwaysRecommendation">Business: $88-99/month</td>
             </tr>
             <tr>
-                <td><strong>AWS (Enterprise)</strong></td>
+                <td><strong>AWS EC2 + RDS (Self-Managed)</strong></td>
                 <td class="result-value" id="awsRecommendation">t3.medium: $75/month total</td>
             </tr>
             <tr class="table-section">
@@ -203,7 +203,7 @@ custom_css: calculator
     </div>
 
     <div class="expert-note">
-        <strong>Expert Insight:</strong> I've seen too many companies start with the cheapest hosting option, only to migrate three times in their first year. Each migration costs 2-3 weeks of productivity loss. It's always cheaper to start with the right specs from day one.
+        <strong>Expert Insight:</strong> I've seen too many companies start with under-provisioned hosting ($24/mo droplets for 20+ users), only to migrate three times in their first year. Each migration costs 2-3 weeks of productivity loss plus $1,000-3,000 in consultant fees. It's always cheaper to start with the right specs from day one.
     </div>
 
     <div class="results-section">
@@ -217,7 +217,18 @@ custom_css: calculator
 
         <p><strong>Storage Planning:</strong> The storage calculation includes your database growth, file attachments, system logs, and critical 3x backup retention. Most companies underestimate file storage growth—plan for 50% more than you think you'll need.</p>
 
-        <p><strong>Network Bandwidth:</strong> The bandwidth requirements assume cloud hosting with multiple concurrent users. If you're using on-premise deployment, you can reduce these by 30-40%.</p>
+        <p><strong>Network Bandwidth:</strong> Odoo is highly bandwidth-efficient (10-15 kbps per user session). The calculator accounts for file transfers and peak loads with a 2x multiplier. Cloud hosting typically includes 1-5TB transfer, far exceeding typical Odoo usage.</p>
+
+        <div style="background: #e8f4f8; border-left: 3px solid var(--calc-link-color); padding: 16px 20px; margin-top: 24px; border-radius: 4px;">
+            <p style="margin: 0 0 8px 0; font-weight: 600; color: var(--calc-heading-color);">Data Sources (Verified October 2025):</p>
+            <ul style="margin: 0; padding-left: 20px; font-size: 13px; line-height: 1.8; color: #0c5460;">
+                <li>Server requirements: Odoo community forums, VentorTech, ERPixel analysis</li>
+                <li>VPS pricing: DigitalOcean ($48-96/mo for 8-16GB verified Oct 2025)</li>
+                <li>Cloudways pricing: Official pricing page ($88-150/mo for 8-16GB DO/Vultr)</li>
+                <li>AWS pricing: EC2 instances ($30-122/mo) + RDS database costs</li>
+                <li>Bandwidth data: Odoo official forums (10 kbps per user typical)</li>
+            </ul>
+        </div>
     </div>
 
     <!-- Implementation Reality Check Section -->
@@ -381,14 +392,15 @@ function calculate() {
     const storageGBProjected = Math.ceil(finalStorageProjected / 1024);
 
     // Calculate Network requirements
+    // Odoo is bandwidth-efficient: ~10 kbps per user = 0.01 Mbps
     const concurrentLoad = Math.ceil(currentUsers * 0.6);
     const projectedConcurrentLoad = Math.ceil(projectedUsers * 0.6);
-    const bandwidthPerUser = 2; // Mbps
-    const peakMultiplier = 1.5;
+    const bandwidthPerUser = 0.015; // Mbps (10-15 kbps per user based on Odoo forums)
+    const peakMultiplier = 2; // Account for file transfers and peak loads
 
     const minBandwidthCurrent = Math.ceil(concurrentLoad * bandwidthPerUser * peakMultiplier);
     const minBandwidthProjected = Math.ceil(projectedConcurrentLoad * bandwidthPerUser * peakMultiplier);
-    const recommendedBandwidth = Math.max(100, minBandwidthProjected);
+    const recommendedBandwidth = Math.max(50, minBandwidthProjected);
 
     // Update results
     document.getElementById('totalCpuCurrent').textContent = totalCpuCurrent;
@@ -416,33 +428,33 @@ function updateHostingRecommendations(cpu, ram, storage) {
     let cloudwaysPrice, digitaloceanPrice, awsPrice;
 
     if (ram <= 4) {
-        doRecommendation = "Basic Droplet: $20-30/month (2-4GB)";
-        cloudwaysRecommendation = "Startup Plan: $25-35/month (4GB)";
+        doRecommendation = "Basic Droplet: $24/month (4GB)";
+        cloudwaysRecommendation = "Startup: $42-52/month (4GB via DO/Vultr)";
         awsRecommendation = "t3.small: $15/month + RDS $25/month";
-        cloudwaysPrice = "$30";
-        digitaloceanPrice = "$25";
+        cloudwaysPrice = "$47";
+        digitaloceanPrice = "$24";
         awsPrice = "$40";
     } else if (ram <= 8) {
-        doRecommendation = "Standard Droplet: $40-60/month (8GB)";
-        cloudwaysRecommendation = "Business Plan: $35-55/month (8GB)";
+        doRecommendation = "Standard Droplet: $48/month (8GB)";
+        cloudwaysRecommendation = "Business: $88-99/month (8GB via DO/Vultr)";
         awsRecommendation = "t3.medium: $30/month + RDS $45/month";
-        cloudwaysPrice = "$45";
-        digitaloceanPrice = "$50";
+        cloudwaysPrice = "$94";
+        digitaloceanPrice = "$48";
         awsPrice = "$75";
     } else if (ram <= 16) {
-        doRecommendation = "Performance Droplet: $80-120/month (16GB)";
-        cloudwaysRecommendation = "Business Plus: $70-110/month (16GB)";
-        awsRecommendation = "t3.large: $67/month + RDS $90/month";
-        cloudwaysPrice = "$90";
-        digitaloceanPrice = "$100";
-        awsPrice = "$157";
+        doRecommendation = "Performance Droplet: $96/month (16GB)";
+        cloudwaysRecommendation = "Business Plus: $149-150/month (16GB via DO/Vultr)";
+        awsRecommendation = "t3.large: $61/month + RDS $90/month";
+        cloudwaysPrice = "$150";
+        digitaloceanPrice = "$96";
+        awsPrice = "$151";
     } else {
-        doRecommendation = "High Memory Droplet: $160+/month (32GB+)";
-        cloudwaysRecommendation = "Enterprise Plan: $140+/month (32GB+)";
-        awsRecommendation = "t3.xlarge: $134/month + RDS $180/month";
-        cloudwaysPrice = "$170";
-        digitaloceanPrice = "$180";
-        awsPrice = "$314";
+        doRecommendation = "High Memory: $192+/month (32GB+)";
+        cloudwaysRecommendation = "Enterprise: $280+/month (32GB+)";
+        awsRecommendation = "t3.xlarge: $122/month + RDS $180/month";
+        cloudwaysPrice = "$290";
+        digitaloceanPrice = "$192";
+        awsPrice = "$302";
     }
 
     document.getElementById('doRecommendation').textContent = doRecommendation;
