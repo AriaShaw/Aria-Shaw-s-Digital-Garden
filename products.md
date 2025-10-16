@@ -196,6 +196,11 @@ Most businesses face a difficult choice when implementing Odoo: pay $50,000-$200
     <div style="font-size: 18px; font-weight: 600; color: #222; margin-bottom: 8px;">Lifetime Updates</div>
     <div style="font-size: 14px; color: #727272; line-height: 1.4;">Continuous improvements and new tools</div>
   </div>
+  <div style="background: linear-gradient(135deg, #f6f8fa 0%, #ffffff 100%); border: 1px solid #e5e5e5; border-radius: 8px; padding: 28px; text-align: center;">
+    <div style="width: 48px; height: 48px; margin: 0 auto 16px auto; background: #267CB9; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 18px; font-weight: 700;">14</div>
+    <div style="font-size: 18px; font-weight: 600; color: #222; margin-bottom: 8px;">Day Guarantee</div>
+    <div style="font-size: 14px; color: #727272; line-height: 1.4;">Full refund if tools don't match description</div>
+  </div>
 </div>
 
 ---
@@ -268,6 +273,22 @@ Most businesses face a difficult choice when implementing Odoo: pay $50,000-$200
     </div>
     <div style="font-size: 13px; color: #727272; line-height: 1.5; font-style: italic;">
       Built DevOps capability, uses consultants only for custom features
+    </div>
+  </div>
+
+  <!-- Case Study 4 -->
+  <div style="background: #ffffff; border: 2px solid #e5e5e5; border-radius: 8px; padding: 28px; transition: transform 0.2s ease, box-shadow 0.2s ease;">
+    <div style="font-size: 14px; font-weight: 600; color: #267CB9; margin-bottom: 12px;">15-User Consulting Firm</div>
+    <div style="margin-bottom: 20px;">
+      <div style="font-size: 36px; font-weight: 700; color: #22863a; line-height: 1;">$44,301</div>
+      <div style="font-size: 14px; color: #727272; margin-top: 4px;">saved (98.5% cost reduction)</div>
+    </div>
+    <div style="font-size: 14px; color: #555; line-height: 1.6; margin-bottom: 16px;">
+      <div style="margin-bottom: 8px;"><strong>Quote:</strong> $45,000 consulting</div>
+      <div style="margin-bottom: 8px;"><strong>Used:</strong> $699 toolkit + 6 weeks part-time</div>
+    </div>
+    <div style="font-size: 13px; color: #727272; line-height: 1.5; font-style: italic;">
+      Completed deployment in 6 weeks, avoiding 3-month consultant timeline
     </div>
   </div>
 
@@ -364,7 +385,7 @@ Most businesses face a difficult choice when implementing Odoo: pay $50,000-$200
 </div>
 
 <div style="text-align: center; margin-top: 32px;">
-  <a href="/" style="color: #267CB9; text-decoration: none; font-size: 16px; font-weight: 500;">→ See detailed breakdown of tools and features</a>
+  <a href="#whats-included-anchor" style="color: #267CB9; text-decoration: none; font-size: 16px; font-weight: 500;" onclick="document.getElementById('whats-included-anchor').scrollIntoView({behavior: 'smooth'}); return false;">→ See complete breakdown of all 68+ tools and features</a>
 </div>
 
 ---
@@ -427,6 +448,23 @@ Most businesses face a difficult choice when implementing Odoo: pay $50,000-$200
 
 <p style="font-size: 16px; color: #555; margin-bottom: 32px;">Before purchasing, explore these comprehensive free resources to understand the methodology behind the Master Pack:</p>
 
+<style>
+.learn-more-link {
+  color: #222;
+  text-decoration: none;
+  font-weight: 500;
+  display: block;
+  line-height: 1.5;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s ease;
+  padding-bottom: 2px;
+}
+.learn-more-link:hover {
+  border-bottom-color: #267CB9;
+  color: #267CB9;
+}
+</style>
+
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; margin-bottom: 40px;">
 
   <!-- Strategic Planning -->
@@ -434,11 +472,11 @@ Most businesses face a difficult choice when implementing Odoo: pay $50,000-$200
     <h4 style="margin: 0 0 16px 0; font-size: 16px; font-weight: 600; color: #267CB9;">Strategic Planning & Decision-Making</h4>
     <ul style="list-style: none; padding: 0; margin: 0;">
       <li style="margin-bottom: 12px;">
-        <a href="/odoo-self-hosting-guide/" style="color: #222; text-decoration: none; font-weight: 500; display: block; line-height: 1.5;">Odoo Self-Hosting Guide: Avoid the $48,000 Mistake</a>
+        <a href="/odoo-self-hosting-guide/" class="learn-more-link">Odoo Self-Hosting Guide: Avoid the $48,000 Mistake</a>
         <span style="font-size: 13px; color: #727272; display: block; margin-top: 4px;">Learn the strategic planning framework from Module 1</span>
       </li>
       <li>
-        <a href="/odoo-implementation-guide/" style="color: #222; text-decoration: none; font-weight: 500; display: block; line-height: 1.5;">Odoo Implementation Guide: Avoid $250K+ Failures</a>
+        <a href="/odoo-implementation-guide/" class="learn-more-link">Odoo Implementation Guide: Avoid $250K+ Failures</a>
         <span style="font-size: 13px; color: #727272; display: block; margin-top: 4px;">Complete implementation roadmap and risk prevention</span>
       </li>
     </ul>
@@ -449,11 +487,11 @@ Most businesses face a difficult choice when implementing Odoo: pay $50,000-$200
     <h4 style="margin: 0 0 16px 0; font-size: 16px; font-weight: 600; color: #267CB9;">Technical Deployment</h4>
     <ul style="list-style: none; padding: 0; margin: 0;">
       <li style="margin-bottom: 12px;">
-        <a href="/odoo-minimum-requirements-deployment-guide/" style="color: #222; text-decoration: none; font-weight: 500; display: block; line-height: 1.5;">Odoo Minimum Requirements & Deployment Guide</a>
+        <a href="/odoo-minimum-requirements-deployment-guide/" class="learn-more-link">Odoo Minimum Requirements & Deployment Guide</a>
         <span style="font-size: 13px; color: #727272; display: block; margin-top: 4px;">Infrastructure sizing methodology from Module 2</span>
       </li>
       <li>
-        <a href="/odoo-aws-deployment-guide/" style="color: #222; text-decoration: none; font-weight: 500; display: block; line-height: 1.5;">Odoo AWS Deployment Guide 2025</a>
+        <a href="/odoo-aws-deployment-guide/" class="learn-more-link">Odoo AWS Deployment Guide 2025</a>
         <span style="font-size: 13px; color: #727272; display: block; margin-top: 4px;">Cloud deployment best practices</span>
       </li>
     </ul>
@@ -464,7 +502,7 @@ Most businesses face a difficult choice when implementing Odoo: pay $50,000-$200
     <h4 style="margin: 0 0 16px 0; font-size: 16px; font-weight: 600; color: #267CB9;">Migration & Data Management</h4>
     <ul style="list-style: none; padding: 0; margin: 0;">
       <li>
-        <a href="/odoo-database-migration-guide/" style="color: #222; text-decoration: none; font-weight: 500; display: block; line-height: 1.5;">Odoo Database Migration Guide: Zero-Downtime</a>
+        <a href="/odoo-database-migration-guide/" class="learn-more-link">Odoo Database Migration Guide: Zero-Downtime</a>
         <span style="font-size: 13px; color: #727272; display: block; margin-top: 4px;">Migration methodology from Module 3</span>
       </li>
     </ul>
@@ -475,7 +513,7 @@ Most businesses face a difficult choice when implementing Odoo: pay $50,000-$200
     <h4 style="margin: 0 0 16px 0; font-size: 16px; font-weight: 600; color: #267CB9;">Backup & Recovery</h4>
     <ul style="list-style: none; padding: 0; margin: 0;">
       <li>
-        <a href="/odoo-database-backup-restore-guide/" style="color: #222; text-decoration: none; font-weight: 500; display: block; line-height: 1.5;">Odoo Database Backup & Restore Guide</a>
+        <a href="/odoo-database-backup-restore-guide/" class="learn-more-link">Odoo Database Backup & Restore Guide</a>
         <span style="font-size: 13px; color: #727272; display: block; margin-top: 4px;">Manual backup process before automation (Module 4)</span>
       </li>
     </ul>
@@ -486,11 +524,11 @@ Most businesses face a difficult choice when implementing Odoo: pay $50,000-$200
     <h4 style="margin: 0 0 16px 0; font-size: 16px; font-weight: 600; color: #267CB9;">Free Interactive Tools</h4>
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
       <div>
-        <a href="/toolkit/odoo-requirements-calculator/" style="color: #222; text-decoration: none; font-weight: 500; display: block; line-height: 1.5;">Odoo Requirements Calculator</a>
+        <a href="/toolkit/odoo-requirements-calculator/" class="learn-more-link">Odoo Requirements Calculator</a>
         <span style="font-size: 13px; color: #727272; display: block; margin-top: 4px;">Calculate exact hardware specs needed</span>
       </div>
       <div>
-        <a href="/toolkit/odoo-hosting-advisor/" style="color: #222; text-decoration: none; font-weight: 500; display: block; line-height: 1.5;">Odoo Hosting Advisor</a>
+        <a href="/toolkit/odoo-hosting-advisor/" class="learn-more-link">Odoo Hosting Advisor</a>
         <span style="font-size: 13px; color: #727272; display: block; margin-top: 4px;">Find your optimal hosting strategy</span>
       </div>
     </div>
@@ -540,7 +578,7 @@ Most businesses face a difficult choice when implementing Odoo: pay $50,000-$200
   </div>
 </div>
 
-<div class="toolkit-accordion">
+<div class="toolkit-accordion" id="whats-included-anchor">
   <button class="accordion-header" aria-expanded="false">
     <h3 class="accordion-title">What's included in the $699 Odoo Master Pack?</h3>
     <span class="accordion-chevron">▼</span>
@@ -554,6 +592,14 @@ Most businesses face a difficult choice when implementing Odoo: pay $50,000-$200
       <li><strong>Lifetime free updates</strong> - all future improvements included</li>
       <li><strong>14-day money-back guarantee</strong> - full refund if tools don't match description</li>
       <li><strong>Zero recurring fees</strong> - one-time payment, own forever</li>
+    </ul>
+    <p><strong>Detailed breakdown by module:</strong></p>
+    <ul>
+      <li><strong>Module 1 (Strategic Command):</strong> TCO calculator, 5-year ROI analyzer, vendor comparison matrix, CFO presentation deck, implementation roadmap template</li>
+      <li><strong>Module 2 (Technical Deployment):</strong> Server sizing calculator, deployment automation scripts, PostgreSQL tuning configs, Nginx/SSL setup guides, monitoring stack templates</li>
+      <li><strong>Module 3 (Migration Command):</strong> Zero-downtime migration framework, data validation scripts, rollback procedures, audit trail generator, version upgrade playbooks</li>
+      <li><strong>Module 4 (Fortress Protection):</strong> Automated backup scripts (local + S3/B2/Google Drive), disaster recovery drill simulator, encryption setup guides, compliance checklists</li>
+      <li><strong>Module 5 (Operations Excellence):</strong> Performance tuning toolkit, capacity planning spreadsheets, troubleshooting decision trees, incident response playbooks, health monitoring dashboards</li>
     </ul>
     <p>All tools are provided in open formats (Excel .xlsx, bash .sh, Python .py, Markdown .md) with no DRM or proprietary lock-in.</p>
   </div>
@@ -708,11 +754,13 @@ Most businesses face a difficult choice when implementing Odoo: pay $50,000-$200
 
 Plus: Consultants leave, taking their knowledge. With the Master Pack, the knowledge stays with you forever.
 
-<div class="inline-cta">
-  <p><strong>Save $84,000-$199,000 in consulting fees</strong></p>
-  <p>One-time $699 investment • Lifetime access • 14-day guarantee</p>
-  <a href="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty" class="btn-primary-cta" onclick="gtag('event', 'cta_click', {'event_category': 'CTA', 'event_label': 'Get Instant Access Now', 'cta_location': 'products-pre-faq', 'destination': 'gumroad'});">Get Access Now</a>
-</div>
+{% include ctas/inline-simple.html
+  title="Save $84,000-$199,000 in consulting fees"
+  description="One-time $699 investment • Lifetime access • 14-day guarantee"
+  button_text="Get Instant Access — $699"
+  link="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty"
+  location="products-value-comparison"
+%}
 
 ---
 
