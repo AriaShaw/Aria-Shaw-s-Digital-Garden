@@ -160,9 +160,9 @@ Most businesses face a difficult choice when implementing Odoo: pay $50,000-$200
 
 </div>
 
-<div style="background: linear-gradient(135deg, #fff9e6 0%, #ffffff 100%); border-left: 4px solid #ffc107; border-radius: 8px; padding: 24px; margin-top: 32px;">
+<div style="background: linear-gradient(135deg, #f0f7ff 0%, #ffffff 100%); border-left: 4px solid #267CB9; border-radius: 8px; padding: 24px; margin-top: 32px;">
   <p style="margin: 0; font-size: 16px; line-height: 1.6; color: #222;">
-    <strong style="color: #d97706;">Hybrid Approach:</strong> Many businesses use the Master Pack for 80% of implementation (saving 80-90% on costs), then hire consultants only for specific complex customizations. This builds capability while leveraging expert help where truly needed.
+    <strong style="color: #267CB9;">Hybrid Approach:</strong> Many businesses use the Master Pack for 80% of implementation (saving 80-90% on costs), then hire consultants only for specific complex customizations. This builds capability while leveraging expert help where truly needed.
   </p>
 </div>
 
