@@ -105,7 +105,7 @@ Most businesses face a difficult choice when implementing Odoo: pay $50,000-$200
 
 ### When to Choose What: Decision Guide
 
-<div style="display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 32px; margin: 40px 0;">
+<div class="products-decision-grid" style="display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 32px; margin: 40px 0;">
 
   <!-- DIY Path -->
   <div style="background: linear-gradient(135deg, #f0f7ff 0%, #ffffff 100%); border: 2px solid #267CB9; border-radius: 12px; padding: 32px; position: relative; box-shadow: 0 8px 24px rgba(38,124,185,0.12);">
@@ -382,8 +382,8 @@ Most businesses face a difficult choice when implementing Odoo: pay $50,000-$200
 </div>
 
 <!-- Inline CTA after Case Studies -->
-<div style="background: transparent; padding: 28px 0; margin: 32px 0; text-align: center;">
-  <a href="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty" style="background: transparent; color: #267CB9; padding: 16px 28px; font-size: 17px; font-weight: 600; text-decoration: none; display: inline-block; border-radius: 10px; border: 1px solid #267CB9; transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;" onclick="gtag('event', 'cta_click', {'event_category': 'CTA', 'event_label': 'Start 14-Day Trial - Mid-page', 'cta_location': 'products-mid-page', 'destination': 'gumroad'});" onmouseover="this.style.backgroundColor='#eaf4fb'; this.style.borderColor='#1e6ba6'; this.style.color='#1e6ba6';" onmouseout="this.style.backgroundColor='transparent'; this.style.borderColor='#267CB9'; this.style.color='#267CB9';">
+<div class="products-mid-cta" style="background: transparent; padding: 28px 0; margin: 32px 0; text-align: center;">
+  <a class="cta-ghost" href="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty" style="background: transparent; color: #267CB9; padding: 16px 28px; font-size: 17px; font-weight: 600; text-decoration: none; display: inline-block; border-radius: 10px; border: 1px solid #267CB9; transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;" onclick="gtag('event', 'cta_click', {'event_category': 'CTA', 'event_label': 'Start 14-Day Trial - Mid-page', 'cta_location': 'products-mid-page', 'destination': 'gumroad'});" onmouseover="this.style.backgroundColor='#eaf4fb'; this.style.borderColor='#1e6ba6'; this.style.color='#1e6ba6';" onmouseout="this.style.backgroundColor='transparent'; this.style.borderColor='#267CB9'; this.style.color='#267CB9';">
     Start 14-Day Risk-Free Trial
   </a>
   <div style="margin-top: 8px; font-size: 11px; color: #9aa3ab;">14-day money-back guarantee</div>
