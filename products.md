@@ -247,7 +247,7 @@ Most businesses face a difficult choice when implementing Odoo: pay $50,000-$200
       <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
         <div style="flex: 1;">
           <div style="font-size: 12px; color: #6a737d; margin-bottom: 4px; font-weight: 600;">CONSULTANT QUOTE</div>
-          <div style="font-size: 20px; font-weight: 700; color: #d73a49; text-decoration: line-through; text-decoration-thickness: 2px;">$120,000</div>
+          <div style="font-size: 20px; font-weight: 700; color: #6a737d; text-decoration: line-through; text-decoration-thickness: 2px;">$120,000</div>
         </div>
         <div style="font-size: 24px; color: #267CB9; margin: 0 16px;">→</div>
         <div style="flex: 1; text-align: right;">
@@ -285,7 +285,7 @@ Most businesses face a difficult choice when implementing Odoo: pay $50,000-$200
       <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
         <div style="flex: 1;">
           <div style="font-size: 12px; color: #6a737d; margin-bottom: 4px; font-weight: 600;">CONSULTANT QUOTE</div>
-          <div style="font-size: 20px; font-weight: 700; color: #d73a49; text-decoration: line-through; text-decoration-thickness: 2px;">$65,000</div>
+          <div style="font-size: 20px; font-weight: 700; color: #6a737d; text-decoration: line-through; text-decoration-thickness: 2px;">$65,000</div>
         </div>
         <div style="font-size: 24px; color: #267CB9; margin: 0 16px;">→</div>
         <div style="flex: 1; text-align: right;">
@@ -322,8 +322,8 @@ Most businesses face a difficult choice when implementing Odoo: pay $50,000-$200
       <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
         <div style="flex: 1;">
           <div style="font-size: 12px; color: #6a737d; margin-bottom: 4px; font-weight: 600;">CONSULTANT QUOTE</div>
-          <div style="font-size: 20px; font-weight: 700; color: #d73a49; text-decoration: line-through; text-decoration-thickness: 2px;">$180K</div>
-          <div style="font-size: 12px; color: #d73a49; margin-top: 2px;">+ $4K/mo</div>
+          <div style="font-size: 20px; font-weight: 700; color: #6a737d; text-decoration: line-through; text-decoration-thickness: 2px;">$180K</div>
+          <div style="font-size: 12px; color: #6a737d; margin-top: 2px;">+ $4K/mo</div>
         </div>
         <div style="font-size: 24px; color: #267CB9; margin: 0 16px;">→</div>
         <div style="flex: 1; text-align: right;">
@@ -358,7 +358,7 @@ Most businesses face a difficult choice when implementing Odoo: pay $50,000-$200
       <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
         <div style="flex: 1;">
           <div style="font-size: 12px; color: #6a737d; margin-bottom: 4px; font-weight: 600;">CONSULTANT QUOTE</div>
-          <div style="font-size: 20px; font-weight: 700; color: #d73a49; text-decoration: line-through; text-decoration-thickness: 2px;">$45,000</div>
+          <div style="font-size: 20px; font-weight: 700; color: #6a737d; text-decoration: line-through; text-decoration-thickness: 2px;">$45,000</div>
         </div>
         <div style="font-size: 24px; color: #267CB9; margin: 0 16px;">→</div>
         <div style="flex: 1; text-align: right;">
@@ -927,11 +927,11 @@ Plus: Consultants leave, taking their knowledge. With the Master Pack, the knowl
   <!-- Checklist of what to try in 14 days -->
   <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-top: 8px;">
     <ul style="list-style: none; padding: 16px; margin: 0; background: #ffffff; border: 1px solid #e1e4e8; border-radius: 8px;">
-      <li style="margin: 8px 0; padding-left: 22px; position: relative; color: #4a4a4a; font-size: 14px;"><span style="position:absolute; left:0; color:#22863a; font-weight:700;">✓</span> Review module docs and tool descriptions</li>
-      <li style="margin: 8px 0; padding-left: 22px; position: relative; color: #4a4a4a; font-size: 14px;"><span style="position:absolute; left:0; color:#22863a; font-weight:700;">✓</span> Test calculators with your business data</li>
-      <li style="margin: 8px 0; padding-left: 22px; position: relative; color: #4a4a4a; font-size: 14px;"><span style="position:absolute; left:0; color:#22863a; font-weight:700;">✓</span> Run deploy scripts in a test environment</li>
-      <li style="margin: 8px 0; padding-left: 22px; position: relative; color: #4a4a4a; font-size: 14px;"><span style="position:absolute; left:0; color:#22863a; font-weight:700;">✓</span> Confirm version compatibility (Odoo 14–18)</li>
-      <li style="margin: 8px 0; padding-left: 22px; position: relative; color: #4a4a4a; font-size: 14px;"><span style="position:absolute; left:0; color:#22863a; font-weight:700;">✓</span> Align with your technical team on rollout plan</li>
+      <li style="margin: 8px 0; color: #4a4a4a; font-size: 14px; display: inline-flex; align-items: center; gap: 8px;"><span style="display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; border-radius:4px; background:#e6f2fb; border:1px solid #e3f2fd; color:#267CB9; font-weight:700; font-size:12px; line-height:1;">✓</span> Review module docs and tool descriptions</li>
+      <li style="margin: 8px 0; color: #4a4a4a; font-size: 14px; display: inline-flex; align-items: center; gap: 8px;"><span style="display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; border-radius:4px; background:#e6f2fb; border:1px solid #e3f2fd; color:#267CB9; font-weight:700; font-size:12px; line-height:1;">✓</span> Test calculators with your business data</li>
+      <li style="margin: 8px 0; color: #4a4a4a; font-size: 14px; display: inline-flex; align-items: center; gap: 8px;"><span style="display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; border-radius:4px; background:#e6f2fb; border:1px solid #e3f2fd; color:#267CB9; font-weight:700; font-size:12px; line-height:1;">✓</span> Run deploy scripts in a test environment</li>
+      <li style="margin: 8px 0; color: #4a4a4a; font-size: 14px; display: inline-flex; align-items: center; gap: 8px;"><span style="display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; border-radius:4px; background:#e6f2fb; border:1px solid #e3f2fd; color:#267CB9; font-weight:700; font-size:12px; line-height:1;">✓</span> Confirm version compatibility (Odoo 14–18)</li>
+      <li style="margin: 8px 0; color: #4a4a4a; font-size: 14px; display: inline-flex; align-items: center; gap: 8px;"><span style="display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; border-radius:4px; background:#e6f2fb; border:1px solid #e3f2fd; color:#267CB9; font-weight:700; font-size:12px; line-height:1;">✓</span> Align with your technical team on rollout plan</li>
     </ul>
     <div style="background: linear-gradient(135deg, #f0f7ff 0%, #ffffff 100%); border: 1px solid #e3f2fd; border-radius: 8px; padding: 16px;">
       <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
