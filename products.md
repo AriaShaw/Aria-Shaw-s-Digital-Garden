@@ -226,70 +226,157 @@ Most businesses face a difficult choice when implementing Odoo: pay $50,000-$200
 
 ### Real Cost Savings: Anonymized Case Studies
 
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; margin: 40px 0;">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 32px; margin: 40px 0;">
 
   <!-- Case Study 1 -->
-  <div style="background: #ffffff; border: 2px solid #e5e5e5; border-radius: 8px; padding: 28px; transition: transform 0.2s ease, box-shadow 0.2s ease;">
-    <div style="font-size: 14px; font-weight: 600; color: #267CB9; margin-bottom: 12px;">50-User Manufacturing Company</div>
-    <div style="margin-bottom: 20px;">
-      <div style="font-size: 36px; font-weight: 700; color: #22863a; line-height: 1;">$119,301</div>
-      <div style="font-size: 14px; color: #727272; margin-top: 4px;">saved (99.4% cost reduction)</div>
+  <div style="background: #ffffff; border: 1px solid #e1e4e8; border-radius: 12px; padding: 32px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); transition: all 0.2s ease;" onmouseover="this.style.boxShadow='0 8px 24px rgba(38,124,185,0.12)'; this.style.transform='translateY(-4px)';" onmouseout="this.style.boxShadow='0 2px 8px rgba(0,0,0,0.04)'; this.style.transform='translateY(0)';">
+
+    <!-- Company Badge -->
+    <div style="display: inline-block; padding: 6px 12px; background: #f0f7ff; border-radius: 6px; margin-bottom: 20px;">
+      <span style="font-size: 13px; font-weight: 600; color: #267CB9;">50-User Manufacturing</span>
     </div>
-    <div style="font-size: 14px; color: #555; line-height: 1.6; margin-bottom: 16px;">
-      <div style="margin-bottom: 8px;"><strong>Quote:</strong> $120,000 consulting</div>
-      <div style="margin-bottom: 8px;"><strong>Used:</strong> $699 toolkit + 12 weeks internal</div>
+
+    <!-- Savings Hero Number -->
+    <div style="margin-bottom: 24px;">
+      <div style="font-size: 48px; font-weight: 700; color: #22863a; line-height: 1; letter-spacing: -0.02em;">$119,301</div>
+      <div style="font-size: 15px; color: #6a737d; margin-top: 8px; font-weight: 500;">Total Saved (99.4% reduction)</div>
     </div>
-    <div style="font-size: 13px; color: #727272; line-height: 1.5; font-style: italic;">
-      In-house team now maintains system without external dependencies
+
+    <!-- Cost Comparison Bar -->
+    <div style="background: #f8f9fa; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+        <div style="flex: 1;">
+          <div style="font-size: 12px; color: #6a737d; margin-bottom: 4px; font-weight: 600;">CONSULTANT QUOTE</div>
+          <div style="font-size: 20px; font-weight: 700; color: #d73a49; text-decoration: line-through; text-decoration-thickness: 2px;">$120,000</div>
+        </div>
+        <div style="font-size: 24px; color: #267CB9; margin: 0 16px;">→</div>
+        <div style="flex: 1; text-align: right;">
+          <div style="font-size: 12px; color: #6a737d; margin-bottom: 4px; font-weight: 600;">ACTUAL COST</div>
+          <div style="font-size: 20px; font-weight: 700; color: #22863a;">$699</div>
+        </div>
+      </div>
+      <div style="font-size: 13px; color: #6a737d; line-height: 1.5;">
+        + 12 weeks internal team time
+      </div>
     </div>
+
+    <!-- Result -->
+    <div style="padding: 16px; background: linear-gradient(135deg, #f6f8fa 0%, #ffffff 100%); border-left: 3px solid #267CB9; border-radius: 6px;">
+      <p style="margin: 0; font-size: 14px; color: #1a1a1a; line-height: 1.6; font-weight: 500;">
+        In-house team now maintains system without external dependencies
+      </p>
+    </div>
+
   </div>
 
   <!-- Case Study 2 -->
-  <div style="background: #ffffff; border: 2px solid #e5e5e5; border-radius: 8px; padding: 28px; transition: transform 0.2s ease, box-shadow 0.2s ease;">
-    <div style="font-size: 14px; font-weight: 600; color: #267CB9; margin-bottom: 12px;">25-User Retail Business</div>
-    <div style="margin-bottom: 20px;">
-      <div style="font-size: 36px; font-weight: 700; color: #22863a; line-height: 1;">$64,301</div>
-      <div style="font-size: 14px; color: #727272; margin-top: 4px;">saved (98.9% cost reduction)</div>
+  <div style="background: #ffffff; border: 1px solid #e1e4e8; border-radius: 12px; padding: 32px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); transition: all 0.2s ease;" onmouseover="this.style.boxShadow='0 8px 24px rgba(38,124,185,0.12)'; this.style.transform='translateY(-4px)';" onmouseout="this.style.boxShadow='0 2px 8px rgba(0,0,0,0.04)'; this.style.transform='translateY(0)';">
+
+    <div style="display: inline-block; padding: 6px 12px; background: #f0f7ff; border-radius: 6px; margin-bottom: 20px;">
+      <span style="font-size: 13px; font-weight: 600; color: #267CB9;">25-User Retail</span>
     </div>
-    <div style="font-size: 14px; color: #555; line-height: 1.6; margin-bottom: 16px;">
-      <div style="margin-bottom: 8px;"><strong>Quote:</strong> $65,000 consulting</div>
-      <div style="margin-bottom: 8px;"><strong>Used:</strong> $699 toolkit + 8 weeks part-time</div>
+
+    <div style="margin-bottom: 24px;">
+      <div style="font-size: 48px; font-weight: 700; color: #22863a; line-height: 1; letter-spacing: -0.02em;">$64,301</div>
+      <div style="font-size: 15px; color: #6a737d; margin-top: 8px; font-weight: 500;">Total Saved (98.9% reduction)</div>
     </div>
-    <div style="font-size: 13px; color: #727272; line-height: 1.5; font-style: italic;">
-      Zero-downtime migration, team trained for future upgrades
+
+    <div style="background: #f8f9fa; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+        <div style="flex: 1;">
+          <div style="font-size: 12px; color: #6a737d; margin-bottom: 4px; font-weight: 600;">CONSULTANT QUOTE</div>
+          <div style="font-size: 20px; font-weight: 700; color: #d73a49; text-decoration: line-through; text-decoration-thickness: 2px;">$65,000</div>
+        </div>
+        <div style="font-size: 24px; color: #267CB9; margin: 0 16px;">→</div>
+        <div style="flex: 1; text-align: right;">
+          <div style="font-size: 12px; color: #6a737d; margin-bottom: 4px; font-weight: 600;">ACTUAL COST</div>
+          <div style="font-size: 20px; font-weight: 700; color: #22863a;">$699</div>
+        </div>
+      </div>
+      <div style="font-size: 13px; color: #6a737d; line-height: 1.5;">
+        + 8 weeks part-time
+      </div>
     </div>
+
+    <div style="padding: 16px; background: linear-gradient(135deg, #f6f8fa 0%, #ffffff 100%); border-left: 3px solid #267CB9; border-radius: 6px;">
+      <p style="margin: 0; font-size: 14px; color: #1a1a1a; line-height: 1.6; font-weight: 500;">
+        Zero-downtime migration, team trained for future upgrades
+      </p>
+    </div>
+
   </div>
 
   <!-- Case Study 3 -->
-  <div style="background: #ffffff; border: 2px solid #e5e5e5; border-radius: 8px; padding: 28px; transition: transform 0.2s ease, box-shadow 0.2s ease;">
-    <div style="font-size: 14px; font-weight: 600; color: #267CB9; margin-bottom: 12px;">100-User Services Company</div>
-    <div style="margin-bottom: 20px;">
-      <div style="font-size: 36px; font-weight: 700; color: #22863a; line-height: 1;">$172,301</div>
-      <div style="font-size: 14px; color: #727272; margin-top: 4px;">saved Year 1 + $48K/yr ongoing</div>
+  <div style="background: #ffffff; border: 1px solid #e1e4e8; border-radius: 12px; padding: 32px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); transition: all 0.2s ease;" onmouseover="this.style.boxShadow='0 8px 24px rgba(38,124,185,0.12)'; this.style.transform='translateY(-4px)';" onmouseout="this.style.boxShadow='0 2px 8px rgba(0,0,0,0.04)'; this.style.transform='translateY(0)';">
+
+    <div style="display: inline-block; padding: 6px 12px; background: #f0f7ff; border-radius: 6px; margin-bottom: 20px;">
+      <span style="font-size: 13px; font-weight: 600; color: #267CB9;">100-User Services</span>
     </div>
-    <div style="font-size: 14px; color: #555; line-height: 1.6; margin-bottom: 16px;">
-      <div style="margin-bottom: 8px;"><strong>Quote:</strong> $180K + $4K/month retainer</div>
-      <div style="margin-bottom: 8px;"><strong>Used:</strong> $699 + 40hrs consultant only</div>
+
+    <div style="margin-bottom: 24px;">
+      <div style="font-size: 48px; font-weight: 700; color: #22863a; line-height: 1; letter-spacing: -0.02em;">$172,301</div>
+      <div style="font-size: 15px; color: #6a737d; margin-top: 8px; font-weight: 500;">Year 1 Saved + $48K/yr ongoing</div>
     </div>
-    <div style="font-size: 13px; color: #727272; line-height: 1.5; font-style: italic;">
-      Built DevOps capability, uses consultants only for custom features
+
+    <div style="background: #f8f9fa; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+        <div style="flex: 1;">
+          <div style="font-size: 12px; color: #6a737d; margin-bottom: 4px; font-weight: 600;">CONSULTANT QUOTE</div>
+          <div style="font-size: 20px; font-weight: 700; color: #d73a49; text-decoration: line-through; text-decoration-thickness: 2px;">$180K</div>
+          <div style="font-size: 12px; color: #d73a49; margin-top: 2px;">+ $4K/mo</div>
+        </div>
+        <div style="font-size: 24px; color: #267CB9; margin: 0 16px;">→</div>
+        <div style="flex: 1; text-align: right;">
+          <div style="font-size: 12px; color: #6a737d; margin-bottom: 4px; font-weight: 600;">ACTUAL COST</div>
+          <div style="font-size: 20px; font-weight: 700; color: #22863a;">$699</div>
+          <div style="font-size: 12px; color: #22863a; margin-top: 2px;">+ 40hrs consultant</div>
+        </div>
+      </div>
     </div>
+
+    <div style="padding: 16px; background: linear-gradient(135deg, #f6f8fa 0%, #ffffff 100%); border-left: 3px solid #267CB9; border-radius: 6px;">
+      <p style="margin: 0; font-size: 14px; color: #1a1a1a; line-height: 1.6; font-weight: 500;">
+        Built DevOps capability, uses consultants only for custom features
+      </p>
+    </div>
+
   </div>
 
   <!-- Case Study 4 -->
-  <div style="background: #ffffff; border: 2px solid #e5e5e5; border-radius: 8px; padding: 28px; transition: transform 0.2s ease, box-shadow 0.2s ease;">
-    <div style="font-size: 14px; font-weight: 600; color: #267CB9; margin-bottom: 12px;">15-User Consulting Firm</div>
-    <div style="margin-bottom: 20px;">
-      <div style="font-size: 36px; font-weight: 700; color: #22863a; line-height: 1;">$44,301</div>
-      <div style="font-size: 14px; color: #727272; margin-top: 4px;">saved (98.5% cost reduction)</div>
+  <div style="background: #ffffff; border: 1px solid #e1e4e8; border-radius: 12px; padding: 32px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); transition: all 0.2s ease;" onmouseover="this.style.boxShadow='0 8px 24px rgba(38,124,185,0.12)'; this.style.transform='translateY(-4px)';" onmouseout="this.style.boxShadow='0 2px 8px rgba(0,0,0,0.04)'; this.style.transform='translateY(0)';">
+
+    <div style="display: inline-block; padding: 6px 12px; background: #f0f7ff; border-radius: 6px; margin-bottom: 20px;">
+      <span style="font-size: 13px; font-weight: 600; color: #267CB9;">15-User Consulting Firm</span>
     </div>
-    <div style="font-size: 14px; color: #555; line-height: 1.6; margin-bottom: 16px;">
-      <div style="margin-bottom: 8px;"><strong>Quote:</strong> $45,000 consulting</div>
-      <div style="margin-bottom: 8px;"><strong>Used:</strong> $699 toolkit + 6 weeks part-time</div>
+
+    <div style="margin-bottom: 24px;">
+      <div style="font-size: 48px; font-weight: 700; color: #22863a; line-height: 1; letter-spacing: -0.02em;">$44,301</div>
+      <div style="font-size: 15px; color: #6a737d; margin-top: 8px; font-weight: 500;">Total Saved (98.5% reduction)</div>
     </div>
-    <div style="font-size: 13px; color: #727272; line-height: 1.5; font-style: italic;">
-      Completed deployment in 6 weeks, avoiding 3-month consultant timeline
+
+    <div style="background: #f8f9fa; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+        <div style="flex: 1;">
+          <div style="font-size: 12px; color: #6a737d; margin-bottom: 4px; font-weight: 600;">CONSULTANT QUOTE</div>
+          <div style="font-size: 20px; font-weight: 700; color: #d73a49; text-decoration: line-through; text-decoration-thickness: 2px;">$45,000</div>
+        </div>
+        <div style="font-size: 24px; color: #267CB9; margin: 0 16px;">→</div>
+        <div style="flex: 1; text-align: right;">
+          <div style="font-size: 12px; color: #6a737d; margin-bottom: 4px; font-weight: 600;">ACTUAL COST</div>
+          <div style="font-size: 20px; font-weight: 700; color: #22863a;">$699</div>
+        </div>
+      </div>
+      <div style="font-size: 13px; color: #6a737d; line-height: 1.5;">
+        + 6 weeks part-time
+      </div>
     </div>
+
+    <div style="padding: 16px; background: linear-gradient(135deg, #f6f8fa 0%, #ffffff 100%); border-left: 3px solid #267CB9; border-radius: 6px;">
+      <p style="margin: 0; font-size: 14px; color: #1a1a1a; line-height: 1.6; font-weight: 500;">
+        Completed deployment in 6 weeks, avoiding 3-month consultant timeline
+      </p>
+    </div>
+
   </div>
 
 </div>
