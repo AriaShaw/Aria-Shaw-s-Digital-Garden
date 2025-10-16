@@ -49,6 +49,8 @@ By the time you finish reading this, you'll have:
 - **Troubleshooting playbooks** for the four most common deployment failures (based on analysis of 670+ user reports)
 - **Monitoring and alerting setup** that catches problems before your users do
 
+**Need instant specifications?** Use our interactive [Odoo Requirements Calculator](/toolkit/odoo-requirements-calculator/) to get exact CPU, RAM, storage, and bandwidth recommendations for your deployment in under 2 minutes.
+
 You'll understand the *why* behind each recommendation, so you can make informed decisions rather than following instructions.
 
 This isn't another surface-level tutorial.
@@ -1095,6 +1097,8 @@ The goal is to get your system stable enough to diagnose and fix the underlying 
 ### The Hosting Decision That Makes or Breaks Your Deployment
 
 An insight from three years of deployment analysis and multiple documented disasters: **your hosting choice is more important than your hardware specs**. Research shows configured Odoo installations failing because of poor hosting decisions, while modest setups perform with the right hosting strategy.
+
+**Making this decision?** Our [Odoo Hosting Advisor](/toolkit/odoo-hosting-advisor/) evaluates your technical capacity, budget, and growth plans to recommend whether VPS self-hosting, managed hosting, or Odoo.sh fits your situation—based on real-world cost and complexity data.
 
 After analyzing user satisfaction data from 670+ G2 reviews, 1,972 Trustpilot ratings, and researching 50+ production deployments, here's the unvarnished truth about each major hosting option.
 

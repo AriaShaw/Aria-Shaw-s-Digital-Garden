@@ -44,7 +44,9 @@ Before we dive into the detailed steps, here's what you'll need to have ready:
 
 ## 🔍 Step 1: Is Odoo Self-Hosting Right for Your Business?
 
-Here's the truth: self-hosting isn't for everyone. But it could work for you if you're tired of:
+**Evaluating your options?** Before committing to self-hosting, use our [Odoo Hosting Advisor](/toolkit/odoo-hosting-advisor/) to compare self-hosted VPS against managed hosting and Odoo.sh options based on your team's technical capacity, budget constraints, and growth trajectory.
+
+The truth? self-hosting isn't for everyone. But it could work for you if you're tired of:
 
 - **Monthly hosting fees** that keep climbing
 - **Limited customization** options
@@ -142,6 +144,8 @@ Here's where most guides get it wrong. They'll tell you "2GB RAM minimum" and ca
 > 💡 **Need deeper technical specs?** For comprehensive hardware requirements, hosting comparisons, and production-ready configurations, check out our detailed **[Odoo Minimum Requirements 2025: Complete Deployment Guide](/odoo-minimum-requirements-deployment-guide/)**.
 
 ### The Reality-Tested Hardware Requirements
+
+**Get personalized specifications:** Our [Odoo Requirements Calculator](/toolkit/odoo-requirements-calculator/) provides exact CPU, RAM, storage, and bandwidth recommendations tailored to your user count, module selection, and transaction volume—eliminating costly under-provisioning or over-spending.
 
 Forget the bare minimums. Here's what works:
 

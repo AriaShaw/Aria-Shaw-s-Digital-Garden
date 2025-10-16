@@ -14,19 +14,19 @@ Open-source, production-tested automation scripts for self-hosting Odoo. Every s
 
 ---
 
-## 🎯 What Makes These Scripts Different?
+## What Makes These Scripts Different?
 
-- ✅ **Production-tested** - Used in 500+ real-world Odoo deployments
-- ✅ **Safe by design** - Rollback capabilities, dry-run modes, validation checks
-- ✅ **Well-documented** - Clear usage instructions, parameter explanations
-- ✅ **Open-source** - Review the code, modify for your needs
-- ✅ **No dependencies on paid tools** - Pure shell/Python, standard Linux utilities
+- **Production-tested** - Used in 500+ real-world Odoo deployments
+- **Safe by design** - Rollback capabilities, dry-run modes, validation checks
+- **Well-documented** - Clear usage instructions, parameter explanations
+- **Open-source** - Review the code, modify for your needs
+- **No dependencies on paid tools** - Pure shell/Python, standard Linux utilities
 
 ---
 
-## 📂 Browse Scripts by Scenario
+## Browse Scripts by Scenario
 
-### 💾 Backup & Recovery
+### Backup & Recovery
 
 **Daily Operations**
 - [backup_odoo.sh](/scripts/backup_odoo.sh) - Simple daily backup with automatic cleanup
@@ -55,7 +55,7 @@ Open-source, production-tested automation scripts for self-hosting Odoo. Every s
 
 ---
 
-### 🔄 Migration & Database Upgrade
+### Migration & Database Upgrade
 
 **Pre-Migration Assessment**
 - [migration_assessment.sh](/scripts/migration_assessment.sh) - Analyze risks before migration
@@ -80,7 +80,7 @@ Open-source, production-tested automation scripts for self-hosting Odoo. Every s
 
 ---
 
-### 🏗️ Server Setup & Optimization
+### Server Setup & Optimization
 
 **Initial Setup**
 - [setup_ubuntu_odoo.sh](/scripts/setup_ubuntu_odoo.sh) - Complete Ubuntu 22.04 setup for Odoo
@@ -99,7 +99,7 @@ Open-source, production-tested automation scripts for self-hosting Odoo. Every s
 
 ---
 
-### 🔒 AWS Security & Infrastructure
+### AWS Security & Infrastructure
 
 **Infrastructure Setup**
 - [setup-vpc-security-groups.sh](/scripts/setup-vpc-security-groups.sh) - VPC, subnets, security groups
@@ -122,7 +122,7 @@ Open-source, production-tested automation scripts for self-hosting Odoo. Every s
 
 ---
 
-### 📊 Monitoring & Maintenance
+### Monitoring & Maintenance
 
 **Health Checks**
 - [system_health_check.sh](/scripts/system_health_check.sh) - One-line system status overview
@@ -140,7 +140,7 @@ Open-source, production-tested automation scripts for self-hosting Odoo. Every s
 
 ---
 
-### 🔐 Security & Compliance
+### Security & Compliance
 
 **GDPR Compliance**
 - [gdpr_data_retention.py](/scripts/gdpr_data_retention.py) - Automated data retention + anonymization
@@ -155,7 +155,7 @@ Open-source, production-tested automation scripts for self-hosting Odoo. Every s
 
 ---
 
-### 💼 Business Automation
+### Business Automation
 
 **Multi-Company Operations**
 - [intercompany_transaction_manager.py](/scripts/intercompany_transaction_manager.py) - Auto-create offsetting journal entries
@@ -166,7 +166,7 @@ Open-source, production-tested automation scripts for self-hosting Odoo. Every s
 
 ---
 
-### 🧪 Testing & Diagnostics
+### Testing & Diagnostics
 
 **Integration Testing**
 - [api_diagnostics.py](/scripts/api_diagnostics.py) - API connection testing (DNS, SSL, HTTP)
@@ -181,7 +181,7 @@ Open-source, production-tested automation scripts for self-hosting Odoo. Every s
 
 ---
 
-## 🆚 Free Scripts vs. Master Pack
+## Free Scripts vs. Master Pack
 
 | Feature | Free Scripts | Master Pack ($699) |
 |---------|-------------|-------------------|
@@ -207,7 +207,7 @@ Open-source, production-tested automation scripts for self-hosting Odoo. Every s
 
 ---
 
-## 🧮 Need Planning Tools First?
+## Need Planning Tools First?
 
 Before running scripts, calculate your requirements:
 
@@ -216,7 +216,7 @@ Before running scripts, calculate your requirements:
 
 ---
 
-## 📖 Related Guides
+## Related Guides
 
 These scripts accompany comprehensive guides:
 
@@ -228,7 +228,7 @@ These scripts accompany comprehensive guides:
 
 ---
 
-## ⚠️ Important Notes
+## Important Notes
 
 ### Before Running Scripts
 
@@ -245,7 +245,7 @@ These scripts accompany comprehensive guides:
 
 ---
 
-## 📜 License
+## License
 
 All scripts are released under **MIT License** - free to use, modify, and distribute.
 

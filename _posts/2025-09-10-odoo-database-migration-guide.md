@@ -321,7 +321,9 @@ This section demonstrates how to calculate server requirements, set up an optimi
 
 Don't believe "any server will do" for Odoo. Analysis of performance issue reports shows businesses losing $10,000+ in productivity from underestimating hardware needs. Follow this research-backed approach to sizing your Odoo server.
 
-**Download and run the server sizing calculator:**
+**Need instant specifications?** For immediate web-based calculations without downloading scripts, use our [Odoo Requirements Calculator](/toolkit/odoo-requirements-calculator/) to get production-ready hardware recommendations based on your specific deployment parameters.
+
+**Alternatively, download and run the server sizing calculator:**
 
 ```bash
 wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/calculate_server_specs.py

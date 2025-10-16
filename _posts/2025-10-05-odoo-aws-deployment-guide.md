@@ -75,6 +75,8 @@ Before you launch your first EC2 instance, gather these requirements. Missing on
 - [ ] **Budget constraints** ($150-$500/month realistic range)
 - [ ] **Availability requirements** (99.9% vs 99.95% uptime → affects Multi-AZ decision)
 
+**Need precise infrastructure specs?** Use our [Odoo Requirements Calculator](/toolkit/odoo-requirements-calculator/) to calculate exact CPU, RAM, storage, and bandwidth specifications before provisioning AWS resources—preventing costly over-provisioning or performance issues from under-sizing.
+
 ### Knowledge Prerequisites
 
 - [ ] **Odoo version decided** (17.0 recommended for 2025 - long-term support)

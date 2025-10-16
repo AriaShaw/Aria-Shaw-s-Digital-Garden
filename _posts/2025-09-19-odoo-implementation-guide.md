@@ -284,6 +284,8 @@ Part of their problem was inadequate infrastructure planning. When you don't siz
 
 The real-world requirements, not the marketing minimum specs:
 
+**Get personalized specifications:** Our [Odoo Requirements Calculator](/toolkit/odoo-requirements-calculator/) provides exact CPU, RAM, storage, and bandwidth recommendations based on your user count, module selection, and transaction volume—eliminating guesswork from infrastructure planning.
+
 | Deployment Size | Users | CPU | RAM | Storage | Network | Additional Requirements |
 |----------------|--------|-----|-----|---------|---------|----------------------|
 | **Small** | 5-15 | **Dual-core** minimum<br>***Quad-core*** recommended | **4GB** minimum<br>***8GB*** recommended | **20GB** minimum<br>***SSD*** strongly recommended | ***10Mbps*** dedicated internet per 5 concurrent users | Basic setup |
@@ -392,6 +394,8 @@ Blueprint your company hierarchy before creating anything in Odoo:
 ### Cloud vs On-Premise: The 2025 Strategic Choice
 
 This decision impacts everything in your technical architecture.
+
+**Need help deciding?** Our [Odoo Hosting Advisor](/toolkit/odoo-hosting-advisor/) evaluates your technical capacity, budget constraints, and growth trajectory to recommend whether cloud (VPS/managed), on-premise, or Odoo.sh aligns with your business reality—preventing costly hosting mismatches.
 
 Real-world comparison based on 2025 data:
 

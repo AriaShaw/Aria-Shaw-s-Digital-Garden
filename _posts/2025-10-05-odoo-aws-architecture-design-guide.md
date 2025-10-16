@@ -30,6 +30,8 @@ AWS provides three distinct paths for Odoo deployment. Each tier balances cost, 
 
 ### Quick Comparison
 
+**Not sure which tier you need?** Use our [Odoo Requirements Calculator](/toolkit/odoo-requirements-calculator/) to determine exact CPU, RAM, and storage specifications for your deployment—then match those specs to the appropriate AWS architecture tier below.
+
 | Factor | Tier 1: Single | Tier 2: Separated | Tier 3: Multi-AZ |
 |:---|:---|:---|:---|
 | **Monthly Cost** | $100-120 | $180-220 | $350-420 |
