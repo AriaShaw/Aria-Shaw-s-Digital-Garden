@@ -137,22 +137,22 @@ Most businesses face a difficult choice when implementing Odoo: pay $50,000-$200
 
   <!-- Consultant Path -->
   <div style="background: #fafafa; border: 1px solid #e5e5e5; border-radius: 8px; padding: 32px;">
-    <h4 style="margin: 0 0 20px 0; font-size: 20px; font-weight: 600; color: #555;">Consider Hiring Consultant</h4>
+    <h4 style="margin: 0 0 20px 0; font-size: 20px; font-weight: 600; color: #555;">Consider Hiring Consultant (Alternative)</h4>
     <ul style="list-style: none; padding: 0; margin: 0;">
       <li style="margin-bottom: 12px; padding-left: 24px; position: relative; font-size: 15px; line-height: 1.6; color: #555;">
-        <span style="position: absolute; left: 0; color: #999;">→</span>
+        <span style="position: absolute; left: 0; color: #999;">•</span>
         Absolutely zero technical capability and can't build any
       </li>
       <li style="margin-bottom: 12px; padding-left: 24px; position: relative; font-size: 15px; line-height: 1.6; color: #555;">
-        <span style="position: absolute; left: 0; color: #999;">→</span>
+        <span style="position: absolute; left: 0; color: #999;">•</span>
         Budget exceeds $100,000 and speed matters more than cost
       </li>
       <li style="margin-bottom: 12px; padding-left: 24px; position: relative; font-size: 15px; line-height: 1.6; color: #555;">
-        <span style="position: absolute; left: 0; color: #999;">→</span>
+        <span style="position: absolute; left: 0; color: #999;">•</span>
         Need extensive custom module development beyond configuration
       </li>
       <li style="margin-bottom: 0; padding-left: 24px; position: relative; font-size: 15px; line-height: 1.6; color: #555;">
-        <span style="position: absolute; left: 0; color: #999;">→</span>
+        <span style="position: absolute; left: 0; color: #999;">•</span>
         Want completely hands-off implementation (sacrifice knowledge)
       </li>
     </ul>
@@ -552,6 +552,9 @@ Most businesses face a difficult choice when implementing Odoo: pay $50,000-$200
         CFOs who want to slash ongoing consulting costs
       </li>
     </ul>
+    <div style="margin-top: 16px;">
+      <a href="#whats-included-anchor" onclick="openAccordionById('whats-included-anchor'); return false;" style="color:#267CB9; text-decoration:none; font-weight:600;">See complete breakdown of 68+ tools →</a>
+    </div>
   </div>
 
   <!-- Not For Card -->
