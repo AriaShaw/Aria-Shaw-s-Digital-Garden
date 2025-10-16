@@ -382,11 +382,11 @@ Most businesses face a difficult choice when implementing Odoo: pay $50,000-$200
 </div>
 
 <!-- Inline CTA after Case Studies -->
-<div style="background: #ffffff; border: 2px solid #267CB9; box-shadow: 0 8px 24px rgba(38,124,185,0.12); padding: 32px; margin: 56px 0; border-radius: 10px; text-align: center;">
-  <a href="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty" style="background: linear-gradient(135deg, #267CB9 0%, #1e6ba6 100%); color: #fff; padding: 20px 40px; font-size: 18px; font-weight: 700; text-decoration: none; display: inline-block; border-radius: 8px; box-shadow: 0 4px 16px rgba(38, 124, 185, 0.3); transition: all 0.2s ease;" onclick="gtag('event', 'cta_click', {'event_category': 'CTA', 'event_label': 'Join 500+ - Mid-page', 'cta_location': 'products-mid-page', 'destination': 'gumroad'});">
-    Join 500+ Businesses — $699
+<div style="background: transparent; padding: 48px 0; margin: 56px 0; text-align: center;">
+  <a href="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty" style="background: linear-gradient(135deg, #267CB9 0%, #1e6ba6 100%); color: #fff; padding: 20px 40px; font-size: 18px; font-weight: 700; text-decoration: none; display: inline-block; border-radius: 12px; box-shadow: 0 10px 24px rgba(38,124,185,0.18); transition: box-shadow 0.2s ease, transform 0.2s ease;" onclick="gtag('event', 'cta_click', {'event_category': 'CTA', 'event_label': 'Join 500+ - Mid-page', 'cta_location': 'products-mid-page', 'destination': 'gumroad'});" onmouseover="this.style.boxShadow='0 14px 28px rgba(38,124,185,0.26)'; this.style.transform='translateY(-1px)';" onmouseout="this.style.boxShadow='0 10px 24px rgba(38,124,185,0.18)'; this.style.transform='translateY(0)';">
+    Join 500+ Businesses Now
   </a>
-  <div style="margin-top: 12px; font-size: 13px; color: #6c757d;">14-day money-back guarantee</div>
+  <div style="margin-top: 10px; font-size: 12px; color: #999;">14-day money-back guarantee</div>
 </div>
 
 <!-- Author Proof Section -->
