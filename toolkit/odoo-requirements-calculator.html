@@ -126,7 +126,7 @@ custom_css: calculator
                         </span>
                         <span style="display: flex; align-items: center; gap: 6px;">
                             12-Month: <strong id="totalCpuProjected">6</strong>
-                            <span class="tooltip-icon" data-tooltip="Projected CPU needs based on your 12-month growth forecast">?</span>
+                            <span class="tooltip-icon tooltip-right" data-tooltip="Projected CPU needs based on your 12-month growth forecast">?</span>
                         </span>
                     </div>
                 </div>
@@ -145,7 +145,7 @@ custom_css: calculator
                         </span>
                         <span style="display: flex; align-items: center; gap: 6px;">
                             Total MB: <strong id="totalMemoryProjected">7000</strong>
-                            <span class="tooltip-icon" data-tooltip="Actual calculated memory in MB before rounding to standard RAM sizes">?</span>
+                            <span class="tooltip-icon tooltip-right" data-tooltip="Actual calculated memory in MB before rounding to standard RAM sizes">?</span>
                         </span>
                     </div>
                 </div>
@@ -164,7 +164,7 @@ custom_css: calculator
                         </span>
                         <span style="display: flex; align-items: center; gap: 6px;">
                             Includes backups + 30% buffer
-                            <span class="tooltip-icon" data-tooltip="3x backup copies stored locally plus 30% growth buffer for safety">?</span>
+                            <span class="tooltip-icon tooltip-right" data-tooltip="3x backup copies stored locally plus 30% growth buffer for safety">?</span>
                         </span>
                     </div>
                 </div>
@@ -179,11 +179,11 @@ custom_css: calculator
                     <div style="display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: var(--calc-text-color);">
                         <span style="display: flex; align-items: center; gap: 6px;">
                             Current: <strong id="minBandwidthCurrent">45</strong> Mbps
-                            <span class="tooltip-icon" data-tooltip="Minimum bandwidth for current concurrent users (60% of total users × 15 kbps × 2x peak)">?</span>
+                            <span class="tooltip-icon" data-tooltip="Includes: Base usage (60% users × 15 kbps) + business type multiplier + file transfer buffer">?</span>
                         </span>
                         <span style="display: flex; align-items: center; gap: 6px;">
                             12-Month: <strong id="minBandwidthProjected">75</strong> Mbps
-                            <span class="tooltip-icon" data-tooltip="Projected bandwidth based on your growth forecast (minimum 50 Mbps recommended)">?</span>
+                            <span class="tooltip-icon tooltip-right" data-tooltip="Projected need rounded to standard ISP tiers (10/25/50/100/250/500 Mbps)">?</span>
                         </span>
                     </div>
                 </div>
@@ -452,15 +452,27 @@ function calculate() {
     const storageGBProjected = Math.ceil(finalStorageProjected / 1024);
 
     // Calculate Network requirements
-    // Odoo is bandwidth-efficient: ~10 kbps per user = 0.01 Mbps
+    // Odoo is bandwidth-efficient: ~10-15 kbps per user for UI operations
     const concurrentLoad = Math.ceil(currentUsers * 0.6);
     const projectedConcurrentLoad = Math.ceil(projectedUsers * 0.6);
     const bandwidthPerUser = 0.015; // Mbps (10-15 kbps per user based on Odoo forums)
-    const peakMultiplier = 2; // Account for file transfers and peak loads
 
-    const minBandwidthCurrent = Math.ceil(concurrentLoad * bandwidthPerUser * peakMultiplier);
-    const minBandwidthProjected = Math.ceil(projectedConcurrentLoad * bandwidthPerUser * peakMultiplier);
-    const recommendedBandwidth = Math.max(50, minBandwidthProjected);
+    // Calculate base bandwidth with peak multiplier
+    const baseBandwidthCurrent = Math.ceil(concurrentLoad * bandwidthPerUser * 2);
+    const baseBandwidthProjected = Math.ceil(projectedConcurrentLoad * bandwidthPerUser * 2);
+
+    // Add buffer for file uploads/downloads and heavy operations
+    // Business type affects bandwidth needs (e.g., retail with images needs more)
+    const businessBandwidthMultiplier = businessType === 'Retail' || businessType === 'Manufacturing' ? 1.5 : 1.2;
+    const fileTransferBuffer = fileAttachments > 1000 ? 15 : 10; // Large files need more bandwidth
+
+    // Calculate recommended bandwidth with intelligent minimums
+    let minBandwidthCurrent = Math.max(10, Math.ceil(baseBandwidthCurrent * businessBandwidthMultiplier + fileTransferBuffer));
+    let minBandwidthProjected = Math.max(10, Math.ceil(baseBandwidthProjected * businessBandwidthMultiplier + fileTransferBuffer));
+
+    // Recommended bandwidth rounds up to common ISP tiers: 10, 25, 50, 100, 250, 500 Mbps
+    const bandwidthTiers = [10, 25, 50, 100, 250, 500];
+    const recommendedBandwidth = bandwidthTiers.find(tier => tier >= minBandwidthProjected) || 500;
 
     // Update results
     document.getElementById('totalCpuCurrent').textContent = totalCpuCurrent;
