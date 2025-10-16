@@ -472,8 +472,54 @@ Most businesses face a difficult choice when implementing Odoo: pay $50,000-$200
 </div>
 
 <div style="text-align: center; margin-top: 32px;">
-  <a href="#whats-included-anchor" style="color: #267CB9; text-decoration: none; font-size: 16px; font-weight: 500;" onclick="document.getElementById('whats-included-anchor').scrollIntoView({behavior: 'smooth'}); return false;">→ See complete breakdown of all 68+ tools and features</a>
+  <a href="#whats-included-anchor" style="color: #267CB9; text-decoration: none; font-size: 16px; font-weight: 500;" onclick="openAccordionById('whats-included-anchor'); return false;">→ See complete breakdown of all 68+ tools and features</a>
 </div>
+
+<script>
+(function() {
+  function openAccordionById(id) {
+    var container = document.getElementById(id);
+    if (!container) return;
+
+    var header = container.querySelector('.accordion-header');
+    var content = container.querySelector('.accordion-content');
+    if (!header || !content) return;
+
+    // Close other accordions in the FAQ section for clean UX
+    var accordions = document.querySelectorAll('.toolkit-accordion');
+    for (var i = 0; i < accordions.length; i++) {
+      var h = accordions[i].querySelector('.accordion-header');
+      var c = accordions[i].querySelector('.accordion-content');
+      if (h && c) {
+        h.classList.remove('active');
+        h.setAttribute('aria-expanded', 'false');
+        c.classList.remove('active');
+      }
+    }
+
+    // Open the target accordion
+    header.classList.add('active');
+    header.setAttribute('aria-expanded', 'true');
+    content.classList.add('active');
+
+    // Smoothly bring it into view
+    container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // Expose for inline onclick usage
+  window.openAccordionById = openAccordionById;
+
+  // Auto-open when navigated via hash
+  function maybeOpenFromHash() {
+    if (location.hash === '#whats-included-anchor') {
+      openAccordionById('whats-included-anchor');
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', maybeOpenFromHash);
+  window.addEventListener('hashchange', maybeOpenFromHash);
+})();
+</script>
 
 ---
 
