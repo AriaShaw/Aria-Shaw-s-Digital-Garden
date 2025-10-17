@@ -16,18 +16,20 @@
     }
     .copy-button {
         position: absolute !important;
-        top: 0.5em !important;
-        right: 0.5em !important;
-        padding: 3px 8px !important;
+        top: 0.75rem !important;
+        right: 0.75rem !important;
+        padding: 6px 12px !important;
         font-size: 12px !important;
-        color: #e0e0e0 !important;
-        background-color: #333 !important;
-        border: 1px solid #555 !important;
-        border-radius: 5px !important;
+        font-weight: 500 !important;
+        color: #ffffff !important;
+        background: #0366d6 !important;
+        border: none !important;
+        border-radius: 6px !important;
         cursor: pointer !important;
         opacity: 0 !important;
-        transition: opacity 0.2s ease-in-out, background-color 0.2s !important;
+        transition: all 0.2s ease !important;
         z-index: 10 !important;
+        box-shadow: 0 2px 4px rgba(3, 102, 214, 0.3) !important;
         /* CRITICAL: Override accessibility.css touch target sizes */
         min-height: auto !important;
         min-width: auto !important;
@@ -38,11 +40,14 @@
         opacity: 1 !important;
     }
     .copy-button:hover {
-        background-color: #444 !important;
+        background: #0256cc !important;
+        transform: translateY(-1px) !important;
+        box-shadow: 0 4px 8px rgba(3, 102, 214, 0.4) !important;
     }
     .copy-button.copied {
-        background-color: #28a745 !important;
+        background: #28a745 !important;
         border-color: #1c7430 !important;
+        transform: scale(0.95) !important;
     }
 
     /* 2. Sidebar Table of Contents Styles */
@@ -657,6 +662,9 @@
 
         // 5. 手风琴功能
         initToolkitAccordion();
+
+        // 6. 阅读进度条功能
+        initReadingProgress();
     });
 
     function initFloatingTOC() {
@@ -1163,6 +1171,35 @@
         document.addEventListener('DOMContentLoaded', initActiveNav);
     } else {
         initActiveNav();
+    }
+
+    // Reading Progress Bar Functionality
+    function initReadingProgress() {
+        const progressBar = document.getElementById('reading-progress');
+        if (!progressBar) return;
+
+        let ticking = false;
+
+        function updateProgress() {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = Math.min(100, (scrollTop / scrollHeight) * 100);
+            
+            progressBar.style.width = progress + '%';
+            ticking = false;
+        }
+
+        function onScroll() {
+            if (!ticking) {
+                requestAnimationFrame(updateProgress);
+                ticking = true;
+            }
+        }
+
+        window.addEventListener('scroll', onScroll, { passive: true });
+        
+        // Initial execution
+        updateProgress();
     }
 </script>
 
