@@ -44,6 +44,22 @@ Professional calculators built from 500+ production deployments. Use directly in
 
 ---
 
+### Odoo Backup Health Check
+
+**Stop assuming your backups work.** Instantly test if your Odoo backup can actually restore when disaster hits—before you lose data, time, and money.
+
+**What it evaluates:**
+
+* Backup frequency and verification process
+* Offsite storage and redundancy practices
+* Recovery testing and documentation quality
+* Disaster recovery speed and risk exposure
+* Common misconfigurations that cause failed restores
+
+**[Launch Backup Readiness Checker →](/toolkit/odoo-backup-readiness-checker/)**
+
+---
+
 ## Need Automation Scripts?
 
 For production-ready automation (backup, migration, monitoring, security):
