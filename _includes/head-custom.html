@@ -128,8 +128,8 @@
     .lightbox-caption {
         position: relative;
         margin-top: 20px;
-        background: rgba(0, 0, 0, 0.85);
-        color: white;
+        background: rgba(0, 0, 0, 0.9);
+        color: #ffffff !important; /* Force white text */
         padding: 12px 20px;
         border-radius: 6px;
         font-size: 14px;
@@ -140,6 +140,11 @@
         line-height: 1.6;
         box-sizing: border-box;
         white-space: normal; /* Allow text wrapping */
+    }
+
+    /* Ensure caption text is always white */
+    .lightbox-caption * {
+        color: #ffffff !important;
     }
 
     /* Clickable images cursor */
@@ -707,21 +712,28 @@
         // 智能检测是否需要显示滚动提示
         function checkAndShowScrollIndicator(img, indicator) {
             const viewportHeight = window.innerHeight;
-            const contentElement = img.parentElement;
-            const contentHeight = contentElement.scrollHeight;
             const lightboxOverlay = document.getElementById('image-lightbox');
 
-            // 检查整个 lightbox 内容（图片+说明）是否超过视窗高度
-            if (lightboxOverlay && lightboxOverlay.scrollHeight > viewportHeight) {
-                indicator.classList.add('show');
-                indicator.classList.remove('hide');
+            // 等待图片完全加载后再检测
+            setTimeout(() => {
+                if (!lightboxOverlay) return;
 
-                // 设置滚动监听，用户滚动后隐藏提示
-                setupScrollIndicatorHiding(indicator);
-            } else {
-                indicator.classList.add('hide');
-                indicator.classList.remove('show');
-            }
+                const overlayScrollHeight = lightboxOverlay.scrollHeight;
+                const overlayClientHeight = lightboxOverlay.clientHeight;
+
+                // 只有当内容实际超出可视区域时才显示提示
+                // 增加 50px 的容差，避免误判
+                if (overlayScrollHeight > overlayClientHeight + 50) {
+                    indicator.classList.add('show');
+                    indicator.classList.remove('hide');
+
+                    // 设置滚动监听，用户滚动后隐藏提示
+                    setupScrollIndicatorHiding(indicator);
+                } else {
+                    indicator.classList.add('hide');
+                    indicator.classList.remove('show');
+                }
+            }, 150); // 延迟检测，确保布局完成
         }
         
         // 设置滚动提示的自动隐藏
