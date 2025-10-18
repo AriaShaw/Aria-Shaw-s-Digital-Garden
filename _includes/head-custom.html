@@ -95,6 +95,15 @@
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
         animation: scaleIn 0.3s ease;
         display: block;
+        cursor: zoom-in;
+        transition: transform 0.3s ease, max-width 0.3s ease;
+    }
+
+    /* Zoomed state */
+    .lightbox-image.zoomed {
+        max-width: none;
+        cursor: zoom-out;
+        transform-origin: center center;
     }
 
     .lightbox-close {
@@ -121,6 +130,37 @@
     .lightbox-close:hover {
         background: #fff;
         transform: scale(1.1);
+    }
+
+    .lightbox-zoom {
+        position: fixed;
+        top: 30px;
+        right: 90px; /* Next to close button */
+        background: rgba(255, 255, 255, 0.9);
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+        font-weight: bold;
+        color: #333;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+        z-index: 10001;
+        backdrop-filter: blur(4px);
+    }
+
+    .lightbox-zoom:hover {
+        background: #fff;
+        transform: scale(1.1);
+    }
+
+    .lightbox-zoom svg {
+        width: 20px;
+        height: 20px;
     }
 
     .lightbox-caption {
@@ -223,6 +263,18 @@
             width: 36px;
             height: 36px;
             font-size: 18px;
+        }
+
+        .lightbox-zoom {
+            top: 15px;
+            right: 60px;
+            width: 36px;
+            height: 36px;
+        }
+
+        .lightbox-zoom svg {
+            width: 18px;
+            height: 18px;
         }
 
         .lightbox-content {
@@ -631,6 +683,13 @@
         const lightboxHTML = `
             <div id="image-lightbox" class="lightbox-overlay">
                 <button class="lightbox-close" aria-label="Close image">×</button>
+                <button class="lightbox-zoom" aria-label="Zoom image" title="Click to zoom to original size">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"/>
+                        <path d="M21 21l-4.35-4.35"/>
+                        <path d="M11 8v6M8 11h6"/>
+                    </svg>
+                </button>
                 <div class="lightbox-content">
                     <img class="lightbox-image" alt="">
                 </div>
@@ -645,7 +704,10 @@
         const lightboxImg = lightbox.querySelector('.lightbox-image');
         const lightboxCaption = lightbox.querySelector('.lightbox-caption');
         const closeBtn = lightbox.querySelector('.lightbox-close');
+        const zoomBtn = lightbox.querySelector('.lightbox-zoom');
         const scrollIndicator = lightbox.querySelector('.scroll-indicator');
+
+        let isZoomed = false;
         
         // 为所有assets/images下的图片添加点击事件
         function attachImageListeners() {
@@ -698,17 +760,56 @@
         function closeLightbox() {
             lightbox.classList.remove('active');
             document.body.style.overflow = ''; // 恢复滚动
-            
-            // 隐藏滚动提示
+
+            //隐藏滚动提示
             scrollIndicator.classList.remove('show');
             scrollIndicator.classList.add('hide');
-            
+
+            // 重置缩放状态
+            isZoomed = false;
+            lightboxImg.classList.remove('zoomed');
+            updateZoomButton();
+
             // 清理
             setTimeout(() => {
                 if (!lightbox.classList.contains('active')) {
                     lightboxImg.src = '';
                 }
             }, 300);
+        }
+
+        // 缩放功能
+        function toggleZoom() {
+            isZoomed = !isZoomed;
+            lightboxImg.classList.toggle('zoomed', isZoomed);
+            updateZoomButton();
+
+            // 滚动到顶部以便查看完整图片
+            if (isZoomed) {
+                lightbox.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        function updateZoomButton() {
+            if (isZoomed) {
+                zoomBtn.innerHTML = `
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"/>
+                        <path d="M21 21l-4.35-4.35"/>
+                        <path d="M11 8v6"/>
+                    </svg>
+                `;
+                zoomBtn.setAttribute('title', 'Click to zoom out');
+            } else {
+                zoomBtn.innerHTML = `
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"/>
+                        <path d="M21 21l-4.35-4.35"/>
+                        <path d="M11 8v6M8 11h6"/>
+                    </svg>
+                `;
+                zoomBtn.setAttribute('title', 'Click to zoom to original size');
+            }
         }
         
         // 智能检测是否需要显示滚动提示
@@ -770,24 +871,38 @@
         
         // 事件监听器
         closeBtn.addEventListener('click', closeLightbox);
-        
+
+        // 缩放按钮点击
+        zoomBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            toggleZoom();
+        });
+
+        // 图片点击切换缩放
+        lightboxImg.addEventListener('click', function(e) {
+            e.stopPropagation();
+            toggleZoom();
+        });
+
         // 点击背景关闭
         lightbox.addEventListener('click', function(e) {
             if (e.target === lightbox) {
                 closeLightbox();
             }
         });
-        
+
         // ESC键关闭
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape' && lightbox.classList.contains('active')) {
                 closeLightbox();
             }
         });
-        
-        // 防止点击图片内容区域时关闭
+
+        // 防止点击图片内容区域时关闭（除了图片本身）
         lightbox.querySelector('.lightbox-content').addEventListener('click', function(e) {
-            e.stopPropagation();
+            if (e.target !== lightboxImg) {
+                e.stopPropagation();
+            }
         });
         
         // 初始化绑定现有图片
