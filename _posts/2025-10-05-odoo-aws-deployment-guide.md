@@ -258,13 +258,6 @@ Compare three production-ready architectures side-by-side. Each tier trades cost
 
 Architecture chosen. Now let's provision your AWS resources...
 
-{% include ctas/inline-simple.html
-   title="Launch With Production Templates"
-   description="CloudFormation, tuned configs, and sizing tools — skip copy‑paste and deploy correctly. $699."
-   button_text="Unlock Now"
-   location="aws-deploy-after-arch-decision"
-%}
-
 ---
 
 ## Step 2: AWS Account Setup & Security Hardening
@@ -753,13 +746,6 @@ Click "Create Database". Initial setup takes 2-3 minutes. Odoo dashboard loads w
 
 Odoo running on EC2 + RDS! Next: Configure Nginx reverse proxy for SSL termination...
 
-{% include ctas/inline-simple.html
-   title="Harden and Monitor Before Go‑Live"
-   description="SSL automation, CloudWatch alarms, and DR drills — finish production hardening fast. $699."
-   button_text="Unlock Now"
-   location="aws-deploy-after-step5"
-%}
-
 ---
 
 ## Step 6: Verify RDS Automated Backups (Disaster Recovery Basics)
@@ -1247,14 +1233,5 @@ After 30 days of production usage, analyze metrics and adjust:
 - **RDS parameter calculator**: Input user count + workload type → optimized PostgreSQL config file
 - **Cost estimation spreadsheet**: 12-month AWS cost projection with Reserved Instance savings
 - **Security hardening checklist**: 28 production configurations with validation scripts
-
-{% include ctas/product-box.html
-   badge="DIY Deployment Toolkit"
-   title="Deploy Faster with Production-Tested Scripts"
-   description="The Master Pack includes CloudFormation templates for 1-click deployment, RDS parameter calculator, cost estimation spreadsheet, and security hardening checklist. Configure once, deploy in 90 minutes vs. 6 hours manual setup."
-   features="CloudFormation 1-click deployment|RDS parameter calculator|Security hardening checklist (28 items)|Cost estimation spreadsheet"
-   button_text="Get the Master Pack - $699"
-   location="aws-deployment-guide-bottom"
-%}
 
 Your Odoo AWS deployment is live. Start configuring your business workflows.

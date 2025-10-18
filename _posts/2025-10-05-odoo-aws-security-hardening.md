@@ -721,13 +721,6 @@ chmod +x setup-guardduty.sh
 
 ---
 
-{% include ctas/inline-simple.html
-   title="Catch Incidents Before Users Do"
-   description="Monitoring dashboards, multi‑channel alerts, and DR drills — elevate your AWS security operations. $699."
-   button_text="Unlock Now"
-   location="aws-security-after-monitoring"
-%}
-
 ## Compliance Validation
 
 ### GDPR Requirements
@@ -936,15 +929,6 @@ cd prowler
 ### Get Production Security Tools
 
 Replace $20K+ security consultants with battle-tested automation and compliance frameworks:
-
-{% include ctas/product-box.html
-   badge="Fortress Protection Module"
-   title="Enterprise Security Without Enterprise Consultants"
-   description="The Master Pack includes 87-point security checklists, CloudWatch dashboards, GuardDuty runbooks, compliance scripts (GDPR/SOC2/HIPAA), and 14 disaster recovery scripts (15,474 lines). Build enterprise-grade security yourself."
-   features="87-Point Security Checklist|CloudWatch Dashboard Templates|GuardDuty Response Runbooks|GDPR/SOC2/HIPAA Compliance Scripts|14 DR Automation Scripts (15,474 lines)|Disaster Recovery Drill Framework"
-   button_text="Get Security Tools - $699"
-   location="aws-security-guide-bottom"
-%}
 
 ### Continue Learning
 

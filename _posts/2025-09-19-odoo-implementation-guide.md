@@ -950,13 +950,6 @@ Monitor these key indicators throughout your migration:
 
 Remember: successful data migration isn't just about moving data—it's about transforming how your business operates while maintaining complete operational continuity. The investment in proper migration methodology pays dividends through reduced risk, faster implementation, and higher user adoption rates.
 
-{% include ctas/inline-simple.html
-   title="Plan Migration Like a Pro"
-   description="Risk matrices, migration playbooks, and rollback runbooks — included in the Master Pack. $699."
-   button_text="Unlock Now"
-   location="impl-after-phase3"
-%}
-
 ## Phase 4: Module Configuration & Business Process Implementation
 
 Most Odoo implementations either soar or explode here.
@@ -1271,13 +1264,6 @@ Track indicators to ensure your configuration works:
 Before moving to user training, ensure core business processes are configured and tested, user permissions are set, essential reports are created, and integration points are functional.
 
 Remember: perfect configuration is the enemy of good configuration. Start with 80% of your requirements working smoothly, then iterate and improve based on real user feedback. A system that works well for most processes beats a configured system that never gets deployed.
-
-{% include ctas/inline-simple.html
-   title="Turn Users Into Odoo Champions (Without $15K Training Programs)"
-   description="The Master Pack includes role-based training frameworks, adoption tracking tools, and change management checklists. Get 90%+ user adoption rates."
-   button_text="Get Training Tools"
-   location="implementation-guide-early"
-%}
 
 ---
 
@@ -2221,13 +2207,6 @@ Timing issues when one system updates faster than others can sync, error handlin
 Before starting your Odoo implementation, verify that you define clear business objectives, you have a realistic timeline, you select an experienced implementation partner, and you properly size technical infrastructure.
 
 Remember: implementation mistakes cost heavily to fix after go-live, but they're preventable with planning and execution. The most successful Odoo implementations aren't the ones that never encounter problems—they're the ones that anticipate problems and have systems in place to resolve them.
-
-{% include ctas/inline-simple.html
-   title="Replace $50K-$200K Consultants With Professional DIY Tools"
-   description="The Master Pack gives you everything implementation partners charge $150/hour for: TCO calculators, module templates, migration scripts, training frameworks. You execute, you own."
-   button_text="See What Partners Won't Tell You"
-   location="implementation-guide-mid"
-%}
 
 ---
 
@@ -3312,16 +3291,6 @@ You now control the same frameworks and assessments that prevent the 73% failure
 - Complete the readiness assessment with your core team (be brutally honest about gaps)
 - Run the TCO calculator with your actual modules and user count (not the demo configuration)
 - Identify your highest-risk phase (data migration? user training? module configuration?)
-
-{% include ctas/product-box.html
-   badge="Implementation Toolkit"
-   title="Odoo Digital Sovereignty Master Pack"
-   description="Replace $50K+ consulting with professional DIY tools and frameworks. Plan, deploy, migrate, protect, and operate — on your terms. $699."
-   features="TCO & vendor due‑diligence|Readiness & failure‑prevention|Migration & rollback playbooks|30‑60‑90 day adoption plan"
-   link="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty"
-   button_text="Unlock Now"
-   location="implementation-guide-bottom"
-%}
 
 Implementation success isn't luck—it's preparation. Execute with discipline. 🚀
 

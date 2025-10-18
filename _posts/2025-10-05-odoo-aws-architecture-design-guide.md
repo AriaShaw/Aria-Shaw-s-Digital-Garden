@@ -377,13 +377,6 @@ Hourly Impact = (Affected Employees × Avg Hourly Cost) + Direct Revenue Loss
 
 ![Architecture decision tree based on downtime cost calculation and production status](/assets/images/architecture-decision-tree.webp){:loading="lazy"}
 
-{% include ctas/inline-simple.html
-   title="Choose With Confidence"
-   description="TCO models, risk assessments, and validated architectures — make the right call for your team. $699."
-   button_text="Unlock Now"
-   location="aws-arch-before-decision"
-%}
-
 ### Step 3: Validate with Growth Projections
 
 **User growth rates:**
@@ -592,14 +585,6 @@ Covers:
 
 Skip 20+ hours of AWS trial-and-error with production-tested templates and calculators:
 
-{% include ctas/product-box.html
-   badge="Technical Architecture Module"
-   title="Deploy Production-Grade AWS Architecture in Hours"
-   description="The Master Pack includes EC2 sizing calculators, RDS optimizers, CloudFormation templates for all 3 tiers, and 3-year TCO models. Deploy Tier 2 architecture in 4 hours vs 2+ days of manual configuration."
-   features="EC2 Sizing Calculator (47 instance types)|RDS Parameter Optimizer (PostgreSQL tuning)|3-Year TCO Spreadsheet (growth scenarios)|CloudFormation Templates (Tier 2 & 3)|Tier 1→2 Migration Runbook"
-   button_text="Get AWS Architecture Tools - $699"
-   location="aws-architecture-guide-bottom"
-%}
 
 ### Secure Your Deployment
 

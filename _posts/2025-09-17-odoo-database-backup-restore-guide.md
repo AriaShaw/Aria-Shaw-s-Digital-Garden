@@ -617,13 +617,6 @@ wget https://raw.githubusercontent.com/cybrosys-technologies/odoo-backup/main/od
 ![Comparison matrix of community backup scripts evaluating features, reliability, maintenance status, and user ratings](../assets/images/Community Scripts Comparison.webp){:loading="lazy"}
 *Feature comparison matrix of popular community backup solutions with supported capabilities*
 
-{% include ctas/inline-simple.html
-   title="Make Restores Boring"
-   description="Verified procedures, consistency checks, and rollback drills — execute recovery with confidence. $699."
-   button_text="Unlock Now"
-   location="backup-between-methods-and-restore"
-%}
-
 ## How to Restore Odoo Database: Complete Recovery Guide (Never Lose Data Again)
 
 Now comes the moment of truth—when you need to use those backups.
@@ -908,13 +901,6 @@ When facing complete system failure, use our comprehensive emergency recovery to
 
 > **⚡ Facing a backup emergency right now?** If you're reading this section because you're in the middle of a crisis and need immediate help, I offer emergency backup recovery support. Rather than risk making things worse with trial and error, you can get direct access to me for real-time troubleshooting and system recovery. [Get emergency support here](#-bulletproof-backup--recovery-setup-service-199) - I'll personally walk you through the recovery process and ensure your data is safe.
 
-{% include ctas/inline-simple.html
-   title="Automate Enterprise Backups (Without$20K Enterprise Solutions)"
-   description="Manual backups work for learning. The Master Pack includes intelligent scheduling scripts, multi-cloud sync automation, and sub-15 minute disaster recovery tools for production systems."
-   button_text="Get Backup Automation"
-   location="backup-guide-mid"
-%}
-
 ---
 
 ## Advanced Backup Strategies: Cloud and Automation
@@ -1196,13 +1182,6 @@ chmod +x backup_status_dashboard.sh
 # Auto-update every 5 minutes:
 echo "*/5 * * * * /path/to/backup_status_dashboard.sh" | crontab -
 ```
-
-{% include ctas/inline-simple.html
-   title="Backups That Actually Restore"
-   description="Multi‑cloud strategy, automated verification, and disaster drills — part of the Master Pack. $699."
-   button_text="Unlock Now"
-   location="backup-after-advanced"
-%}
 
 ## Common Backup Mistakes and Troubleshooting: Fix 90% of Problems Instantly
 
@@ -2599,16 +2578,6 @@ This free guide covered manual backup and restore procedures—the foundation ev
 - **Module 5**: PostgreSQL performance tuner and optimization suite
 
 **Investment:** $699 for complete toolkit vs. $50,000-$200,000 for equivalent consulting services
-
-{% include ctas/product-box.html
-   badge="Backup & DR"
-   title="Odoo Digital Sovereignty Master Pack"
-   description="Intelligent backups, multi‑cloud sync, disaster recovery drills — with full validation. $699."
-   features="Multi‑cloud backup architecture|Automated restore testing|DR runbooks for 7 scenarios|Health & alerts monitoring"
-   link="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty"
-   button_text="Unlock Now"
-   location="backup-guide-bottom"
-%}
 
 ---
 
