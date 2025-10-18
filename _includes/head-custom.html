@@ -1401,12 +1401,39 @@
 
 <script>
     (function() {
+        // ===== PAGE-SPECIFIC CTA CONFIGURATION =====
+        var CTA_CONFIG = {
+            // Article pages - NO floating CTA (user journey hooks handle conversion)
+            'post': { enabled: false },
+
+            // Tool pages - Personalized CTAs after user gets value
+            'odoo-hosting-advisor': {
+                enabled: true,
+                delay: 10000, // Show after 10s (user completed calculation)
+                targetUrl: 'https://ariashaw.gumroad.com/l/odoo-digital-sovereignty',
+                textFull: 'Ready for the complete implementation system?',
+                textShort: 'Get Master Pack | $699'
+            },
+            'odoo-requirements-calculator': {
+                enabled: true,
+                delay: 10000, // Show after 10s (user got server specs)
+                targetUrl: 'https://ariashaw.gumroad.com/l/odoo-digital-sovereignty',
+                textFull: 'Want step-by-step deployment walkthroughs?',
+                textShort: 'Unlock Master Pack | $699'
+            },
+
+            // Default for all other pages (homepage, products, about, etc.)
+            'default': {
+                enabled: true,
+                delay: 2000,
+                targetUrl: 'https://ariashaw.gumroad.com/l/odoo-digital-sovereignty',
+                textFull: 'Odoo Sovereignty Pack | $699',
+                textShort: 'Unlock Master Pack | $699'
+            }
+        };
+
         var DISMISS_KEY = 'floatingCtaDismissedUntil';
         var DISMISS_DAYS = 7; // frequency cap
-        var DELAY_MS = 2000; // delayed appearance
-        var TARGET_URL = 'https://ariashaw.gumroad.com/l/odoo-digital-sovereignty';
-        var TEXT_FULL = 'Odoo Sovereignty Pack | $699';
-        var TEXT_SHORT = 'Unlock Master Pack | $699';
 
         function nowTs() { return Date.now(); }
         function daysMs(n) { return n * 24 * 60 * 60 * 1000; }
@@ -1421,6 +1448,21 @@
 
         function setDismissDays(days) {
             try { localStorage.setItem(DISMISS_KEY, (nowTs() + daysMs(days)).toString()); } catch (e) {}
+        }
+
+        // Detect current page config
+        function getCurrentConfig() {
+            // Check if it's a blog post (article page)
+            var isPost = document.body.classList.contains('post-layout');
+            if (isPost) return CTA_CONFIG['post'];
+
+            // Check if it's a tool page by URL path
+            var path = window.location.pathname;
+            if (path.includes('odoo-hosting-advisor')) return CTA_CONFIG['odoo-hosting-advisor'];
+            if (path.includes('odoo-requirements-calculator')) return CTA_CONFIG['odoo-requirements-calculator'];
+
+            // Default configuration
+            return CTA_CONFIG['default'];
         }
 
         function sendAnalyticsClick(placement) {
@@ -1438,17 +1480,17 @@
             } catch (e) {}
         }
 
-        function mountFab() {
+        function mountFab(config) {
             var container = document.createElement('div');
             container.className = 'floating-cta';
 
             var link = document.createElement('a');
             link.className = 'floating-cta__fab';
-            link.href = TARGET_URL;
-            link.setAttribute('aria-label', TEXT_FULL);
-            link.setAttribute('title', TEXT_FULL);
+            link.href = config.targetUrl;
+            link.setAttribute('aria-label', config.textFull);
+            link.setAttribute('title', config.textFull);
             link.rel = 'noopener';
-            link.textContent = TEXT_SHORT;
+            link.textContent = config.textShort;
 
             link.addEventListener('click', function() { sendAnalyticsClick('fab'); });
 
@@ -1457,7 +1499,7 @@
             container.style.display = 'block';
         }
 
-        function mountBar() {
+        function mountBar(config) {
             var bar = document.createElement('div');
             bar.className = 'floating-cta--bar';
 
@@ -1466,13 +1508,13 @@
 
             var text = document.createElement('div');
             text.className = 'floating-cta--bar__text';
-            text.textContent = TEXT_FULL;
+            text.textContent = config.textFull;
 
             var btn = document.createElement('a');
             btn.className = 'floating-cta--bar__button';
-            btn.href = TARGET_URL;
+            btn.href = config.targetUrl;
             btn.textContent = 'Unlock Now';
-            btn.setAttribute('aria-label', TEXT_FULL);
+            btn.setAttribute('aria-label', config.textFull);
             btn.rel = 'noopener';
 
 
@@ -1492,9 +1534,15 @@
         }
 
         function initFloatingCta() {
+            var config = getCurrentConfig();
+
+            // Don't show CTA if disabled for this page type
+            if (!config.enabled) return;
+
             if (isDismissed()) return;
+
             var isNarrow = window.matchMedia('(max-width: 1024px)').matches;
-            if (isNarrow) { mountBar(); } else { mountFab(); }
+            if (isNarrow) { mountBar(config); } else { mountFab(config); }
         }
 
         function onReady(fn) {
@@ -1503,6 +1551,12 @@
             } else { fn(); }
         }
 
-        onReady(function() { setTimeout(initFloatingCta, DELAY_MS); });
+        onReady(function() {
+            var config = getCurrentConfig();
+            if (!config.enabled) return; // Skip entirely if disabled
+
+            var delay = config.delay || 2000; // Use configured delay
+            setTimeout(initFloatingCta, delay);
+        });
     })();
 </script>
