@@ -1113,6 +1113,24 @@ function displayResults(rec) {
 
     // Update final CTA based on hosting choice
     updateFinalCTA(rec);
+
+    // Prevent browser default tooltips on solution hints
+    setTimeout(() => {
+        document.querySelectorAll('.solution-hint').forEach(hint => {
+            hint.addEventListener('mouseenter', function(e) {
+                if (this.hasAttribute('title')) {
+                    this.setAttribute('data-title-backup', this.getAttribute('title'));
+                    this.removeAttribute('title');
+                }
+            });
+            hint.addEventListener('mouseleave', function(e) {
+                if (this.hasAttribute('data-title-backup')) {
+                    this.setAttribute('title', this.getAttribute('data-title-backup'));
+                    this.removeAttribute('data-title-backup');
+                }
+            });
+        });
+    }, 100);
 }
 
 function updateFinalCTA(rec) {
@@ -1235,9 +1253,25 @@ function buildValueStackTable(hostingType) {
     const rows = comparisons[hostingType]
         .map(c => `
             <tr style="border-bottom: 1px solid var(--calc-border-color);">
-                <td style="padding: 12px; font-weight: 600;">${c.challenge}</td>
-                <td style="padding: 12px; color: #dc3545;">❌ ${c.without}</td>
-                <td style="padding: 12px; color: #059669; background: #f0fdf4;">✓ ${c.with}</td>
+                <td style="padding: 14px; font-weight: 600; color: var(--calc-heading-color);">${c.challenge}</td>
+                <td style="padding: 14px; color: #6c757d; background: #f8f9fa;">
+                    <span style="display: inline-block; width: 20px; height: 20px; margin-right: 8px; vertical-align: middle;">
+                        <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="10" cy="10" r="9" stroke="#dc3545" stroke-width="2" fill="none"/>
+                            <path d="M6 6L14 14M14 6L6 14" stroke="#dc3545" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </span>
+                    ${c.without}
+                </td>
+                <td style="padding: 14px; color: var(--calc-heading-color); background: linear-gradient(135deg, #f0f9ff 0%, #ffffff 100%); border-left: 3px solid var(--calc-link-color);">
+                    <span style="display: inline-block; width: 20px; height: 20px; margin-right: 8px; vertical-align: middle;">
+                        <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="10" cy="10" r="9" stroke="var(--calc-link-color)" stroke-width="2" fill="none"/>
+                            <path d="M6 10L9 13L14 7" stroke="var(--calc-link-color)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </span>
+                    ${c.with}
+                </td>
             </tr>
         `).join('');
 
