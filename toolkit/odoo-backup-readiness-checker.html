@@ -1194,17 +1194,16 @@ function updateFinalCTA(score, criticalCount) {
     }
 }
 
-/* Solution hint tooltips */
+/* Solution hint tooltips - smart positioning */
 .solution-hint {
     position: relative;
     display: inline-block;
 }
 
+/* Default: tooltip above (for items in lower part of list) */
 .solution-hint[data-tooltip]:hover::after {
     content: attr(data-tooltip);
-    position: absolute;
-    right: 0;
-    bottom: calc(100% + 8px);
+    position: fixed;
     background: var(--calc-heading-color);
     color: white;
     padding: 10px 14px;
@@ -1213,21 +1212,52 @@ function updateFinalCTA(score, criticalCount) {
     line-height: 1.4;
     width: 280px;
     max-width: calc(100vw - 40px);
-    z-index: 1000;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    z-index: 10000;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
     white-space: normal;
     text-align: left;
     pointer-events: none;
+    right: 20px;
 }
 
-.solution-hint[data-tooltip]:hover::before {
+/* Smart vertical positioning using CSS Container Queries alternative */
+.issue-list.critical li:nth-child(1) .solution-hint[data-tooltip]:hover::after,
+.issue-list.critical li:nth-child(2) .solution-hint[data-tooltip]:hover::after,
+.issue-list.critical li:nth-child(3) .solution-hint[data-tooltip]:hover::after {
+    /* For first 3 items, show tooltip below */
+    top: calc(100% + 8px);
+    bottom: auto;
+}
+
+.issue-list.critical li:nth-child(n+4) .solution-hint[data-tooltip]:hover::after {
+    /* For 4th item onwards, show tooltip above */
+    bottom: calc(100% + 8px);
+    top: auto;
+}
+
+/* Arrow for tooltips below (first 3 items) */
+.issue-list.critical li:nth-child(1) .solution-hint[data-tooltip]:hover::before,
+.issue-list.critical li:nth-child(2) .solution-hint[data-tooltip]:hover::before,
+.issue-list.critical li:nth-child(3) .solution-hint[data-tooltip]:hover::before {
     content: '';
-    position: absolute;
-    right: 12px;
+    position: fixed;
+    right: 32px;
+    top: calc(100% + 2px);
+    border: 6px solid transparent;
+    border-bottom-color: var(--calc-heading-color);
+    z-index: 10001;
+    pointer-events: none;
+}
+
+/* Arrow for tooltips above (4th item onwards) */
+.issue-list.critical li:nth-child(n+4) .solution-hint[data-tooltip]:hover::before {
+    content: '';
+    position: fixed;
+    right: 32px;
     bottom: calc(100% + 2px);
     border: 6px solid transparent;
     border-top-color: var(--calc-heading-color);
-    z-index: 1001;
+    z-index: 10001;
     pointer-events: none;
 }
 </style>
