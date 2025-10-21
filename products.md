@@ -1,7 +1,7 @@
 ---
 layout: home
 title: "Odoo Consultant Alternative: DIY Toolkit $699 vs $50K+ Fees"
-description: "Replace $50K+ Odoo consulting fees with 68+ production scripts, calculators, guides. Build in-house expertise. 14-day guarantee. $699 one-time."
+description: "Replace $50K+ Odoo consulting fees with 68+ production scripts, calculators, guides. Build in-house expertise. 30-day guarantee. $699 one-time."
 breadcrumb_title: Products
 permalink: /products/
 ---
@@ -55,7 +55,7 @@ permalink: /products/
 
   <!-- Trust Signals -->
   <div style="font-size: 14px; color: #727272; display: flex; justify-content: center; gap: 32px; flex-wrap: wrap;">
-    <span>14-day money-back guarantee</span>
+    <span>30-day money-back guarantee</span>
     <span style="color: #e5e5e5;">•</span>
     <span>Trusted by 500+ businesses</span>
     <span style="color: #e5e5e5;">•</span>
@@ -383,10 +383,10 @@ Most businesses face a difficult choice when implementing Odoo: pay $50,000-$200
 
 <!-- Inline CTA after Case Studies -->
 <div class="products-mid-cta" style="background: transparent; padding: 28px 0; margin: 32px 0; text-align: center;">
-  <a class="cta-ghost" href="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty" style="background: transparent; color: #267CB9; padding: 16px 28px; font-size: 17px; font-weight: 600; text-decoration: none; display: inline-block; border-radius: 10px; border: 1px solid #267CB9; transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;" onclick="gtag('event', 'cta_click', {'event_category': 'CTA', 'event_label': 'Start 14-Day Trial - Mid-page', 'cta_location': 'products-mid-page', 'destination': 'gumroad'});" onmouseover="this.style.backgroundColor='#eaf4fb'; this.style.borderColor='#1e6ba6'; this.style.color='#1e6ba6';" onmouseout="this.style.backgroundColor='transparent'; this.style.borderColor='#267CB9'; this.style.color='#267CB9';">
-    Start 14-Day Risk-Free Trial
+  <a class="cta-ghost" href="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty" style="background: transparent; color: #267CB9; padding: 16px 28px; font-size: 17px; font-weight: 600; text-decoration: none; display: inline-block; border-radius: 10px; border: 1px solid #267CB9; transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;" onclick="gtag('event', 'cta_click', {'event_category': 'CTA', 'event_label': 'Start 30-Day Trial - Mid-page', 'cta_location': 'products-mid-page', 'destination': 'gumroad'});" onmouseover="this.style.backgroundColor='#eaf4fb'; this.style.borderColor='#1e6ba6'; this.style.color='#1e6ba6';" onmouseout="this.style.backgroundColor='transparent'; this.style.borderColor='#267CB9'; this.style.color='#267CB9';">
+    Start 30-Day Risk-Free Trial
   </a>
-  <div style="margin-top: 8px; font-size: 11px; color: #9aa3ab;">14-day money-back guarantee</div>
+  <div style="margin-top: 8px; font-size: 11px; color: #9aa3ab;">30-day money-back guarantee</div>
 </div>
 
 <!-- Author Proof Section -->
@@ -708,7 +708,7 @@ Most businesses face a difficult choice when implementing Odoo: pay $50,000-$200
       <li><strong>68+ production-ready tools</strong> including Excel calculators, bash scripts, Python scripts, and configuration templates</li>
       <li><strong>2,000+ pages of documentation</strong> with step-by-step implementation guides</li>
       <li><strong>Lifetime free updates</strong> - all future improvements included</li>
-      <li><strong>14-day money-back guarantee</strong> - full refund if tools don't match description</li>
+      <li><strong>30-day money-back guarantee</strong> - full refund if tools don't match description</li>
       <li><strong>Zero recurring fees</strong> - one-time payment, own forever</li>
     </ul>
     <p><strong>Detailed breakdown by module:</strong></p>
@@ -759,7 +759,7 @@ Most businesses face a difficult choice when implementing Odoo: pay $50,000-$200
     <span class="accordion-chevron">▼</span>
   </button>
   <div class="accordion-content">
-    <p>Yes, the Master Pack comes with a 14-day money-back guarantee. If the tools don't match the description, don't work as documented, or you're unsatisfied for any reason, contact aria@ariashaw.com for a full refund—no questions asked.</p>
+    <p>Yes, the Master Pack comes with a 30-day money-back guarantee. If the tools don't match the description, don't work as documented, or you're unsatisfied for any reason, contact aria@ariashaw.com for a full refund—no questions asked.</p>
     <p>This guarantee lets you download all 5 modules, review the content, and test the tools risk-free for two weeks.</p>
   </div>
 </div>
@@ -874,7 +874,7 @@ Plus: Consultants leave, taking their knowledge. With the Master Pack, the knowl
 
 {% include ctas/inline-simple.html
   title="Save $84,000-$199,000 in consulting fees"
-  description="One-time $699 investment • Lifetime access • 14-day guarantee"
+  description="One-time $699 investment • Lifetime access • 30-day guarantee"
   button_text="Get Instant Access — $699"
   link="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty"
   location="products-value-comparison"
@@ -962,7 +962,7 @@ Plus: Consultants leave, taking their knowledge. With the Master Pack, the knowl
     </a>
 
     <div style="display: flex; justify-content: center; align-items: center; gap: 32px; flex-wrap: wrap; font-size: 14px; color: #727272;">
-      <span>14-day money-back guarantee</span>
+      <span>30-day money-back guarantee</span>
       <span style="color: #e5e5e5;">•</span>
       <span>Trusted by 500+ businesses</span>
       <span style="color: #e5e5e5;">•</span>

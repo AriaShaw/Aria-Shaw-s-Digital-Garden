@@ -33,7 +33,7 @@
       <!-- Trust Signals -->
       <div class="trust-signals">
         <span>🔒 Secure checkout</span>
-        <span>14-day money-back</span>
+        <span>30-day money-back</span>
         <span>Lifetime updates</span>
       </div>
     </div>
@@ -208,7 +208,7 @@
 
     <div class="final-cta-guarantees">
       <div class="guarantee-item">
-        <span class="guarantee-text">14-day money-back guarantee</span>
+        <span class="guarantee-text">30-day money-back guarantee</span>
       </div>
       <div class="guarantee-item">
         <span class="guarantee-text">Trusted by 500+ businesses</span>
