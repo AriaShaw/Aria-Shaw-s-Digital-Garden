@@ -1406,7 +1406,7 @@
             // Article pages - NO floating CTA (user journey hooks handle conversion)
             'post': { enabled: false },
 
-            // Tool pages - Personalized CTAs after user gets value
+            // Tool pages - NO floating CTA (have optimized inline dynamic CTAs)
             'odoo-hosting-advisor': {
                 enabled: false, // Disabled - page has optimized inline dynamic CTA
                 delay: 10000,
@@ -1421,14 +1421,27 @@
                 textFull: 'Want step-by-step deployment walkthroughs?',
                 textShort: 'Unlock Master Pack | $699'
             },
-
-            // Default for all other pages (homepage, products, about, etc.)
-            'default': {
-                enabled: false,
-                delay: 2000,
+            'odoo-backup-readiness-checker': {
+                enabled: false, // Disabled - page has optimized inline dynamic CTA
+                delay: 10000,
                 targetUrl: 'https://ariashaw.gumroad.com/l/odoo-digital-sovereignty',
-                textFull: 'Odoo Sovereignty Pack | $699',
+                textFull: 'Want automated backup scripts?',
                 textShort: 'Unlock Master Pack | $699'
+            },
+
+            // Product and toolkit index pages - NO floating CTA (have multiple inline CTAs)
+            'products-page': { enabled: false },
+            'toolkit-index': { enabled: false },
+            'scripts-index': { enabled: false },
+
+            // Default for browsing pages (about, support, terms, etc.)
+            // ENABLED - these are information pages without prominent CTAs
+            'default': {
+                enabled: true,
+                delay: 5000, // Show after 5 seconds of browsing
+                targetUrl: 'https://ariashaw.gumroad.com/l/odoo-digital-sovereignty',
+                textFull: 'Ready to own your Odoo infrastructure?',
+                textShort: 'Get Master Pack | $699'
             }
         };
 
@@ -1452,16 +1465,23 @@
 
         // Detect current page config
         function getCurrentConfig() {
+            var path = window.location.pathname;
+
             // Check if it's a blog post (article page)
             var isPost = document.body.classList.contains('post-layout');
             if (isPost) return CTA_CONFIG['post'];
 
             // Check if it's a tool page by URL path
-            var path = window.location.pathname;
             if (path.includes('odoo-hosting-advisor')) return CTA_CONFIG['odoo-hosting-advisor'];
             if (path.includes('odoo-requirements-calculator')) return CTA_CONFIG['odoo-requirements-calculator'];
+            if (path.includes('odoo-backup-readiness-checker')) return CTA_CONFIG['odoo-backup-readiness-checker'];
 
-            // Default configuration
+            // Check if it's product/toolkit/scripts index pages (have multiple inline CTAs)
+            if (path === '/products/' || path === '/products') return CTA_CONFIG['products-page'];
+            if (path === '/toolkit/' || path === '/toolkit') return CTA_CONFIG['toolkit-index'];
+            if (path === '/scripts/' || path === '/scripts') return CTA_CONFIG['scripts-index'];
+
+            // Default configuration for browsing pages (about, support, privacy, terms, etc.)
             return CTA_CONFIG['default'];
         }
 
