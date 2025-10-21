@@ -381,51 +381,55 @@ All scripts are released under **MIT License** - free to use, modify, and distri
 ---
 
 <!-- Final Conversion Element: Pattern Interrupt Before Exit -->
-<div style="background: linear-gradient(135deg, #1e5f8f 0%, #267CB9 100%); color: white; padding: 64px 32px; margin: 64px 0 32px 0; border-radius: 12px; text-align: center;">
-  <h2 style="margin: 0 0 24px 0; font-size: 32px; font-weight: 700; color: white;">Learning-Grade Teaches. Production-Grade Delivers.</h2>
-  <p style="margin: 0 0 32px 0; font-size: 18px; line-height: 1.6; color: rgba(255,255,255,0.95); max-width: 720px; margin-left: auto; margin-right: auto;">
-    These free scripts demonstrate the concepts. <strong>Production environments demand enterprise-grade reliability</strong>—automated failover tested on 200GB+ databases, monitoring integration with CloudWatch/Datadog, and disaster recovery protocols that work at 2am when your business is offline.
+<div style="background: linear-gradient(to bottom, #f8fafb 0%, #ffffff 100%); border: 2px solid #e8eef3; padding: 64px 32px; margin: 64px 0 32px 0; border-radius: 12px; text-align: center; box-shadow: 0 4px 24px rgba(38, 124, 185, 0.08);">
+  <h2 style="margin: 0 0 24px 0; font-size: 32px; font-weight: 700; color: #1a1a1a; line-height: 1.3;">Learning-Grade Teaches.<br>Production-Grade Delivers.</h2>
+
+  <p style="margin: 0 0 20px 0; font-size: 18px; line-height: 1.6; color: #444; max-width: 720px; margin-left: auto; margin-right: auto;">
+    These free scripts demonstrate the concepts. <span style="color: #1a1a1a; font-weight: 600;">Production environments demand enterprise-grade reliability</span>—automated failover tested on 200GB+ databases, monitoring integration with CloudWatch/Datadog, and disaster recovery protocols that work at 2am when your business is offline.
   </p>
-  <p style="margin: 0 0 40px 0; font-size: 18px; line-height: 1.6; color: rgba(255,255,255,0.95); max-width: 720px; margin-left: auto; margin-right: auto;">
-    The Master Pack is what you deploy when downtime costs money. <strong>$699 one-time</strong> vs. $50,000+ consultants who leave you dependent.
+
+  <p style="margin: 0 0 40px 0; font-size: 18px; line-height: 1.6; color: #444; max-width: 720px; margin-left: auto; margin-right: auto;">
+    The Master Pack is what you deploy when downtime costs money. <span style="color: #267CB9; font-weight: 700; font-size: 20px;">$699 one-time</span> <span style="color: #666;">vs. $50,000+ consultants who leave you dependent.</span>
   </p>
+
   <a href="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty"
-     style="display: inline-block; background: white; color: #267CB9; padding: 20px 48px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 20px; transition: all 0.2s; box-shadow: 0 8px 24px rgba(0,0,0,0.2);"
-     onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 12px 32px rgba(0,0,0,0.3)'"
-     onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 24px rgba(0,0,0,0.2)'"
+     style="display: inline-block; background: #267CB9; color: white; padding: 20px 48px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 20px; transition: all 0.2s; box-shadow: 0 4px 16px rgba(38, 124, 185, 0.25); border: none;"
+     onmouseover="this.style.background='#1e5f8f'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 24px rgba(38, 124, 185, 0.35)'"
+     onmouseout="this.style.background='#267CB9'; this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 16px rgba(38, 124, 185, 0.25)'"
      onclick="gtag('event', 'cta_click', {'event_category': 'CTA', 'event_label': 'Scripts Bottom CTA', 'cta_location': 'scripts_bottom', 'destination': 'gumroad'});">
     Get Instant Access — $699
   </a>
-  <div style="margin-top: 24px; font-size: 15px; color: rgba(255,255,255,0.9);">
-    <div style="margin-bottom: 8px; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
-      <span style="display: flex; align-items: center; gap: 6px;">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+
+  <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid #e8eef3;">
+    <div style="margin-bottom: 12px; display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; font-size: 15px;">
+      <span style="display: flex; align-items: center; gap: 6px; color: #555;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#267CB9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
         68+ integrated tools
       </span>
-      <span style="color: rgba(255,255,255,0.5);">•</span>
-      <span style="display: flex; align-items: center; gap: 6px;">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span style="color: #ddd;">•</span>
+      <span style="display: flex; align-items: center; gap: 6px; color: #555;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#267CB9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
         2,000+ pages of guides
       </span>
-      <span style="color: rgba(255,255,255,0.5);">•</span>
-      <span style="display: flex; align-items: center; gap: 6px;">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span style="color: #ddd;">•</span>
+      <span style="display: flex; align-items: center; gap: 6px; color: #555;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#267CB9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
         Email support
       </span>
     </div>
-    <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
-      <span style="display: flex; align-items: center; gap: 6px;">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <div style="display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; font-size: 15px;">
+      <span style="display: flex; align-items: center; gap: 6px; color: #555;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#267CB9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
         30-day money-back guarantee
       </span>
-      <span style="color: rgba(255,255,255,0.5);">•</span>
-      <span style="display: flex; align-items: center; gap: 6px;">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span style="color: #ddd;">•</span>
+      <span style="display: flex; align-items: center; gap: 6px; color: #555;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#267CB9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
         Lifetime updates
       </span>
-      <span style="color: rgba(255,255,255,0.5);">•</span>
-      <span style="display: flex; align-items: center; gap: 6px;">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span style="color: #ddd;">•</span>
+      <span style="display: flex; align-items: center; gap: 6px; color: #555;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#267CB9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
         Own everything forever
       </span>
     </div>
