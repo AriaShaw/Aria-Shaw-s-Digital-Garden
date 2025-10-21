@@ -1051,10 +1051,26 @@ function displayResults(rec) {
         `<div style="margin-bottom: 8px;">${b}</div>`
     ).join('');
 
-    // Update tradeoffs
-    document.getElementById('tradeoffsList').innerHTML = rec.tradeoffs.map(t =>
-        `<div style="margin-bottom: 8px;">${t}</div>`
-    ).join('');
+    // Update tradeoffs with inline solution hints
+    const tradeoffsWithHints = rec.tradeoffs.map(t => {
+        let hint = '';
+
+        if (t.toLowerCase().includes('vendor lock-in') || t.toLowerCase().includes('migrations')) {
+            hint = ' <span class="solution-hint" style="cursor: help;" title="Master Pack includes vendor-neutral migration framework with 6-hour playbook"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="vertical-align: middle; margin-left: 6px;"><circle cx="8" cy="8" r="7" stroke="var(--calc-link-color)" stroke-width="1.5" fill="none"/><path d="M8 11V8M8 5V5.5" stroke="var(--calc-link-color)" stroke-width="1.5" stroke-linecap="round"/></svg></span>';
+        } else if (t.toLowerCase().includes('control over server') || t.toLowerCase().includes('less control')) {
+            hint = ' <span class="solution-hint" style="cursor: help;" title="Master Pack provides managed-hosting-compatible automation scripts"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="vertical-align: middle; margin-left: 6px;"><circle cx="8" cy="8" r="7" stroke="var(--calc-link-color)" stroke-width="1.5" fill="none"/><path d="M8 11V8M8 5V5.5" stroke="var(--calc-link-color)" stroke-width="1.5" stroke-linecap="round"/></svg></span>';
+        } else if (t.toLowerCase().includes('monthly cost') || t.toLowerCase().includes('higher cost')) {
+            hint = ' <span class="solution-hint" style="cursor: help;" title="TCO calculator in Master Pack optimizes long-term costs"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="vertical-align: middle; margin-left: 6px;"><circle cx="8" cy="8" r="7" stroke="var(--calc-link-color)" stroke-width="1.5" fill="none"/><path d="M8 11V8M8 5V5.5" stroke="var(--calc-link-color)" stroke-width="1.5" stroke-linecap="round"/></svg></span>';
+        } else if (t.toLowerCase().includes('maintenance') || t.toLowerCase().includes('handle everything')) {
+            hint = ' <span class="solution-hint" style="cursor: help;" title="Master Pack automation reduces maintenance to <2 hrs/month"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="vertical-align: middle; margin-left: 6px;"><circle cx="8" cy="8" r="7" stroke="var(--calc-link-color)" stroke-width="1.5" fill="none"/><path d="M8 11V8M8 5V5.5" stroke="var(--calc-link-color)" stroke-width="1.5" stroke-linecap="round"/></svg></span>';
+        } else if (t.toLowerCase().includes('customization') || t.toLowerCase().includes('limited')) {
+            hint = ' <span class="solution-hint" style="cursor: help;" title="Master Pack includes workaround strategies for platform limitations"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="vertical-align: middle; margin-left: 6px;"><circle cx="8" cy="8" r="7" stroke="var(--calc-link-color)" stroke-width="1.5" fill="none"/><path d="M8 11V8M8 5V5.5" stroke="var(--calc-link-color)" stroke-width="1.5" stroke-linecap="round"/></svg></span>';
+        }
+
+        return `<div style="margin-bottom: 8px;">${t}${hint}</div>`;
+    });
+
+    document.getElementById('tradeoffsList').innerHTML = tradeoffsWithHints.join('');
 
     // Update social proof with real case studies
     document.getElementById('socialProofContainer').innerHTML = rec.socialProof;
@@ -1156,6 +1172,110 @@ function updateFinalCTA(rec) {
     const hostingParam = rec.type.toLowerCase().replace(/ /g, '-').replace(/[()]/g, '');
     document.getElementById('ctaButton').href =
         `https://ariashaw.gumroad.com/l/odoo-digital-sovereignty?wanted=true&source=hosting-advisor&hosting=${hostingParam}&tco=${rec.tco}`;
+
+    // Build and insert value stack comparison table
+    buildValueStackTable(rec.type);
+}
+
+function buildValueStackTable(hostingType) {
+    const comparisons = {
+        'Self-Hosted VPS': [
+            {
+                challenge: 'Server security',
+                without: 'Google configs for 2 days, miss critical settings',
+                with: 'One-command hardening script (12 critical configs)'
+            },
+            {
+                challenge: 'Backup setup',
+                without: '$800-1,200 consultant fee + 2 weeks to implement',
+                with: 'Deploy 3-2-1 redundancy in 4 hours (step-by-step)'
+            },
+            {
+                challenge: 'Performance tuning',
+                without: '40% slower than optimal (trial-and-error configs)',
+                with: 'Pre-optimized PostgreSQL configs for your RAM/CPU'
+            }
+        ],
+        'Managed Odoo Hosting': [
+            {
+                challenge: 'Provider lock-in',
+                without: '$2,000-4,000 migration cost if you need to leave',
+                with: '6-hour migration playbook (test exit before committing)'
+            },
+            {
+                challenge: 'Backup verification',
+                without: 'Trust provider blindly (68% have gaps)',
+                with: 'Monthly validation scripts + redundant offsite backups'
+            },
+            {
+                challenge: 'SLA enforcement',
+                without: 'Discover performance issues after signing',
+                with: 'Automated benchmarking tests (hold provider accountable)'
+            }
+        ],
+        'Odoo.sh (Official SaaS)': [
+            {
+                challenge: 'Cost creep',
+                without: 'Discover $600/month overages after 6 months',
+                with: 'User tier optimizer + storage growth forecasting'
+            },
+            {
+                challenge: 'Migration away',
+                without: '$5,000+ consultant-led migration (complex structure)',
+                with: 'Quarterly export automation + migration-ready architecture'
+            },
+            {
+                challenge: 'Customization limits',
+                without: 'Hit roadblocks, pay for workarounds',
+                with: 'Proven patterns for advanced features within constraints'
+            }
+        ]
+    };
+
+    const rows = comparisons[hostingType]
+        .map(c => `
+            <tr style="border-bottom: 1px solid var(--calc-border-color);">
+                <td style="padding: 12px; font-weight: 600;">${c.challenge}</td>
+                <td style="padding: 12px; color: #dc3545;">❌ ${c.without}</td>
+                <td style="padding: 12px; color: #059669; background: #f0fdf4;">✓ ${c.with}</td>
+            </tr>
+        `).join('');
+
+    const tableHTML = `
+        <div style="background: var(--calc-accent-bg); border: 2px solid var(--calc-border-color); border-radius: 8px; padding: 24px; margin: 32px 0;">
+            <h4 style="margin: 0 0 20px 0; text-align: center; color: var(--calc-heading-color); font-size: 18px;">
+                What You Get for <span style="color: var(--calc-link-color); font-weight: 700;">${hostingType}</span> Specifically:
+            </h4>
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; font-size: 13px; border-collapse: collapse; background: white; border-radius: 6px; overflow: hidden;">
+                    <thead style="background: var(--calc-heading-color); color: white;">
+                        <tr>
+                            <th style="padding: 12px; text-align: left; font-weight: 600;">Challenge</th>
+                            <th style="padding: 12px; text-align: left; font-weight: 600;">Without Master Pack</th>
+                            <th style="padding: 12px; text-align: left; background: var(--calc-link-color); font-weight: 600;">With Master Pack</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${rows}
+                    </tbody>
+                </table>
+            </div>
+            <p style="margin: 16px 0 0 0; font-size: 12px; color: #6c757d; font-style: italic; text-align: center;">
+                Side-by-side comparison of your specific hosting challenges and Master Pack solutions
+            </p>
+        </div>
+    `;
+
+    // Insert table before the CTA button
+    const ctaButton = document.getElementById('ctaButton').parentElement;
+    const existingTable = document.getElementById('valueStackTable');
+    if (existingTable) {
+        existingTable.remove();
+    }
+    const tableContainer = document.createElement('div');
+    tableContainer.id = 'valueStackTable';
+    tableContainer.innerHTML = tableHTML;
+    ctaButton.parentElement.insertBefore(tableContainer, ctaButton);
 }
 
 function resetCalculator() {
@@ -1205,6 +1325,44 @@ details[open] summary::before {
 
 details[open] summary {
     margin-bottom: 12px;
+}
+
+/* Solution hint tooltips */
+.solution-hint {
+    position: relative;
+    display: inline-block;
+}
+
+.solution-hint[title]:hover::after {
+    content: attr(title);
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 8px);
+    transform: translateX(-50%);
+    background: var(--calc-heading-color);
+    color: white;
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-size: 12px;
+    line-height: 1.4;
+    width: 260px;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    white-space: normal;
+    text-align: left;
+    pointer-events: none;
+}
+
+.solution-hint[title]:hover::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 2px);
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: var(--calc-heading-color);
+    z-index: 1001;
+    pointer-events: none;
 }
 
 /* Print styles */
