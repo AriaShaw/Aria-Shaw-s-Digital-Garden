@@ -38,8 +38,8 @@ Open-source, production-tested automation scripts for self-hosting Odoo. Every s
 ### Backup & Recovery
 
 **Daily Operations**
-- [backup_odoo.sh](/assets/downloads/enhanced_backup_script/) - Simple daily backup with automatic cleanup
-- [enhanced_backup_odoo.sh](/assets/downloads/enhanced_backup_script/) - Cloud sync (Backblaze B2) with failure alerts
+- [backup_odoo.sh](/assets/downloads/backup_odoo.sh/) - Simple daily backup with automatic cleanup
+- [enhanced_backup_odoo.sh](/assets/downloads/enhanced_backup_odoo.sh) - Cloud sync (Backblaze B2) with failure alerts
 - [odoo_backup_manager.py](/assets/downloads/odoo_backup_manager.py) - Enterprise Python backup with multi-database support
 - [cloud_backup_sync.sh](/assets/downloads/cloud_backup_sync.sh) - Generic cloud storage sync wrapper
 - [backup_database.sh](/assets/downloads/backup_database.sh) - PostgreSQL-only backup with validation
