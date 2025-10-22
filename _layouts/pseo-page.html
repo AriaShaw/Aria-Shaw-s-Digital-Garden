@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="{{ site.lang | default: "en-US" }}">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Load YAML data for this PSEO page -->
+    {% assign page_data = site.data.pages[page.data_file] %}
+
+    <title>{{ page_data.metadata.title | default: page.title }}</title>
+    <meta name="description" content="{{ page_data.metadata.description }}">
+    <meta name="author" content="{{ site.author }}">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="{{ page.url | absolute_url }}">
+    <meta property="og:title" content="{{ page_data.metadata.title | default: page.title }}">
+    <meta property="og:description" content="{{ page_data.metadata.description }}">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="{{ page.url | absolute_url }}">
+    <meta property="twitter:title" content="{{ page_data.metadata.title | default: page.title }}">
+    <meta property="twitter:description" content="{{ page_data.metadata.description }}">
+
+    <link rel="canonical" href="{{ page.url | absolute_url }}">
+    <link rel="stylesheet" href="{{ "/assets/css/style.css?v=" | append: site.github.build_revision | relative_url }}">
+    <link rel="stylesheet" href="{{ "/assets/css/accessibility.css" | relative_url }}">
+    <link rel="stylesheet" href="{{ "/assets/css/reading-experience.css" | relative_url }}">
+
+    <!-- Mermaid.js for visualizations -->
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+    </script>
+
+    <!--[if lt IE 9]>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <![endif]-->
+    {% include head-custom.html %}
+
+    <!-- Intent-specific Schema.org structured data -->
+    {% if page_data.metadata.intent_type == "researcher" %}
+    <!-- Comparison/Review Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "{{ page_data.metadata.title }}",
+      "description": "{{ page_data.metadata.description }}",
+      "author": {
+        "@type": "Person",
+        "name": "{{ site.author }}",
+        "url": "{{ site.url }}"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "{{ site.title }}",
+        "url": "{{ site.url }}"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "{{ page.url | absolute_url }}"
+      }
+    }
+    </script>
+    {% elsif page_data.metadata.intent_type == "practitioner" %}
+    <!-- HowTo Schema for implementation guides -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "HowTo",
+      "name": "{{ page_data.metadata.title }}",
+      "description": "{{ page_data.metadata.description }}",
+      "url": "{{ page.url | absolute_url }}"
+    }
+    </script>
+    {% elsif page_data.metadata.intent_type == "decider" %}
+    <!-- SoftwareApplication Schema for decision tools -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "{{ page_data.metadata.title }}",
+      "description": "{{ page_data.metadata.description }}",
+      "url": "{{ page.url | absolute_url }}",
+      "applicationCategory": "BusinessApplication"
+    }
+    </script>
+    {% endif %}
+  </head>
+  <body class="pseo-page intent-{{ page_data.metadata.intent_type }}" data-accessibility="wcag-aa">
+    <!-- Reading Progress Bar -->
+    <div class="reading-progress" id="reading-progress"></div>
+
+    <div class="wrapper">
+      <section>
+        {% include breadcrumbs.html %}
+
+        <h1>{{ page_data.metadata.title }}</h1>
+
+        <!-- Executive Summary (if present) -->
+        {% if page_data.ai_generated_content.executive_summary and page_data.ai_generated_content.executive_summary != "" %}
+        <div class="executive-summary" style="background: #f6f8fa; border-left: 4px solid #267CB9; padding: 1.5rem; margin: 2rem 0;">
+          <h2 style="margin-top: 0; font-size: 1.1em; color: #267CB9;">Executive Summary</h2>
+          <p style="margin-bottom: 0;">{{ page_data.ai_generated_content.executive_summary }}</p>
+        </div>
+        {% endif %}
+
+        <!-- Introduction -->
+        {% if page_data.ai_generated_content.introduction and page_data.ai_generated_content.introduction != "" %}
+        <div class="introduction">
+          {{ page_data.ai_generated_content.introduction | markdownify }}
+        </div>
+        {% endif %}
+
+        <!-- Conversion Asset: After Introduction -->
+        {% for asset in page_data.conversion_assets %}
+          {% if asset.placement_hint == "after_introduction" %}
+            {% include ctas/{{ asset.component_type }}.html
+               copy=asset.generated_copy
+               intent_type=page_data.metadata.intent_type
+               location="after_introduction" %}
+          {% endif %}
+        {% endfor %}
+
+        <!-- Main Content (intent-type specific rendering) -->
+        <div class="pseo-main-content">
+          {% include pseo/content-renderer.html page_data=page_data %}
+        </div>
+
+        <!-- Intelligent Links Section -->
+        {% if page_data.intelligent_links and page_data.intelligent_links.size > 0 %}
+        <div class="intelligent-links" style="margin: 3rem 0;">
+          <h2 style="font-size: 1.3em; border-bottom: 2px solid #d1d5da; padding-bottom: 0.5rem;">Next Steps</h2>
+          {% for link in page_data.intelligent_links %}
+            {% if link.generated_link.target_url and link.generated_link.target_url != "" %}
+            <div style="margin: 1.5rem 0; padding: 1rem; background: #f6f8fa; border-radius: 4px;">
+              <p style="margin-bottom: 0.5rem;">{{ link.generated_link.intro_text }}</p>
+              <p style="margin: 0;">
+                → <a href="{{ link.generated_link.target_url }}" style="font-weight: 600; color: #267CB9;">{{ link.generated_link.anchor_text }}</a>
+              </p>
+            </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Visualizations -->
+        {% if page_data.visualizations %}
+          {% for viz in page_data.visualizations %}
+            {% if viz.mermaid_chart_syntax and viz.mermaid_chart_syntax != "" %}
+            <div class="visualization-container" style="margin: 2rem 0; padding: 1.5rem; background: white; border: 1px solid #e1e4e8; border-radius: 6px;">
+              <div class="mermaid">
+{{ viz.mermaid_chart_syntax }}
+              </div>
+            </div>
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+
+        <!-- Final Conversion Asset -->
+        {% for asset in page_data.conversion_assets %}
+          {% if asset.placement_hint == "bottom_cta" or asset.placement_hint == "end_of_page" %}
+            {% include ctas/{{ asset.component_type }}.html
+               copy=asset.generated_copy
+               intent_type=page_data.metadata.intent_type
+               location="bottom_cta" %}
+          {% endif %}
+        {% endfor %}
+
+      </section>
+
+      <footer>
+        {% if site.github.is_project_page %}
+        <p>This project is maintained by <a href="{{ site.github.owner_url }}">{{ site.github.owner_name }}</a></p>
+        {% endif %}
+      </footer>
+    </div>
+
+    <script src="{{ "/assets/js/scale.fix.js" | relative_url }}"></script>
+
+    <!-- Intent-specific conversion tracking -->
+    <script>
+      // Track PSEO page view with intent type
+      if (typeof gtag !== 'undefined') {
+        gtag('event', 'pseo_page_view', {
+          'intent_type': '{{ page_data.metadata.intent_type }}',
+          'page_slug': '{{ page_data.metadata.page_slug }}',
+          'page_path': '{{ page.url }}'
+        });
+      }
+    </script>
+  </body>
+</html>
