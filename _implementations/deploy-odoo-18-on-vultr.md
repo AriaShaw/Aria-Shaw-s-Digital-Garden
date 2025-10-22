@@ -1,7 +1,6 @@
 ---
 data_key: deploy-odoo-18-on-vultr
 slug: deploy-odoo-18-on-vultr
-layout: pseo-page-minimal
 ---
 
 <!-- This is a PSEO page pointer file -->
