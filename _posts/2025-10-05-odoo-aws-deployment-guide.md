@@ -681,8 +681,8 @@ pip list | grep -E '(odoo|psycopg2|boto3)'
 
 Download production-optimized configuration template:
 
-**📋 [Download Production Odoo Configuration Template](/templates/odoo-aws-production.conf)**
-*Quick download: `wget https://ariashaw.github.io/templates/odoo-aws-production.conf -O /opt/odoo/odoo.conf`*
+**📋 [Download Production Odoo Configuration Template](/assets/downloads/odoo-aws-production.conf)**
+*Quick download: `wget https://ariashaw.github.io/assets/downloads/odoo-aws-production.conf -O /opt/odoo/odoo.conf`*
 
 **Customize required values:**
 - **Line 4**: `db_host` → Your RDS endpoint (e.g., odoo-production-db.abc123.us-east-1.rds.amazonaws.com)
@@ -708,8 +708,8 @@ exit  # Return to ubuntu user
 
 Download systemd service template:
 
-**📋 [Download Odoo Systemd Service File](/templates/odoo.service)**
-*Quick install: `sudo wget https://ariashaw.github.io/templates/odoo.service -O /etc/systemd/system/odoo.service`*
+**📋 [Download Odoo Systemd Service File](/assets/downloads/odoo.service)**
+*Quick install: `sudo wget https://ariashaw.github.io/assets/downloads/odoo.service -O /etc/systemd/system/odoo.service`*
 
 Template configures auto-restart on failure, proper working directory, and journal logging.
 

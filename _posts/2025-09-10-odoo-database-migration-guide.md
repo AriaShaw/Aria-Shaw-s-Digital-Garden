@@ -54,7 +54,7 @@ Your risk assessment toolkit—your migration insurance policy:
 
 ```bash
 # Download the Odoo migration assessment toolkit
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/migration_assessment.sh
+wget /assets/downloads/migration_assessment.sh
 chmod +x migration_assessment.sh
 
 # Run assessment on your database
@@ -84,7 +84,7 @@ Now that you know what you're working with, let's make sure your target environm
 
 ```bash
 # Get the Odoo compatibility verification tool
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/compatibility_check.py
+wget /assets/downloads/compatibility_check.py
 
 # Check compatibility between source and target servers
 python3 compatibility_check.py --source-server source_ip --target-server target_ip
@@ -113,7 +113,7 @@ This step is your spring cleaning session, and it's critical for migration succe
 
 **Download and run the data cleanup toolkit that prevents 80% of migration errors:**
 ```bash
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/data_cleanup.py
+wget /assets/downloads/data_cleanup.py
 python3 data_cleanup.py your_database_name
 ```
 
@@ -153,7 +153,7 @@ This isn't a `pg_dump` copy-pasted from Stack Overflow. This is production-grade
 **Download and run the enterprise-grade backup script:**
 
 ```bash
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/backup_database.sh
+wget /assets/downloads/backup_database.sh
 chmod +x backup_database.sh
 ./backup_database.sh your_database_name /path/to/backup/directory
 ```
@@ -187,7 +187,7 @@ Your PostgreSQL backup contains database records. All your document attachments,
 **Download and run the filestore backup system:**
 
 ```bash
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/backup_filestore.sh
+wget /assets/downloads/backup_filestore.sh
 chmod +x backup_filestore.sh
 ./backup_filestore.sh your_database_name /path/to/backup/directory
 ```
@@ -208,7 +208,7 @@ Your Odoo installation isn't just database and files—it's also all those confi
 **Download and run the configuration backup system:**
 
 ```bash
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/backup_configuration.sh
+wget /assets/downloads/backup_configuration.sh
 chmod +x backup_configuration.sh
 ./backup_configuration.sh your_database_name /path/to/backup/directory
 ```
@@ -281,7 +281,7 @@ curl https://rclone.org/install.sh | sudo bash
 rclone config  # Follow interactive setup for Backblaze B2, AWS S3, etc.
 
 # Download and install the professional cloud backup script
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/cloud_backup_sync.sh -O /usr/local/bin/cloud_backup_sync.sh
+wget /assets/downloads/cloud_backup_sync.sh -O /usr/local/bin/cloud_backup_sync.sh
 chmod +x /usr/local/bin/cloud_backup_sync.sh
 
 # Edit configuration variables (required)
@@ -326,7 +326,7 @@ Don't believe "any server will do" for Odoo. Analysis of performance issue repor
 **Alternatively, download and run the server sizing calculator:**
 
 ```bash
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/calculate_server_specs.py
+wget /assets/downloads/calculate_server_specs.py
 python3 calculate_server_specs.py
 ```
 
@@ -400,7 +400,7 @@ Now that you know what hardware you need, let's set up the operating system foun
 **Download and run the Ubuntu optimization script:**
 
 ```bash
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/setup_ubuntu_odoo.sh
+wget /assets/downloads/setup_ubuntu_odoo.sh
 chmod +x setup_ubuntu_odoo.sh
 sudo ./setup_ubuntu_odoo.sh
 ```
@@ -445,7 +445,7 @@ The Ubuntu script provides a solid foundation, but PostgreSQL requires fine-tuni
 **Download and run the PostgreSQL optimization script:**
 
 ```bash
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/tune_postgresql_odoo.sh
+wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/assets/downloads/postgresql_tuning_script/
 chmod +x tune_postgresql_odoo.sh
 sudo ./tune_postgresql_odoo.sh
 ```
@@ -527,7 +527,7 @@ Every failed migration analyzed in post-mortem reports had one thing in common -
 **Download and run the staging validation script:**
 
 ```bash
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/staging_validation.sh
+wget /assets/downloads/staging_validation.sh
 chmod +x staging_validation.sh
 sudo ./staging_validation.sh
 ```
@@ -561,7 +561,7 @@ Migrations require taking the system offline, for hours. Our approach minimizes 
 **Download and run the production migration script:**
 
 ```bash
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/production_migration.sh
+wget /assets/downloads/production_migration.sh
 chmod +x production_migration.sh
 sudo ./production_migration.sh
 ```
@@ -599,7 +599,7 @@ Post-mortem reports document migrations declared "successful" only to have perfo
 **Download and run the performance validation script:**
 
 ```bash
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/performance_validation.sh
+wget /assets/downloads/performance_validation.sh
 chmod +x performance_validation.sh
 sudo ./performance_validation.sh
 ```
@@ -663,7 +663,7 @@ This is your final checkpoint before declaring the migration complete. This veri
 **Download and run the final verification script:**
 
 ```bash
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/final_verification.sh
+wget /assets/downloads/final_verification.sh
 chmod +x final_verification.sh
 sudo ./final_verification.sh
 ```
@@ -754,7 +754,7 @@ After 24 hours of stable operation, conduct these business function tests:
 **Create the weekly maintenance automation:**
 
 ```bash
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/weekly_maintenance.sh
+wget /assets/downloads/weekly_maintenance.sh
 chmod +x weekly_maintenance.sh
 
 # Set up automated weekly maintenance (runs every Sunday at 2 AM)
@@ -776,7 +776,7 @@ echo "0 2 * * 0 /path/to/weekly_maintenance.sh" | sudo crontab -
 
 ```bash
 # Generate monthly system health report
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/monthly_health_check.sh
+wget /assets/downloads/monthly_health_check.sh
 chmod +x monthly_health_check.sh
 ./monthly_health_check.sh
 ```
@@ -809,7 +809,7 @@ chmod +x monthly_health_check.sh
 
 ```bash
 # Download the complete disaster recovery toolkit
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/disaster_recovery_test.sh
+wget /assets/downloads/disaster_recovery_test.sh
 chmod +x disaster_recovery_test.sh
 
 # Test your disaster recovery every quarter
@@ -844,7 +844,7 @@ Since you now have a proven migration process, planning future upgrades becomes 
 
 ```bash
 # Create migration readiness assessment for future versions
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/upgrade_readiness.sh
+wget /assets/downloads/upgrade_readiness.sh
 chmod +x upgrade_readiness.sh
 ./upgrade_readiness.sh --target-version 18.0
 ```
@@ -895,7 +895,7 @@ You start the migration, everything seems fine, then PostgreSQL throws version c
 
 ```bash
 # Download and run the PostgreSQL compatibility detector
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/pg_compatibility_check.sh
+wget /assets/downloads/pg_compatibility_check.sh
 chmod +x pg_compatibility_check.sh
 ./pg_compatibility_check.sh source_server target_server
 ```
@@ -975,7 +975,7 @@ Never trust OpenUpgrade alone. Use this bulletproof wrapper that adds safety net
 
 ```bash
 # Download the OpenUpgrade safety wrapper
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/safe_openupgrade.sh
+wget /assets/downloads/safe_openupgrade.sh
 chmod +x safe_openupgrade.sh
 ./safe_openupgrade.sh --from-version 13.0 --to-version 15.0 --database production_db
 ```
@@ -1031,7 +1031,7 @@ Use this comprehensive custom module compatibility scanner before migration:
 
 ```bash
 # Download the module compatibility analyzer
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/module_compatibility_scan.py
+wget /assets/downloads/module_compatibility_scan.py
 python3 module_compatibility_scan.py --odoo-path /opt/odoo --target-version 17.0
 ```
 
@@ -1101,7 +1101,7 @@ Always run this authentication preservation script before migration:
 
 ```bash
 # Download the auth preservation toolkit
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/preserve_auth.sh
+wget /assets/downloads/preserve_auth.sh
 chmod +x preserve_auth.sh
 ./preserve_auth.sh production_db backup_directory
 ```
@@ -1179,7 +1179,7 @@ Always clear and rebuild assets as part of your migration:
 
 ```bash
 # Download the asset management script
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/rebuild_assets.sh
+wget /assets/downloads/rebuild_assets.sh
 chmod +x rebuild_assets.sh
 ./rebuild_assets.sh production_new
 ```
@@ -1231,7 +1231,7 @@ Your migration appears successful—everything works functionally—but the syst
 
 ```bash
 # Download the emergency performance recovery script
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/emergency_performance_fix.sh
+wget /assets/downloads/emergency_performance_fix.sh
 chmod +x emergency_performance_fix.sh
 sudo ./emergency_performance_fix.sh production_new
 ```
@@ -1281,7 +1281,7 @@ LIMIT 5;"
 
 ## The Migration Disaster Prevention Checklist ✅
 
-**📋 [Download Migration Disaster Prevention Checklist (PDF)](./resources/migration-disaster-prevention-checklist.pdf)**
+**📋 [Download Migration Disaster Prevention Checklist (PDF)](./assets/downloads/migration-disaster-prevention-checklist.pdf)**
 
 Essential pre-migration, during-migration, and post-migration verification checklist. Includes emergency contact information and critical system details. Print this and keep it handy during your migration to prevent common disasters.
 
@@ -1574,7 +1574,7 @@ Emergency recovery procedures require systematic reconstruction of lost business
 **Download the emergency order import script:**
 
 ```bash
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/emergency_order_import.py
+wget /assets/downloads/emergency_order_import.py
 ```
 
 This script imports orders that were written down during system outages, converting CSV data back into Odoo sales orders.
@@ -1756,7 +1756,7 @@ Most businesses assume encryption comprehension until migration implementation r
 
 ```bash
 # Download the enterprise-grade encryption toolkit
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/migration_encryption.sh
+wget /assets/downloads/migration_encryption.sh
 chmod +x migration_encryption.sh
 sudo ./migration_encryption.sh --setup-encryption
 ```
@@ -1891,7 +1891,7 @@ Before migrating anything, you need to know exactly what personal data you have:
 
 ```python
 # Download the GDPR data discovery script
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/gdpr_data_discovery.py
+wget /assets/downloads/gdpr_data_discovery.py
 python3 gdpr_data_discovery.py --database production_db --generate-report
 ```
 
@@ -1934,7 +1934,7 @@ GDPR requires that you only process data you need and delete it when you no long
 Download and implement the GDPR data retention policy script:
 
 ```bash
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/gdpr_data_retention.py
+wget /assets/downloads/gdpr_data_retention.py
 # Review and customize retention periods before running
 python3 gdpr_data_retention.py
 ```
@@ -1946,7 +1946,7 @@ During migration, you need to preserve and validate consent records:
 **Download the GDPR consent migration model:**
 
 ```bash
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/gdpr_consent_migration.py
+wget /assets/downloads/gdpr_consent_migration.py
 ```
 
 This Odoo model helps track and validate GDPR consent during migration, ensuring compliance with data protection regulations.
@@ -1958,7 +1958,7 @@ Migration activities are high-risk for data breaches. Follow this breach prevent
 Download and set up comprehensive GDPR monitoring:
 
 ```bash
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/gdpr_monitoring.sh
+wget /assets/downloads/gdpr_monitoring.sh
 chmod +x gdpr_monitoring.sh
 sudo mv gdpr_monitoring.sh /usr/local/bin/
 
@@ -1977,7 +1977,7 @@ Financial services audit case study demonstrates critical audit trail requiremen
 **Download the comprehensive migration audit trail model:**
 
 ```bash
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/migration_audit_trail.py
+wget /assets/downloads/migration_audit_trail.py
 ```
 
 This model provides comprehensive audit logging for migration activities with compliance tracking, data sensitivity classification, and full activity context.
@@ -1987,7 +1987,7 @@ This model provides comprehensive audit logging for migration activities with co
 Download and set up the audit report generator:
 
 ```bash
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/generate_audit_report.py
+wget /assets/downloads/generate_audit_report.py
 chmod +x generate_audit_report.py
 sudo mv generate_audit_report.py /usr/local/bin/
 
@@ -2006,7 +2006,7 @@ During migration, you temporarily need to give people access to systems and data
 Download and set up the migration access control system:
 
 ```bash
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/migration_access_control.sh
+wget /assets/downloads/migration_access_control.sh
 chmod +x migration_access_control.sh
 sudo mv migration_access_control.sh /usr/local/bin/
 
@@ -2032,14 +2032,14 @@ Organizations consistently underestimate sensitive data scope until systematic a
 Download and run the sensitive data scanner and masking tool:
 
 ```bash
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/sensitive_data_scanner.py
+wget /assets/downloads/sensitive_data_scanner.py
 # Review and customize patterns before running
 python3 sensitive_data_scanner.py
 ```
 
 ### Security Validation Checklist
 
-**🔐 [Download Security Validation Checklist (PDF)](./resources/security-validation-checklist.pdf)**
+**🔐 [Download Security Validation Checklist (PDF)](./assets/downloads/security-validation-checklist.pdf)**
 
 Comprehensive security verification checklist covering encryption, access control, data protection compliance, audit monitoring, and incident response preparation. Includes automated validation scripts and manual verification procedures with escalation matrix.
 
@@ -2091,7 +2091,7 @@ chmod +x scripts/*.sh
 chmod +x scripts/*.py
 
 # Verify integrity and compatibility
-./scripts/verify_toolkit.sh
+./assets/downloads/verify_toolkit.sh
 ```
 
 **Core Migration Scripts:**
@@ -2355,13 +2355,13 @@ Migration teams continue using these templates because they prevent forgetting s
 
 **📋 Migration Project Charter Template**
 
-**[Download Migration Project Charter Template (PDF)](./resources/migration-project-charter-template.pdf)**
+**[Download Migration Project Charter Template (PDF)](./assets/downloads/migration-project-charter-template.pdf)**
 
 Complete project charter template covering scope, objectives, risk assessment, communication plan, and success metrics. Use this to establish clear expectations with stakeholders and secure proper project approval.
 
 **📋 Risk Assessment Matrix Template**
 
-**[Download Risk Assessment Matrix Template (PDF)](./resources/risk-assessment-matrix-template.pdf)**
+**[Download Risk Assessment Matrix Template (PDF)](./assets/downloads/risk-assessment-matrix-template.pdf)**
 
 Comprehensive risk identification and scoring worksheet covering technical, business, and compliance risks. Includes mitigation strategies by risk level and scoring methodology to prioritize your preparation efforts.
 
@@ -2369,13 +2369,13 @@ Comprehensive risk identification and scoring worksheet covering technical, busi
 
 **📋 Pre-Migration Verification Checklist**
 
-**[Download Pre-Migration Verification Checklist (PDF)](./resources/pre-migration-verification-checklist.pdf)**
+**[Download Pre-Migration Verification Checklist (PDF)](./assets/downloads/pre-migration-verification-checklist.pdf)**
 
 This comprehensive checklist covers all critical preparation steps from T-7 days through T-1 day before your migration. Print this out and check off each item to ensure nothing is missed during the high-pressure pre-migration period.
 
 **📋 Migration Day Execution Checklist**
 
-**[Download Migration Day Execution Checklist (PDF)](./resources/migration-day-execution-checklist.pdf)**
+**[Download Migration Day Execution Checklist (PDF)](./assets/downloads/migration-day-execution-checklist.pdf)**
 
 This hour-by-hour checklist guides you through migration day from initial verifications through final success criteria validation. Keep this handy during the actual migration to maintain focus and ensure all critical steps are completed.
 
@@ -2383,13 +2383,13 @@ This hour-by-hour checklist guides you through migration day from initial verifi
 
 **📋 Performance Monitoring Dashboard Template**
 
-**[Download Performance Monitoring Dashboard Template (PDF)](./resources/performance-monitoring-dashboard-template.pdf)**
+**[Download Performance Monitoring Dashboard Template (PDF)](./assets/downloads/performance-monitoring-dashboard-template.pdf)**
 
 Complete dashboard template for monitoring system health, business processes, and user experience metrics after migration. Includes action item tracking and immediate/short-term/long-term optimization categories.
 
 **📋 Lessons Learned Template**
 
-**[Download Lessons Learned Template (PDF)](./resources/lessons-learned-template.pdf)**
+**[Download Lessons Learned Template (PDF)](./assets/downloads/lessons-learned-template.pdf)**
 
 Comprehensive post-migration analysis template to capture what went well, areas for improvement, and recommendations for future migrations. Essential for building organizational knowledge and improving your migration capabilities.
 
@@ -2401,13 +2401,13 @@ When things go wrong during migration, you don't have time to search through doc
 
 **🚨 Database Corruption Emergency Card**
 
-**[Download Database Corruption Emergency Card (PDF)](./resources/database-corruption-emergency-card.pdf)**
+**[Download Database Corruption Emergency Card (PDF)](./assets/downloads/database-corruption-emergency-card.pdf)**
 
 Critical step-by-step emergency response procedures for database corruption incidents. Keep this printed and accessible during high-risk operations. Includes immediate actions, verification steps, and contact information.
 
 **⚡ Performance Crisis Emergency Card**
 
-**[Download Performance Crisis Emergency Card (PDF)](./resources/performance-crisis-emergency-card.pdf)**
+**[Download Performance Crisis Emergency Card (PDF)](./assets/downloads/performance-crisis-emergency-card.pdf)**
 
 Emergency diagnostic and response procedures for severe performance degradation. Includes system resource checks, database bottleneck identification, and escalation thresholds. Essential for rapid incident response.
 
@@ -2419,13 +2419,13 @@ Many organizations use existing DevOps toolchains. Follow these steps to integra
 
 **📥 Jenkins Integration Pipeline**
 
-**[Download Jenkins Migration Pipeline Script](./scripts/jenkins-odoo-migration-pipeline.groovy)**
+**[Download Jenkins Migration Pipeline Script](./assets/downloads/jenkins-odoo-migration-pipeline.groovy)**
 
 Complete Jenkins pipeline script for automating Odoo migrations with parameterized builds for assessment, backup, migration, and rollback operations. Includes artifact archiving and email notifications.
 
 **📥 Ansible Playbook Integration**
 
-**[Download Ansible Migration Playbook](./scripts/ansible-odoo-migration-playbook.yml)**
+**[Download Ansible Migration Playbook](./assets/downloads/ansible-odoo-migration-playbook.yml)**
 
 Complete Ansible playbook for automating Odoo migrations across multiple servers. Includes assessment, backup, migration execution, and notification tasks with conditional logic and error handling.
 
@@ -2437,7 +2437,7 @@ Research demonstrates that optimal documentation combines accuracy with maintain
 
 **📋 Migration Runbook Template**
 
-**[Download Migration Runbook Template (PDF)](./resources/migration-runbook-template.pdf)**
+**[Download Migration Runbook Template (PDF)](./assets/downloads/migration-runbook-template.pdf)**
 
 Complete organizational runbook template with environment-specific information, standard operating procedures, emergency contacts, and validation criteria. This living document grows with your migration experience and becomes your operational playbook.
 
@@ -2606,7 +2606,7 @@ Extensive testing analysis across multiple cloud providers reveals reliable prod
 
 **📥 Professional Backup Script:**
 
-**[Download Professional Backup with Cloud Sync Script](./scripts/professional-backup-with-cloud-sync.sh)**
+**[Download Professional Backup with Cloud Sync Script](./assets/downloads/professional-backup-with-cloud-sync.sh)**
 
 Production-ready backup script with S3 integration, integrity verification, compression, checksums, and automatic retention management. Includes comprehensive error handling and notification capabilities.
 

@@ -48,7 +48,7 @@ By the time you finish reading, you'll master exactly how to plan and execute yo
 
 ---
 
-**📋 [Download: Comprehensive Implementation Checklist](/resources/odoo-comprehensive-implementation-checklist.pdf)** - Complete phase-by-phase checklist to track your progress throughout the entire implementation journey
+**📋 [Download: Comprehensive Implementation Checklist](/assets/downloads/odoo-comprehensive-implementation-checklist.pdf)** - Complete phase-by-phase checklist to track your progress throughout the entire implementation journey
 
 ## Phase 1: Strategic Decision & Business Case
 
@@ -545,7 +545,7 @@ Research and testing produced a complete Docker Compose configuration that handl
 
 **Download the complete Docker configuration:**
 ```bash
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/odoo-docker-compose.yml
+wget /assets/downloads/odoo-docker-compose.yml
 ```
 
 #### CI/CD Pipeline Implementation
@@ -626,7 +626,7 @@ This protects your business. When everything crashes (hardware failure, ransomwa
 **Automated Backup Script:**
 Download the complete backup script:
 ```bash
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/basic_odoo_backup.sh
+wget /assets/downloads/basic_odoo_backup.sh
 chmod +x basic_odoo_backup.sh
 ```
 
@@ -696,7 +696,7 @@ limit_time_real = 1200
 **Nginx Optimization:**
 Download the complete production-ready Nginx configuration:
 ```bash
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/templates/nginx-odoo.conf
+wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/assets/downloads/nginx-odoo.conf
 ```
 
 Key optimizations include:
@@ -737,7 +737,7 @@ Your step-by-step technical implementation plan:
 
 **Download the complete installation script:**
 ```bash
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/odoo-install.sh
+wget /assets/downloads/odoo-install.sh
 chmod +x odoo-install.sh
 sudo ./odoo-install.sh
 ```
@@ -802,7 +802,7 @@ Before touching a single record, you must map what data you have and what it mea
 
 Use our assessment tools to detect migration pitfalls before they become expensive problems:
 
-**🔍 [Migration Risk Assessor](/scripts/migration_assessment.sh)** - Analyze database size, module complexity, and PostgreSQL version compatibility
+**🔍 [Migration Risk Assessor](/assets/downloads/migration_assessment.sh)** - Analyze database size, module complexity, and PostgreSQL version compatibility
 
 **High-Risk Scenarios:**
 - Databases larger than 100GB with complex relationships
@@ -835,9 +835,9 @@ For complete database migration with zero-downtime strategies, deploy our method
 - **Zero-Downtime Execution** (Steps 10-13): Staging validation and production migration
 
 **Key Migration Tools Available:**
-- **📊 [Environment Compatibility Checker](/scripts/compatibility_check.py)** - Verify system requirements
-- **🧹 [Data Cleanup Toolkit](/scripts/data_cleanup.py)** - Fix data integrity issues
-- **💾 [Complete Backup System](/scripts/backup_database.sh)** - Enterprise-grade backup with verification
+- **📊 [Environment Compatibility Checker](/assets/downloads/compatibility_check.py)** - Verify system requirements
+- **🧹 [Data Cleanup Toolkit](/assets/downloads/data_cleanup.py)** - Fix data integrity issues
+- **💾 [Complete Backup System](/assets/downloads/backup_database.sh)** - Enterprise-grade backup with verification
 
 #### Phase 3B: CSV/Excel Data Import Best Practices
 
@@ -856,8 +856,8 @@ For importing business data from spreadsheets and legacy systems:
 - **Large datasets** overwhelming server resources
 
 **Professional Import Tools:**
-- **🔍 [Data Cleanup Toolkit](/scripts/data_cleanup.py)** - Automated data cleaning and validation
-- **🌐 [API Diagnostics Tool](/scripts/api_diagnostics.py)** - Basic API connectivity and SSL validation
+- **🔍 [Data Cleanup Toolkit](/assets/downloads/data_cleanup.py)** - Automated data cleaning and validation
+- **🌐 [API Diagnostics Tool](/assets/downloads/api_diagnostics.py)** - Basic API connectivity and SSL validation
 
 #### Phase 3C: Legacy System Integration Strategy
 
@@ -870,9 +870,9 @@ For complex migrations from older ERP systems:
 - Automated testing and verification at each stage
 
 **Professional Migration Tools:**
-- **🚀 [Production Migration Executor](/scripts/production_migration.sh)** - Zero-downtime migration with automatic rollback
-- **🏗️ [Staging Environment Validator](/scripts/staging_validation.sh)** - Seven-layer validation before production
-- **⚡ [Performance Validation Suite](/scripts/performance_validation.sh)** - 24-hour performance monitoring
+- **🚀 [Production Migration Executor](/assets/downloads/production_migration.sh)** - Zero-downtime migration with automatic rollback
+- **🏗️ [Staging Environment Validator](/assets/downloads/staging_validation.sh)** - Seven-layer validation before production
+- **⚡ [Performance Validation Suite](/assets/downloads/performance_validation.sh)** - 24-hour performance monitoring
 
 ### Third-Party Integrations
 
@@ -901,8 +901,8 @@ Odoo 18 supports four primary integration approaches:
 **Error Handling:** Graceful degradation when external systems are unavailable
 
 **Integration Testing Tools:**
-- **🌐 [API Diagnostics Tool](/scripts/api_diagnostics.py)** - Basic connectivity testing for external APIs
-- **📧 [SMTP Configuration Tester](/scripts/test_smtp.py)** - Email system validation and delivery verification
+- **🌐 [API Diagnostics Tool](/assets/downloads/api_diagnostics.py)** - Basic connectivity testing for external APIs
+- **📧 [SMTP Configuration Tester](/assets/downloads/test_smtp.py)** - Email system validation and delivery verification
 
 ### Troubleshooting Migration Issues
 
@@ -930,8 +930,8 @@ Confirm key users can complete critical business workflows
 When migration crashes, recovery is essential:
 
 **Emergency Recovery Tools:**
-- **🔄 [Intelligent Rollback System](/scripts/intelligent_rollback.sh)** - Basic rollback with optional data preservation
-- **🚨 [Emergency Recovery System](/scripts/odoo_emergency_recovery.sh)** - Complete disaster recovery toolkit
+- **🔄 [Intelligent Rollback System](/assets/downloads/intelligent_rollback.sh)** - Basic rollback with optional data preservation
+- **🚨 [Emergency Recovery System](/assets/downloads/odoo_emergency_recovery.sh)** - Complete disaster recovery toolkit
 
 #### Data Validation and Quality Assurance
 
@@ -943,8 +943,8 @@ When migration crashes, recovery is essential:
 5. **User Acceptance**: Key users completing core workflows without issues
 
 **Professional Validation Tools:**
-- **🔍 [Backup Validation Tool](/scripts/backup_validation_tool.py)** - Complete backup integrity verification
-- **📊 [Backup Quality Calculator](/scripts/backup_quality_calculator.sh)** - 120-point assessment system
+- **🔍 [Backup Validation Tool](/assets/downloads/backup_validation_tool.py)** - Complete backup integrity verification
+- **📊 [Backup Quality Calculator](/assets/downloads/backup_quality_calculator.sh)** - 120-point assessment system
 
 > 📊 **Need comprehensive backup strategies?** For production environments, implement enterprise-grade backup procedures detailed in our [Odoo Database Backup & Restore Guide](/odoo-database-backup-restore-guide/), including automated verification, cloud sync, and emergency recovery protocols.
 
@@ -1043,9 +1043,9 @@ Implement the sophisticated features that provide competitive advantage:
 - Integration with external systems
 
 **Professional Process Mapping Tools:**
-- **🧩 [Module Compatibility Scanner](/scripts/module_compatibility_scan.py)** - Analyze which modules work together
-- **🔗 [Dependency Analyzer](/scripts/dependency_analyzer.py)** - Resolve module dependency conflicts
-- **⚙️ [Dependency Resolution Engine](/scripts/resolve_dependencies.py)** - Intelligent module installation order
+- **🧩 [Module Compatibility Scanner](/assets/downloads/module_compatibility_scan.py)** - Analyze which modules work together
+- **🔗 [Dependency Analyzer](/assets/downloads/dependency_analyzer.py)** - Resolve module dependency conflicts
+- **⚙️ [Dependency Resolution Engine](/assets/downloads/resolve_dependencies.py)** - Intelligent module installation order
 
 ### Core Module Implementation
 
@@ -1069,8 +1069,8 @@ Tax setup stumbles many implementations. Consider:
 - Integration with tax preparation software
 
 **Professional Configuration Tools:**
-- **📊 [Server Specifications Calculator](/scripts/calculate_server_specs.py)** - Ensure adequate resources for your module load
-- **🔧 [Final Verification Checklist](/scripts/final_verification.sh)** - Validate complete configuration
+- **📊 [Server Specifications Calculator](/assets/downloads/calculate_server_specs.py)** - Ensure adequate resources for your module load
+- **🔧 [Final Verification Checklist](/assets/downloads/final_verification.sh)** - Validate complete configuration
 
 #### CRM Implementation Strategy
 
@@ -1229,9 +1229,9 @@ If you customize, execute it right:
 - Plan rollback procedures for failed customizations
 
 **Professional Development Tools:**
-- **🧩 [Module Compatibility Scanner](/scripts/module_compatibility_scan.py)** - Test custom module compatibility
-- **🔍 [Safe OpenUpgrade Wrapper](/scripts/safe_openupgrade.sh)** - Upgrade safely with customizations
-- **🔗 [Dependency Analyzer](/scripts/dependency_analyzer.py)** - Resolve complex module dependencies
+- **🧩 [Module Compatibility Scanner](/assets/downloads/module_compatibility_scan.py)** - Test custom module compatibility
+- **🔍 [Safe OpenUpgrade Wrapper](/assets/downloads/safe_openupgrade.sh)** - Upgrade safely with customizations
+- **🔗 [Dependency Analyzer](/assets/downloads/dependency_analyzer.py)** - Resolve complex module dependencies
 
 #### Solving Common Customization Problems
 
@@ -1250,9 +1250,9 @@ Custom modules shatter during Odoo version upgrades:
 - Consider migrating to functionality when possible
 
 **Professional Problem-Solving Tools:**
-- **⚙️ [Dependency Resolution Engine](/scripts/resolve_dependencies.py)** - Intelligent conflict resolution
-- **🛡️ [Database Corruption Detector](/scripts/db_corruption_detector.sh)** - Detect issues before they spread
-- **🔄 [Intelligent Rollback System](/scripts/intelligent_rollback.sh)** - Basic rollback for failed customizations
+- **⚙️ [Dependency Resolution Engine](/assets/downloads/resolve_dependencies.py)** - Intelligent conflict resolution
+- **🛡️ [Database Corruption Detector](/assets/downloads/db_corruption_detector.sh)** - Detect issues before they spread
+- **🔄 [Intelligent Rollback System](/assets/downloads/intelligent_rollback.sh)** - Basic rollback for failed customizations
 
 ![Step-by-step Odoo module configuration process from basic setup to advanced customization](/assets/images/Odoo Module Configuration Workflow.webp){:loading="lazy"}
 *Progressive module configuration workflow from basic setup through advanced customization and quality assurance*
@@ -1561,8 +1561,8 @@ It's about building confidence and ownership in the system.
 - Refine based on user input before go-live
 
 **Professional Testing Tools:**
-- **⚡ [Performance Validation Suite](/scripts/performance_validation.sh)** - Monitor system performance during UAT
-- **🔧 [Final Verification Checklist](/scripts/final_verification.sh)** - Comprehensive pre-go-live validation
+- **⚡ [Performance Validation Suite](/assets/downloads/performance_validation.sh)** - Monitor system performance during UAT
+- **🔧 [Final Verification Checklist](/assets/downloads/final_verification.sh)** - Comprehensive pre-go-live validation
 
 ### Mobile and Remote Access Setup
 
@@ -1627,8 +1627,8 @@ Remote training demands different approaches and tools than in-person sessions.
 - Remote screen sharing for troubleshooting
 
 **Remote Training Success Tools:**
-- **💗 [Advanced Odoo Health Monitor](/scripts/odoo_health_monitor.sh)** - Monitor system performance for remote users
-- **📈 [Monthly Health Check](/scripts/monthly_health_check.sh)** - Regular system review with remote access validation
+- **💗 [Advanced Odoo Health Monitor](/assets/downloads/odoo_health_monitor.sh)** - Monitor system performance for remote users
+- **📈 [Monthly Health Check](/assets/downloads/monthly_health_check.sh)** - Regular system review with remote access validation
 
 ![Role-based Odoo training framework with competency tracking and adoption metrics](/assets/images/Odoo Training and Adoption Workflow.webp){:loading="lazy"}
 *Comprehensive training framework showing role-specific learning paths and adoption tracking methodologies*
@@ -1698,9 +1698,9 @@ Your validation extends beyond checking if features work—it's verifying that y
 - Execute final data synchronization and cutover preparation
 
 **Professional Validation Tools:**
-- **🔧 [Final Verification Checklist](/scripts/final_verification.sh)** - Comprehensive pre-go-live system validation
-- **⚡ [Performance Validation Suite](/scripts/performance_validation.sh)** - 24-hour performance monitoring
-- **🏗️ [Staging Environment Validator](/scripts/staging_validation.sh)** - Complete staging environment verification
+- **🔧 [Final Verification Checklist](/assets/downloads/final_verification.sh)** - Comprehensive pre-go-live system validation
+- **⚡ [Performance Validation Suite](/assets/downloads/performance_validation.sh)** - 24-hour performance monitoring
+- **🏗️ [Staging Environment Validator](/assets/downloads/staging_validation.sh)** - Complete staging environment verification
 
 #### User Acceptance Testing Procedures
 
@@ -1748,9 +1748,9 @@ Test with 150% of expected concurrent users to ensure performance headroom. Mode
 - Synchronization delays between integrated systems
 
 **Professional Performance Tools:**
-- **💗 [Advanced Odoo Health Monitor](/scripts/odoo_health_monitor.sh)** - Real-time performance monitoring
-- **📈 [Monthly Health Check](/scripts/monthly_health_check.sh)** - Comprehensive system health assessment
-- **🔧 [PostgreSQL Production Tuning](/scripts/tune_postgresql_odoo.sh)** - Database optimization for production loads
+- **💗 [Advanced Odoo Health Monitor](/assets/downloads/odoo_health_monitor.sh)** - Real-time performance monitoring
+- **📈 [Monthly Health Check](/assets/downloads/monthly_health_check.sh)** - Comprehensive system health assessment
+- **🔧 [PostgreSQL Production Tuning](/assets/downloads/postgresql_tuning_script/)** - Database optimization for production loads
 
 ### Odoo Implementation Support and Maintenance
 
@@ -1830,9 +1830,9 @@ Based on best practices, teams use AI-driven monitoring tools and automated opti
 **Application-level optimization** focuses on task queues for UI responsiveness during peak hours (because nothing frustrates users like waiting), optimized workflows that minimize database calls, custom module design that follows Odoo best practices instead of reinventing the wheel, and performance profiling to identify bottlenecks before they become emergencies.
 
 **Professional Optimization Tools:**
-- **🔧 [Database Maintenance](/scripts/db_maintenance.sh)** - Automated PostgreSQL optimization
-- **📊 [Weekly Maintenance](/scripts/weekly_maintenance.sh)** - Regular system maintenance automation
-- **🛡️ [Database Corruption Detector](/scripts/db_corruption_detector.sh)** - Proactive issue detection
+- **🔧 [Database Maintenance](/assets/downloads/db_maintenance.sh)** - Automated PostgreSQL optimization
+- **📊 [Weekly Maintenance](/assets/downloads/weekly_maintenance.sh)** - Regular system maintenance automation
+- **🛡️ [Database Corruption Detector](/assets/downloads/db_corruption_detector.sh)** - Proactive issue detection
 
 #### Scaling Odoo After Implementation
 
@@ -1873,9 +1873,9 @@ Effective monitoring turns your Odoo system from a reactive tool into a predicti
 **Business intelligence integration** elevates monitoring beyond technical metrics. Implementations track business process metrics alongside system performance—order processing times, user productivity metrics, and business KPI trends all flow through integrated dashboards. You see how technical performance translates to business outcomes.
 
 **Professional Monitoring Tools:**
-- **💗 [Advanced Odoo Health Monitor](/scripts/odoo_health_monitor.sh)** - Comprehensive system monitoring
-- **📈 [Monthly Health Check](/scripts/monthly_health_check.sh)** - Regular performance assessment
-- **🔍 [Backup Quality Calculator](/scripts/backup_quality_calculator.sh)** - Backup system monitoring
+- **💗 [Advanced Odoo Health Monitor](/assets/downloads/odoo_health_monitor.sh)** - Comprehensive system monitoring
+- **📈 [Monthly Health Check](/assets/downloads/monthly_health_check.sh)** - Regular performance assessment
+- **🔍 [Backup Quality Calculator](/assets/downloads/backup_quality_calculator.sh)** - Backup system monitoring
 
 #### Odoo Log Monitoring and Analysis
 
@@ -2146,9 +2146,9 @@ Evaluate your technical architecture and identify fundamental limitations that c
 Secure necessary resources and stakeholder commitment for recovery efforts, because half-measures won't work. Plan your communication strategy to maintain momentum during recovery, because people need to believe this will get better.
 
 **Professional Recovery Tools:**
-- **🔄 [Intelligent Rollback System](/scripts/intelligent_rollback.sh)** - Basic rollback with optional data preservation
-- **🚨 [Emergency Recovery System](/scripts/odoo_emergency_recovery.sh)** - Complete disaster recovery toolkit
-- **🛡️ [Database Corruption Detector](/scripts/db_corruption_detector.sh)** - Identify and assess data integrity issues
+- **🔄 [Intelligent Rollback System](/assets/downloads/intelligent_rollback.sh)** - Basic rollback with optional data preservation
+- **🚨 [Emergency Recovery System](/assets/downloads/odoo_emergency_recovery.sh)** - Complete disaster recovery toolkit
+- **🛡️ [Database Corruption Detector](/assets/downloads/db_corruption_detector.sh)** - Identify and assess data integrity issues
 
 ### Technical Troubleshooting
 
@@ -2180,9 +2180,9 @@ tail -f /var/log/odoo/odoo-server.log
 Navigate to Settings > Technical > Database Structure > Models
 
 **Professional Diagnostic Tools:**
-- **🧩 [Module Compatibility Scanner](/scripts/module_compatibility_scan.py)** - Analyze module compatibility and conflicts
-- **🔗 [Dependency Analyzer](/scripts/dependency_analyzer.py)** - Resolve complex module dependencies
-- **⚙️ [Dependency Resolution Engine](/scripts/resolve_dependencies.py)** - Intelligent conflict resolution
+- **🧩 [Module Compatibility Scanner](/assets/downloads/module_compatibility_scan.py)** - Analyze module compatibility and conflicts
+- **🔗 [Dependency Analyzer](/assets/downloads/dependency_analyzer.py)** - Resolve complex module dependencies
+- **⚙️ [Dependency Resolution Engine](/assets/downloads/resolve_dependencies.py)** - Intelligent conflict resolution
 
 #### Performance Problem Resolution
 
@@ -2211,8 +2211,8 @@ Network timeouts caused by latency or firewall configurations that nobody docume
 Timing issues when one system updates faster than others can sync, error handling problems when integration failures cascade across systems like dominoes, and monitoring gaps that allow failed synchronizations to go unnoticed until someone asks "where's my data?"
 
 **Professional Integration Tools:**
-- **🌐 [API Diagnostics Tool](/scripts/api_diagnostics.py)** - Basic external API connectivity validation
-- **📧 [SMTP Configuration Tester](/scripts/test_smtp.py)** - Email system integration validation
+- **🌐 [API Diagnostics Tool](/assets/downloads/api_diagnostics.py)** - Basic external API connectivity validation
+- **📧 [SMTP Configuration Tester](/assets/downloads/test_smtp.py)** - Email system integration validation
 
 ![Complete Odoo troubleshooting decision tree with diagnostic steps and resolution paths](/assets/images/Odoo Troubleshooting Decision Tree.webp){:loading="lazy"}
 *Systematic troubleshooting flowchart covering performance, integration, access, and data quality issues*
@@ -3202,7 +3202,7 @@ Use each system for its strengths while maintaining data consistency through int
 
 **Alternative Solution Decision Matrix:**
 
-**📋 [Download Odoo Decision Matrix Framework](/resources/odoo-decision-matrix-framework.pdf)** - Complete evaluation framework to assess whether Odoo is right for your business situation
+**📋 [Download Odoo Decision Matrix Framework](/assets/downloads/odoo-decision-matrix-framework.pdf)** - Complete evaluation framework to assess whether Odoo is right for your business situation
 
 **Migration Readiness Checklist:**
 
@@ -3231,7 +3231,7 @@ This isn't your typical "rate yourself 1-10" questionnaire. It's a brutally hone
 - **Technical Readiness (75 points)**: Infrastructure capability, data quality, and technical expertise
 - **Financial & Resource Readiness (50 points)**: Budget planning and partner strategy
 
-**[Download: Complete Implementation Readiness Checklist](../resources/odoo-implementation-readiness-checklist.pdf)**
+**[Download: Complete Implementation Readiness Checklist](../assets/downloads/odoo-implementation-readiness-checklist.pdf)**
 
 Case studies show companies scoring 280+ still struggling because they ignored the few areas where they scored low.
 
@@ -3247,7 +3247,7 @@ This 200-point deep-dive focuses specifically on your technical foundation:
 - **Integration & APIs (30 points)**: External system integration capability and third-party services
 - **Technical Expertise (45 points)**: Internal capabilities and development skills
 
-**[Download: Technical Readiness Scorecard](../resources/odoo-technical-readiness-scorecard.pdf)**
+**[Download: Technical Readiness Scorecard](../assets/downloads/odoo-technical-readiness-scorecard.pdf)**
 
 Case studies document manufacturing companies scoring perfectly on everything except database administration (scoring 15 out of 30).
 
@@ -3276,7 +3276,7 @@ This detailed plan maps out exactly what you need to do in your first 90 days to
 - **60 Days**: Process optimization and advanced feature adoption
 - **90 Days**: Performance excellence and continuous improvement framework
 
-**[Download: 30-60-90 Day Success Plan](../resources/odoo-30-60-90-day-success-plan.pdf)**
+**[Download: 30-60-90 Day Success Plan](../assets/downloads/odoo-30-60-90-day-success-plan.pdf)**
 
 Each assessment comes with detailed scoring guides, risk mitigation strategies, and specific action items for improvement.
 

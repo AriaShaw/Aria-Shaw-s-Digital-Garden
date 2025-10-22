@@ -48,7 +48,7 @@ Definitive playbooks for every stage of your Odoo journey—from strategic plann
 
 Looking for ready-to-use automation? Browse the complete collection of production scripts.
 
-**[→ View All Scripts](/scripts/)**
+**[→ View All Scripts](/assets/downloads/)**
 
 ---
 

@@ -572,7 +572,7 @@ sudo mkdir /etc/odoo
 sudo chown odoo:odoo /etc/odoo
 
 # Download production-optimized Odoo configuration
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/templates/odoo.conf -O /etc/odoo/odoo.conf
+wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/assets/downloads/odoo.conf -O /etc/odoo/odoo.conf
 
 # Update database password (replace YOUR_DB_PASSWORD with your PostgreSQL password)
 sudo sed -i 's/YOUR_DB_PASSWORD/your-actual-db-password/g' /etc/odoo/odoo.conf
@@ -700,7 +700,7 @@ sudo apt install -y nginx
 sudo rm /etc/nginx/sites-enabled/default
 
 # Download production-ready Nginx configuration
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/templates/nginx-odoo.conf -O /etc/nginx/sites-available/odoo
+wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/assets/downloads/nginx-odoo.conf -O /etc/nginx/sites-available/odoo
 
 # Edit domain name (replace yourdomain.com with your domain)
 sudo sed -i 's/yourdomain.com/your-actual-domain.com/g' /etc/nginx/sites-available/odoo
@@ -1114,7 +1114,7 @@ sudo nano /home/odoo/backup-odoo.sh
 Download and run this backup script:
 
 ```bash
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/backup_odoo.sh
+wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/assets/downloads/enhanced_backup_script/
 chmod +x backup_odoo.sh
 sudo mv backup_odoo.sh /home/odoo/backup-odoo.sh
 ```
@@ -1196,7 +1196,7 @@ For businesses needing advanced features and compliance:
 Download the enhanced backup script with cloud sync:
 
 ```bash
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/enhanced_backup_odoo.sh
+wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/assets/downloads/enhanced_backup_script/
 chmod +x enhanced_backup_odoo.sh
 sudo mv enhanced_backup_odoo.sh /home/odoo/enhanced-backup-odoo.sh
 ```
@@ -1247,7 +1247,7 @@ sudo systemctl restart postgresql
 Download and set up the database maintenance script:
 
 ```bash
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/db_maintenance.sh
+wget /assets/downloads/db_maintenance.sh
 chmod +x db_maintenance.sh
 sudo mv db_maintenance.sh /home/odoo/db-maintenance.sh
 ```
@@ -1389,7 +1389,7 @@ sudo systemctl restart odoo
 **Quick DataDog Setup:**
 ```bash
 # Install DataDog agent (one command)
-DD_API_KEY=your_api_key bash -c "$(curl -L https://s3.amazonaws.com/dd-agent/scripts/install_script.sh)"
+DD_API_KEY=your_api_key bash -c "$(curl -L https://s3.amazonaws.com/dd-agent/assets/downloads/install_script.sh)"
 
 # Agent automatically detects Odoo, PostgreSQL, Nginx
 # View metrics at app.datadoghq.com
@@ -1400,7 +1400,7 @@ DD_API_KEY=your_api_key bash -c "$(curl -L https://s3.amazonaws.com/dd-agent/scr
 If you prefer complete control, download this simple monitoring script:
 
 ```bash
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/monitor_odoo.sh
+wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/assets/downloads/health_monitoring_script/
 chmod +x monitor_odoo.sh
 sudo mv monitor_odoo.sh /home/odoo/monitor-odoo.sh
 # Edit the script to customize domain and email
@@ -1473,7 +1473,7 @@ sudo systemctl status node_exporter
 For basic monitoring without complex setup, download the advanced monitoring script:
 
 ```bash
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/advanced_monitor_odoo.sh
+wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/assets/downloads/health_monitoring_script/
 chmod +x advanced_monitor_odoo.sh
 sudo mv advanced_monitor_odoo.sh /home/odoo/monitor-odoo.sh
 ```
@@ -1924,7 +1924,7 @@ Bookmark this section. You'll come back to it more than you think.
 
 #### System Health Check (Run Weekly)
 ```bash
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/system_health_check.sh
+wget /assets/downloads/system_health_check.sh
 chmod +x system_health_check.sh
 ./system_health_check.sh
 ```

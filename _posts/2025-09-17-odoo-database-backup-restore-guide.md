@@ -337,7 +337,7 @@ This method uses Odoo's web API, which means you get the same ZIP backups as the
 **💾 Download the complete cURL backup script:**
 
 ```bash
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/basic_odoo_backup.sh
+wget /assets/downloads/basic_odoo_backup.sh
 chmod +x basic_odoo_backup.sh
 
 # Edit the configuration variables first:
@@ -351,7 +351,7 @@ nano basic_odoo_backup.sh
 
 For a comprehensive cURL-based backup script with advanced error handling, cloud integration, and logging, see our enhanced backup script:
 
-📋 **[Enhanced Backup Script](/scripts/enhanced_backup_odoo.sh)** - Includes Backblaze B2 cloud sync and email alerts
+📋 **[Enhanced Backup Script](/assets/downloads/enhanced_backup_script/)** - Includes Backblaze B2 cloud sync and email alerts
 
 **Configuration file (backup.conf):**
 ```bash
@@ -374,7 +374,7 @@ Some environments prefer wget over curl. The equivalent:
 **💾 Download the complete wget backup script:**
 
 ```bash
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/wget_odoo_backup.sh
+wget /assets/downloads/wget_odoo_backup.sh
 chmod +x wget_odoo_backup.sh
 
 # Configure the script:
@@ -392,7 +392,7 @@ Windows administrators can use PowerShell for the same functionality:
 
 ```powershell
 # Download and run the backup script
-Invoke-WebRequest -Uri "https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/Odoo-Backup.ps1" -OutFile "Odoo-Backup.ps1"
+Invoke-WebRequest -Uri "/assets/downloads/Odoo-Backup.ps1" -OutFile "Odoo-Backup.ps1"
 
 # Usage example:
 .\Odoo-Backup.ps1 -OdooUrl "http://localhost:8069" -MasterPassword "your_password" -DatabaseName "production_db"
@@ -554,7 +554,7 @@ fi
 
 For enterprise-grade manual backup with logging, error handling, and separated architecture support:
 
-📋 **[Separated Backup Strategy Script](/scripts/separated_backup_strategy.sh)** - Professional backup solution for distributed Odoo deployments with database/application server separation, email alerts, and detailed reporting.
+📋 **[Separated Backup Strategy Script](/assets/downloads/separated_backup_strategy.sh)** - Professional backup solution for distributed Odoo deployments with database/application server separation, email alerts, and detailed reporting.
 
 ### Method 4: Automated Backup Scripts
 
@@ -566,9 +566,9 @@ For production environments, manual backups lack sustainability. You need automa
 
 For a professional Python-based backup solution with object-oriented design, multiple database support, AWS S3 integration, and error handling:
 
-🐍 **[Odoo Backup Manager](/scripts/odoo_backup_manager.py)** - Enterprise-grade Python backup solution with configuration file support
+🐍 **[Odoo Backup Manager](/assets/downloads/odoo_backup_manager.py)** - Enterprise-grade Python backup solution with configuration file support
 
-📋 **[Configuration Template](/scripts/backup_config.ini)** - Complete configuration template for the Python backup manager
+📋 **[Configuration Template](/assets/downloads/backup_config.ini)** - Complete configuration template for the Python backup manager
 
 **Usage example:**
 ```bash
@@ -846,9 +846,9 @@ When dealing with large databases (>20GB), standard restoration methods can fail
 
 For comprehensive large database restoration procedures, see our specialized scripts:
 
-🔧 **[Emergency Recovery Toolkit](/scripts/odoo_emergency_recovery.sh)** - Complete emergency recovery system for when everything goes wrong
+🔧 **[Emergency Recovery Toolkit](/assets/downloads/odoo_emergency_recovery.sh)** - Complete emergency recovery system for when everything goes wrong
 
-🔄 **[Intelligent Rollback Script](/scripts/intelligent_rollback.sh)** - Smart rollback with data preservation options
+🔄 **[Intelligent Rollback Script](/assets/downloads/intelligent_rollback.sh)** - Smart rollback with data preservation options
 
 #### Manual PostgreSQL Restoration
 
@@ -1034,7 +1034,7 @@ AWS Region: us-east-1
 
 For those who prefer custom solutions, our enhanced backup script includes S3 integration:
 
-📋 **[Enhanced Backup with S3](/scripts/enhanced_backup_odoo.sh)** - Includes S3 sync with Backblaze B2 (similar setup for AWS S3)
+📋 **[Enhanced Backup with S3](/assets/downloads/enhanced_backup_script/)** - Includes S3 sync with Backblaze B2 (similar setup for AWS S3)
 
 #### Automated S3 Backup Scheduling
 
@@ -1052,7 +1052,7 @@ For those who prefer custom solutions, our enhanced backup script includes S3 in
 **💾 Download the complete S3 verification script:**
 
 ```bash
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/s3_backup_verification.sh
+wget /assets/downloads/s3_backup_verification.sh
 chmod +x s3_backup_verification.sh
 
 # Configure the script:
@@ -1167,7 +1167,7 @@ fi
 **💾 Download the backup retention manager:**
 
 ```bash
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/backup_retention_manager.sh
+wget /assets/downloads/backup_retention_manager.sh
 chmod +x backup_retention_manager.sh
 
 # Configure retention periods:
@@ -1183,7 +1183,7 @@ echo "0 4 * * * /path/to/backup_retention_manager.sh" | crontab -
 **💾 Download the backup status dashboard:**
 
 ```bash
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/backup_status_dashboard.sh
+wget /assets/downloads/backup_status_dashboard.sh
 chmod +x backup_status_dashboard.sh
 
 # Generate dashboard:
@@ -1337,7 +1337,7 @@ sudo systemctl restart odoo
 
 For large databases, switch to our manual backup approach:
 
-📋 **[Large Database Backup Strategy](/scripts/separated_backup_strategy.sh)** - Handles databases of any size without web interface limitations
+📋 **[Large Database Backup Strategy](/assets/downloads/separated_backup_strategy.sh)** - Handles databases of any size without web interface limitations
 
 **Prevention Strategy:**
 ```bash
@@ -1410,7 +1410,7 @@ sudo restorecon -Rv /var/lib/odoo/
 **💾 Download the comprehensive filestore verification script:**
 
 ```bash
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/filestore_verification.sh
+wget /assets/downloads/filestore_verification.sh
 chmod +x filestore_verification.sh
 
 # Full verification and backup:
@@ -2327,7 +2327,7 @@ Research and field testing has produced a comprehensive, printable checklist tha
 
 > **🎯 Want a faster way?** Instead of manually going through dozens of checklist items, our [Backup Readiness Checker](/toolkit/odoo-backup-readiness-checker/) automatically tests all 8 critical categories in 60 seconds and gives you a scored report. It's the automated version of this checklist—perfect for busy administrators who need quick, reliable diagnostics. **[Get your instant assessment →](/toolkit/odoo-backup-readiness-checker/)**
 
-**📥 [Download the Complete Backup Verification Checklist (PDF)](/resources/odoo-backup-verification-checklist.pdf)**
+**📥 [Download the Complete Backup Verification Checklist (PDF)](/assets/downloads/odoo-backup-verification-checklist.pdf)**
 
 **What's included in the checklist:**
 - ✅ **Pre-backup verification** (12 critical checks)
@@ -2350,7 +2350,7 @@ Research and field testing has produced a comprehensive, printable checklist tha
 
 Evaluate your backup strategy's effectiveness with our interactive assessment tool:
 
-**📥 [Download the Backup Quality Calculator Script](/scripts/backup_quality_calculator.sh)**
+**📥 [Download the Backup Quality Calculator Script](/assets/downloads/backup_quality_calculator.sh)**
 
 This intelligent script provides:
 - **120-point assessment system** across 6 critical categories
@@ -2448,7 +2448,7 @@ Odoo has a built-in but hidden filestore deduplication system that can reduce ba
 **💾 Download the filestore deduplication tool:**
 
 ```bash
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/filestore_deduplication.py
+wget /assets/downloads/filestore_deduplication.py
 chmod +x filestore_deduplication.py
 
 # Deduplicate all databases:
@@ -2512,7 +2512,7 @@ Odoo has a hidden validation system that can check backup integrity without full
 **💾 Download the comprehensive backup validation tool:**
 
 ```bash
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/backup_validation_tool.py
+wget /assets/downloads/backup_validation_tool.py
 chmod +x backup_validation_tool.py
 
 # Validate a backup file:
@@ -2532,7 +2532,7 @@ When disaster strikes, every minute counts. An undocumented fast-track restore m
 **💾 Download the emergency restore script:**
 
 ```bash
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/emergency_restore.sh
+wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/assets/downloads/emergency_restore_script/
 chmod +x emergency_restore.sh
 
 # Emergency restore usage:
@@ -2549,7 +2549,7 @@ Predict backup sizes before starting to avoid storage surprises:
 **💾 Download the complete script:**
 
 ```bash
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/predict_backup_size.py
+wget /assets/downloads/predict_backup_size.py
 python3 predict_backup_size.py your_database_name
 
 # Or predict all databases:
@@ -2563,7 +2563,7 @@ Sometimes backups get corrupted. A hidden recovery method:
 **💾 Download the complete backup repair toolkit:**
 
 ```bash
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/scripts/backup_repair_toolkit.sh
+wget /assets/downloads/backup_repair_toolkit.sh
 chmod +x backup_repair_toolkit.sh
 
 # Usage:

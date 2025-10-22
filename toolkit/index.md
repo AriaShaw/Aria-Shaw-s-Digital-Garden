@@ -64,7 +64,7 @@ Professional calculators built from 500+ production deployments. Use directly in
 
 For production-ready automation (backup, migration, monitoring, security):
 
-**[→ Browse Scripts Library](/scripts/)**
+**[→ Browse Scripts Library](/assets/downloads/)**
 
 70+ battle-tested shell and Python scripts for Odoo self-hosting. All free, all open-source.
 

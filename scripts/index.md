@@ -38,129 +38,129 @@ Open-source, production-tested automation scripts for self-hosting Odoo. Every s
 ### Backup & Recovery
 
 **Daily Operations**
-- [backup_odoo.sh](/scripts/backup_odoo.sh) - Simple daily backup with automatic cleanup
-- [enhanced_backup_odoo.sh](/scripts/enhanced_backup_odoo.sh) - Cloud sync (Backblaze B2) with failure alerts
-- [odoo_backup_manager.py](/scripts/odoo_backup_manager.py) - Enterprise Python backup with multi-database support
-- [cloud_backup_sync.sh](/scripts/cloud_backup_sync.sh) - Generic cloud storage sync wrapper
-- [backup_database.sh](/scripts/backup_database.sh) - PostgreSQL-only backup with validation
-- [backup_filestore.sh](/scripts/backup_filestore.sh) - Filestore-only backup with compression
-- [backup_configuration.sh](/scripts/backup_configuration.sh) - Config, custom modules, system settings backup
+- [backup_odoo.sh](/assets/downloads/enhanced_backup_script/) - Simple daily backup with automatic cleanup
+- [enhanced_backup_odoo.sh](/assets/downloads/enhanced_backup_script/) - Cloud sync (Backblaze B2) with failure alerts
+- [odoo_backup_manager.py](/assets/downloads/odoo_backup_manager.py) - Enterprise Python backup with multi-database support
+- [cloud_backup_sync.sh](/assets/downloads/cloud_backup_sync.sh) - Generic cloud storage sync wrapper
+- [backup_database.sh](/assets/downloads/backup_database.sh) - PostgreSQL-only backup with validation
+- [backup_filestore.sh](/assets/downloads/backup_filestore.sh) - Filestore-only backup with compression
+- [backup_configuration.sh](/assets/downloads/backup_configuration.sh) - Config, custom modules, system settings backup
 
 **Verification & Quality**
-- [backup_validation_tool.py](/scripts/backup_validation_tool.py) - Integrity checker without full restoration
-- [filestore_verification.sh](/scripts/filestore_verification.sh) - Verify all uploaded files are backed up
-- [backup_quality_calculator.sh](/scripts/backup_quality_calculator.sh) - 120-point assessment tool
-- [backup_status_dashboard.sh](/scripts/backup_status_dashboard.sh) - Real-time monitoring dashboard
-- [s3_backup_verification.sh](/scripts/s3_backup_verification.sh) - Verify cloud-stored backups (AWS S3)
+- [backup_validation_tool.py](/assets/downloads/backup_validation_tool.py) - Integrity checker without full restoration
+- [filestore_verification.sh](/assets/downloads/filestore_verification.sh) - Verify all uploaded files are backed up
+- [backup_quality_calculator.sh](/assets/downloads/backup_quality_calculator.sh) - 120-point assessment tool
+- [backup_status_dashboard.sh](/assets/downloads/backup_status_dashboard.sh) - Real-time monitoring dashboard
+- [s3_backup_verification.sh](/assets/downloads/s3_backup_verification.sh) - Verify cloud-stored backups (AWS S3)
 
 **Advanced Tools**
-- [filestore_deduplication.py](/scripts/filestore_deduplication.py) - Reduce backup size by 40-60%
-- [predict_backup_size.py](/scripts/predict_backup_size.py) - Predict backup size before starting
-- [backup_repair_toolkit.sh](/scripts/backup_repair_toolkit.sh) - Recover corrupted backups
-- [backup_retention_manager.sh](/scripts/backup_retention_manager.sh) - Intelligent cleanup with policies
+- [filestore_deduplication.py](/assets/downloads/filestore_deduplication.py) - Reduce backup size by 40-60%
+- [predict_backup_size.py](/assets/downloads/predict_backup_size.py) - Predict backup size before starting
+- [backup_repair_toolkit.sh](/assets/downloads/backup_repair_toolkit.sh) - Recover corrupted backups
+- [backup_retention_manager.sh](/assets/downloads/backup_retention_manager.sh) - Intelligent cleanup with policies
 
 **Emergency Restore**
-- [emergency_restore.sh](/scripts/emergency_restore.sh) - Fast-track restore (50% faster with parallelization)
+- [emergency_restore.sh](/assets/downloads/emergency_restore_script/) - Fast-track restore (50% faster with parallelization)
 
 ---
 
 ### Migration & Database Upgrade
 
 **Pre-Migration Assessment**
-- [migration_assessment.sh](/scripts/migration_assessment.sh) - Analyze risks before migration
-- [compatibility_check.py](/scripts/compatibility_check.py) - Verify Python, dependencies, disk space
-- [calculate_server_specs.py](/scripts/calculate_server_specs.py) - Calculate optimal target server size
-- [data_cleanup.py](/scripts/data_cleanup.py) - Fix duplicates, orphaned entries before migration
-- [pg_compatibility_check.sh](/scripts/pg_compatibility_check.sh) - PostgreSQL version compatibility check
-- [module_compatibility_scan.py](/scripts/module_compatibility_scan.py) - Custom module API compatibility
-- [dependency_analyzer.py](/scripts/dependency_analyzer.py) - Resolve module dependency conflicts
+- [migration_assessment.sh](/assets/downloads/migration_assessment.sh) - Analyze risks before migration
+- [compatibility_check.py](/assets/downloads/compatibility_check.py) - Verify Python, dependencies, disk space
+- [calculate_server_specs.py](/assets/downloads/calculate_server_specs.py) - Calculate optimal target server size
+- [data_cleanup.py](/assets/downloads/data_cleanup.py) - Fix duplicates, orphaned entries before migration
+- [pg_compatibility_check.sh](/assets/downloads/pg_compatibility_check.sh) - PostgreSQL version compatibility check
+- [module_compatibility_scan.py](/assets/downloads/module_compatibility_scan.py) - Custom module API compatibility
+- [dependency_analyzer.py](/assets/downloads/dependency_analyzer.py) - Resolve module dependency conflicts
 
 **Migration Execution**
-- [staging_validation.sh](/scripts/staging_validation.sh) - Seven-layer validation in staging
-- [production_migration.sh](/scripts/production_migration.sh) - Zero-downtime execution with rollback
-- [safe_openupgrade.sh](/scripts/safe_openupgrade.sh) - OpenUpgrade wrapper with safety nets
-- [performance_validation.sh](/scripts/performance_validation.sh) - 24-hour performance monitoring
-- [final_verification.sh](/scripts/final_verification.sh) - Comprehensive success verification
+- [staging_validation.sh](/assets/downloads/staging_validation.sh) - Seven-layer validation in staging
+- [production_migration.sh](/assets/downloads/production_migration.sh) - Zero-downtime execution with rollback
+- [safe_openupgrade.sh](/assets/downloads/safe_openupgrade.sh) - OpenUpgrade wrapper with safety nets
+- [performance_validation.sh](/assets/downloads/performance_validation.sh) - 24-hour performance monitoring
+- [final_verification.sh](/assets/downloads/final_verification.sh) - Comprehensive success verification
 
 **Troubleshooting & Recovery**
-- [intelligent_rollback.sh](/scripts/intelligent_rollback.sh) - Advanced rollback with data preservation
-- [db_corruption_detector.sh](/scripts/db_corruption_detector.sh) - Detect and recover corrupted databases
-- [resolve_dependencies.py](/scripts/resolve_dependencies.py) - Dependency resolution with topological sorting
+- [intelligent_rollback.sh](/assets/downloads/intelligent_rollback.sh) - Advanced rollback with data preservation
+- [db_corruption_detector.sh](/assets/downloads/db_corruption_detector.sh) - Detect and recover corrupted databases
+- [resolve_dependencies.py](/assets/downloads/resolve_dependencies.py) - Dependency resolution with topological sorting
 
 ---
 
 ### Server Setup & Optimization
 
 **Initial Setup**
-- [setup_ubuntu_odoo.sh](/scripts/setup_ubuntu_odoo.sh) - Complete Ubuntu 22.04 setup for Odoo
-- [odoo-install.sh](/scripts/odoo-install.sh) - Odoo 18 production installation (Ubuntu 22.04/24.04)
-- [tune_postgresql_odoo.sh](/scripts/tune_postgresql_odoo.sh) - PostgreSQL performance tuning for Odoo
-- [digitalocean_odoo_setup.sh](/scripts/digitalocean_odoo_setup.sh) - Complete DigitalOcean droplet setup
+- [setup_ubuntu_odoo.sh](/assets/downloads/setup_ubuntu_odoo.sh) - Complete Ubuntu 22.04 setup for Odoo
+- [odoo-install.sh](/assets/downloads/odoo-install.sh) - Odoo 18 production installation (Ubuntu 22.04/24.04)
+- [tune_postgresql_odoo.sh](/assets/downloads/postgresql_tuning_script/) - PostgreSQL performance tuning for Odoo
+- [digitalocean_odoo_setup.sh](/assets/downloads/digitalocean_odoo_setup.sh) - Complete DigitalOcean droplet setup
 
 **System Validation**
-- [odoo_system_checker.sh](/scripts/odoo_system_checker.sh) - Comprehensive requirements validation
-- [odoo_dependency_fixer.sh](/scripts/odoo_dependency_fixer.sh) - Automated Python dependency resolution
-- [odoo_port_diagnostics.sh](/scripts/odoo_port_diagnostics.sh) - Network troubleshooting toolkit
+- [odoo_system_checker.sh](/assets/downloads/odoo_system_checker.sh) - Comprehensive requirements validation
+- [odoo_dependency_fixer.sh](/assets/downloads/odoo_dependency_fixer.sh) - Automated Python dependency resolution
+- [odoo_port_diagnostics.sh](/assets/downloads/odoo_port_diagnostics.sh) - Network troubleshooting toolkit
 
 **Architecture-Specific**
-- [separated_backup_strategy.sh](/scripts/separated_backup_strategy.sh) - Enterprise backup for separated deployments
-- [odoo-docker-compose.yml](/scripts/odoo-docker-compose.yml) - Production Docker Compose configuration
+- [separated_backup_strategy.sh](/assets/downloads/separated_backup_strategy.sh) - Enterprise backup for separated deployments
+- [odoo-docker-compose.yml](/assets/downloads/odoo-docker-compose.yml) - Production Docker Compose configuration
 
 ---
 
 ### AWS Security & Infrastructure
 
 **Infrastructure Setup**
-- [setup-vpc-security-groups.sh](/scripts/setup-vpc-security-groups.sh) - VPC, subnets, security groups
-- [setup-network-acls.sh](/scripts/setup-network-acls.sh) - Network ACLs for compliance
-- [setup-iam-roles.sh](/scripts/setup-iam-roles.sh) - IAM roles with least-privilege permissions
-- [setup-secrets-manager.sh](/scripts/setup-secrets-manager.sh) - Store RDS passwords in Secrets Manager
+- [setup-vpc-security-groups.sh](/assets/downloads/setup-vpc-security-groups.sh) - VPC, subnets, security groups
+- [setup-network-acls.sh](/assets/downloads/setup-network-acls.sh) - Network ACLs for compliance
+- [setup-iam-roles.sh](/assets/downloads/setup-iam-roles.sh) - IAM roles with least-privilege permissions
+- [setup-secrets-manager.sh](/assets/downloads/setup-secrets-manager.sh) - Store RDS passwords in Secrets Manager
 
 **SSL & Monitoring**
-- [setup-ssl-certbot.sh](/scripts/setup-ssl-certbot.sh) - Let's Encrypt SSL automation
-- [setup-cloudwatch-monitoring.sh](/scripts/setup-cloudwatch-monitoring.sh) - CloudWatch Agent + alarms
-- [setup-guardduty.sh](/scripts/setup-guardduty.sh) - AWS GuardDuty threat detection
+- [setup-ssl-certbot.sh](/assets/downloads/setup-ssl-certbot.sh) - Let's Encrypt SSL automation
+- [setup-cloudwatch-monitoring.sh](/assets/downloads/setup-cloudwatch-monitoring.sh) - CloudWatch Agent + alarms
+- [setup-guardduty.sh](/assets/downloads/setup-guardduty.sh) - AWS GuardDuty threat detection
 
 **Incident Response**
-- [incident-response-playbook.sh](/scripts/incident-response-playbook.sh) - Interactive security incident response
+- [incident-response-playbook.sh](/assets/downloads/incident-response-playbook.sh) - Interactive security incident response
 
 **Configuration Files**
-- [odoo-ec2-policy.json](/scripts/odoo-ec2-policy.json) - IAM policy template for EC2
-- [cloudwatch-config.json](/scripts/cloudwatch-config.json) - CloudWatch Agent configuration
-- [nginx-ssl.conf](/scripts/nginx-ssl.conf) - Nginx config for A+ SSL Labs rating
+- [odoo-ec2-policy.json](/assets/downloads/odoo-ec2-policy.json) - IAM policy template for EC2
+- [cloudwatch-config.json](/assets/downloads/cloudwatch-config.json) - CloudWatch Agent configuration
+- [nginx-ssl.conf](/assets/downloads/nginx-ssl.conf) - Nginx config for A+ SSL Labs rating
 
 ---
 
 ### Monitoring & Maintenance
 
 **Health Checks**
-- [system_health_check.sh](/scripts/system_health_check.sh) - One-line system status overview
-- [monitor_odoo.sh](/scripts/monitor_odoo.sh) - Basic monitoring with email alerts
-- [advanced_monitor_odoo.sh](/scripts/advanced_monitor_odoo.sh) - Detailed logging + DB connection tracking
-- [odoo_health_monitor.sh](/scripts/odoo_health_monitor.sh) - Real-time CPU, memory, disk alerts
+- [system_health_check.sh](/assets/downloads/system_health_check.sh) - One-line system status overview
+- [monitor_odoo.sh](/assets/downloads/health_monitoring_script/) - Basic monitoring with email alerts
+- [advanced_monitor_odoo.sh](/assets/downloads/health_monitoring_script/) - Detailed logging + DB connection tracking
+- [odoo_health_monitor.sh](/assets/downloads/odoo_health_monitor.sh) - Real-time CPU, memory, disk alerts
 
 **Scheduled Maintenance**
-- [db_maintenance.sh](/scripts/db_maintenance.sh) - Weekly VACUUM, ANALYZE, REINDEX
-- [weekly_maintenance.sh](/scripts/weekly_maintenance.sh) - Automated weekly maintenance + log rotation
-- [monthly_health_check.sh](/scripts/monthly_health_check.sh) - Monthly system review + capacity planning
+- [db_maintenance.sh](/assets/downloads/db_maintenance.sh) - Weekly VACUUM, ANALYZE, REINDEX
+- [weekly_maintenance.sh](/assets/downloads/weekly_maintenance.sh) - Automated weekly maintenance + log rotation
+- [monthly_health_check.sh](/assets/downloads/monthly_health_check.sh) - Monthly system review + capacity planning
 
 **Emergency Recovery**
-- [odoo_emergency_recovery.sh](/scripts/odoo_emergency_recovery.sh) - Complete disaster recovery toolkit
+- [odoo_emergency_recovery.sh](/assets/downloads/odoo_emergency_recovery.sh) - Complete disaster recovery toolkit
 
 ---
 
 ### Security & Compliance
 
 **GDPR Compliance**
-- [gdpr_data_retention.py](/scripts/gdpr_data_retention.py) - Automated data retention + anonymization
-- [gdpr_monitoring.sh](/scripts/gdpr_monitoring.sh) - Real-time breach monitoring
-- [gdpr_consent_migration.py](/scripts/gdpr_consent_migration.py) - Track consent during migration
+- [gdpr_data_retention.py](/assets/downloads/gdpr_data_retention.py) - Automated data retention + anonymization
+- [gdpr_monitoring.sh](/assets/downloads/gdpr_monitoring.sh) - Real-time breach monitoring
+- [gdpr_consent_migration.py](/assets/downloads/gdpr_consent_migration.py) - Track consent during migration
 
 **Audit & Access Control**
-- [migration_audit_trail.py](/scripts/migration_audit_trail.py) - Comprehensive audit logging
-- [generate_audit_report.py](/scripts/generate_audit_report.py) - Compliance audit reports
-- [migration_access_control.sh](/scripts/migration_access_control.sh) - Time-limited access with audit trails
-- [sensitive_data_scanner.py](/scripts/sensitive_data_scanner.py) - Discover and mask sensitive data
+- [migration_audit_trail.py](/assets/downloads/migration_audit_trail.py) - Comprehensive audit logging
+- [generate_audit_report.py](/assets/downloads/generate_audit_report.py) - Compliance audit reports
+- [migration_access_control.sh](/assets/downloads/migration_access_control.sh) - Time-limited access with audit trails
+- [sensitive_data_scanner.py](/assets/downloads/sensitive_data_scanner.py) - Discover and mask sensitive data
 
 ---
 
@@ -198,26 +198,26 @@ Open-source, production-tested automation scripts for self-hosting Odoo. Every s
 ### Business Automation
 
 **Multi-Company Operations**
-- [intercompany_transaction_manager.py](/scripts/intercompany_transaction_manager.py) - Auto-create offsetting journal entries
+- [intercompany_transaction_manager.py](/assets/downloads/intercompany_transaction_manager.py) - Auto-create offsetting journal entries
 
 **Specialized Use Cases**
-- [legal_matter_model.py](/scripts/legal_matter_model.py) - Legal services custom model (conflict checking)
-- [emergency_order_import.py](/scripts/emergency_order_import.py) - Import orders from system outage (CSV → Odoo)
+- [legal_matter_model.py](/assets/downloads/legal_matter_model.py) - Legal services custom model (conflict checking)
+- [emergency_order_import.py](/assets/downloads/emergency_order_import.py) - Import orders from system outage (CSV → Odoo)
 
 ---
 
 ### Testing & Diagnostics
 
 **Integration Testing**
-- [api_diagnostics.py](/scripts/api_diagnostics.py) - API connection testing (DNS, SSL, HTTP)
-- [test_smtp.py](/scripts/test_smtp.py) - SMTP configuration + email delivery test
+- [api_diagnostics.py](/assets/downloads/api_diagnostics.py) - API connection testing (DNS, SSL, HTTP)
+- [test_smtp.py](/assets/downloads/test_smtp.py) - SMTP configuration + email delivery test
 
 **DevOps Integration**
-- [jenkins-odoo-migration-pipeline.groovy](/scripts/jenkins-odoo-migration-pipeline.groovy) - Jenkins pipeline for migrations
-- [ansible-odoo-migration-playbook.yml](/scripts/ansible-odoo-migration-playbook.yml) - Ansible playbook for migrations
+- [jenkins-odoo-migration-pipeline.groovy](/assets/downloads/jenkins-odoo-migration-pipeline.groovy) - Jenkins pipeline for migrations
+- [ansible-odoo-migration-playbook.yml](/assets/downloads/ansible-odoo-migration-playbook.yml) - Ansible playbook for migrations
 
 **Windows Users**
-- [Odoo-Backup.ps1](/scripts/Odoo-Backup.ps1) - PowerShell backup script for Windows
+- [Odoo-Backup.ps1](/assets/downloads/Odoo-Backup.ps1) - PowerShell backup script for Windows
 
 ---
 
