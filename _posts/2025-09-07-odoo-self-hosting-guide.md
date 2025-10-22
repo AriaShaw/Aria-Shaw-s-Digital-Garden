@@ -1114,7 +1114,7 @@ sudo nano /home/odoo/backup-odoo.sh
 Download and run this backup script:
 
 ```bash
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/assets/downloads/enhanced_backup_script/
+wget /assets/downloads/enhanced_backup_odoo.sh
 chmod +x backup_odoo.sh
 sudo mv backup_odoo.sh /home/odoo/backup-odoo.sh
 ```
@@ -1196,7 +1196,7 @@ For businesses needing advanced features and compliance:
 Download the enhanced backup script with cloud sync:
 
 ```bash
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/assets/downloads/enhanced_backup_script/
+wget /assets/downloads/enhanced_backup_odoo.sh
 chmod +x enhanced_backup_odoo.sh
 sudo mv enhanced_backup_odoo.sh /home/odoo/enhanced-backup-odoo.sh
 ```
@@ -1400,7 +1400,7 @@ DD_API_KEY=your_api_key bash -c "$(curl -L https://s3.amazonaws.com/dd-agent/ass
 If you prefer complete control, download this simple monitoring script:
 
 ```bash
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/assets/downloads/health_monitoring_script/
+wget /assets/downloads/advanced_monitor_odoo.sh
 chmod +x monitor_odoo.sh
 sudo mv monitor_odoo.sh /home/odoo/monitor-odoo.sh
 # Edit the script to customize domain and email
@@ -1473,7 +1473,7 @@ sudo systemctl status node_exporter
 For basic monitoring without complex setup, download the advanced monitoring script:
 
 ```bash
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/assets/downloads/health_monitoring_script/
+wget /assets/downloads/advanced_monitor_odoo.sh
 chmod +x advanced_monitor_odoo.sh
 sudo mv advanced_monitor_odoo.sh /home/odoo/monitor-odoo.sh
 ```

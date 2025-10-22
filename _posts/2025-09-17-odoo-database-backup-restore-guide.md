@@ -351,7 +351,7 @@ nano basic_odoo_backup.sh
 
 For a comprehensive cURL-based backup script with advanced error handling, cloud integration, and logging, see our enhanced backup script:
 
-📋 **[Enhanced Backup Script](/assets/downloads/enhanced_backup_script/)** - Includes Backblaze B2 cloud sync and email alerts
+📋 **[Enhanced Backup Script](/resources/enhanced_backup_script/)** - Includes Backblaze B2 cloud sync and email alerts
 
 **Configuration file (backup.conf):**
 ```bash
@@ -1034,7 +1034,7 @@ AWS Region: us-east-1
 
 For those who prefer custom solutions, our enhanced backup script includes S3 integration:
 
-📋 **[Enhanced Backup with S3](/assets/downloads/enhanced_backup_script/)** - Includes S3 sync with Backblaze B2 (similar setup for AWS S3)
+📋 **[Enhanced Backup with S3](/resources/enhanced_backup_script/)** - Includes S3 sync with Backblaze B2 (similar setup for AWS S3)
 
 #### Automated S3 Backup Scheduling
 
