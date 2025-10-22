@@ -351,7 +351,7 @@ nano basic_odoo_backup.sh
 
 For a comprehensive cURL-based backup script with advanced error handling, cloud integration, and logging, see our enhanced backup script:
 
-📋 **[Enhanced Backup Script](/deliveries/enhanced_backup_script)** - Includes Backblaze B2 cloud sync and email alerts
+📋 **[Enhanced Backup Script](/downloads/enhanced-backup-script)** - Includes Backblaze B2 cloud sync and email alerts
 
 **Configuration file (backup.conf):**
 ```bash
@@ -1034,7 +1034,7 @@ AWS Region: us-east-1
 
 For those who prefer custom solutions, our enhanced backup script includes S3 integration:
 
-📋 **[Enhanced Backup with S3](/deliveries/enhanced_backup_script)** - Includes S3 sync with Backblaze B2 (similar setup for AWS S3)
+📋 **[Enhanced Backup with S3](/downloads/enhanced-backup-script)** - Includes S3 sync with Backblaze B2 (similar setup for AWS S3)
 
 #### Automated S3 Backup Scheduling
 
@@ -2532,7 +2532,7 @@ When disaster strikes, every minute counts. An undocumented fast-track restore m
 **💾 Download the emergency restore script:**
 
 ```bash
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/assets/deliveries/emergency_restore_script
+wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/assets/downloads/emergency-restore-script
 chmod +x emergency_restore.sh
 
 # Emergency restore usage:
