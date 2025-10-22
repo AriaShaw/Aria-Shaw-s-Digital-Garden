@@ -1,160 +1,422 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{ page.title }} | Aria Shaw's Digital Garden</title>
-  <meta name="description" content="{{ page.description }}">
-  {% include head-custom.html %}
-  {% seo %}
-  <link rel="stylesheet" href="{{ '/assets/css/style.css?v=' | append: site.github.build_revision | relative_url }}">
-  <link rel="stylesheet" href="{{ '/assets/css/performance-optimizations.css' | relative_url }}">
-  <link rel="stylesheet" href="{{ '/assets/css/accessibility.css' | relative_url }}">
-  {% include performance-optimizations.html %}
-</head>
-<body>
-  <div class="wrapper">
-    <header>
-      <h1><a href="{{ '/' | relative_url }}">{{ site.title | default: site.github.repository_name }}</a></h1>
-      {% if site.description %}
-        <p>{{ site.description | default: site.github.project_tagline }}</p>
-      {% endif %}
-      <p class="view"><a href="{{ site.github.owner_url }}">View My GitHub Profile</a></p>
-    </header>
+<html lang="{{ site.lang | default: "en-US" }}">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <section>
-      <!-- Load resource data from site_assets.yml -->
-      {% assign resource = nil %}
-      {% for tool in site.data.site_assets.free_tools %}
-        {% if tool.id == page.resource_id %}
-          {% assign resource = tool %}
-          {% break %}
+    <title>{% if page.title %}{{ page.title }}{% else %}{{ site.title }}{% endif %}</title>
+    <meta name="description" content="{% if page.description %}{{ page.description }}{% else %}{{ site.description }}{% endif %}">
+    <meta name="author" content="{{ site.author }}">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ page.url | absolute_url }}">
+    <meta property="og:title" content="{% if page.title %}{{ page.title }}{% else %}{{ site.title }}{% endif %}">
+    <meta property="og:description" content="{% if page.description %}{{ page.description }}{% else %}{{ site.description }}{% endif %}">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="{{ page.url | absolute_url }}">
+    <meta property="twitter:title" content="{% if page.title %}{{ page.title }}{% else %}{{ site.title }}{% endif %}">
+    <meta property="twitter:description" content="{% if page.description %}{{ page.description }}{% else %}{{ site.description }}{% endif %}">
+
+    <link rel="canonical" href="{{ page.url | absolute_url }}">
+    <link rel="stylesheet" href="{{ "/assets/css/style.css?v=" | append: site.github.build_revision | relative_url }}">
+    <link rel="stylesheet" href="{{ "/assets/css/accessibility.css" | relative_url }}">
+    <link rel="stylesheet" href="{{ "/assets/css/home.css" | relative_url }}">
+    <!--[if lt IE 9]>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <![endif]-->
+    {% include head-custom.html %}
+
+    <style>
+      .delivery-page {
+        max-width: 800px;
+        margin: 0 auto;
+      }
+
+      .delivery-hero {
+        background: linear-gradient(135deg, #267CB9 0%, #069 100%);
+        color: white;
+        padding: 3rem 2rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+      }
+
+      .delivery-hero h1 {
+        color: white;
+        margin-top: 0;
+        font-size: 2.2rem;
+        line-height: 1.2;
+      }
+
+      .delivery-hero .lead {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        opacity: 0.95;
+        margin-bottom: 2rem;
+      }
+
+      .download-button {
+        display: inline-block;
+        background: white;
+        color: #267CB9;
+        padding: 1rem 2.5rem;
+        text-decoration: none;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      }
+
+      .download-button:hover {
+        background: #f8f9fa;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+      }
+
+      .download-meta {
+        margin-top: 1rem;
+        font-size: 0.9rem;
+        opacity: 0.85;
+      }
+
+      .content-section {
+        background: white;
+        padding: 2rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+        border: 1px solid #e5e7eb;
+      }
+
+      .content-section h2 {
+        margin-top: 0;
+        color: #1f2937;
+        font-size: 1.8rem;
+        border-bottom: 2px solid #e5e7eb;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .content-section h3 {
+        color: #374151;
+        font-size: 1.3rem;
+        margin-top: 1.5rem;
+        margin-bottom: 1rem;
+      }
+
+      .limitations-list {
+        list-style: none;
+        padding-left: 0;
+      }
+
+      .limitations-list li {
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #f3f4f6;
+        display: flex;
+        align-items: flex-start;
+        position: relative;
+        padding-left: 35px;
+      }
+
+      .limitations-list li:before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 18px;
+        width: 20px;
+        height: 20px;
+        background: #fee;
+        border: 2px solid #ef4444;
+        border-radius: 50%;
+      }
+
+      .limitations-list li:after {
+        content: "";
+        position: absolute;
+        left: 6px;
+        top: 27px;
+        width: 10px;
+        height: 2px;
+        background: #ef4444;
+      }
+
+      .alert-box {
+        background: #fef3c7;
+        border-left: 4px solid #f59e0b;
+        padding: 1.25rem;
+        border-radius: 4px;
+        margin-top: 1.5rem;
+      }
+
+      .alert-box p {
+        margin: 0;
+        color: #92400e;
+        line-height: 1.6;
+      }
+
+      .master-pack-section {
+        background: linear-gradient(135deg, #267CB9 0%, #069 100%);
+        color: white;
+        padding: 2.5rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+      }
+
+      .master-pack-section h2 {
+        color: white;
+        border: none;
+        margin-top: 0;
+        padding-bottom: 0;
+      }
+
+      .master-pack-section h3 {
+        color: white;
+        margin-top: 2rem;
+      }
+
+      .features-list {
+        list-style: none;
+        padding-left: 0;
+      }
+
+      .features-list li {
+        padding: 1rem 0;
+        padding-left: 35px;
+        border-bottom: 1px solid rgba(255,255,255,0.2);
+        position: relative;
+      }
+
+      .features-list li:before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 18px;
+        width: 20px;
+        height: 20px;
+        background: rgba(16, 185, 129, 0.2);
+        border: 2px solid #10b981;
+        border-radius: 50%;
+      }
+
+      .features-list li:after {
+        content: "";
+        position: absolute;
+        left: 5px;
+        top: 23px;
+        width: 6px;
+        height: 10px;
+        border: solid #10b981;
+        border-width: 0 2px 2px 0;
+        transform: rotate(45deg);
+      }
+
+      .feature-title {
+        font-weight: 600;
+        font-size: 1.05rem;
+        display: block;
+        margin-bottom: 0.25rem;
+      }
+
+      .feature-benefit {
+        opacity: 0.9;
+        line-height: 1.5;
+      }
+
+      .pricing-box {
+        background: rgba(255,255,255,0.1);
+        padding: 1.5rem;
+        border-radius: 6px;
+        margin-top: 2rem;
+        border: 1px solid rgba(255,255,255,0.2);
+      }
+
+      .pricing-box p {
+        margin: 0.5rem 0;
+        font-size: 1rem;
+      }
+
+      .master-pack-button {
+        display: inline-block;
+        background: white;
+        color: #267CB9;
+        padding: 1rem 2.5rem;
+        text-decoration: none;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        margin-top: 1rem;
+        transition: all 0.3s ease;
+      }
+
+      .master-pack-button:hover {
+        background: #f8f9fa;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+      }
+
+      .alternative-section {
+        background: #f9fafb;
+        padding: 2rem;
+        border-radius: 8px;
+        border: 1px solid #e5e7eb;
+      }
+
+      .alternative-section h2 {
+        margin-top: 0;
+      }
+
+      .alternative-section ol {
+        line-height: 1.8;
+      }
+
+      .alternative-section li {
+        margin-bottom: 0.75rem;
+      }
+
+      .related-resources {
+        margin-top: 2rem;
+      }
+
+      .related-resources ul {
+        list-style: none;
+        padding-left: 0;
+      }
+
+      .related-resources li {
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #e5e7eb;
+      }
+
+      .related-resources a {
+        color: #267CB9;
+        text-decoration: none;
+        font-weight: 500;
+      }
+
+      .related-resources a:hover {
+        color: #069;
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body class="full-width-layout" data-accessibility="wcag-aa">
+    <div class="wrapper">
+      <section>
+        {% include breadcrumbs.html %}
+
+        <!-- Load resource data from site_assets.yml -->
+        {% assign resource = nil %}
+        {% for tool in site.data.site_assets.free_tools %}
+          {% if tool.id == page.resource_id %}
+            {% assign resource = tool %}
+            {% break %}
+          {% endif %}
+        {% endfor %}
+
+        {% if resource %}
+          <div class="delivery-page">
+            <!-- Hero Section with Download -->
+            <div class="delivery-hero">
+              <h1>{{ resource.name }}</h1>
+              <p class="lead">{{ resource.description }}</p>
+
+              <a href="{{ resource.download_url }}" class="download-button" download>
+                Download Now
+              </a>
+
+              <div class="download-meta">
+                {{ resource.file_size }} · Updated {{ resource.last_updated }} · MIT Licensed
+              </div>
+            </div>
+
+            <!-- Limitations Section -->
+            <div class="content-section">
+              <h2>What This Free Tool Covers</h2>
+              <p>This {{ resource.type | replace: '_', ' ' }} is production-ready and has helped thousands of Odoo deployments. However, it's designed as a <strong>starting point</strong>, not a complete enterprise solution.</p>
+
+              <h3>Current Limitations</h3>
+              <ul class="limitations-list">
+                {% for limitation in resource.limitations %}
+                <li>{{ limitation }}</li>
+                {% endfor %}
+              </ul>
+
+              <div class="alert-box">
+                <p><strong>Real-world impact:</strong> These gaps won't stop you from getting started, but they will become bottlenecks as your deployment matures. Most teams hit these limitations within 3-6 months of going live.</p>
+              </div>
+            </div>
+
+            <!-- Master Pack Solution -->
+            <div class="master-pack-section">
+              <h2>Eliminate These Gaps with the Master Pack</h2>
+              <p style="font-size: 1.1rem; line-height: 1.6;">The <strong>Odoo Digital Sovereignty Master Pack</strong> transforms this free tool into a complete, enterprise-grade system that scales with your business.</p>
+
+              <h3>What You Get</h3>
+              <ul class="features-list">
+                {% for solution in resource.master_pack_solution %}
+                <li>
+                  <span class="feature-title">{{ solution.feature }}</span>
+                  <span class="feature-benefit">{{ solution.benefit }}</span>
+                </li>
+                {% endfor %}
+              </ul>
+
+              <div class="pricing-box">
+                <p><strong>Investment:</strong> $699 one-time payment</p>
+                <p><strong>What you avoid:</strong> $15,000-$50,000 in consultant fees + months of trial-and-error</p>
+                <a href="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty-master-pack" class="master-pack-button">
+                  View Master Pack Details
+                </a>
+              </div>
+
+              <p style="font-size: 0.9rem; opacity: 0.85; margin-top: 1.5rem; margin-bottom: 0;">Includes 5 comprehensive modules: Strategic Command, Technical Architecture, Data Migration, Fortress Protection, and Operations Console.</p>
+            </div>
+
+            <!-- Alternative Path -->
+            <div class="content-section alternative-section">
+              <h2>Not Ready to Invest Yet?</h2>
+              <p>That's completely fine! Here's how to get the most from this free tool:</p>
+
+              <ol>
+                <li><strong>Start with the basics:</strong> Use this free {{ resource.type | replace: '_', ' ' }} in your development or staging environment first.</li>
+                <li><strong>Document your gaps:</strong> As you encounter limitations, keep a list of what's missing for your specific use case.</li>
+                <li><strong>Explore the blog:</strong> Check out our <a href="/" style="color: #267CB9;">pillar articles</a> for free implementation guidance on related topics.</li>
+                <li><strong>Join the community:</strong> Share your experience and learn from others implementing Odoo.</li>
+              </ol>
+
+              <p style="margin-top: 1.5rem;"><strong>When you're ready for the complete solution,</strong> the Master Pack will be here with everything you need to go from "getting started" to "enterprise-grade" in days, not months.</p>
+            </div>
+
+            <!-- Related Resources -->
+            <div class="related-resources">
+              <h2>Related Free Resources</h2>
+              <ul>
+                {% for other_tool in site.data.site_assets.free_tools %}
+                  {% if other_tool.id != resource.id %}
+                  <li><a href="/downloads/{{ other_tool.id | replace: '_', '-' }}">{{ other_tool.name }}</a> — {{ other_tool.description | truncate: 100 }}</li>
+                  {% endif %}
+                {% endfor %}
+              </ul>
+            </div>
+          </div>
+
+        {% else %}
+          <!-- Error: Resource not found -->
+          <div class="content-section">
+            <h1>Resource Not Found</h1>
+            <p>The requested resource (ID: <code>{{ page.resource_id }}</code>) could not be found in the site assets database.</p>
+            <p><a href="/">Return to homepage</a></p>
+          </div>
         {% endif %}
-      {% endfor %}
 
-      {% if resource %}
-        <!-- Page Title -->
-        <h1>{{ resource.name }}</h1>
+      </section>
+    </div>
 
-        <!-- Resource Description -->
-        <p class="lead">{{ resource.description }}</p>
+    {% include footer-professional.html %}
 
-        <!-- ================================ -->
-        <!-- SECTION 1: IMMEDIATE DOWNLOAD    -->
-        <!-- ================================ -->
-        <div class="download-section" style="background: #f8f9fa; border-left: 4px solid #28a745; padding: 20px; margin: 30px 0;">
-          <h2 style="margin-top: 0; color: #28a745;">⬇️ Download Your Free {{ resource.type | replace: '_', ' ' | capitalize }}</h2>
-          <p><strong>File Size:</strong> {{ resource.file_size }} | <strong>Last Updated:</strong> {{ resource.last_updated }}</p>
-          <a href="{{ resource.download_url }}" class="download-button" style="display: inline-block; background: #28a745; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 18px;">
-            Download Now →
-          </a>
-          <p style="margin-top: 15px; font-size: 14px; color: #6c757d;">No email required. Instant access. MIT Licensed.</p>
-        </div>
-
-        <!-- ================================ -->
-        <!-- SECTION 2: LIMITATIONS           -->
-        <!-- ================================ -->
-        <div class="limitations-section" style="margin: 40px 0;">
-          <h2>What This Free Tool Does (And Doesn't) Cover</h2>
-          <p>This free {{ resource.type | replace: '_', ' ' }} is production-ready and has helped thousands of Odoo deployments. However, it's designed as a <strong>starting point</strong>, not a complete enterprise solution.</p>
-
-          <h3 style="color: #dc3545;">⚠️ Current Limitations:</h3>
-          <ul style="list-style-type: none; padding-left: 0;">
-            {% for limitation in resource.limitations %}
-            <li style="padding: 10px 0; border-bottom: 1px solid #e9ecef;">
-              <span style="color: #dc3545; font-weight: bold;">✗</span> {{ limitation }}
-            </li>
-            {% endfor %}
-          </ul>
-
-          <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 20px; margin-top: 30px;">
-            <p style="margin: 0;"><strong>Real-world impact:</strong> These gaps won't stop you from getting started, but they <em>will</em> become bottlenecks as your deployment matures. Most teams hit these limitations within 3-6 months of going live.</p>
-          </div>
-        </div>
-
-        <!-- ================================ -->
-        <!-- SECTION 3: MASTER PACK SOLUTION  -->
-        <!-- ================================ -->
-        <div class="master-pack-section" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px; border-radius: 8px; margin: 40px 0;">
-          <h2 style="color: white; margin-top: 0;">🚀 Eliminate These Gaps with the Master Pack</h2>
-          <p style="font-size: 18px; line-height: 1.6;">The <strong>Odoo Digital Sovereignty Master Pack</strong> transforms this free tool into a complete, enterprise-grade system that scales with your business.</p>
-
-          <h3 style="color: white; margin-top: 30px;">What You Get:</h3>
-          <ul style="list-style-type: none; padding-left: 0;">
-            {% for solution in resource.master_pack_solution %}
-            <li style="padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.2);">
-              <strong style="font-size: 16px; display: block; margin-bottom: 5px;">✓ {{ solution.feature }}</strong>
-              <span style="opacity: 0.9;">{{ solution.benefit }}</span>
-            </li>
-            {% endfor %}
-          </ul>
-
-          <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 5px; margin-top: 30px;">
-            <p style="font-size: 16px; margin: 0 0 20px 0;"><strong>Investment:</strong> $699 one-time payment</p>
-            <p style="font-size: 16px; margin: 0 0 20px 0;"><strong>What you avoid:</strong> $15,000-$50,000 in consultant fees + months of trial-and-error</p>
-            <a href="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty-master-pack" class="master-pack-button" style="display: inline-block; background: white; color: #667eea; padding: 15px 40px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 18px; margin-top: 10px;">
-              View Master Pack Details →
-            </a>
-          </div>
-
-          <p style="font-size: 14px; opacity: 0.8; margin-top: 20px; margin-bottom: 0;">Includes 5 comprehensive modules: Strategic Command, Technical Architecture, Data Migration, Fortress Protection, and Operations Console.</p>
-        </div>
-
-        <!-- ================================ -->
-        <!-- SECTION 4: ALTERNATIVE PATH      -->
-        <!-- ================================ -->
-        <div class="alternative-path" style="margin: 40px 0; padding: 30px; background: #f8f9fa; border-radius: 5px;">
-          <h2>Not Ready to Invest Yet?</h2>
-          <p>That's completely fine! Here's how to get the most from this free tool:</p>
-
-          <ol style="line-height: 1.8;">
-            <li><strong>Start with the basics:</strong> Use this free {{ resource.type | replace: '_', ' ' }} in your development or staging environment first.</li>
-            <li><strong>Document your gaps:</strong> As you encounter limitations, keep a list of what's missing for your specific use case.</li>
-            <li><strong>Explore the blog:</strong> Check out our <a href="/">pillar articles</a> for free implementation guidance on related topics.</li>
-            <li><strong>Join the community:</strong> Share your experience and learn from others implementing Odoo.</li>
-          </ol>
-
-          <p style="margin-top: 20px;"><strong>When you're ready for the complete solution,</strong> the Master Pack will be here with everything you need to go from "getting started" to "enterprise-grade" in days, not months.</p>
-        </div>
-
-        <!-- ================================ -->
-        <!-- SECTION 5: RELATED RESOURCES     -->
-        <!-- ================================ -->
-        <div class="related-resources" style="margin: 40px 0;">
-          <h2>Related Free Resources</h2>
-          <ul>
-            {% for other_tool in site.data.site_assets.free_tools %}
-              {% if other_tool.id != resource.id %}
-              <li><a href="/assets/downloads/{{ other_tool.id }}/">{{ other_tool.name }}</a> - {{ other_tool.description | truncate: 100 }}</li>
-              {% endif %}
-            {% endfor %}
-          </ul>
-        </div>
-
-      {% else %}
-        <!-- Error: Resource not found -->
-        <h1>Resource Not Found</h1>
-        <p>The requested resource (ID: <code>{{ page.resource_id }}</code>) could not be found in the site assets database.</p>
-        <p><a href="/">Return to homepage</a></p>
-      {% endif %}
-
-      <!-- Breadcrumbs for SEO -->
-      {% include breadcrumbs.html %}
-    </section>
-
-    <footer>
-      <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
-      {% if site.google_analytics %}
-        <script async src="https://www.googletagmanager.com/gtag/js?id={{ site.google_analytics }}"></script>
-        <script>
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', '{{ site.google_analytics }}');
-        </script>
-      {% endif %}
-    </footer>
-  </div>
-  <script src="{{ '/assets/js/scale.fix.js' | relative_url }}"></script>
-</body>
+    <script src="{{ "/assets/js/scale.fix.js" | relative_url }}"></script>
+  </body>
 </html>
