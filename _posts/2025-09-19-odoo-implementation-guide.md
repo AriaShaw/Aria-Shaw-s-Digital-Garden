@@ -1750,7 +1750,7 @@ Test with 150% of expected concurrent users to ensure performance headroom. Mode
 **Professional Performance Tools:**
 - **💗 [Advanced Odoo Health Monitor](/assets/downloads/odoo_health_monitor.sh)** - Real-time performance monitoring
 - **📈 [Monthly Health Check](/assets/downloads/monthly_health_check.sh)** - Comprehensive system health assessment
-- **🔧 [PostgreSQL Production Tuning](/resources/postgresql_tuning_script/)** - Database optimization for production loads
+- **🔧 [PostgreSQL Production Tuning](/downloads/postgresql_tuning_script/)** - Database optimization for production loads
 
 ### Odoo Implementation Support and Maintenance
 
