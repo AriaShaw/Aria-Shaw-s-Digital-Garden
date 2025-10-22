@@ -445,7 +445,7 @@ The Ubuntu script provides a solid foundation, but PostgreSQL requires fine-tuni
 **Download and run the PostgreSQL optimization script:**
 
 ```bash
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/assets/downloads/postgresql_tuning_script/
+wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/assets/deliveries/postgresql_tuning_script
 chmod +x tune_postgresql_odoo.sh
 sudo ./tune_postgresql_odoo.sh
 ```
