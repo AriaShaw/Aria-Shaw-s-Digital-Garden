@@ -465,16 +465,33 @@
 </style>
 <script>
     document.addEventListener('DOMContentLoaded', (event) => {
-        document.querySelectorAll('div.highlight > pre').forEach((preElement) => {
+        // Find all code blocks: both markdown (div.highlight > pre) and delivery page (.how-to-steps pre)
+        const codeBlocks = [
+            ...document.querySelectorAll('div.highlight > pre'),
+            ...document.querySelectorAll('.how-to-steps pre')
+        ];
+
+        codeBlocks.forEach((preElement) => {
             const codeBlockContainer = preElement.parentElement;
             if (codeBlockContainer.querySelector('.copy-button')) { return; }
+
             const copyButton = document.createElement('button');
             copyButton.className = 'copy-button';
             copyButton.textContent = 'Copy';
-            codeBlockContainer.appendChild(copyButton);
+
+            // For delivery pages, append to pre element itself (relative positioning)
+            if (preElement.closest('.how-to-steps')) {
+                preElement.style.position = 'relative';
+                preElement.appendChild(copyButton);
+            } else {
+                codeBlockContainer.appendChild(copyButton);
+            }
+
             copyButton.addEventListener('click', (e) => {
                 e.stopPropagation();
-                const code = preElement.querySelector('code').innerText;
+                const code = preElement.querySelector('code')
+                    ? preElement.querySelector('code').innerText
+                    : preElement.innerText;
                 navigator.clipboard.writeText(code).then(() => {
                     copyButton.textContent = 'Copied!';
                     copyButton.classList.add('copied');
@@ -1434,6 +1451,10 @@
             'toolkit-index': { enabled: false },
             'scripts-index': { enabled: false },
 
+            // Value delivery pages (free script downloads) - NO floating CTA
+            // These pages already have 2 strategic CTAs and focus on building trust
+            'delivery': { enabled: false },
+
             // Default for browsing pages (about, support, terms, etc.)
             // ENABLED - these are information pages without prominent CTAs
             'default': {
@@ -1470,6 +1491,10 @@
             // Check if it's a blog post (article page)
             var isPost = document.body.classList.contains('post-layout');
             if (isPost) return CTA_CONFIG['post'];
+
+            // Check if it's a delivery page (free script download pages)
+            var isDelivery = path.startsWith('/downloads/') || document.body.classList.contains('delivery-page');
+            if (isDelivery) return CTA_CONFIG['delivery'];
 
             // Check if it's a tool page by URL path
             if (path.includes('odoo-hosting-advisor')) return CTA_CONFIG['odoo-hosting-advisor'];
