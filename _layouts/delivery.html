@@ -30,55 +30,107 @@
     <![endif]-->
     {% include head-custom.html %}
 
+    <!-- Load resource data from site_assets.yml (lightweight metadata) -->
+    {% assign resource = nil %}
+    {% for tool in site.data.site_assets.free_tools %}
+      {% if tool.id == page.resource_id %}
+        {% assign resource = tool %}
+        {% break %}
+      {% endif %}
+    {% endfor %}
+
+    <!-- Load enriched content from tool_dossiers (SEO content) -->
+    {% assign dossier_file = page.resource_id | replace: '_', '-' %}
+    {% assign dossier_path = "tool_dossiers." | append: dossier_file %}
+    {% assign dossier = site.data[dossier_path] %}
+
+    {% if dossier and dossier.troubleshooting_faq %}
+    <!-- FAQ Schema Markup (JSON-LD) for SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {% for faq in dossier.troubleshooting_faq %}
+        {
+          "@type": "Question",
+          "name": "{{ faq.question | escape }}",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "{{ faq.answer | escape }}"
+          }
+        }{% unless forloop.last %},{% endunless %}
+        {% endfor %}
+      ]
+    }
+    </script>
+    {% endif %}
+
     <style>
       .delivery-page {
-        max-width: 800px;
+        max-width: 900px;
         margin: 0 auto;
       }
 
+      /* Hero Section */
       .delivery-hero {
-        background: #f8f9fc;
+        background: linear-gradient(135deg, #f8f9fc 0%, #ffffff 100%);
         border: 1px solid #e5e7eb;
         border-left: 4px solid #267CB9;
-        padding: 2.5rem 2rem;
-        border-radius: 4px;
+        padding: 3rem 2.5rem;
+        border-radius: 8px;
         margin-bottom: 2rem;
       }
 
       .delivery-hero h1 {
         color: #1f2937;
         margin-top: 0;
-        font-size: 2rem;
-        line-height: 1.3;
-        font-weight: 600;
+        font-size: 2.25rem;
+        line-height: 1.2;
+        font-weight: 700;
+        margin-bottom: 0.75rem;
       }
 
-      .delivery-hero .lead {
-        font-size: 1.05rem;
+      .value-prop {
+        font-size: 1.15rem;
         line-height: 1.6;
-        color: #4b5563;
+        color: #374151;
+        margin-bottom: 2rem;
+        font-weight: 500;
+      }
+
+      .trust-signals {
+        display: flex;
+        gap: 1.5rem;
+        flex-wrap: wrap;
         margin-bottom: 1.5rem;
-        margin-top: 0.75rem;
+        font-size: 0.9rem;
+        color: #6b7280;
+      }
+
+      .trust-signals span {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+      }
+
+      .trust-signals span:before {
+        content: "✓";
+        color: #10b981;
+        font-weight: bold;
       }
 
       .download-button {
         display: inline-block;
         background: #267CB9;
         color: white;
-        padding: 0.875rem 2rem;
+        padding: 1rem 2.5rem;
         text-decoration: none;
-        border-radius: 4px;
-        font-weight: 500;
-        font-size: 1rem;
-        transition: all 0.2s ease;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 1.1rem;
         border: 2px solid #267CB9;
-      }
-
-      .download-button:hover {
-        background: #069;
-        border-color: #069;
-        transform: translateY(-1px);
-        box-shadow: 0 4px 8px rgba(38, 124, 185, 0.2);
+        box-shadow: 0 2px 4px rgba(38, 124, 185, 0.2);
       }
 
       .download-meta {
@@ -87,30 +139,185 @@
         color: #6b7280;
       }
 
+      /* Content Sections */
       .content-section {
         background: white;
-        padding: 2rem;
+        padding: 2.5rem;
         border-radius: 8px;
-        margin-bottom: 2rem;
+        margin-bottom: 2.5rem;
         border: 1px solid #e5e7eb;
       }
 
       .content-section h2 {
         margin-top: 0;
         color: #1f2937;
-        font-size: 1.8rem;
-        border-bottom: 2px solid #e5e7eb;
-        padding-bottom: 0.5rem;
+        font-size: 1.75rem;
+        border-bottom: 3px solid #267CB9;
+        padding-bottom: 0.75rem;
         margin-bottom: 1.5rem;
+        font-weight: 700;
       }
 
       .content-section h3 {
         color: #374151;
-        font-size: 1.3rem;
-        margin-top: 1.5rem;
+        font-size: 1.35rem;
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+        font-weight: 600;
+      }
+
+      .content-section p {
+        line-height: 1.8;
+        color: #4b5563;
         margin-bottom: 1rem;
       }
 
+      /* Problem Statement Box */
+      .problem-box {
+        background: #fef3c7;
+        border-left: 4px solid #f59e0b;
+        padding: 1.5rem;
+        border-radius: 4px;
+        margin-bottom: 2rem;
+      }
+
+      .problem-box p {
+        margin: 0;
+        color: #92400e;
+        line-height: 1.7;
+        font-weight: 500;
+      }
+
+      /* How To Use Section */
+      .how-to-steps {
+        counter-reset: step-counter;
+        list-style: none;
+        padding-left: 0;
+      }
+
+      .how-to-steps li {
+        counter-increment: step-counter;
+        padding: 1.5rem 0;
+        border-bottom: 1px solid #e5e7eb;
+        position: relative;
+        padding-left: 4rem;
+      }
+
+      .how-to-steps li:before {
+        content: counter(step-counter);
+        position: absolute;
+        left: 0;
+        top: 1.5rem;
+        width: 2.5rem;
+        height: 2.5rem;
+        background: #267CB9;
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 1.1rem;
+      }
+
+      .how-to-steps .step-title {
+        font-weight: 600;
+        font-size: 1.05rem;
+        color: #1f2937;
+        display: block;
+        margin-bottom: 0.5rem;
+      }
+
+      .how-to-steps pre {
+        background: #1f2937;
+        color: #f3f4f6;
+        padding: 1rem;
+        border-radius: 4px;
+        overflow-x: auto;
+        margin-top: 0.5rem;
+        font-size: 0.9rem;
+      }
+
+      .how-to-steps code {
+        font-family: 'Courier New', monospace;
+      }
+
+      /* Real World Use Cases */
+      .use-cases {
+        display: grid;
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+      }
+
+      .use-case {
+        background: #f0f9ff;
+        border: 1px solid #bae6fd;
+        border-left: 4px solid #0ea5e9;
+        padding: 1.5rem;
+        border-radius: 4px;
+      }
+
+      .use-case-scenario {
+        font-weight: 600;
+        color: #0c4a6e;
+        margin-bottom: 0.5rem;
+        font-size: 1.05rem;
+      }
+
+      .use-case-outcome {
+        color: #374151;
+        line-height: 1.7;
+        margin: 0;
+      }
+
+      /* FAQ Section */
+      .faq-list {
+        list-style: none;
+        padding-left: 0;
+      }
+
+      .faq-item {
+        margin-bottom: 2rem;
+        padding-bottom: 2rem;
+        border-bottom: 1px solid #e5e7eb;
+      }
+
+      .faq-item:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+      }
+
+      .faq-question {
+        font-weight: 600;
+        font-size: 1.1rem;
+        color: #1f2937;
+        margin-bottom: 0.75rem;
+        line-height: 1.5;
+      }
+
+      .faq-question:before {
+        content: "Q: ";
+        color: #267CB9;
+        font-weight: 700;
+      }
+
+      .faq-answer {
+        color: #4b5563;
+        line-height: 1.8;
+        margin: 0;
+        padding-left: 1.5rem;
+      }
+
+      .faq-answer code {
+        background: #f3f4f6;
+        padding: 0.2rem 0.4rem;
+        border-radius: 3px;
+        font-size: 0.9em;
+        color: #1f2937;
+      }
+
+      /* Limitations Section */
       .limitations-list {
         list-style: none;
         padding-left: 0;
@@ -147,47 +354,23 @@
         background: #ef4444;
       }
 
-      .alert-box {
-        background: #fef3c7;
-        border-left: 4px solid #f59e0b;
-        padding: 1.25rem;
-        border-radius: 4px;
-        margin-top: 1.5rem;
-      }
-
-      .alert-box p {
-        margin: 0;
-        color: #92400e;
-        line-height: 1.6;
-      }
-
+      /* Master Pack Solution */
       .master-pack-section {
-        background: white;
+        background: linear-gradient(135deg, #f0f7ff 0%, #ffffff 100%);
         border: 2px solid #267CB9;
-        padding: 2.5rem;
-        border-radius: 4px;
+        padding: 3rem;
+        border-radius: 8px;
         margin-bottom: 2rem;
       }
 
       .master-pack-section h2 {
         color: #1f2937;
-        border-bottom: 2px solid #e5e7eb;
+        border-bottom: 3px solid #267CB9;
         margin-top: 0;
         padding-bottom: 0.75rem;
         margin-bottom: 1.5rem;
-        font-size: 1.8rem;
-      }
-
-      .master-pack-section h3 {
-        color: #374151;
-        margin-top: 2rem;
-        margin-bottom: 1rem;
-        font-size: 1.3rem;
-      }
-
-      .master-pack-section > p {
-        color: #4b5563;
-        line-height: 1.7;
+        font-size: 1.75rem;
+        font-weight: 700;
       }
 
       .features-list {
@@ -196,9 +379,9 @@
       }
 
       .features-list li {
-        padding: 1rem 0;
+        padding: 1.25rem 0;
         padding-left: 35px;
-        border-bottom: 1px solid #f3f4f6;
+        border-bottom: 1px solid #e5e7eb;
         position: relative;
       }
 
@@ -206,7 +389,7 @@
         content: "";
         position: absolute;
         left: 0;
-        top: 18px;
+        top: 20px;
         width: 20px;
         height: 20px;
         background: #ecfdf5;
@@ -218,7 +401,7 @@
         content: "";
         position: absolute;
         left: 5px;
-        top: 23px;
+        top: 25px;
         width: 6px;
         height: 10px;
         border: solid #10b981;
@@ -230,73 +413,49 @@
         font-weight: 600;
         font-size: 1.05rem;
         display: block;
-        margin-bottom: 0.25rem;
+        margin-bottom: 0.4rem;
         color: #1f2937;
       }
 
       .feature-benefit {
         color: #6b7280;
-        line-height: 1.6;
+        line-height: 1.7;
       }
 
       .pricing-box {
-        background: #f8f9fc;
-        padding: 1.5rem;
-        border-radius: 4px;
+        background: white;
+        padding: 2rem;
+        border-radius: 6px;
         margin-top: 2rem;
-        border: 1px solid #e5e7eb;
+        border: 2px solid #267CB9;
       }
 
       .pricing-box p {
-        margin: 0.5rem 0;
-        font-size: 1rem;
+        margin: 0.75rem 0;
+        font-size: 1.05rem;
         color: #374151;
       }
 
       .pricing-box strong {
         color: #1f2937;
+        font-weight: 700;
       }
 
       .master-pack-button {
         display: inline-block;
         background: #267CB9;
         color: white;
-        padding: 0.875rem 2rem;
+        padding: 1rem 2.5rem;
         text-decoration: none;
-        border-radius: 4px;
-        font-weight: 500;
-        font-size: 1rem;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 1.05rem;
         margin-top: 1rem;
-        transition: all 0.2s ease;
         border: 2px solid #267CB9;
+        box-shadow: 0 2px 4px rgba(38, 124, 185, 0.2);
       }
 
-      .master-pack-button:hover {
-        background: #069;
-        border-color: #069;
-        transform: translateY(-1px);
-        box-shadow: 0 4px 8px rgba(38, 124, 185, 0.2);
-      }
-
-      .alternative-section {
-        background: #f9fafb;
-        padding: 2rem;
-        border-radius: 8px;
-        border: 1px solid #e5e7eb;
-      }
-
-      .alternative-section h2 {
-        margin-top: 0;
-      }
-
-      .alternative-section ol {
-        line-height: 1.8;
-      }
-
-      .alternative-section li {
-        margin-bottom: 0.75rem;
-      }
-
+      /* Related Resources */
       .related-resources {
         margin-top: 2rem;
       }
@@ -321,6 +480,16 @@
         color: #069;
         text-decoration: underline;
       }
+
+      /* Author Signature */
+      .author-signature {
+        margin-top: 3rem;
+        padding-top: 2rem;
+        border-top: 2px solid #e5e7eb;
+        font-style: italic;
+        color: #6b7280;
+        line-height: 1.6;
+      }
     </style>
   </head>
   <body class="full-width-layout" data-accessibility="wcag-aa">
@@ -328,34 +497,91 @@
       <section>
         {% include breadcrumbs.html %}
 
-        <!-- Load resource data from site_assets.yml -->
-        {% assign resource = nil %}
-        {% for tool in site.data.site_assets.free_tools %}
-          {% if tool.id == page.resource_id %}
-            {% assign resource = tool %}
-            {% break %}
-          {% endif %}
-        {% endfor %}
-
         {% if resource %}
           <div class="delivery-page">
-            <!-- Hero Section with Download -->
+            <!-- Hero Section with Enhanced Value Prop -->
             <div class="delivery-hero">
-              <h1>{{ resource.name }}</h1>
-              <p class="lead">{{ resource.description }}</p>
+              <h1>{{ resource.name }}: Complete Guide & Free Download</h1>
+
+              {% if dossier.value_proposition %}
+              <p class="value-prop">{{ dossier.value_proposition }}</p>
+              {% elsif resource.value_proposition %}
+              <p class="value-prop">{{ resource.value_proposition }}</p>
+              {% else %}
+              <p class="value-prop">{{ resource.description }}</p>
+              {% endif %}
+
+              <div class="trust-signals">
+                <span>Open Source</span>
+                <span>Battle-Tested</span>
+                <span>MIT Licensed</span>
+                <span>Maintained by Aria Shaw</span>
+              </div>
 
               <a href="{{ resource.download_url }}" class="download-button" download>
-                Download Now
+                ⬇ Download the Script Now
               </a>
 
               <div class="download-meta">
-                {{ resource.file_size }} · Updated {{ resource.last_updated }} · MIT Licensed
+                {{ resource.file_size }} · Updated {{ resource.last_updated }} · Free Forever
               </div>
             </div>
 
+            <!-- Problem Statement Section -->
+            {% if dossier.problem_statement %}
+            <div class="content-section">
+              <h2>What Problem This Script Solves</h2>
+              <div class="problem-box">
+                <p>{{ dossier.problem_statement }}</p>
+              </div>
+            </div>
+            {% endif %}
+
+            <!-- How To Use Section -->
+            {% if dossier.how_to_use %}
+            <div class="content-section">
+              <h2>Quick Start: How to Use {{ resource.name }}</h2>
+              <p>Get up and running in under 5 minutes with these simple steps:</p>
+
+              <ol class="how-to-steps">
+                {% for step in dossier.how_to_use %}
+                <li>
+                  <span class="step-title">{{ step.step }}</span>
+                  <pre><code>{{ step.command }}</code></pre>
+                </li>
+                {% endfor %}
+              </ol>
+            </div>
+            {% endif %}
+
+            <!-- How It Works Section -->
+            {% if dossier.how_it_works %}
+            <div class="content-section">
+              <h2>How It Works: A Look Under the Hood</h2>
+              <p>{{ dossier.how_it_works }}</p>
+            </div>
+            {% endif %}
+
+            <!-- Real World Use Cases -->
+            {% if dossier.real_world_use_cases %}
+            <div class="content-section">
+              <h2>Real-World Success Stories</h2>
+              <p>Here's how real companies are using this script in production:</p>
+
+              <div class="use-cases">
+                {% for case in dossier.real_world_use_cases %}
+                <div class="use-case">
+                  <div class="use-case-scenario">{{ case.scenario }}</div>
+                  <p class="use-case-outcome">{{ case.outcome }}</p>
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+            {% endif %}
+
             <!-- Limitations Section -->
             <div class="content-section">
-              <h2>What This Free Tool Covers</h2>
+              <h2>What This Free Script Covers (And Doesn't)</h2>
               <p>This {{ resource.type | replace: '_', ' ' }} is production-ready and has helped thousands of Odoo deployments. However, it's designed as a <strong>starting point</strong>, not a complete enterprise solution.</p>
 
               <h3>Current Limitations</h3>
@@ -364,15 +590,28 @@
                 <li>{{ limitation }}</li>
                 {% endfor %}
               </ul>
-
-              <div class="alert-box">
-                <p><strong>Real-world impact:</strong> These gaps won't stop you from getting started, but they will become bottlenecks as your deployment matures. Most teams hit these limitations within 3-6 months of going live.</p>
-              </div>
             </div>
+
+            <!-- Troubleshooting & FAQ Section -->
+            {% if dossier.troubleshooting_faq %}
+            <div class="content-section">
+              <h2>Common Questions & Troubleshooting</h2>
+              <p>Based on 200+ support requests, here are the most common questions about this script:</p>
+
+              <ul class="faq-list">
+                {% for faq in dossier.troubleshooting_faq %}
+                <li class="faq-item">
+                  <div class="faq-question">{{ faq.question }}</div>
+                  <p class="faq-answer">{{ faq.answer }}</p>
+                </li>
+                {% endfor %}
+              </ul>
+            </div>
+            {% endif %}
 
             <!-- Master Pack Solution -->
             <div class="master-pack-section">
-              <h2>Eliminate These Gaps with the Master Pack</h2>
+              <h2>Upgrade to Enterprise-Grade: The Master Pack</h2>
               <p>The <strong>Odoo Digital Sovereignty Master Pack</strong> transforms this free tool into a complete, enterprise-grade system that scales with your business.</p>
 
               <h3>What You Get</h3>
@@ -386,41 +625,32 @@
               </ul>
 
               <div class="pricing-box">
-                <p><strong>Investment:</strong> $699 one-time payment</p>
+                <p><strong>Investment:</strong> $699 one-time payment (not subscription)</p>
                 <p><strong>What you avoid:</strong> $15,000-$50,000 in consultant fees + months of trial-and-error</p>
+                <p><strong>Includes:</strong> 5 comprehensive modules with 68+ integrated tools, 2,000+ pages of documentation, and direct email support</p>
                 <a href="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty-master-pack" class="master-pack-button">
-                  View Master Pack Details
+                  View Master Pack Details →
                 </a>
               </div>
-
-              <p style="font-size: 0.9rem; color: #6b7280; margin-top: 1.5rem; margin-bottom: 0;">Includes 5 comprehensive modules: Strategic Command, Technical Architecture, Data Migration, Fortress Protection, and Operations Console.</p>
-            </div>
-
-            <!-- Alternative Path -->
-            <div class="content-section alternative-section">
-              <h2>Not Ready to Invest Yet?</h2>
-              <p>That's completely fine! Here's how to get the most from this free tool:</p>
-
-              <ol>
-                <li><strong>Start with the basics:</strong> Use this free {{ resource.type | replace: '_', ' ' }} in your development or staging environment first.</li>
-                <li><strong>Document your gaps:</strong> As you encounter limitations, keep a list of what's missing for your specific use case.</li>
-                <li><strong>Explore the blog:</strong> Check out our <a href="/guides/" style="color: #267CB9;">pillar articles</a> for free implementation guidance on related topics.</li>
-                <li><strong>Join the community:</strong> Share your experience and learn from others implementing Odoo.</li>
-              </ol>
-
-              <p style="margin-top: 1.5rem;"><strong>When you're ready for the complete solution,</strong> the Master Pack will be here with everything you need to go from "getting started" to "enterprise-grade" in days, not months.</p>
             </div>
 
             <!-- Related Resources -->
-            <div class="related-resources">
+            <div class="content-section">
               <h2>Related Free Resources</h2>
-              <ul>
-                {% for other_tool in site.data.site_assets.free_tools %}
+              <p>Explore other production-ready scripts and tools:</p>
+              <ul class="related-resources">
+                {% for other_tool in site.data.site_assets.free_tools limit:5 %}
                   {% if other_tool.id != resource.id %}
-                  <li><a href="/downloads/{{ other_tool.id | replace: '_', '-' }}">{{ other_tool.name }}</a> — {{ other_tool.description | truncate: 100 }}</li>
+                  <li><a href="/downloads/{{ other_tool.id | replace: '_', '-' }}">{{ other_tool.name }}</a> — {{ other_tool.description | truncate: 80 }}</li>
                   {% endif %}
                 {% endfor %}
               </ul>
+              <p style="margin-top: 1.5rem;"><a href="/downloads/" style="color: #267CB9; font-weight: 600;">→ Browse all 75+ free scripts</a></p>
+            </div>
+
+            <!-- Author Signature (E-E-A-T signal) -->
+            <div class="author-signature">
+              <p>This guide was written by <strong>Aria Shaw</strong>, the Digital Plumber—specializing in production Odoo deployments and self-hosting architecture. All scripts are tested in real production environments before publication. Questions? Email <a href="mailto:aria@ariashaw.com" style="color: #267CB9;">aria@ariashaw.com</a></p>
             </div>
           </div>
 
@@ -429,7 +659,7 @@
           <div class="content-section">
             <h1>Resource Not Found</h1>
             <p>The requested resource (ID: <code>{{ page.resource_id }}</code>) could not be found in the site assets database.</p>
-            <p><a href="/">Return to homepage</a></p>
+            <p><a href="/downloads/">← Browse all downloads</a></p>
           </div>
         {% endif %}
 

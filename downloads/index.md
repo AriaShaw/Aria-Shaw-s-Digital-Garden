@@ -2,8 +2,8 @@
 layout: home
 title: Production-Ready Odoo Scripts
 description: Battle-tested shell and Python scripts for Odoo self-hosting - backup, migration, monitoring, security automation.
-permalink: /scripts/
-breadcrumb_title: Scripts
+permalink: /downloads/
+breadcrumb_title: Downloads
 ---
 
 # Production-Ready Odoo Scripts
@@ -18,7 +18,7 @@ Open-source, production-tested automation scripts for self-hosting Odoo. Every s
     Ready for production deployment?
   </p>
   <p style="margin: 0 0 16px 0; font-size: 14px; line-height: 1.6; color: #444;">These scripts are <strong>learning-grade</strong>—built to understand the concepts. The Master Pack delivers <strong>production-grade tools</strong> tested on 200GB+ databases with enterprise error handling, monitoring integration, and disaster recovery protocols.</p>
-  <a href="/products/" style="display: inline-block; color: #267CB9; text-decoration: none; font-size: 14px; font-weight: 500;">→ Compare learning-grade vs. production-grade tooling</a>
+  <a href="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty" style="display: inline-block; color: #267CB9; text-decoration: none; font-size: 14px; font-weight: 500;">→ Compare learning-grade vs. production-grade tooling</a>
 </div>
 
 ---
@@ -33,138 +33,50 @@ Open-source, production-tested automation scripts for self-hosting Odoo. Every s
 
 ---
 
-## Browse Scripts by Scenario
+## Browse Scripts by Category
+
+{% assign backup_scripts = site.data.site_assets.free_tools | where_exp: "item", "item.description contains 'backup' or item.description contains 'Backup' or item.name contains 'Backup'" %}
+{% assign migration_scripts = site.data.site_assets.free_tools | where_exp: "item", "item.description contains 'migration' or item.description contains 'Migration' or item.name contains 'Migration'" %}
+{% assign server_scripts = site.data.site_assets.free_tools | where_exp: "item", "item.description contains 'setup' or item.description contains 'Setup' or item.description contains 'installation' or item.name contains 'Setup'" %}
+{% assign aws_scripts = site.data.site_assets.free_tools | where_exp: "item", "item.description contains 'AWS' or item.description contains 'VPC' or item.description contains 'IAM' or item.description contains 'GuardDuty' or item.description contains 'CloudWatch'" %}
+{% assign monitoring_scripts = site.data.site_assets.free_tools | where_exp: "item", "item.description contains 'monitor' or item.description contains 'Monitor' or item.description contains 'health' or item.description contains 'Health' or item.description contains 'maintenance'" %}
+{% assign security_scripts = site.data.site_assets.free_tools | where_exp: "item", "item.description contains 'GDPR' or item.description contains 'security' or item.description contains 'Security' or item.description contains 'audit' or item.description contains 'compliance'" %}
+{% assign business_scripts = site.data.site_assets.free_tools | where_exp: "item", "item.description contains 'intercompany' or item.description contains 'legal' or item.description contains 'order' or item.name contains 'Legal'" %}
+{% assign testing_scripts = site.data.site_assets.free_tools | where_exp: "item", "item.description contains 'test' or item.description contains 'Test' or item.description contains 'diagnostic' or item.description contains 'API' or item.description contains 'SMTP' or item.name contains 'Jenkins' or item.name contains 'Ansible'" %}
 
 ### Backup & Recovery
 
-**Daily Operations**
-- [backup_odoo.sh](/assets/downloads/backup_odoo.sh) - Simple daily backup with automatic cleanup
-- [enhanced_backup_odoo.sh](/assets/downloads/enhanced_backup_odoo.sh) - Cloud sync (Backblaze B2) with failure alerts
-- [odoo_backup_manager.py](/assets/downloads/odoo_backup_manager.py) - Enterprise Python backup with multi-database support
-- [cloud_backup_sync.sh](/assets/downloads/cloud_backup_sync.sh) - Generic cloud storage sync wrapper
-- [backup_database.sh](/assets/downloads/backup_database.sh) - PostgreSQL-only backup with validation
-- [backup_filestore.sh](/assets/downloads/backup_filestore.sh) - Filestore-only backup with compression
-- [backup_configuration.sh](/assets/downloads/backup_configuration.sh) - Config, custom modules, system settings backup
-
-**Verification & Quality**
-- [backup_validation_tool.py](/assets/downloads/backup_validation_tool.py) - Integrity checker without full restoration
-- [filestore_verification.sh](/assets/downloads/filestore_verification.sh) - Verify all uploaded files are backed up
-- [backup_quality_calculator.sh](/assets/downloads/backup_quality_calculator.sh) - 120-point assessment tool
-- [backup_status_dashboard.sh](/assets/downloads/backup_status_dashboard.sh) - Real-time monitoring dashboard
-- [s3_backup_verification.sh](/assets/downloads/s3_backup_verification.sh) - Verify cloud-stored backups (AWS S3)
-
-**Advanced Tools**
-- [filestore_deduplication.py](/assets/downloads/filestore_deduplication.py) - Reduce backup size by 40-60%
-- [predict_backup_size.py](/assets/downloads/predict_backup_size.py) - Predict backup size before starting
-- [backup_repair_toolkit.sh](/assets/downloads/backup_repair_toolkit.sh) - Recover corrupted backups
-- [backup_retention_manager.sh](/assets/downloads/backup_retention_manager.sh) - Intelligent cleanup with policies
-
-**Emergency Restore**
-- [emergency_restore.sh](/assets/downloads/emergency_restore_script/) - Fast-track restore (50% faster with parallelization)
+{% for tool in backup_scripts limit:18 %}
+- [{{ tool.name }}](/downloads/{{ tool.id | replace: '_', '-' }}) - {{ tool.description | truncate: 100 }}
+{% endfor %}
 
 ---
 
 ### Migration & Database Upgrade
 
-**Pre-Migration Assessment**
-- [migration_assessment.sh](/assets/downloads/migration_assessment.sh) - Analyze risks before migration
-- [compatibility_check.py](/assets/downloads/compatibility_check.py) - Verify Python, dependencies, disk space
-- [calculate_server_specs.py](/assets/downloads/calculate_server_specs.py) - Calculate optimal target server size
-- [data_cleanup.py](/assets/downloads/data_cleanup.py) - Fix duplicates, orphaned entries before migration
-- [pg_compatibility_check.sh](/assets/downloads/pg_compatibility_check.sh) - PostgreSQL version compatibility check
-- [module_compatibility_scan.py](/assets/downloads/module_compatibility_scan.py) - Custom module API compatibility
-- [dependency_analyzer.py](/assets/downloads/dependency_analyzer.py) - Resolve module dependency conflicts
-
-**Migration Execution**
-- [staging_validation.sh](/assets/downloads/staging_validation.sh) - Seven-layer validation in staging
-- [production_migration.sh](/assets/downloads/production_migration.sh) - Zero-downtime execution with rollback
-- [safe_openupgrade.sh](/assets/downloads/safe_openupgrade.sh) - OpenUpgrade wrapper with safety nets
-- [performance_validation.sh](/assets/downloads/performance_validation.sh) - 24-hour performance monitoring
-- [final_verification.sh](/assets/downloads/final_verification.sh) - Comprehensive success verification
-
-**Troubleshooting & Recovery**
-- [intelligent_rollback.sh](/assets/downloads/intelligent_rollback.sh) - Advanced rollback with data preservation
-- [db_corruption_detector.sh](/assets/downloads/db_corruption_detector.sh) - Detect and recover corrupted databases
-- [resolve_dependencies.py](/assets/downloads/resolve_dependencies.py) - Dependency resolution with topological sorting
+{% for tool in migration_scripts limit:15 %}
+- [{{ tool.name }}](/downloads/{{ tool.id | replace: '_', '-' }}) - {{ tool.description | truncate: 100 }}
+{% endfor %}
 
 ---
 
 ### Server Setup & Optimization
 
-**Initial Setup**
-- [setup_ubuntu_odoo.sh](/assets/downloads/setup_ubuntu_odoo.sh) - Complete Ubuntu 22.04 setup for Odoo
-- [odoo-install.sh](/assets/downloads/odoo-install.sh) - Odoo 18 production installation (Ubuntu 22.04/24.04)
-- [tune_postgresql_odoo.sh](/assets/downloads/postgresql_tuning_script/) - PostgreSQL performance tuning for Odoo
-- [digitalocean_odoo_setup.sh](/assets/downloads/digitalocean_odoo_setup.sh) - Complete DigitalOcean droplet setup
-
-**System Validation**
-- [odoo_system_checker.sh](/assets/downloads/odoo_system_checker.sh) - Comprehensive requirements validation
-- [odoo_dependency_fixer.sh](/assets/downloads/odoo_dependency_fixer.sh) - Automated Python dependency resolution
-- [odoo_port_diagnostics.sh](/assets/downloads/odoo_port_diagnostics.sh) - Network troubleshooting toolkit
-
-**Architecture-Specific**
-- [separated_backup_strategy.sh](/assets/downloads/separated_backup_strategy.sh) - Enterprise backup for separated deployments
-- [odoo-docker-compose.yml](/assets/downloads/odoo-docker-compose.yml) - Production Docker Compose configuration
+{% for tool in server_scripts limit:10 %}
+- [{{ tool.name }}](/downloads/{{ tool.id | replace: '_', '-' }}) - {{ tool.description | truncate: 100 }}
+{% endfor %}
 
 ---
 
 ### AWS Security & Infrastructure
 
-**Infrastructure Setup**
-- [setup-vpc-security-groups.sh](/assets/downloads/setup-vpc-security-groups.sh) - VPC, subnets, security groups
-- [setup-network-acls.sh](/assets/downloads/setup-network-acls.sh) - Network ACLs for compliance
-- [setup-iam-roles.sh](/assets/downloads/setup-iam-roles.sh) - IAM roles with least-privilege permissions
-- [setup-secrets-manager.sh](/assets/downloads/setup-secrets-manager.sh) - Store RDS passwords in Secrets Manager
-
-**SSL & Monitoring**
-- [setup-ssl-certbot.sh](/assets/downloads/setup-ssl-certbot.sh) - Let's Encrypt SSL automation
-- [setup-cloudwatch-monitoring.sh](/assets/downloads/setup-cloudwatch-monitoring.sh) - CloudWatch Agent + alarms
-- [setup-guardduty.sh](/assets/downloads/setup-guardduty.sh) - AWS GuardDuty threat detection
-
-**Incident Response**
-- [incident-response-playbook.sh](/assets/downloads/incident-response-playbook.sh) - Interactive security incident response
-
-**Configuration Files**
-- [odoo-ec2-policy.json](/assets/downloads/odoo-ec2-policy.json) - IAM policy template for EC2
-- [cloudwatch-config.json](/assets/downloads/cloudwatch-config.json) - CloudWatch Agent configuration
-- [nginx-ssl.conf](/assets/downloads/nginx-ssl.conf) - Nginx config for A+ SSL Labs rating
+{% for tool in aws_scripts limit:15 %}
+- [{{ tool.name }}](/downloads/{{ tool.id | replace: '_', '-' }}) - {{ tool.description | truncate: 100 }}
+{% endfor %}
 
 ---
 
-### Monitoring & Maintenance
-
-**Health Checks**
-- [system_health_check.sh](/assets/downloads/system_health_check.sh) - One-line system status overview
-- [monitor_odoo.sh](/assets/downloads/health_monitoring_script/) - Basic monitoring with email alerts
-- [advanced_monitor_odoo.sh](/assets/downloads/health_monitoring_script/) - Detailed logging + DB connection tracking
-- [odoo_health_monitor.sh](/assets/downloads/odoo_health_monitor.sh) - Real-time CPU, memory, disk alerts
-
-**Scheduled Maintenance**
-- [db_maintenance.sh](/assets/downloads/db_maintenance.sh) - Weekly VACUUM, ANALYZE, REINDEX
-- [weekly_maintenance.sh](/assets/downloads/weekly_maintenance.sh) - Automated weekly maintenance + log rotation
-- [monthly_health_check.sh](/assets/downloads/monthly_health_check.sh) - Monthly system review + capacity planning
-
-**Emergency Recovery**
-- [odoo_emergency_recovery.sh](/assets/downloads/odoo_emergency_recovery.sh) - Complete disaster recovery toolkit
-
----
-
-### Security & Compliance
-
-**GDPR Compliance**
-- [gdpr_data_retention.py](/assets/downloads/gdpr_data_retention.py) - Automated data retention + anonymization
-- [gdpr_monitoring.sh](/assets/downloads/gdpr_monitoring.sh) - Real-time breach monitoring
-- [gdpr_consent_migration.py](/assets/downloads/gdpr_consent_migration.py) - Track consent during migration
-
-**Audit & Access Control**
-- [migration_audit_trail.py](/assets/downloads/migration_audit_trail.py) - Comprehensive audit logging
-- [generate_audit_report.py](/assets/downloads/generate_audit_report.py) - Compliance audit reports
-- [migration_access_control.sh](/assets/downloads/migration_access_control.sh) - Time-limited access with audit trails
-- [sensitive_data_scanner.py](/assets/downloads/sensitive_data_scanner.py) - Discover and mask sensitive data
-
----
-
-<!-- Strategic Conversion Point: After browsing 6 categories, user realizes scope -->
+<!-- Strategic Conversion Point: After browsing 4 categories, user realizes scope -->
 <div style="background: linear-gradient(135deg, #f5f5f5 0%, #fafafa 100%); border: 1px solid #e5e5e5; padding: 40px 32px; margin: 48px 0; border-radius: 8px; text-align: center;">
   <h3 style="margin: 0 0 16px 0; font-size: 24px; font-weight: 600; color: #222;">Learning-Grade Scripts vs. Production-Grade Systems</h3>
   <p style="margin: 0 0 24px 0; font-size: 16px; line-height: 1.6; color: #555; max-width: 660px; margin-left: auto; margin-right: auto;">
@@ -195,29 +107,35 @@ Open-source, production-tested automation scripts for self-hosting Odoo. Every s
   <div style="margin-top: 12px;"><a href="/products/" style="color: #267CB9; font-size: 14px; text-decoration: none;">→ See what separates learning-grade from production-grade</a></div>
 </div>
 
+### Monitoring & Maintenance
+
+{% for tool in monitoring_scripts limit:10 %}
+- [{{ tool.name }}](/downloads/{{ tool.id | replace: '_', '-' }}) - {{ tool.description | truncate: 100 }}
+{% endfor %}
+
+---
+
+### Security & Compliance
+
+{% for tool in security_scripts limit:10 %}
+- [{{ tool.name }}](/downloads/{{ tool.id | replace: '_', '-' }}) - {{ tool.description | truncate: 100 }}
+{% endfor %}
+
+---
+
 ### Business Automation
 
-**Multi-Company Operations**
-- [intercompany_transaction_manager.py](/assets/downloads/intercompany_transaction_manager.py) - Auto-create offsetting journal entries
-
-**Specialized Use Cases**
-- [legal_matter_model.py](/assets/downloads/legal_matter_model.py) - Legal services custom model (conflict checking)
-- [emergency_order_import.py](/assets/downloads/emergency_order_import.py) - Import orders from system outage (CSV → Odoo)
+{% for tool in business_scripts %}
+- [{{ tool.name }}](/downloads/{{ tool.id | replace: '_', '-' }}) - {{ tool.description | truncate: 100 }}
+{% endfor %}
 
 ---
 
 ### Testing & Diagnostics
 
-**Integration Testing**
-- [api_diagnostics.py](/assets/downloads/api_diagnostics.py) - API connection testing (DNS, SSL, HTTP)
-- [test_smtp.py](/assets/downloads/test_smtp.py) - SMTP configuration + email delivery test
-
-**DevOps Integration**
-- [jenkins-odoo-migration-pipeline.groovy](/assets/downloads/jenkins-odoo-migration-pipeline.groovy) - Jenkins pipeline for migrations
-- [ansible-odoo-migration-playbook.yml](/assets/downloads/ansible-odoo-migration-playbook.yml) - Ansible playbook for migrations
-
-**Windows Users**
-- [Odoo-Backup.ps1](/assets/downloads/Odoo-Backup.ps1) - PowerShell backup script for Windows
+{% for tool in testing_scripts %}
+- [{{ tool.name }}](/downloads/{{ tool.id | replace: '_', '-' }}) - {{ tool.description | truncate: 100 }}
+{% endfor %}
 
 ---
 
