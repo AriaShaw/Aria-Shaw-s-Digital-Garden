@@ -18,7 +18,7 @@ Open-source, production-tested automation scripts for self-hosting Odoo. Every s
     Ready for production deployment?
   </p>
   <p style="margin: 0 0 16px 0; font-size: 14px; line-height: 1.6; color: #444;">These scripts are <strong>learning-grade</strong>—built to understand the concepts. The Master Pack delivers <strong>production-grade tools</strong> tested on 200GB+ databases with enterprise error handling, monitoring integration, and disaster recovery protocols.</p>
-  <a href="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty" style="display: inline-block; color: #267CB9; text-decoration: none; font-size: 14px; font-weight: 500;">→ Compare learning-grade vs. production-grade tooling</a>
+  <a href="#comparison-table" style="display: inline-block; color: #267CB9; text-decoration: none; font-size: 14px; font-weight: 500;">→ Compare learning-grade vs. production-grade tooling</a>
 </div>
 
 ---
@@ -50,39 +50,7 @@ We avoid complex where_exp with contains operations to prevent Liquid syntax err
 
 ---
 
-<!-- Strategic Conversion Point: After browsing 4 categories, user realizes scope -->
-<div style="background: linear-gradient(135deg, #f5f5f5 0%, #fafafa 100%); border: 1px solid #e5e5e5; padding: 40px 32px; margin: 48px 0; border-radius: 8px; text-align: center;">
-  <h3 style="margin: 0 0 16px 0; font-size: 24px; font-weight: 600; color: #222;">Learning-Grade Scripts vs. Production-Grade Systems</h3>
-  <p style="margin: 0 0 24px 0; font-size: 16px; line-height: 1.6; color: #555; max-width: 660px; margin-left: auto; margin-right: auto;">
-    These free scripts teach the concepts. <strong>Production environments need enterprise-grade tools</strong>—tested on databases 100x larger, with orchestrated workflows, automated failover, and 24/7 monitoring integration. The Master Pack is what you deploy when downtime costs money.
-  </p>
-  <div style="display: flex; gap: 48px; justify-content: center; margin-bottom: 32px; flex-wrap: wrap;">
-    <div style="text-align: center;">
-      <div style="font-size: 32px; font-weight: 700; color: #267CB9;">200GB+</div>
-      <div style="font-size: 13px; color: #727272; text-transform: uppercase; letter-spacing: 0.05em;">Database Testing</div>
-    </div>
-    <div style="text-align: center;">
-      <div style="font-size: 32px; font-weight: 700; color: #267CB9;">500+</div>
-      <div style="font-size: 13px; color: #727272; text-transform: uppercase; letter-spacing: 0.05em;">Production Deployments</div>
-    </div>
-    <div style="text-align: center;">
-      <div style="font-size: 32px; font-weight: 700; color: #267CB9;">Zero</div>
-      <div style="font-size: 13px; color: #727272; text-transform: uppercase; letter-spacing: 0.05em;">Vendor Lock-In</div>
-    </div>
-  </div>
-  <a href="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty"
-     style="display: inline-block; background: #267CB9; color: white; padding: 16px 32px; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 16px; transition: background 0.2s;"
-     onmouseover="this.style.background='#1e5f8f'"
-     onmouseout="this.style.background='#267CB9'"
-     onclick="gtag('event', 'cta_click', {'event_category': 'CTA', 'event_label': 'Scripts Mid-Page CTA', 'cta_location': 'scripts_midpage', 'destination': 'gumroad'});">
-    Upgrade to Production-Grade — $699
-  </a>
-  <div style="margin-top: 16px; font-size: 13px; color: #727272;">30-day guarantee • Lifetime updates • Email support</div>
-  <div style="margin-top: 12px;"><a href="/products/" style="color: #267CB9; font-size: 14px; text-decoration: none;">→ See what separates learning-grade from production-grade</a></div>
-</div>
-
-
----
+<div id="comparison-table"></div>
 
 ## Learning-Grade vs. Production-Grade: The Critical Difference
 
