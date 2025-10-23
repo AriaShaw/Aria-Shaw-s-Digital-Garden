@@ -35,42 +35,16 @@ Open-source, production-tested automation scripts for self-hosting Odoo. Every s
 
 ## Browse Scripts by Category
 
-{% assign backup_scripts = site.data.site_assets.free_tools | where_exp: "item", "item.description contains 'backup' or item.description contains 'Backup' or item.name contains 'Backup'" %}
-{% assign migration_scripts = site.data.site_assets.free_tools | where_exp: "item", "item.description contains 'migration' or item.description contains 'Migration' or item.name contains 'Migration'" %}
-{% assign server_scripts = site.data.site_assets.free_tools | where_exp: "item", "item.description contains 'setup' or item.description contains 'Setup' or item.description contains 'installation' or item.name contains 'Setup'" %}
-{% assign aws_scripts = site.data.site_assets.free_tools | where_exp: "item", "item.description contains 'AWS' or item.description contains 'VPC' or item.description contains 'IAM' or item.description contains 'GuardDuty' or item.description contains 'CloudWatch'" %}
-{% assign monitoring_scripts = site.data.site_assets.free_tools | where_exp: "item", "item.description contains 'monitor' or item.description contains 'Monitor' or item.description contains 'health' or item.description contains 'Health' or item.description contains 'maintenance'" %}
-{% assign security_scripts = site.data.site_assets.free_tools | where_exp: "item", "item.description contains 'GDPR' or item.description contains 'security' or item.description contains 'Security' or item.description contains 'audit' or item.description contains 'compliance'" %}
-{% assign business_scripts = site.data.site_assets.free_tools | where_exp: "item", "item.description contains 'intercompany' or item.description contains 'legal' or item.description contains 'order' or item.name contains 'Legal'" %}
-{% assign testing_scripts = site.data.site_assets.free_tools | where_exp: "item", "item.description contains 'test' or item.description contains 'Test' or item.description contains 'diagnostic' or item.description contains 'API' or item.description contains 'SMTP' or item.name contains 'Jenkins' or item.name contains 'Ansible'" %}
+{% comment %}
+Simplified filtering - just display all tools categorized manually by limit
+We avoid complex where_exp with contains operations to prevent Liquid syntax errors
+{% endcomment %}
 
-### Backup & Recovery
+{% assign all_tools = site.data.site_assets.free_tools %}
 
-{% for tool in backup_scripts limit:18 %}
-- [{{ tool.name }}](/downloads/{{ tool.id | replace: '_', '-' }}) - {{ tool.description | truncate: 100 }}
-{% endfor %}
+### All Production Scripts
 
----
-
-### Migration & Database Upgrade
-
-{% for tool in migration_scripts limit:15 %}
-- [{{ tool.name }}](/downloads/{{ tool.id | replace: '_', '-' }}) - {{ tool.description | truncate: 100 }}
-{% endfor %}
-
----
-
-### Server Setup & Optimization
-
-{% for tool in server_scripts limit:10 %}
-- [{{ tool.name }}](/downloads/{{ tool.id | replace: '_', '-' }}) - {{ tool.description | truncate: 100 }}
-{% endfor %}
-
----
-
-### AWS Security & Infrastructure
-
-{% for tool in aws_scripts limit:15 %}
+{% for tool in all_tools %}
 - [{{ tool.name }}](/downloads/{{ tool.id | replace: '_', '-' }}) - {{ tool.description | truncate: 100 }}
 {% endfor %}
 
@@ -107,35 +81,6 @@ Open-source, production-tested automation scripts for self-hosting Odoo. Every s
   <div style="margin-top: 12px;"><a href="/products/" style="color: #267CB9; font-size: 14px; text-decoration: none;">→ See what separates learning-grade from production-grade</a></div>
 </div>
 
-### Monitoring & Maintenance
-
-{% for tool in monitoring_scripts limit:10 %}
-- [{{ tool.name }}](/downloads/{{ tool.id | replace: '_', '-' }}) - {{ tool.description | truncate: 100 }}
-{% endfor %}
-
----
-
-### Security & Compliance
-
-{% for tool in security_scripts limit:10 %}
-- [{{ tool.name }}](/downloads/{{ tool.id | replace: '_', '-' }}) - {{ tool.description | truncate: 100 }}
-{% endfor %}
-
----
-
-### Business Automation
-
-{% for tool in business_scripts %}
-- [{{ tool.name }}](/downloads/{{ tool.id | replace: '_', '-' }}) - {{ tool.description | truncate: 100 }}
-{% endfor %}
-
----
-
-### Testing & Diagnostics
-
-{% for tool in testing_scripts %}
-- [{{ tool.name }}](/downloads/{{ tool.id | replace: '_', '-' }}) - {{ tool.description | truncate: 100 }}
-{% endfor %}
 
 ---
 
