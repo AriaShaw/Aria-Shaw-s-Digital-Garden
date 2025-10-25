@@ -184,6 +184,17 @@
         filter: brightness(1.05);
     }
 
+    /* Mermaid图表可点击缩放样式 */
+    .mermaid {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        border-radius: 6px;
+    }
+
+    .mermaid:hover {
+        transform: scale(1.01);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
     /* Animations */
     @keyframes fadeIn {
         from { opacity: 0; }
@@ -691,15 +702,34 @@
         // 为所有assets/images下的图片添加点击事件
         function attachImageListeners() {
             const images = document.querySelectorAll('img[src*="/assets/images/"]:not(.no-lightbox)');
-            
+
             images.forEach(img => {
                 // 避免重复绑定
                 if (img.hasAttribute('data-lightbox-attached')) return;
                 img.setAttribute('data-lightbox-attached', 'true');
-                
+
                 img.addEventListener('click', function(e) {
                     e.preventDefault();
                     openLightbox(this);
+                });
+            });
+        }
+
+        // 为Mermaid图表添加点击缩放功能
+        function attachMermaidZoomListeners() {
+            const mermaidContainers = document.querySelectorAll('.mermaid');
+
+            mermaidContainers.forEach(container => {
+                // 避免重复绑定
+                if (container.hasAttribute('data-mermaid-zoom-attached')) return;
+                container.setAttribute('data-mermaid-zoom-attached', 'true');
+
+                // 添加可点击样式
+                container.style.cursor = 'zoom-in';
+
+                container.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    openMermaidLightbox(this);
                 });
             });
         }
@@ -718,6 +748,37 @@
             setTimeout(() => {
                 checkAndShowScrollIndicator(lightboxImg, scrollIndicator);
             }, 100); // 等待图片渲染完成
+        }
+
+        function openMermaidLightbox(mermaidContainer) {
+            // 将Mermaid SVG转换为Data URL
+            const svg = mermaidContainer.querySelector('svg');
+            if (!svg) return;
+
+            // 克隆SVG并设置固定宽度以便查看
+            const svgClone = svg.cloneNode(true);
+            svgClone.setAttribute('width', svg.viewBox?.baseVal?.width || svg.width.baseVal.value || 800);
+            svgClone.setAttribute('height', svg.viewBox?.baseVal?.height || svg.height.baseVal.value || 600);
+
+            const svgData = new XMLSerializer().serializeToString(svgClone);
+            const svgBlob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'});
+            const svgUrl = URL.createObjectURL(svgBlob);
+
+            lightboxImg.src = svgUrl;
+            lightboxImg.alt = mermaidContainer.getAttribute('data-description') || 'Mermaid Diagram';
+
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden';
+
+            // 智能检测是否需要显示滚动提示
+            setTimeout(() => {
+                checkAndShowScrollIndicator(lightboxImg, scrollIndicator);
+            }, 100);
+
+            // 清理blob URL
+            lightboxImg.onload = function() {
+                URL.revokeObjectURL(svgUrl);
+            };
         }
         
         function closeLightbox() {
@@ -985,12 +1046,18 @@
             }
         });
         
-        // 初始化绑定现有图片
+        // 初始化绑定现有图片和Mermaid图表
         attachImageListeners();
-        
-        // 监听DOM变化，为动态添加的图片绑定事件
+
+        // Mermaid需要等待渲染完成后再绑定
+        setTimeout(() => {
+            attachMermaidZoomListeners();
+        }, 500);
+
+        // 监听DOM变化，为动态添加的图片和Mermaid图表绑定事件
         const observer = new MutationObserver(function(mutations) {
             let shouldAttach = false;
+            let shouldAttachMermaid = false;
             mutations.forEach(function(mutation) {
                 if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
                     mutation.addedNodes.forEach(function(node) {
@@ -998,12 +1065,18 @@
                             if (node.tagName === 'IMG' || node.querySelector('img')) {
                                 shouldAttach = true;
                             }
+                            if (node.classList?.contains('mermaid') || node.querySelector('.mermaid')) {
+                                shouldAttachMermaid = true;
+                            }
                         }
                     });
                 }
             });
             if (shouldAttach) {
                 setTimeout(attachImageListeners, 100); // 延迟执行，确保DOM更新完成
+            }
+            if (shouldAttachMermaid) {
+                setTimeout(attachMermaidZoomListeners, 100); // 延迟执行，确保Mermaid渲染完成
             }
         });
         
