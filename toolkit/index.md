@@ -2,7 +2,7 @@
 layout: home
 title: Interactive Planning Tools | Free Business Calculators
 breadcrumb_title: Toolkit
-permalink: /toolkit/
+permalink: /toolkit
 description: Free interactive calculators for business system deployment planning. Calculate server requirements and compare hosting options - no signup required.
 ---
 

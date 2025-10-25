@@ -2,7 +2,7 @@
 layout: home
 title: Production-Ready Odoo Scripts
 description: Battle-tested shell and Python scripts for Odoo self-hosting - backup, migration, monitoring, security automation.
-permalink: /downloads/
+permalink: /downloads
 breadcrumb_title: Downloads
 ---
 

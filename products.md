@@ -3,7 +3,7 @@ layout: home
 title: "Odoo Consultant Alternative: DIY Toolkit $699 vs $50K+ Fees"
 description: "Replace $50K+ Odoo consulting fees with 68+ production scripts, calculators, guides. Build in-house expertise. 30-day guarantee. $699 one-time."
 breadcrumb_title: Products
-permalink: /products/
+permalink: /products
 ---
 
 <div style="text-align: center; max-width: 900px; margin: 0 auto 60px auto;">
