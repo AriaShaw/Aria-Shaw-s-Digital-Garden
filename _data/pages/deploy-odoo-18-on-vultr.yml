@@ -1391,26 +1391,31 @@ visualizations:
     placement_hint: "after_introduction"
     description: "Complete 12-step deployment workflow from Vultr instance creation to production-ready Odoo 18"
     mermaid_chart_syntax: |
-      graph LR
-          A[Create Vultr Instance<br/>Ubuntu 24.04 LTS<br/>⏱️ 5 min] --> B[Configure Firewall<br/>Ports 22, 80, 443 only<br/>⏱️ 3 min]
-          B --> C[Install Docker Engine<br/>& Compose v2<br/>⏱️ 5 min]
-          C --> D[Create Project Structure<br/>/opt/odoo/<br/>⏱️ 2 min]
-          D --> E[Configure docker-compose.yml<br/>PostgreSQL 16 + Odoo 18<br/>⏱️ 5 min]
-          E --> F[Generate .env File<br/>DB credentials<br/>⏱️ 3 min]
-          F --> G[Launch Containers<br/>docker compose up -d<br/>⏱️ 3 min]
-          G --> H[Install & Configure Nginx<br/>Reverse proxy<br/>⏱️ 5 min]
-          H --> I[Point DNS to Server<br/>Wait for propagation<br/>⏱️ variable]
-          I --> J[Obtain SSL Certificate<br/>certbot --nginx<br/>⏱️ 5 min]
-          J --> K[Tune PostgreSQL<br/>shared_buffers, autovacuum<br/>⏱️ 5 min]
-          K --> L[Configure Monitoring<br/>fs.inotify, log rotation<br/>⏱️ 3 min]
-          L --> M[Verify Deployment<br/>Create Odoo database<br/>⏱️ 5 min]
-          M --> N[✅ Production-Ready Odoo 18<br/>on Vultr Cloud]
+      flowchart LR
+          Start([Start Deployment]) --> A[Create Vultr Instance\nUbuntu 24.04 LTS\nTime: 5 min]
+          A --> B[Configure Firewall\nPorts: 22, 80, 443\nTime: 3 min]
+          B --> C[Install Docker Engine\nCompose v2\nTime: 5 min]
+          C --> D[Create Project Structure\nDirectory: /opt/odoo/\nTime: 2 min]
+          D --> E[Configure docker-compose.yml\nPostgreSQL 16 + Odoo 18\nTime: 5 min]
+          E --> F[Generate .env File\nDatabase credentials\nTime: 3 min]
+          F --> G[Launch Containers\ndocker compose up -d\nTime: 3 min]
+          G --> H[Install Nginx\nReverse proxy setup\nTime: 5 min]
+          H --> I[Configure DNS\nPoint domain to server\nTime: Variable]
+          I --> J[Obtain SSL Certificate\ncertbot --nginx\nTime: 5 min]
+          J --> K[Tune PostgreSQL\nshared_buffers, autovacuum\nTime: 5 min]
+          K --> L[Configure Monitoring\nfs.inotify, log rotation\nTime: 3 min]
+          L --> M[Verify Deployment\nCreate Odoo database\nTime: 5 min]
+          M --> End([Production Ready])
 
-          style A fill:#e3f2fd
-          style N fill:#c8e6c9
-          style J fill:#fff9c4
-          style K fill:#fff9c4
-          style G fill:#ffe0b2
+          classDef startEnd fill:#d4edda,stroke:#28a745,stroke-width:2px
+          classDef infrastructure fill:#d1ecf1,stroke:#17a2b8,stroke-width:1px
+          classDef security fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+          classDef deployment fill:#f8f9fa,stroke:#6c757d,stroke-width:1px
+
+          class Start,End startEnd
+          class A,B,C,D infrastructure
+          class J,K security
+          class E,F,G,H,I,L,M deployment
 
   # Visualization 2: Server Specs Comparison (NEW)
   - chart_type: "mermaid"
@@ -1418,61 +1423,68 @@ visualizations:
     description: "Vultr instance comparison showing vCPU, RAM, pricing, and recommended user capacity across 7 plans"
     mermaid_chart_syntax: |
       graph TB
-          subgraph NOT_PRODUCTION["❌ Not Recommended for Production"]
-              P1["High Perf AMD 1 vCPU<br/>💾 2GB RAM | 💰 $10/mo<br/>👥 Testing/Dev Only"]
+          subgraph NOT_PROD["Not Recommended for Production"]
+              P1["High Perf AMD 1 vCPU\nRAM: 2GB | Price: $10/mo\nTesting/Dev Only"]
           end
 
           subgraph SMALL["Small Business Plans (5-15 users)"]
-              P2["Regular 2 vCPU<br/>💾 4GB RAM | 💰 $20/mo<br/>👥 5-10 users<br/>⚠️ Regular SSD"]
-              P3["⭐ High Perf AMD 2 vCPU<br/>💾 4GB RAM | 💰 $24/mo<br/>👥 5-15 users<br/>✅ RECOMMENDED - NVMe"]
+              P2["Regular 2 vCPU\nRAM: 4GB | Price: $20/mo\nCapacity: 5-10 users\nRegular SSD"]
+              P3["High Perf AMD 2 vCPU\nRAM: 4GB | Price: $24/mo\nCapacity: 5-15 users\nRECOMMENDED - NVMe"]
           end
 
           subgraph MEDIUM["Medium Business Plans (10-50 users)"]
-              P4["Regular 4 vCPU<br/>💾 8GB RAM | 💰 $40/mo<br/>👥 10-50 users<br/>⚠️ Regular SSD"]
-              P5["⭐ High Perf AMD 4 vCPU<br/>💾 8GB RAM | 💰 $48/mo<br/>👥 15-50 users<br/>✅ RECOMMENDED - NVMe"]
+              P4["Regular 4 vCPU\nRAM: 8GB | Price: $40/mo\nCapacity: 10-50 users\nRegular SSD"]
+              P5["High Perf AMD 4 vCPU\nRAM: 8GB | Price: $48/mo\nCapacity: 15-50 users\nRECOMMENDED - NVMe"]
           end
 
           subgraph LARGE["Large Business Plans (50-100+ users)"]
-              P6["High Perf AMD 6 vCPU<br/>💾 16GB RAM | 💰 $96/mo<br/>👥 50-100 users"]
-              P7["Optimized 4 vCPU<br/>💾 16GB RAM | 💰 $120/mo<br/>👥 100+ users<br/>🔒 Dedicated resources"]
+              P6["High Perf AMD 6 vCPU\nRAM: 16GB | Price: $96/mo\nCapacity: 50-100 users"]
+              P7["Optimized 4 vCPU\nRAM: 16GB | Price: $120/mo\nCapacity: 100+ users\nDedicated Resources"]
           end
 
-          style P1 fill:#ffcdd2
-          style P2 fill:#fff9c4
-          style P3 fill:#c8e6c9,stroke:#2e7d32,stroke-width:3px
-          style P4 fill:#fff9c4
-          style P5 fill:#c8e6c9,stroke:#2e7d32,stroke-width:3px
-          style P6 fill:#e1f5fe
-          style P7 fill:#e1f5fe
+          classDef notRecommended fill:#f8d7da,stroke:#dc3545,stroke-width:2px
+          classDef warning fill:#fff3cd,stroke:#ffc107,stroke-width:1px
+          classDef recommended fill:#d4edda,stroke:#28a745,stroke-width:3px
+          classDef enterprise fill:#d1ecf1,stroke:#17a2b8,stroke-width:2px
+
+          class P1 notRecommended
+          class P2,P4 warning
+          class P3,P5 recommended
+          class P6,P7 enterprise
 
   # Visualization 3: Cost Breakdown (NEW)
   - chart_type: "mermaid"
-    placement_hint: "after_cost_analysis_section"
+    placement_hint: "mid_content"
     description: "Total cost of ownership breakdown for three deployment scenarios: small, medium, and large business"
     mermaid_chart_syntax: |
-      graph LR
-          subgraph SMALL["Small Business (10 users)<br/>💰 $34/month | $408/year"]
-              S1["Compute<br/>$24/mo<br/>High Perf AMD 2 vCPU"]
-              S2["Block Storage<br/>$5/mo<br/>50GB backups"]
-              S3["Auto Backups<br/>$5/mo<br/>20% of instance"]
-              S4["SSL Certificate<br/>$0/mo<br/>Let's Encrypt"]
+      graph TB
+          subgraph SMALL["Small Business (10 users)"]
+              direction LR
+              S_Total["Total: $34/month\n$408/year"] --> S1["Compute\n$24/mo\nHigh Perf AMD 2 vCPU"]
+              S_Total --> S2["Block Storage\n$5/mo\n50GB backups"]
+              S_Total --> S3["Auto Backups\n$5/mo\n20% of instance"]
+              S_Total --> S4["SSL Certificate\n$0/mo\nLet's Encrypt"]
           end
 
-          subgraph MEDIUM["Medium Business (30 users)<br/>💰 $71/month | $852/year"]
-              M1["Compute<br/>$48/mo<br/>High Perf AMD 4 vCPU"]
-              M2["Block Storage<br/>$10/mo<br/>100GB backups"]
-              M3["Auto Backups<br/>$10/mo<br/>20% of instance"]
-              M4["Reserved IP<br/>$3/mo<br/>Fixed addressing"]
+          subgraph MEDIUM["Medium Business (30 users)"]
+              direction LR
+              M_Total["Total: $71/month\n$852/year"] --> M1["Compute\n$48/mo\nHigh Perf AMD 4 vCPU"]
+              M_Total --> M2["Block Storage\n$10/mo\n100GB backups"]
+              M_Total --> M3["Auto Backups\n$10/mo\n20% of instance"]
+              M_Total --> M4["Reserved IP\n$3/mo\nFixed addressing"]
           end
 
-          subgraph LARGE["Large Business (80 users)<br/>💰 $148/month | $1,776/year"]
-              L1["Compute<br/>$96/mo<br/>High Perf AMD 6 vCPU"]
-              L2["Block Storage<br/>$20/mo<br/>200GB backups"]
-              L3["Auto Backups<br/>$19/mo<br/>20% of instance"]
-              L4["Reserved IP<br/>$3/mo"]
-              L5["Load Balancer<br/>$10/mo<br/>Optional HA"]
+          subgraph LARGE["Large Business (80 users)"]
+              direction LR
+              L_Total["Total: $148/month\n$1,776/year"] --> L1["Compute\n$96/mo\nHigh Perf AMD 6 vCPU"]
+              L_Total --> L2["Block Storage\n$20/mo\n200GB backups"]
+              L_Total --> L3["Auto Backups\n$19/mo\n20% of instance"]
+              L_Total --> L4["Reserved IP\n$3/mo\nFixed addressing"]
+              L_Total --> L5["Load Balancer\n$10/mo\nOptional HA"]
           end
 
-          style SMALL fill:#e8f5e9
-          style MEDIUM fill:#fff3e0
-          style LARGE fill:#e3f2fd
+          classDef total fill:#d1ecf1,stroke:#17a2b8,stroke-width:2px
+          classDef cost fill:#f8f9fa,stroke:#6c757d,stroke-width:1px
+
+          class S_Total,M_Total,L_Total total
+          class S1,S2,S3,S4,M1,M2,M3,M4,L1,L2,L3,L4,L5 cost
