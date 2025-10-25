@@ -572,7 +572,7 @@ sudo mkdir /etc/odoo
 sudo chown odoo:odoo /etc/odoo
 
 # Download production-optimized Odoo configuration
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/assets/downloads/odoo.conf -O /etc/odoo/odoo.conf
+wget https://ariashaw.com/assets/downloads/odoo.conf -O /etc/odoo/odoo.conf
 
 # Update database password (replace YOUR_DB_PASSWORD with your PostgreSQL password)
 sudo sed -i 's/YOUR_DB_PASSWORD/your-actual-db-password/g' /etc/odoo/odoo.conf
@@ -700,7 +700,7 @@ sudo apt install -y nginx
 sudo rm /etc/nginx/sites-enabled/default
 
 # Download production-ready Nginx configuration
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/assets/downloads/nginx-odoo.conf -O /etc/nginx/sites-available/odoo
+wget https://ariashaw.com/assets/downloads/nginx-odoo.conf -O /etc/nginx/sites-available/odoo
 
 # Edit domain name (replace yourdomain.com with your domain)
 sudo sed -i 's/yourdomain.com/your-actual-domain.com/g' /etc/nginx/sites-available/odoo

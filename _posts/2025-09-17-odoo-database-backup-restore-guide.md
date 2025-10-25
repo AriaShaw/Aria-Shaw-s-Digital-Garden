@@ -2532,7 +2532,7 @@ When disaster strikes, every minute counts. An undocumented fast-track restore m
 **💾 Download the emergency restore script:**
 
 ```bash
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/assets/downloads/emergency-restore-script
+wget https://ariashaw.com/assets/downloads/emergency-restore-script
 chmod +x emergency_restore.sh
 
 # Emergency restore usage:

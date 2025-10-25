@@ -696,7 +696,7 @@ limit_time_real = 1200
 **Nginx Optimization:**
 Download the complete production-ready Nginx configuration:
 ```bash
-wget https://raw.githubusercontent.com/AriaShaw/AriaShaw.github.io/main/assets/downloads/nginx-odoo.conf
+wget https://ariashaw.com/assets/downloads/nginx-odoo.conf
 ```
 
 Key optimizations include:
