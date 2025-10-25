@@ -24,7 +24,14 @@
     <meta property="twitter:title" content="{{ page_data.metadata.title | default: page.title }}">
     <meta property="twitter:description" content="{{ page_data.metadata.description }}">
 
-    <link rel="canonical" href="{{ page.url | absolute_url }}">
+    {% assign canonical_url = page.url | absolute_url | split: '' %}
+    {% assign url_length = canonical_url.size | minus: 1 %}
+    {% if canonical_url[url_length] == '/' %}
+      {% assign canonical_url = canonical_url | slice: 0, url_length | join: '' %}
+    {% else %}
+      {% assign canonical_url = canonical_url | join: '' %}
+    {% endif %}
+    <link rel="canonical" href="{{ canonical_url }}">
     <link rel="stylesheet" href="{{ "/assets/css/style.css?v=" | append: site.github.build_revision | relative_url }}">
     <link rel="stylesheet" href="{{ "/assets/css/accessibility.css" | relative_url }}">
     <link rel="stylesheet" href="{{ "/assets/css/reading-experience.css" | relative_url }}">
@@ -112,11 +119,11 @@
 
     <div class="wrapper">
       <!-- Floating Table of Contents -->
-      <aside class="post-sidebar">
+      <aside class="post-sidebar" aria-label="Table of Contents Navigation">
         {% include floating-toc.html %}
       </aside>
 
-      <section>
+      <main role="main" aria-label="Main Content">
         {% include breadcrumbs.html %}
 
         <!-- Mobile TOC -->
@@ -198,9 +205,9 @@
           {% endif %}
         {% endfor %}
 
-      </section>
+      </main>
 
-      <footer>
+      <footer role="contentinfo" aria-label="Page Footer">
         {% if site.github.is_project_page %}
         <p>This project is maintained by <a href="{{ site.github.owner_url }}">{{ site.github.owner_name }}</a></p>
         {% endif %}
