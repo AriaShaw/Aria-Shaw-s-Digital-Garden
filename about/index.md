@@ -1,6 +1,7 @@
 ---
 layout: default
 title: About Aria Shaw
+permalink: /about
 description: Meet Aria Shaw, the Digital Plumber behind the definitive Odoo self-hosting guides.
 ---
 

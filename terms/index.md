@@ -1,6 +1,7 @@
 ---
 layout: default
 title: Terms of Service
+permalink: /terms
 description: Terms of service for Aria Shaw's Digital Garden products and content.
 ---
 

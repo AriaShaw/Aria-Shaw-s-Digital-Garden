@@ -1,6 +1,7 @@
 ---
 layout: default
 title: Support
+permalink: /support
 description: Get help with Aria Shaw's guides and products. Email support and FAQ for Odoo self-hosting.
 ---
 

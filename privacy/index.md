@@ -1,6 +1,7 @@
 ---
 layout: default
 title: Privacy Policy
+permalink: /privacy
 description: Privacy policy for Aria Shaw's Digital Garden - How we handle your data and protect your privacy.
 ---
 
