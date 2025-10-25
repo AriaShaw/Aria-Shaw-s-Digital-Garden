@@ -1,3 +1,10 @@
+---
+layout: home
+title: "Aria Shaw's Digital Garden | Definitive Business Solutions"
+description: "Proven guides tackling costly business challenges. Expert playbooks on self-hosting, automation, and digital sovereignty for practical builders & entrepreneurs."
+permalink: /
+---
+
 <!-- Hero Conversion Section -->
 <section class="hero-conversion-section">
   <div class="hero-grid">
