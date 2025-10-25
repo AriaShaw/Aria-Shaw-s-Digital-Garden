@@ -52,7 +52,7 @@ echo -e "${GREEN}✓ CloudWatch Agent installed${NC}\n"
 
 # Step 2: Download config from article (user should create this)
 echo -e "${YELLOW}[2/3] Download cloudwatch-config.json and place in /opt/aws/amazon-cloudwatch-agent/etc/${NC}"
-echo "See: https://ariashaw.github.io/assets/downloads/cloudwatch-config.json"
+echo "See: https://ariashaw.com/assets/downloads/cloudwatch-config.json"
 
 # Step 3: Create CloudWatch Alarms
 echo -e "${YELLOW}[3/3] Creating CloudWatch alarms...${NC}"

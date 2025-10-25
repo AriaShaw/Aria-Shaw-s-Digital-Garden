@@ -151,7 +151,7 @@ This script creates a production-ready VPC with:
 **Quick install:**
 
 ```bash
-wget https://ariashaw.github.io/assets/downloads/setup-vpc-security-groups.sh
+wget https://ariashaw.com/assets/downloads/setup-vpc-security-groups.sh
 chmod +x setup-vpc-security-groups.sh
 ./setup-vpc-security-groups.sh
 ```
@@ -194,7 +194,7 @@ This script creates Network ACLs for public and private subnets with least-privi
 **Quick install:**
 
 ```bash
-wget https://ariashaw.github.io/assets/downloads/setup-network-acls.sh
+wget https://ariashaw.com/assets/downloads/setup-network-acls.sh
 chmod +x setup-network-acls.sh
 ./setup-network-acls.sh <VPC_ID> <PUBLIC_SUBNET_ID> <PRIVATE_SUBNET_ID>
 ```
@@ -231,7 +231,7 @@ This script creates IAM policy, role, and instance profile with least-privilege 
 **Quick install:**
 
 ```bash
-wget https://ariashaw.github.io/assets/downloads/setup-iam-roles.sh
+wget https://ariashaw.com/assets/downloads/setup-iam-roles.sh
 chmod +x setup-iam-roles.sh
 ./setup-iam-roles.sh <S3_BUCKET_NAME> <SECRET_NAME> <AWS_ACCOUNT_ID>
 ```
@@ -266,7 +266,7 @@ This script generates a secure password and stores it in AWS Secrets Manager.
 **Quick install:**
 
 ```bash
-wget https://ariashaw.github.io/assets/downloads/setup-secrets-manager.sh
+wget https://ariashaw.com/assets/downloads/setup-secrets-manager.sh
 chmod +x setup-secrets-manager.sh
 ./setup-secrets-manager.sh [SECRET_NAME]
 ```
@@ -517,7 +517,7 @@ This template provides A+ SSL Labs rating with security headers.
 **Quick download:**
 
 ```bash
-wget https://ariashaw.github.io/assets/downloads/nginx-ssl.conf
+wget https://ariashaw.com/assets/downloads/nginx-ssl.conf
 sudo cp nginx-ssl.conf /etc/nginx/sites-available/odoo
 # Update: server_name, ssl_certificate paths, upstream odoo port
 sudo ln -s /etc/nginx/sites-available/odoo /etc/nginx/sites-enabled/
@@ -541,7 +541,7 @@ This script installs Certbot, obtains SSL certificate, and configures auto-renew
 **Quick install:**
 
 ```bash
-wget https://ariashaw.github.io/assets/downloads/setup-ssl-certbot.sh
+wget https://ariashaw.com/assets/downloads/setup-ssl-certbot.sh
 chmod +x setup-ssl-certbot.sh
 sudo ./setup-ssl-certbot.sh <DOMAIN> <EMAIL>
 ```
@@ -603,7 +603,7 @@ This script installs CloudWatch Agent, configures metrics/logs collection, and c
 **Quick install:**
 
 ```bash
-wget https://ariashaw.github.io/assets/downloads/setup-cloudwatch-monitoring.sh
+wget https://ariashaw.com/assets/downloads/setup-cloudwatch-monitoring.sh
 chmod +x setup-cloudwatch-monitoring.sh
 sudo ./setup-cloudwatch-monitoring.sh <RDS_IDENTIFIER> <SNS_TOPIC_ARN>
 ```
@@ -623,7 +623,7 @@ sudo ./setup-cloudwatch-monitoring.sh odoo-production-db arn:aws:sns:us-east-1:1
 **Manual configuration download:**
 
 ```bash
-wget https://ariashaw.github.io/assets/downloads/cloudwatch-config.json
+wget https://ariashaw.com/assets/downloads/cloudwatch-config.json
 sudo mv cloudwatch-config.json /opt/aws/amazon-cloudwatch-agent/etc/config.json
 ```
 
@@ -696,7 +696,7 @@ This script enables GuardDuty and configures alerts for high-severity findings.
 **Quick install:**
 
 ```bash
-wget https://ariashaw.github.io/assets/downloads/setup-guardduty.sh
+wget https://ariashaw.com/assets/downloads/setup-guardduty.sh
 chmod +x setup-guardduty.sh
 ./setup-guardduty.sh <SNS_TOPIC_ARN>
 ```
@@ -848,7 +848,7 @@ This interactive script guides you through incident response for common AWS secu
 **Quick download:**
 
 ```bash
-wget https://ariashaw.github.io/assets/downloads/incident-response-playbook.sh
+wget https://ariashaw.com/assets/downloads/incident-response-playbook.sh
 chmod +x incident-response-playbook.sh
 ./incident-response-playbook.sh
 ```

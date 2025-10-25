@@ -261,7 +261,7 @@ NEXT ASSESSMENT: $(date -d '+1 month' '+%Y-%m-%d')
 
 For complete backup procedures and best practices, refer to:
 "The Definitive Guide to Odoo Database Backup and Restore" by Aria Shaw
-https://ariashaw.github.io
+https://ariashaw.com
 
 Assessment Log: $LOG_FILE
 Report File: $report_file
@@ -388,7 +388,7 @@ show_version() {
     print_colored "$WHITE" "Version 1.0.0 - January 2025"
     print_colored "$WHITE" "Part of 'The Definitive Guide to Odoo Database Backup and Restore'"
     print_colored "$WHITE" "Created by Aria Shaw"
-    print_colored "$YELLOW" "https://ariashaw.github.io"
+    print_colored "$YELLOW" "https://ariashaw.com"
     echo ""
 }
 

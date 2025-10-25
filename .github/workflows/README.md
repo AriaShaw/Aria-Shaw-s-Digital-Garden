@@ -101,7 +101,7 @@ echo "a1b2c3d4-e5f6-7890-abcd-ef1234567890" > a1b2c3d4-e5f6-7890-abcd-ef12345678
 ```
 
 **验证：**
-访问 `https://ariashaw.github.io/a1b2c3d4-e5f6-7890-abcd-ef1234567890.txt` 应返回你的密钥
+访问 `https://ariashaw.com/a1b2c3d4-e5f6-7890-abcd-ef1234567890.txt` 应返回你的密钥
 
 ---
 
@@ -125,15 +125,15 @@ git push origin main
 Found 10 URLs
 
 📋 Current URLs:
-https://ariashaw.github.io/
-https://ariashaw.github.io/new-article/
+https://ariashaw.com/
+https://ariashaw.com/new-article/
 ...
 
 ✅ Extracting URLs from previous sitemap.xml...
 Found 9 URLs
 
 📋 Previous URLs:
-https://ariashaw.github.io/
+https://ariashaw.com/
 ...
 
 📊 URL Changes Detected:
@@ -142,10 +142,10 @@ https://ariashaw.github.io/
   - To submit: 1
 
 🔗 URLs to submit:
-https://ariashaw.github.io/new-article/
+https://ariashaw.com/new-article/
 
 🚀 Submitting 1 URLs to IndexNow...
-  ✅ https://ariashaw.github.io/new-article/ (HTTP 200)
+  ✅ https://ariashaw.com/new-article/ (HTTP 200)
 
 📈 Submission Summary:
   - Successful: 1
@@ -211,7 +211,7 @@ Actions → 最新运行 → Artifacts → indexnow-report-xxxxx
 **解决：**
 1. 确认 `<你的密钥>.txt` 文件在根目录
 2. 确认文件已提交并部署
-3. 访问 `https://ariashaw.github.io/<你的密钥>.txt` 验证
+3. 访问 `https://ariashaw.com/<你的密钥>.txt` 验证
 
 ---
 

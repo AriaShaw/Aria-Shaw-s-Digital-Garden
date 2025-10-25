@@ -207,6 +207,6 @@ These scripts accompany comprehensive guides:
 All scripts are released under **MIT License** - free to use, modify, and distribute.
 
 **Author:** Aria Shaw (Digital Plumber)
-**Website:** [https://ariashaw.github.io](https://ariashaw.github.io)
+**Website:** [https://ariashaw.com](https://ariashaw.com)
 
 ---

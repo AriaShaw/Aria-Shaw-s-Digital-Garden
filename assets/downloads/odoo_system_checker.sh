@@ -183,5 +183,5 @@ fi
 
 echo ""
 echo "For detailed setup instructions, visit:"
-echo "https://ariashaw.github.io/odoo-system-requirements-deployment-guide/"
+echo "https://ariashaw.com/odoo-system-requirements-deployment-guide/"
 echo ""
