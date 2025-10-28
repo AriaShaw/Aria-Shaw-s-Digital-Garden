@@ -1,0 +1,332 @@
+# Intelligent Internal Linking Rules
+# =================================
+#
+# Design Principles for 1000+ Page Scale:
+# 1. Rule-based (0 token cost)
+# 2. Template-aware (leverage existing categorization)
+# 3. Workflow-sequential (guide users through logical steps)
+# 4. Tool-enriched (always link to relevant free tools)
+# 5. Competitor-aware (cross-link comparison pages)
+#
+# Performance: O(n) per page, O(n²) full graph (acceptable for 1200 pages)
+
+link_rules:
+  # ========================================================================
+  # TIER 0: Interactive Toolkit Links (Priority 0.5-2)
+  # Premium interactive tools - upper tier of free value ladder
+  # ========================================================================
+
+  - rule_id: "deploy_to_requirements_calculator"
+    enabled: true
+    priority: 0.5
+    max_links: 1
+    source_pattern:
+      template_id: ["cloud_deployment", "os_installation"]
+      keyword_contains: ["deploy", "install"]
+    target_pattern:
+      type: "interactive_tool"
+      url: "/toolkit/odoo-requirements-calculator/"
+    link_context: "Calculate exact server specs before deployment"
+    anchor_template: "Use the Requirements Calculator"
+
+  - rule_id: "deploy_to_backup_checker"
+    enabled: true
+    priority: 1.5
+    max_links: 1
+    source_pattern:
+      template_id: ["cloud_deployment", "os_installation", "version_upgrade"]
+    target_pattern:
+      type: "interactive_tool"
+      url: "/toolkit/odoo-backup-readiness-checker/"
+    link_context: "Test your backup strategy in 60 seconds"
+    anchor_template: "Free Backup Health Check"
+
+  - rule_id: "hosting_decision_to_advisor"
+    enabled: true
+    priority: 1
+    max_links: 1
+    source_pattern:
+      keyword_contains: ["hosting", "deploy", "cloud", "server"]
+    target_pattern:
+      type: "interactive_tool"
+      url: "/toolkit/odoo-hosting-advisor/"
+    link_context: "Vendor-neutral hosting decision framework"
+    anchor_template: "Use the Hosting Advisor"
+
+  # ========================================================================
+  # TIER 1: Downloadable Tool Links (Priority 2-3)
+  # Free scripts - foundational tier of value ladder
+  # ========================================================================
+
+  - rule_id: "all_practitioners_to_backup_tool"
+    enabled: true
+    priority: 3
+    max_links: 1
+    source_pattern:
+      intent_type: "practitioner"
+      template_id: ["cloud_deployment", "os_installation", "docker_deployment", "kubernetes_deployment"]
+    target_pattern:
+      type: "value_delivery_page"
+      id: "enhanced_backup_script"
+    link_context: "Protect your deployment with automated backups"
+    anchor_template: "Free Backup Automation Script"
+
+  - rule_id: "deploy_to_monitoring_tool"
+    enabled: true
+    priority: 2
+    max_links: 1
+    source_pattern:
+      template_id: ["cloud_deployment", "os_installation"]
+    target_pattern:
+      type: "value_delivery_page"
+      id: "odoo_health_monitor"
+    link_context: "Monitor system health proactively"
+    anchor_template: "Free Health Monitoring Script"
+
+  - rule_id: "postgresql_pages_to_tuning_tool"
+    enabled: true
+    priority: 2
+    max_links: 1
+    source_pattern:
+      keyword_contains: ["postgresql", "database"]
+    target_pattern:
+      type: "value_delivery_page"
+      id: "postgresql_tuning_script"
+    link_context: "Optimize PostgreSQL for Odoo workloads"
+    anchor_template: "PostgreSQL Tuning Script"
+
+  # ========================================================================
+  # TIER 2: Workflow Sequential Links (Priority 4-6)
+  # Guide users through logical implementation path
+  # ========================================================================
+
+  - rule_id: "deploy_to_same_provider_install"
+    enabled: true
+    priority: 4
+    max_links: 1
+    source_pattern:
+      template_id: "cloud_deployment"
+    target_pattern:
+      template_id: "os_installation"
+      keyword_contains: ["ubuntu"]  # Most common OS
+    link_context: "Secure and optimize your Ubuntu installation"
+    anchor_template: "Harden Ubuntu for Odoo Production"
+    selection_strategy: "first"
+
+  - rule_id: "install_to_upgrade"
+    enabled: true
+    priority: 5
+    max_links: 1
+    source_pattern:
+      template_id: "os_installation"
+    target_pattern:
+      template_id: "version_upgrade"
+      keyword_contains: ["18"]  # Link to latest version
+    link_context: "Plan for future version upgrades"
+    anchor_template: "Upgrade Path to Odoo 18"
+    selection_strategy: "latest_version"
+
+  - rule_id: "upgrade_to_fresh_deploy"
+    enabled: true
+    priority: 5
+    max_links: 1
+    source_pattern:
+      template_id: "version_upgrade"
+    target_pattern:
+      template_id: "cloud_deployment"
+      keyword_contains: ["18"]
+    link_context: "Consider fresh deployment as alternative to upgrade"
+    anchor_template: "Fresh Odoo 18 Deployment Options"
+    selection_strategy: "random_sample"
+
+  # ========================================================================
+  # TIER 3: Provider/Version Alternatives (Priority 7-8)
+  # Help users explore alternative options
+  # ========================================================================
+
+  - rule_id: "cloud_provider_alternatives"
+    enabled: true
+    priority: 7
+    max_links: 2
+    source_pattern:
+      template_id: "cloud_deployment"
+    target_pattern:
+      template_id: "cloud_deployment"
+      keyword_contains: ["18"]  # Same version
+    link_context: "Compare with other cloud providers"
+    anchor_template: "Deploy on {target.provider}"
+    selection_strategy: "random_sample"
+    notes: "Links to 2 random alternative providers for same Odoo version"
+
+  - rule_id: "os_alternatives"
+    enabled: true
+    priority: 8
+    max_links: 1
+    source_pattern:
+      template_id: "os_installation"
+    target_pattern:
+      template_id: "os_installation"
+      keyword_contains: ["18"]  # Same Odoo version
+    link_context: "Alternative OS options"
+    anchor_template: "Install on {target.os}"
+    selection_strategy: "random_sample"
+
+  # ========================================================================
+  # TIER 4: Competitor Comparisons (Priority 6)
+  # Cross-link comparison pages for SEO and user research
+  # ========================================================================
+
+  - rule_id: "vs_competitor_cross_links"
+    enabled: true
+    priority: 6
+    max_links: 2
+    source_pattern:
+      template_id: "vs_competitor"
+    target_pattern:
+      template_id: "vs_competitor"
+    link_context: "Compare with other ERP alternatives"
+    anchor_template: "Odoo vs {target.competitor}"
+    selection_strategy: "random_sample"
+    notes: "Link comparison pages to each other for comprehensive research"
+
+  # ========================================================================
+  # TIER 5: Module & Industry Links (Priority 9)
+  # Connect module/industry pages together
+  # ========================================================================
+
+  - rule_id: "industry_module_to_evaluation"
+    enabled: true
+    priority: 9
+    max_links: 1
+    source_pattern:
+      template_id: "industry_module"
+    target_pattern:
+      template_id: "industry_evaluation"
+    link_context: "Evaluate Odoo for your industry"
+    anchor_template: "Industry Evaluation Guide"
+    selection_strategy: "first"
+
+  - rule_id: "module_cross_links"
+    enabled: true
+    priority: 10
+    max_links: 2
+    source_pattern:
+      template_id: ["industry_module", "business_evaluation"]
+    target_pattern:
+      template_id: ["industry_module", "business_evaluation"]
+      keyword_overlap: ">= 2"
+    link_context: "Related module functionality"
+    anchor_template: "{target.title}"
+    selection_strategy: "highest_overlap"
+
+  # ========================================================================
+  # TIER 6: Development & Troubleshooting (Priority 11)
+  # Technical guides cross-reference
+  # ========================================================================
+
+  - rule_id: "development_to_troubleshooting"
+    enabled: true
+    priority: 11
+    max_links: 1
+    source_pattern:
+      template_id: "development"
+    target_pattern:
+      template_id: "troubleshooting"
+    link_context: "Common issues and solutions"
+    anchor_template: "Troubleshooting Guide"
+    selection_strategy: "first"
+
+  - rule_id: "security_hardening_cross_link"
+    enabled: true
+    priority: 11
+    max_links: 1
+    source_pattern:
+      template_id: "security_hardening"
+    target_pattern:
+      template_id: "security_hardening"
+      keyword_overlap: ">= 2"
+    link_context: "Related security topics"
+    anchor_template: "{target.title}"
+    selection_strategy: "highest_overlap"
+
+  # ========================================================================
+  # TIER 7: Performance Optimization (Priority 12)
+  # ========================================================================
+
+  - rule_id: "performance_cross_links"
+    enabled: true
+    priority: 12
+    max_links: 2
+    source_pattern:
+      template_id: "performance_optimization"
+    target_pattern:
+      template_id: ["performance_optimization", "advanced_configuration"]
+      keyword_overlap: ">= 2"
+    link_context: "Advanced performance tuning"
+    anchor_template: "{target.title}"
+    selection_strategy: "highest_overlap"
+
+  # ========================================================================
+  # TIER 8: Data Migration (Priority 2 & 8)
+  # ========================================================================
+
+  - rule_id: "migration_to_backup_tool"
+    enabled: true
+    priority: 1
+    max_links: 1
+    source_pattern:
+      template_id: "data_migration"
+    target_pattern:
+      type: "value_delivery_page"
+      id: "enhanced_backup_script"
+    link_context: "Backup your data before migration"
+    anchor_template: "Free Backup Script"
+
+  - rule_id: "migration_cross_links"
+    enabled: true
+    priority: 8
+    max_links: 2
+    source_pattern:
+      template_id: "data_migration"
+    target_pattern:
+      template_id: "data_migration"
+    link_context: "Alternative migration paths"
+    anchor_template: "{target.title}"
+    selection_strategy: "random_sample"
+
+# ========================================================================
+# Fallback Rules (Applied only if page has <3 links)
+# ========================================================================
+
+fallback_rules:
+  - rule_id: "keyword_similarity_fallback"
+    enabled: true
+    priority: 50
+    max_links: 2
+    source_pattern:
+      any_page: true
+    target_pattern:
+      keyword_overlap: ">= 3"  # High similarity threshold
+    link_context: "Related guide"
+    anchor_template: "{target.title}"
+    selection_strategy: "highest_overlap"
+    notes: "Only applied if page has <3 links from main rules"
+
+# ========================================================================
+# Special Rules (High-value specific scenarios)
+# ========================================================================
+
+special_rules:
+  # Link migration pages to assessment tool
+  - rule_id: "migration_to_assessment"
+    enabled: true
+    priority: 2
+    source_pattern:
+      template_id: "data_migration"
+    target_pattern:
+      type: "value_delivery_page"
+      id: "migration_assessment"
+    link_context: "Assess your migration complexity"
+    anchor_template: "Migration Risk Assessment Tool"
+
+  # Note: hosting_to_calculator removed - now covered by deploy_to_requirements_calculator in main rules

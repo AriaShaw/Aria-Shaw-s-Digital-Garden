@@ -1,0 +1,173 @@
+metadata:
+  title: 'Upgrade Odoo {{source_version}} to {{target_version}}: Complete 2025 Guide'
+  description: Comprehensive guide to upgrade from Odoo {{source_version}} to {{target_version}}.
+    Includes compatibility checks, module updates, and rollback procedures.
+  intent_type: practitioner
+  page_slug: upgrade-odoo-{{source_version}}-to-{{target_version}}
+static_data:
+  source_version: '{{source_version}}'
+  target_version: '{{target_version}}'
+  upgrade_path: '{{upgrade_path}}'
+  upgrade_steps:
+  - step: Pre-Upgrade Assessment
+    commands:
+    - '# Check current Odoo version'
+    - odoo-bin --version
+    - '# List installed modules'
+    - psql -d production_db -c "SELECT name FROM ir_module_module WHERE state='installed';"
+    - '# Check custom module compatibility'
+    - grep -r 'openerp.osv' custom-addons/
+  - step: Backup Everything
+    commands:
+    - '# Full database backup'
+    - pg_dump production_db > backup_pre_upgrade_$(date +%Y%m%d).sql
+    - '# Backup filestore'
+    - tar -czf filestore_backup_$(date +%Y%m%d).tar.gz ~/.local/share/Odoo/filestore/production_db
+    - '# Backup custom addons'
+    - tar -czf addons_backup_$(date +%Y%m%d).tar.gz /opt/odoo/custom-addons
+  - step: Set Up Test Environment
+    commands:
+    - '# Create test database from backup'
+    - createdb test_upgrade_db
+    - psql test_upgrade_db < backup_pre_upgrade_$(date +%Y%m%d).sql
+    - '# Clone Odoo {{target_version}} repository'
+    - git clone https://github.com/odoo/odoo --depth 1 --branch {{target_version}}
+      /opt/odoo-{{target_version}}
+  - step: Run Upgrade on Test DB
+    commands:
+    - '# Update database schema'
+    - /opt/odoo-{{target_version}}/odoo-bin -d test_upgrade_db -u all --stop-after-init
+    - '# Check for errors in log'
+    - tail -n 100 /var/log/odoo/odoo-server.log
+  - step: Validate Test Environment
+    tasks:
+    - Test all critical business processes
+    - Verify custom module functionality
+    - Check report generation
+    - Test integrations (payment gateways, shipping, etc.)
+  - step: Production Upgrade
+    commands:
+    - '# Stop Odoo service'
+    - sudo systemctl stop odoo
+    - '# Switch to new version'
+    - sudo -u odoo /opt/odoo-{{target_version}}/odoo-bin -d production_db -u all --stop-after-init
+    - '# Start service'
+    - sudo systemctl start odoo
+  breaking_changes: '{{breaking_changes}}'
+  module_compatibility:
+    core_modules: All standard modules compatible
+    custom_modules: '{{custom_module_notes}}'
+  estimated_downtime: '{{downtime_estimate}}'
+  rollback_procedure:
+  - 'Stop Odoo service: sudo systemctl stop odoo'
+  - 'Drop upgraded database: dropdb production_db'
+  - 'Restore backup: psql -d production_db < backup_pre_upgrade_$(date +%Y%m%d).sql'
+  - 'Restore filestore: tar -xzf filestore_backup_$(date +%Y%m%d).tar.gz -C ~/.local/share/Odoo/filestore/'
+  - 'Start Odoo with old version: sudo systemctl start odoo'
+ai_generated_content:
+  introduction: 'Migrating business operations from QuickBooks, Excel spreadsheets,
+    NetSuite, or legacy ERP systems to Odoo requires production infrastructure ready
+    before you begin data migration activities. Attempting to set up servers while
+    simultaneously mapping data fields, validating import procedures, and training
+    users guarantees timeline delays and increases the risk of errors that corrupt
+    production data.
+
+
+    The technical foundation you establish today determines whether your Odoo system
+    scales smoothly from ten users to one hundred, or requires disruptive infrastructure
+    rebuilds when you hit performance ceilings. Configuration decisions during deployment—PostgreSQL
+    tuning, worker process calculations, NGINX timeout settings—either provide growth
+    headroom or create bottlenecks that demand expensive remediation later.'
+  upgrade_guide: ''
+  conclusion: 'The Upgrade Odoo {{source_version}} to {{target_version}}: Complete
+    2025 Guide architecture you implemented on {{ provider_name }} provides a scaling
+    foundation that supports business growth without infrastructure rebuilds. The
+    current {{ recommended_instance.instance_type }} configuration handles {{ recommended_instance.recommended_for
+    }}, but the deployment patterns you followed—separated application and database
+    tiers, reverse proxy SSL termination, automated backup systems—scale linearly
+    when user counts increase.
+
+
+    Growth-related infrastructure changes require minimal effort because you built
+    on production-grade foundations from the start. Upgrading to a larger instance
+    type takes thirty minutes and involves stopping services, resizing the instance
+    through {{ provider_name }}''s console, adjusting PostgreSQL parameters for the
+    new RAM allocation, and restarting services. Adding a read replica for reporting
+    workloads requires similar effort. Implementing high availability with load-balanced
+    application servers builds on the NGINX configuration you already deployed. You
+    established architectural patterns that accommodate scaling without starting over.
+
+
+    Your immediate focus should shift to operational excellence. Validate your backup
+    restoration process by performing a complete recovery to a test instance. Establish
+    monitoring baselines for normal CPU, memory, and disk usage patterns so you can
+    identify anomalies before they cause outages. Document configuration decisions
+    and administrative procedures for future team members. The infrastructure work
+    is complete—operational maturity and application layer optimization represent
+    your next leverage points for extracting maximum value from this {{ cost_estimate.monthly_total
+    }} monthly infrastructure investment.
+
+    '
+conversion_assets:
+- component_type: callout-box
+  placement_hint: after_deployment_completion
+  generated_copy:
+    headline: Monitor Before Problems Become Outages
+    body: 'Your Upgrade Odoo {{source_version}} to {{target_version}}: Complete 2025
+      Guide system runs production workloads within hours, but you won''t know about
+      performance degradation, disk space exhaustion, or memory pressure until users
+      report problems. Reactive troubleshooting during business hours costs more than
+      proactive monitoring that catches issues overnight.
+
+
+      Our **free Odoo Health Monitor script** tracks CPU, memory, disk usage, and
+      PostgreSQL connections in real-time. The script runs every 5 minutes via cron,
+      logging alerts before thresholds trigger user-visible problems.
+
+      '
+    cta_text: Download Free Monitoring Script
+    cta_link: /downloads/odoo-health-monitoring-script/
+    cta_context: Free production-ready monitoring with alerting. Upgrade to Operations
+      Console for advanced metrics, Grafana dashboards, and predictive alerts.
+- component_type: benefit-list
+  placement_hint: before_steps
+  generated_copy:
+    headline: 'Master Pack ROI: $699 Investment, $15K+ Annual Savings'
+    supporting_elements:
+    - Prevent one 4-hour production outage ($3,200 average cost) with proactive monitoring
+    - Eliminate $200/hour consulting fees for routine troubleshooting and optimization
+    - Avoid $5,000-$15,000 emergency disaster recovery services with tested backup
+      procedures
+    - Reduce managed hosting migration costs by $8,000+ with documented procedures
+    - Save 20-30% on infrastructure costs through PostgreSQL and instance optimization
+    cta_text: Calculate Your ROI – $699
+    cta_link: https://ariashaw.gumroad.com/l/odoo-master-pack
+- component_type: cta-button
+  placement_hint: after_conclusion
+  generated_copy:
+    button_text: Download Free Backup Script
+    button_link: /downloads/enhanced-backup-script/
+    subtext: Production-ready automation in 5 minutes
+intelligent_links:
+- link_url: /toolkit/odoo-backup-readiness-checker/
+  anchor_text: Free Backup Health Check
+  context: Test your backup strategy in 60 seconds
+  priority: 1.5
+- link_url: /deploy-odoo-18-on-vultr/
+  anchor_text: Fresh Odoo 18 Deployment Options
+  context: Consider fresh deployment as alternative to upgrade
+  priority: 5
+visualizations:
+- chart_type: mermaid
+  placement_hint: after_introduction
+  data_context: version_upgrade workflow visualization
+  mermaid_chart_syntax: "flowchart TB\n    Start([Current Version]) --> Backup[Full\
+    \ Backup]\n    Backup --> Stage[Setup Staging]\n    Stage --> Upgrade[Upgrade\
+    \ Modules]\n    Upgrade --> Test{Tests Pass?}\n    Test -->|Yes| Production[Deploy\
+    \ Production]\n    Test -->|No| Rollback[Rollback & Fix]\n    Rollback --> Upgrade\n\
+    \    Production --> End([Upgraded])\n\n    classDef critical fill:#f8d7da,stroke:#dc3545,stroke-width:2px\n\
+    \    classDef process fill:#f8f9fa,stroke:#6c757d,stroke-width:1px\n    classDef\
+    \ success fill:#d4edda,stroke:#28a745,stroke-width:2px\n    classDef decision\
+    \ fill:#fff3cd,stroke:#ffc107,stroke-width:2px\n\n    class Backup,Rollback critical\n\
+    \    class Stage,Upgrade,Production process\n    class Start,End success\n   \
+    \ class Test decision"

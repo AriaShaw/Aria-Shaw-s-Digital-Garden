@@ -1,0 +1,328 @@
+# PostgreSQL Tuning for Odoo - Common Module
+# Last Updated: 2025-10-27
+# Applicable to: PostgreSQL 12-16, Odoo 14-17
+# Verification Status: ✅ VERIFIED (based on PostgreSQL official docs and pgtune.leopard.in.ua)
+
+# Configuration by Server Size
+configurations:
+  # Small Server (2-4 vCPU, 4-8 GB RAM, 10-30 users)
+  small:
+    server_specs:
+      vcpu: "2-4"
+      ram_gb: "4-8"
+      storage_type: "SSD"
+      odoo_users: "10-30"
+
+    postgresql_conf:
+      # Memory Settings
+      shared_buffers: "1GB"  # 25% of RAM for 4GB system
+      effective_cache_size: "2GB"  # 50% of RAM
+      maintenance_work_mem: "256MB"
+      work_mem: "16MB"  # (Total RAM * 0.25) / max_connections
+
+      # Checkpoint Settings
+      wal_buffers: "16MB"
+      checkpoint_completion_target: 0.9
+      checkpoint_timeout: "15min"
+      max_wal_size: "1GB"
+      min_wal_size: "512MB"
+
+      # Connection Settings
+      max_connections: 100
+
+      # Query Planner
+      random_page_cost: 1.1  # SSD optimized
+      effective_io_concurrency: 200  # SSD
+      default_statistics_target: 100
+
+      # Logging (for production)
+      log_min_duration_statement: 1000  # Log queries > 1 second
+      log_line_prefix: "%t [%p]: [%l-1] user=%u,db=%d,app=%a,client=%h "
+      log_checkpoints: "on"
+      log_connections: "off"  # Set to "on" for debugging
+      log_disconnections: "off"
+      log_lock_waits: "on"
+
+      # Autovacuum
+      autovacuum: "on"
+      autovacuum_max_workers: 2
+      autovacuum_naptime: "1min"
+
+    odoo_db_conf:
+      db_maxconn: 64
+      db_template: "template0"
+
+  # Medium Server (4-8 vCPU, 16-32 GB RAM, 30-100 users)
+  medium:
+    server_specs:
+      vcpu: "4-8"
+      ram_gb: "16-32"
+      storage_type: "SSD/NVMe"
+      odoo_users: "30-100"
+
+    postgresql_conf:
+      # Memory Settings
+      shared_buffers: "4GB"  # 25% of 16GB RAM
+      effective_cache_size: "8GB"  # 50% of RAM
+      maintenance_work_mem: "512MB"
+      work_mem: "32MB"
+
+      # Checkpoint Settings
+      wal_buffers: "16MB"
+      checkpoint_completion_target: 0.9
+      checkpoint_timeout: "15min"
+      max_wal_size: "2GB"
+      min_wal_size: "1GB"
+
+      # Connection Settings
+      max_connections: 150
+
+      # Query Planner
+      random_page_cost: 1.1  # SSD optimized
+      effective_io_concurrency: 200  # SSD/NVMe
+      default_statistics_target: 100
+
+      # Parallel Query
+      max_worker_processes: 8
+      max_parallel_workers_per_gather: 4
+      max_parallel_workers: 8
+      parallel_tuple_cost: 0.1
+      parallel_setup_cost: 1000
+
+      # Logging
+      log_min_duration_statement: 500  # Log queries > 0.5 second
+      log_line_prefix: "%t [%p]: [%l-1] user=%u,db=%d,app=%a,client=%h "
+      log_checkpoints: "on"
+      log_lock_waits: "on"
+      log_temp_files: 0  # Log all temp files
+
+      # Autovacuum
+      autovacuum: "on"
+      autovacuum_max_workers: 3
+      autovacuum_naptime: "30s"
+
+    odoo_db_conf:
+      db_maxconn: 128
+      db_template: "template0"
+
+  # Large Server (8-16 vCPU, 32-64 GB RAM, 100-500 users)
+  large:
+    server_specs:
+      vcpu: "8-16"
+      ram_gb: "32-64"
+      storage_type: "NVMe"
+      odoo_users: "100-500"
+
+    postgresql_conf:
+      # Memory Settings
+      shared_buffers: "8GB"  # 25% of 32GB RAM
+      effective_cache_size: "16GB"  # 50% of RAM
+      maintenance_work_mem: "1GB"
+      work_mem: "64MB"
+
+      # Checkpoint Settings
+      wal_buffers: "16MB"
+      checkpoint_completion_target: 0.9
+      checkpoint_timeout: "15min"
+      max_wal_size: "4GB"
+      min_wal_size: "2GB"
+
+      # Connection Settings
+      max_connections: 200
+
+      # Query Planner
+      random_page_cost: 1.1  # NVMe optimized
+      effective_io_concurrency: 300  # NVMe
+      default_statistics_target: 100
+
+      # Parallel Query
+      max_worker_processes: 16
+      max_parallel_workers_per_gather: 4
+      max_parallel_workers: 16
+      parallel_tuple_cost: 0.1
+      parallel_setup_cost: 1000
+
+      # Logging
+      log_min_duration_statement: 250  # Log queries > 0.25 second
+      log_line_prefix: "%t [%p]: [%l-1] user=%u,db=%d,app=%a,client=%h "
+      log_checkpoints: "on"
+      log_lock_waits: "on"
+      log_temp_files: 0
+      shared_preload_libraries: "pg_stat_statements"  # For query analysis
+
+      # Autovacuum
+      autovacuum: "on"
+      autovacuum_max_workers: 4
+      autovacuum_naptime: "20s"
+
+    odoo_db_conf:
+      db_maxconn: 256
+      db_template: "template0"
+
+# Odoo-Specific Optimizations
+odoo_specific:
+  recommended_indexes:
+    - table: "ir_attachment"
+      column: "res_model, res_id"
+      reason: "Speeds up filestore lookups"
+      sql: "CREATE INDEX idx_ir_attachment_res ON ir_attachment (res_model, res_id) WHERE res_model IS NOT NULL;"
+
+    - table: "mail_message"
+      column: "model, res_id"
+      reason: "Improves chatter performance"
+      sql: "CREATE INDEX idx_mail_message_model_res ON mail_message (model, res_id) WHERE model IS NOT NULL;"
+
+    - table: "account_move_line"
+      column: "account_id, date"
+      reason: "Accelerates accounting reports"
+      sql: "CREATE INDEX idx_account_move_line_account_date ON account_move_line (account_id, date);"
+
+    - table: "stock_move"
+      column: "product_id, state"
+      reason: "Speeds up inventory queries"
+      sql: "CREATE INDEX idx_stock_move_product_state ON stock_move (product_id, state);"
+
+  maintenance_scripts:
+    analyze_database:
+      command: "ANALYZE VERBOSE;"
+      frequency: "Weekly"
+      description: "Updates table statistics for query planner"
+
+    vacuum_full:
+      command: "VACUUM FULL VERBOSE;"
+      frequency: "Quarterly (during maintenance window)"
+      description: "Reclaims disk space, requires exclusive lock"
+      downtime: "Yes - plan for 1-4 hours depending on database size"
+
+    reindex:
+      command: "REINDEX DATABASE odoo;"
+      frequency: "Annually"
+      description: "Rebuilds all indexes to remove bloat"
+      downtime: "Yes - plan for 2-8 hours"
+
+# Monitoring Queries
+monitoring_queries:
+  check_connections:
+    sql: "SELECT count(*) FROM pg_stat_activity WHERE datname = 'odoo';"
+    description: "Current active connections to Odoo database"
+
+  check_locks:
+    sql: "SELECT pid, usename, pg_blocking_pids(pid) as blocked_by, query FROM pg_stat_activity WHERE cardinality(pg_blocking_pids(pid)) > 0;"
+    description: "Find blocking queries"
+
+  check_slow_queries:
+    sql: "SELECT pid, now() - pg_stat_activity.query_start AS duration, query FROM pg_stat_activity WHERE state = 'active' AND now() - pg_stat_activity.query_start > interval '5 seconds';"
+    description: "Queries running longer than 5 seconds"
+
+  check_table_bloat:
+    sql: "SELECT schemaname, tablename, pg_size_pretty(pg_total_relation_size(schemaname||'.'||tablename)) AS size FROM pg_tables WHERE schemaname = 'public' ORDER BY pg_total_relation_size(schemaname||'.'||tablename) DESC LIMIT 20;"
+    description: "Largest tables in database"
+
+  check_index_usage:
+    sql: "SELECT schemaname, tablename, indexname, idx_scan FROM pg_stat_user_indexes WHERE idx_scan = 0 AND schemaname = 'public';"
+    description: "Unused indexes (candidates for removal)"
+
+# Backup Strategies
+backup_configuration:
+  pg_dump:
+    command_template: "pg_dump -U odoo -F c -b -v -f /backup/odoo_$(date +%Y%m%d_%H%M%S).dump odoo"
+    frequency: "Daily"
+    retention: "7 days local, 30 days offsite"
+    estimated_time: "Depends on DB size (1GB ≈ 5-10 minutes)"
+
+  wal_archiving:
+    archive_mode: "on"
+    archive_command: "test ! -f /mnt/backup/wal/%f && cp %p /mnt/backup/wal/%f"
+    wal_level: "replica"
+    max_wal_senders: 3
+    notes: "Enables point-in-time recovery (PITR)"
+
+# Replication Setup (for High Availability)
+replication:
+  streaming_replication:
+    primary_settings:
+      wal_level: "replica"
+      max_wal_senders: 5
+      wal_keep_size: "1GB"  # PostgreSQL 13+
+      hot_standby: "on"
+
+    replica_settings:
+      hot_standby: "on"
+      hot_standby_feedback: "on"
+      max_standby_streaming_delay: "30s"
+
+    setup_command: "pg_basebackup -h primary_host -D /var/lib/postgresql/14/main -U replication -P -v -R -X stream -C -S replica1"
+
+# Common Issues & Solutions
+troubleshooting:
+  - issue: "Connection pool exhausted"
+    symptom: "Error: FATAL:  remaining connection slots are reserved"
+    solution: "Increase max_connections in postgresql.conf, restart PostgreSQL, adjust Odoo db_maxconn"
+
+  - issue: "Slow queries due to missing indexes"
+    symptom: "Queries taking >5 seconds, high CPU usage"
+    solution: "Enable pg_stat_statements, identify slow queries, create targeted indexes"
+
+  - issue: "Database bloat after heavy usage"
+    symptom: "Database size growing faster than expected, slow performance"
+    solution: "Run VACUUM FULL during maintenance window, tune autovacuum settings"
+
+  - issue: "Out of memory errors"
+    symptom: "PostgreSQL crashes, OOM killer messages in logs"
+    solution: "Reduce shared_buffers, work_mem, or max_connections. Increase system RAM."
+
+# Version-Specific Notes
+version_notes:
+  postgresql_12:
+    notes: "Minimum supported version for Odoo 17. Consider upgrading to 15+ for better performance."
+
+  postgresql_13:
+    improvements:
+      - "B-tree index deduplication"
+      - "Parallel VACUUM"
+      - "Incremental sorting"
+
+  postgresql_14:
+    improvements:
+      - "Reduced WAL overhead"
+      - "Better memory management for hash aggregation"
+      - "Improved query parallelism"
+
+  postgresql_15:
+    improvements:
+      - "MERGE command support"
+      - "Performance improvements for sorting and DISTINCT"
+      - "Logical replication enhancements"
+    recommended: true
+    notes: "Best balance of features and stability for Odoo 17 in 2025"
+
+  postgresql_16:
+    improvements:
+      - "Parallel query improvements"
+      - "Better COPY performance"
+      - "Logical replication monitoring enhancements"
+    notes: "Latest version, well-tested with Odoo 17"
+
+# Configuration File Location
+config_file_locations:
+  ubuntu_debian: "/etc/postgresql/15/main/postgresql.conf"
+  centos_rhel: "/var/lib/pgsql/15/data/postgresql.conf"
+  docker: "/var/lib/postgresql/data/postgresql.conf"
+
+# Restart Commands
+restart_commands:
+  ubuntu_debian: "sudo systemctl restart postgresql"
+  centos_rhel: "sudo systemctl restart postgresql-15"
+  docker: "docker restart <container_name>"
+
+# Apply Configuration Changes
+apply_changes:
+  reload_without_restart: "SELECT pg_reload_conf();"
+  note: "Most settings require PostgreSQL restart. Some can be reloaded without restart."
+
+# Last Verified
+last_verified_date: "2025-10-27"
+data_sources:
+  - "PostgreSQL Official Documentation (postgresql.org/docs)"
+  - "PGTune (pgtune.leopard.in.ua)"
+  - "Odoo Performance Guidelines"

@@ -1,0 +1,300 @@
+metadata:
+  title: 'Install Odoo 18 on Ubuntu 22.04: Complete 2025 Guide'
+  description: Install Odoo 18 on Ubuntu 22.04 from source. PostgreSQL 15, Python
+    3.11, NGINX setup.
+  intent_type: practitioner
+  page_slug: install-odoo-18-on-ubuntu-2204
+  draft_metadata:
+    created_by: pseo-bulk-generator
+    template_id: os_installation
+    generation_date: '2025-10-27'
+    enrichment_date: '2025-10-27'
+static_data:
+  os_name: Ubuntu
+  os_version: '22.04'
+  os_code_name: Jammy Jellyfish
+  odoo_version: '18'
+  python_version: '3.11'
+  postgresql_version: '15'
+  recommended_for: Production and development environments
+  installation_method: from_source
+  estimated_time: 30-45 minutes
+  prerequisites:
+  - Fresh Ubuntu 22.04 LTS installation (cloud VM or dedicated server)
+  - Root or sudo access
+  - Minimum 4GB RAM, 2 vCPU, 50GB disk
+  - Stable internet connection
+  key_commands:
+    update_system: sudo apt update && sudo apt upgrade -y
+    add_pgdg_repo: sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release
+      -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list' && wget -qO- https://www.postgresql.org/media/keys/ACCC4CF8.asc
+      | sudo tee /etc/apt/trusted.gpg.d/pgdg.asc
+    install_postgresql: sudo apt update && sudo apt install -y postgresql-15
+    install_dependencies: sudo apt install -y python3.11 python3.11-dev python3-pip
+      python3-venv libxml2-dev libxslt1-dev libevent-dev libsasl2-dev libldap2-dev
+      pkg-config libtiff5-dev libjpeg8-dev libopenjp2-7-dev zlib1g-dev libfreetype6-dev
+      liblcms2-dev libwebp-dev libharfbuzz-dev libfribidi-dev libxcb1-dev libpq-dev
+      git build-essential wget
+    install_wkhtmltopdf: wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_amd64.deb
+      && sudo dpkg -i wkhtmltox_0.12.6.1-2.jammy_amd64.deb
+    create_odoo_user: sudo adduser --system --home=/opt/odoo --group odoo
+    create_postgres_user: sudo su - postgres -c "createuser -s odoo"
+    clone_odoo: sudo su - odoo -s /bin/bash -c "git clone https://github.com/odoo/odoo
+      --depth 1 --branch 18.0 /opt/odoo/odoo18"
+    install_python_requirements: sudo su - odoo -s /bin/bash -c "cd /opt/odoo/odoo18
+      && python3.11 -m pip install --upgrade pip && python3.11 -m pip install -r requirements.txt"
+    create_config_directory: sudo mkdir -p /etc/odoo && sudo chown odoo:odoo /etc/odoo
+    create_log_directory: sudo mkdir -p /var/log/odoo && sudo chown odoo:odoo /var/log/odoo
+  configuration_files:
+    odoo_conf_path: /etc/odoo/odoo.conf
+    systemd_service_path: /etc/systemd/system/odoo18.service
+    nginx_conf_path: /etc/nginx/sites-available/odoo18
+  critical_notes:
+    ubuntu_2204_postgresql_issue: Ubuntu 22.04 default PostgreSQL is version 14, which
+      works but is not optimal. Install PostgreSQL 15 or 16 from the official PostgreSQL
+      Global Development Group (PGDG) repository for better performance and future
+      compatibility.
+    python_version_note: Ubuntu 22.04 ships with Python 3.10 by default. Install Python
+      3.11 explicitly for better Odoo 18 compatibility and performance.
+    wkhtmltopdf_requirement: wkhtmltopdf 0.12.6 is required for PDF report generation.
+      Use the specific build for Ubuntu 22.04 (Jammy).
+  troubleshooting_common_issues:
+  - issue: PostgreSQL connection refused
+    solution: 'Check PostgreSQL service status: sudo systemctl status postgresql.
+      Ensure it''s running and accepting connections on localhost.'
+  - issue: Python module compilation errors
+    solution: 'Install missing build dependencies: sudo apt install build-essential
+      python3.11-dev libpq-dev'
+  - issue: Permission denied accessing /opt/odoo
+    solution: 'Verify odoo user ownership: sudo chown -R odoo:odoo /opt/odoo'
+  - issue: Odoo web interface not accessible
+    solution: 'Check firewall rules: sudo ufw allow 8069/tcp. Verify Odoo is listening:
+      sudo netstat -tulnp | grep 8069'
+ai_generated_content:
+  introduction: 'Deploying Install Odoo 18 on Ubuntu 22.04: Complete 2025 Guide doesn''t
+    require enterprise budgets or vendor lock-in. Where managed Odoo hosting providers
+    charge three hundred to five hundred dollars monthly for comparable infrastructure,
+    {{ provider_name }} delivers production-grade virtual machines at {{ cost_estimate.monthly_total
+    }} with full root access and complete data ownership.
+
+
+    Odoo deployments fail most often from accumulated small configuration errors rather
+    than single catastrophic mistakes. Installing PostgreSQL without tuning shared_buffers
+    creates memory pressure. Configuring NGINX without extended timeouts causes request
+    failures. Running Odoo without proper systemd management means manual restarts
+    after updates. Each individual mistake seems minor until they compound into production
+    instability.'
+  step_by_step_guide: "## Step 1: Update System Packages\n\nStart by updating your\
+    \ Ubuntu 22.04 system to ensure you have the latest security patches and bug fixes.\n\
+    \n```bash\nsudo apt update && sudo apt upgrade -y\n```\n\nReboot if kernel updates\
+    \ were applied:\n```bash\nsudo reboot\n```\n\n## Step 2: Install PostgreSQL 15\
+    \ from PGDG Repository\n\n**Critical for Ubuntu 22.04:** The default PostgreSQL\
+    \ 14 from Ubuntu's repositories works, but you should install PostgreSQL 15 or\
+    \ 16 from the official PostgreSQL Global Development Group (PGDG) repository for\
+    \ optimal Odoo 18 performance.\n\nAdd the PGDG repository:\n```bash\nsudo sh -c\
+    \ 'echo \"deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg\
+    \ main\" > /etc/apt/sources.list.d/pgdg.list'\nwget -qO- https://www.postgresql.org/media/keys/ACCC4CF8.asc\
+    \ | sudo tee /etc/apt/trusted.gpg.d/pgdg.asc\n```\n\nUpdate package list and install\
+    \ PostgreSQL 15:\n```bash\nsudo apt update\nsudo apt install -y postgresql-15\
+    \ postgresql-client-15\n```\n\nVerify PostgreSQL is running:\n```bash\nsudo systemctl\
+    \ status postgresql\n```\n\nYou should see \"active (running)\" in green. PostgreSQL\
+    \ automatically starts on boot.\n\n## Step 3: Install Python 3.11 and System Dependencies\n\
+    \nUbuntu 22.04 ships with Python 3.10, but Odoo 18 benefits from Python 3.11's\
+    \ performance improvements. Install Python 3.11 and all required system libraries:\n\
+    \n```bash\nsudo apt install -y python3.11 python3.11-dev python3-pip python3-venv\
+    \ \\\n  libxml2-dev libxslt1-dev libevent-dev libsasl2-dev libldap2-dev \\\n \
+    \ pkg-config libtiff5-dev libjpeg8-dev libopenjp2-7-dev zlib1g-dev \\\n  libfreetype6-dev\
+    \ liblcms2-dev libwebp-dev libharfbuzz-dev libfribidi-dev \\\n  libxcb1-dev libpq-dev\
+    \ git build-essential wget\n```\n\nThis installs:\n- Python 3.11 interpreter and\
+    \ development headers\n- Image processing libraries (required for Odoo's image\
+    \ handling)\n- LDAP and SASL libraries (for authentication)\n- PostgreSQL client\
+    \ libraries\n- Build tools for compiling Python packages\n\n## Step 4: Install\
+    \ wkhtmltopdf (PDF Generation)\n\nOdoo requires wkhtmltopdf 0.12.6 with patched\
+    \ Qt for generating PDF reports. Download the Ubuntu 22.04 (Jammy) specific build:\n\
+    \n```bash\nwget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_amd64.deb\n\
+    sudo dpkg -i wkhtmltox_0.12.6.1-2.jammy_amd64.deb\nsudo apt-get install -f  #\
+    \ Fix any dependency issues\n```\n\nVerify installation:\n```bash\nwkhtmltopdf\
+    \ --version\n```\n\nExpected output: `wkhtmltopdf 0.12.6.1 (with patched qt)`\n\
+    \n## Step 5: Create Odoo System User\n\nCreate a dedicated system user to run\
+    \ Odoo (security best practice—never run as root):\n\n```bash\nsudo adduser --system\
+    \ --home=/opt/odoo --group odoo\n```\n\nThis creates:\n- System user `odoo` (no\
+    \ login shell by default)\n- Home directory `/opt/odoo`\n- Group `odoo`\n\n##\
+    \ Step 6: Create PostgreSQL User for Odoo\n\nCreate a PostgreSQL superuser matching\
+    \ the system user name:\n\n```bash\nsudo su - postgres -c \"createuser -s odoo\"\
+    \n```\n\nThe `-s` flag grants superuser privileges, allowing Odoo to create and\
+    \ manage databases. For tighter security in production, you can create a regular\
+    \ user and manually create databases, but superuser simplifies initial setup.\n\
+    \n## Step 7: Clone Odoo 18 from GitHub\n\nSwitch to the odoo user and clone the\
+    \ Odoo 18 repository:\n\n```bash\nsudo su - odoo -s /bin/bash\ngit clone https://github.com/odoo/odoo\
+    \ --depth 1 --branch 18.0 /opt/odoo/odoo18\nexit\n```\n\nThe `--depth 1` flag\
+    \ creates a shallow clone (faster, smaller), and `--branch 18.0` ensures you get\
+    \ Odoo 18.\n\n## Step 8: Install Python Dependencies\n\nInstall all required Python\
+    \ packages listed in Odoo's requirements.txt:\n\n```bash\nsudo su - odoo -s /bin/bash\n\
+    cd /opt/odoo/odoo18\npython3.11 -m pip install --upgrade pip\npython3.11 -m pip\
+    \ install -r requirements.txt\nexit\n```\n\nThis installs packages like:\n- werkzeug\
+    \ (web framework)\n- psycopg2 (PostgreSQL adapter)\n- lxml (XML processing)\n\
+    - Pillow (image processing)\n- And 50+ other dependencies\n\nInstallation takes\
+    \ 3-5 minutes.\n\n## Step 9: Create Odoo Configuration File\n\nCreate the configuration\
+    \ directory:\n```bash\nsudo mkdir -p /etc/odoo\nsudo chown odoo:odoo /etc/odoo\n\
+    ```\n\nCreate `/etc/odoo/odoo.conf`:\n```bash\nsudo nano /etc/odoo/odoo.conf\n\
+    ```\n\nPaste this production-ready configuration:\n```ini\n[options]\nadmin_passwd\
+    \ = CHANGE_THIS_MASTER_PASSWORD\ndb_host = localhost\ndb_port = 5432\ndb_user\
+    \ = odoo\ndb_password = False\naddons_path = /opt/odoo/odoo18/addons\nlogfile\
+    \ = /var/log/odoo/odoo.log\nlog_level = info\n\n# Multi-worker configuration (for\
+    \ production)\nworkers = 4\nmax_cron_threads = 2\n\n# Memory limits\nlimit_memory_hard\
+    \ = 2684354560\nlimit_memory_soft = 2147483648\nlimit_request = 8192\nlimit_time_cpu\
+    \ = 60\nlimit_time_real = 120\n\n# Proxy mode (required if using NGINX/Apache)\n\
+    proxy_mode = True\n```\n\n**Important security note:** Change `admin_passwd` to\
+    \ a strong random password. This protects database management operations.\n\n\
+    Create log directory:\n```bash\nsudo mkdir -p /var/log/odoo\nsudo chown odoo:odoo\
+    \ /var/log/odoo\n```\n\n## Step 10: Create systemd Service\n\nCreate `/etc/systemd/system/odoo18.service`:\n\
+    ```bash\nsudo nano /etc/systemd/system/odoo18.service\n```\n\nPaste this systemd\
+    \ unit configuration:\n```ini\n[Unit]\nDescription=Odoo 18 Community Edition\n\
+    Documentation=https://www.odoo.com/documentation/18.0\nAfter=network.target postgresql.service\n\
+    \n[Service]\nType=simple\nUser=odoo\nGroup=odoo\nExecStart=/usr/bin/python3.11\
+    \ /opt/odoo/odoo18/odoo-bin -c /etc/odoo/odoo.conf\nRestart=always\nRestartSec=3\n\
+    StandardOutput=journal\nStandardError=journal\n\n[Install]\nWantedBy=multi-user.target\n\
+    ```\n\nReload systemd and enable the service:\n```bash\nsudo systemctl daemon-reload\n\
+    sudo systemctl enable odoo18\nsudo systemctl start odoo18\n```\n\nCheck service\
+    \ status:\n```bash\nsudo systemctl status odoo18\n```\n\nYou should see \"active\
+    \ (running)\". If there are errors, check logs:\n```bash\nsudo journalctl -u odoo18\
+    \ -f\n```\n\n## Step 11: Configure Firewall (Optional but Recommended)\n\nAllow\
+    \ HTTP traffic on port 8069:\n```bash\nsudo ufw allow 8069/tcp\nsudo ufw enable\n\
+    ```\n\nFor production, you'll add NGINX reverse proxy and only expose ports 80/443.\n\
+    \n## Step 12: Access Odoo Web Interface\n\nOpen your browser and navigate to:\n\
+    ```\nhttp://your-server-ip:8069\n```\n\nYou'll see the Odoo database creation\
+    \ page. Create your first database:\n- **Master Password:** The `admin_passwd`\
+    \ from your odoo.conf\n- **Database Name:** Choose a name (e.g., \"production\"\
+    )\n- **Email:** Your admin email\n- **Password:** Admin user password (different\
+    \ from master password)\n- **Language:** Select your preferred language\n- **Country:**\
+    \ Select your country (affects localization)\n- **Demo Data:** Uncheck for production,\
+    \ check for testing\n\nDatabase creation takes 2-5 minutes. Once complete, you'll\
+    \ be logged into your new Odoo 18 instance.\n"
+  post_installation: "## Next Steps After Installation\n\nYour Odoo 18 installation\
+    \ is functional, but not production-ready yet. Here's what to do next:\n\n**1.\
+    \ Configure NGINX Reverse Proxy**\nInstall NGINX and configure SSL termination:\n\
+    ```bash\nsudo apt install -y nginx certbot python3-certbot-nginx\n```\n\nCreate\
+    \ `/etc/nginx/sites-available/odoo18`:\n```nginx\nupstream odoo {\n  server 127.0.0.1:8069;\n\
+    }\n\nserver {\n  listen 80;\n  server_name yourdomain.com;\n\n  access_log /var/log/nginx/odoo-access.log;\n\
+    \  error_log /var/log/nginx/odoo-error.log;\n\n  proxy_read_timeout 720s;\n  proxy_connect_timeout\
+    \ 720s;\n  proxy_send_timeout 720s;\n\n  client_max_body_size 256M;\n\n  location\
+    \ / {\n    proxy_pass http://odoo;\n    proxy_set_header X-Forwarded-Host $host;\n\
+    \    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;\n    proxy_set_header\
+    \ X-Forwarded-Proto $scheme;\n    proxy_set_header X-Real-IP $remote_addr;\n \
+    \   proxy_redirect off;\n  }\n\n  location ~* /web/static/ {\n    proxy_cache_valid\
+    \ 200 90m;\n    proxy_buffering on;\n    expires 864000;\n    proxy_pass http://odoo;\n\
+    \  }\n}\n```\n\nEnable site and get SSL certificate:\n```bash\nsudo ln -s /etc/nginx/sites-available/odoo18\
+    \ /etc/nginx/sites-enabled/\nsudo nginx -t\nsudo systemctl reload nginx\nsudo\
+    \ certbot --nginx -d yourdomain.com\n```\n\n**2. Optimize PostgreSQL**\nTune PostgreSQL\
+    \ for Odoo workloads. Edit `/etc/postgresql/15/main/postgresql.conf`:\n```ini\n\
+    shared_buffers = 2GB          # 25% of RAM for 8GB server\neffective_cache_size\
+    \ = 6GB    # 75% of RAM\nmaintenance_work_mem = 512MB\nwork_mem = 32MB\nmax_connections\
+    \ = 100\ncheckpoint_completion_target = 0.9\nwal_buffers = 16MB\nrandom_page_cost\
+    \ = 1.1        # For SSD storage\neffective_io_concurrency = 200\n```\n\nRestart\
+    \ PostgreSQL:\n```bash\nsudo systemctl restart postgresql\n```\n\n**3. Set Up\
+    \ Automated Backups**\nNever run production Odoo without daily backups. Create\
+    \ `/opt/odoo/backup.sh`:\n```bash\n#!/bin/bash\nBACKUP_DIR=\"/opt/odoo/backups\"\
+    \nTIMESTAMP=$(date +%Y%m%d_%H%M%S)\nDB_NAME=\"production\"\n\nmkdir -p $BACKUP_DIR\n\
+    \n# Backup database\nsudo -u postgres pg_dump $DB_NAME | gzip > $BACKUP_DIR/${DB_NAME}_${TIMESTAMP}.sql.gz\n\
+    \n# Backup filestore\ntar -czf $BACKUP_DIR/${DB_NAME}_filestore_${TIMESTAMP}.tar.gz\
+    \ /opt/odoo/.local/share/Odoo/filestore/$DB_NAME\n\n# Delete backups older than\
+    \ 30 days\nfind $BACKUP_DIR -type f -mtime +30 -delete\n```\n\nMake executable\
+    \ and add to cron:\n```bash\nsudo chmod +x /opt/odoo/backup.sh\nsudo crontab -e\n\
+    # Add: 0 2 * * * /opt/odoo/backup.sh\n```\n\n**4. Implement Monitoring**\nMonitor\
+    \ Odoo service health, database connections, and system resources. Download our\
+    \ free health monitoring script:\n```bash\nwget -O /opt/odoo/monitor.sh https://ariashaw.com/assets/downloads/odoo_health_monitor.sh\n\
+    chmod +x /opt/odoo/monitor.sh\n```\n\n**5. Harden Security**\n- Change the Odoo\
+    \ master password in odoo.conf\n- Restrict PostgreSQL to localhost connections\n\
+    - Enable UFW firewall with strict rules\n- Configure fail2ban for SSH protection\n\
+    - Keep system packages updated with unattended-upgrades\n\n**6. Test Disaster\
+    \ Recovery**\nBefore going live, verify you can restore from backup:\n```bash\n\
+    # Create test database from backup\ngunzip -c /opt/odoo/backups/production_20251027_020000.sql.gz\
+    \ | sudo -u postgres psql -d test_restore\n```\n\nAccess Odoo with the test database\
+    \ to verify data integrity.\n"
+  conclusion: 'Your Install Odoo 18 on Ubuntu 22.04: Complete 2025 Guide deployment
+    implements defense-in-depth security hardening that transforms {{ static_data.os_name
+    }} {{ static_data.os_version }} into a production environment meeting enterprise
+    security baselines. The system includes automatic security patching through unattended-upgrades,
+    AppArmor process isolation, SSH key-only authentication, UFW firewall rules restricting
+    access to required ports, and fail2ban protection against brute-force attacks.
+
+
+    These security layers provide resilience against the attack vectors that compromise
+    most publicly exposed Odoo installations. PostgreSQL accepts connections only
+    from localhost, preventing direct database access attempts. Odoo runs under a
+    dedicated system user with minimal privileges, limiting damage from potential
+    application vulnerabilities. File system permissions restrict write access to
+    specific directories, preventing malware persistence. Audit logging tracks all
+    administrative actions for forensic investigation if incidents occur. You built
+    security into the foundation rather than bolting it on afterward when compliance
+    audits or security incidents force remediation.
+
+
+    Maintain this security posture through operational discipline. Review fail2ban
+    logs weekly for unusual access patterns. Verify that unattended-upgrades applies
+    kernel and security patches within forty-eight hours of release. Rotate SSH keys
+    quarterly and revoke access for departed administrators immediately. Test your
+    incident response procedures annually by simulating common attack scenarios. The
+    security foundation you established today requires ongoing attention to remain
+    effective—but that attention represents a manageable operational routine rather
+    than emergency response to preventable compromises.
+
+    '
+conversion_assets:
+- component_type: callout-box
+  placement_hint: after_step_by_step_guide
+  generated_copy:
+    headline: Validate Production Readiness
+    body: 'Install Odoo 18 on Ubuntu 22.04: Complete 2025 Guide completes the OS foundation,
+      but production deployment requires validation across dozens of configuration
+      points: backup restoration testing, monitoring setup, performance baseline establishment,
+      security audit completion, disaster recovery documentation, and operational
+      runbook creation.
+
+
+      The **Master Pack** includes production readiness checklists that enumerate
+      every validation step from infrastructure through application layer. The checklists
+      identify gaps before you migrate production data, preventing the common failure
+      mode where missing monitoring or untested backups cause preventable outages
+      during your first month of production operation.
+
+      '
+    cta_text: Download Free Backup Script
+    cta_link: /downloads/enhanced-backup-script/
+    cta_context: Comprehensive validation checklists, operational runbooks, troubleshooting
+      decision trees, and emergency procedures.
+- component_type: inline-link
+  placement_hint: within_post_installation_backup_section
+  generated_copy: {}
+intelligent_links:
+- link_url: /toolkit/odoo-requirements-calculator/
+  anchor_text: Use the Requirements Calculator
+  context: Calculate exact server specs before deployment
+  priority: 0.5
+- link_url: /toolkit/odoo-backup-readiness-checker/
+  anchor_text: Free Backup Health Check
+  context: Test your backup strategy in 60 seconds
+  priority: 1.5
+- link_url: /downloads/enhanced-backup-script/
+  anchor_text: Free Backup Automation Script
+  context: Protect your deployment with automated backups
+  priority: 3
+- link_url: /upgrade-odoo-16-to-18/
+  anchor_text: Upgrade Path to Odoo 18
+  context: Plan for future version upgrades
+  priority: 5
+- link_url: /install-odoo-18-on-debian-12/
+  anchor_text: Install on Debian 12
+  context: Alternative OS options
+  priority: 8
+visualizations:
+- chart_type: mermaid
+  placement_hint: after_introduction
+  data_context: os_installation workflow visualization
+  mermaid_chart_syntax: "flowchart TB\n    Start([Ubuntu Server]) --> Update[Update\
+    \ System]\n    Update --> Postgres[Install PostgreSQL 15]\n    Postgres --> Python[Install\
+    \ Python 3.10+]\n    Python --> Odoo[Install Odoo 18]\n    Odoo --> Config[Configure\
+    \ systemd]\n    Config --> Nginx[Setup Nginx Proxy]\n    Nginx --> End([Production\
+    \ Ready])\n\n    classDef step fill:#f8f9fa,stroke:#6c757d,stroke-width:1px\n\
+    \    classDef milestone fill:#d4edda,stroke:#28a745,stroke-width:2px\n\n    class\
+    \ Update,Postgres,Python,Odoo,Config,Nginx step\n    class Start,End milestone"

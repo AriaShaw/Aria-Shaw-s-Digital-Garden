@@ -1,0 +1,388 @@
+metadata:
+  title: 'Deploy Odoo 18 on aws: Complete 2025 Guide'
+  description: Step-by-step guide to deploy Odoo 18 on aws lightsail. Includes server
+    setup, PostgreSQL configuration, NGINX reverse proxy, and SSL. Production-ready
+    deployment in 30 minutes.
+  intent_type: practitioner
+  page_slug: deploy-odoo-18-on-aws
+  draft_metadata:
+    created_by: pseo-bulk-generator
+    template_id: cloud_deployment
+    generation_mode: template
+    confidence_level: high
+    notes_for_reviewer: Template-based generation using verified cloud provider and
+      Odoo version modules. Review instance recommendations for accuracy.
+static_data:
+  provider: '{{LOAD:cloud_providers/aws.yml}}'
+  odoo_version: '{{LOAD:odoo_versions/odoo_18.yml}}'
+  recommended_instance:
+    instance_type: lightsail
+    use_case: production
+  deployment_architecture: single_server
+  deployment_steps:
+  - step: 1
+    title: Create aws Account and Instance
+    commands:
+    - '# Log into aws dashboard'
+    - '# Create new instance: lightsail'
+    - '# Select Ubuntu 24.04 LTS as operating system'
+    - '# Choose your preferred data center region'
+    - '# Set root password and add SSH key'
+  - step: 2
+    title: Connect to Server and Update System
+    commands:
+    - ssh root@YOUR_SERVER_IP
+    - apt update && apt upgrade -y
+    - hostnamectl set-hostname odoo-aws
+  - step: 3
+    title: Install PostgreSQL {{postgresql_version}}
+    commands:
+    - apt install -y postgresql-{{postgresql_version}}
+    - sudo -u postgres createuser -s odoo
+    - sudo -u postgres createdb odoo --owner=odoo
+  - step: 4
+    title: Install Odoo 18 Dependencies
+    commands:
+    - '{{LOAD:odoo_versions/odoo_18.yml → installation_reference.ubuntu_24_04.install_dependencies}}'
+  - step: 5
+    title: Install wkhtmltopdf (PDF Generation)
+    commands:
+    - '{{LOAD:odoo_versions/odoo_18.yml → installation_reference.ubuntu_24_04.install_wkhtmltopdf}}'
+  - step: 6
+    title: Create Odoo System User
+    commands:
+    - '{{LOAD:odoo_versions/odoo_18.yml → installation_reference.ubuntu_24_04.create_odoo_user}}'
+  - step: 7
+    title: Clone Odoo 18 from GitHub
+    commands:
+    - '{{LOAD:odoo_versions/odoo_18.yml → installation_reference.ubuntu_24_04.clone_odoo}}'
+  - step: 8
+    title: Install Python Dependencies
+    commands:
+    - '{{LOAD:odoo_versions/odoo_18.yml → installation_reference.ubuntu_24_04.install_python_deps}}'
+  - step: 9
+    title: Configure Odoo (odoo.conf)
+    commands:
+    - sudo nano /etc/odoo/odoo.conf
+    config_snippet: '[options]
+
+      admin_passwd = YOUR_MASTER_PASSWORD_HERE
+
+      db_host = False
+
+      db_port = False
+
+      db_user = odoo
+
+      db_password = False
+
+      addons_path = /opt/odoo/odoo18/addons
+
+      logfile = /var/log/odoo/odoo-server.log
+
+      xmlrpc_port = 8069
+
+      workers = {{CALCULATE:(vcpu * 2) + 1}}
+
+      proxy_mode = True
+
+      '
+  - step: 10
+    title: Create Systemd Service for Odoo
+    commands:
+    - sudo nano /etc/systemd/system/odoo.service
+    service_snippet: '[Unit]
+
+      Description=Odoo 18
+
+      After=network.target postgresql.service
+
+
+      [Service]
+
+      Type=simple
+
+      User=odoo
+
+      Group=odoo
+
+      ExecStart=/opt/odoo/odoo18/odoo-bin -c /etc/odoo/odoo.conf
+
+
+      [Install]
+
+      WantedBy=multi-user.target
+
+      '
+  - step: 11
+    title: Install and Configure NGINX Reverse Proxy
+    commands:
+    - '{{LOAD:common/nginx_config.yml → complete_config_template}}'
+  - step: 12
+    title: Setup SSL with Let's Encrypt
+    commands:
+    - '{{LOAD:common/nginx_config.yml → ssl_config.certbot_install}}'
+    - '{{LOAD:common/nginx_config.yml → ssl_config.obtain_certificate}}'
+  - step: 13
+    title: Configure Firewall (UFW)
+    commands:
+    - '{{LOAD:common/security_hardening.yml → os_security.firewall_ufw}}'
+  - step: 14
+    title: Tune PostgreSQL for Odoo
+    commands:
+    - '# Edit /etc/postgresql/{{postgresql_version}}/main/postgresql.conf'
+    - '{{LOAD:common/postgresql_tuning.yml → configurations.{{size_category}}.postgresql_conf}}'
+  - step: 15
+    title: Start Odoo and Enable Auto-Start
+    commands:
+    - sudo systemctl start odoo
+    - sudo systemctl enable odoo
+    - sudo systemctl status odoo
+  estimated_deployment_time: 30-45 minutes
+  skill_level_required: Intermediate (basic Linux command line knowledge)
+  common_pitfalls:
+  - issue: 'aws-specific: {{LOAD:cloud_providers/aws.yml → common_pitfalls}}'
+  - issue: Odoo won't start after installation
+    solution: 'Check logs: sudo journalctl -u odoo -n 50. Common causes: PostgreSQL
+      not running, incorrect file permissions, missing Python dependencies.'
+  - issue: 502 Bad Gateway from NGINX
+    solution: 'Verify Odoo is running on port 8069: sudo netstat -tlnp | grep 8069.
+      Check NGINX error log: sudo tail -f /var/log/nginx/error.log'
+  - issue: SSL certificate won't install
+    solution: Ensure DNS A record points to your server IP. Check firewall allows
+      port 80/443.
+  security_best_practices:
+  - '{{LOAD:common/security_hardening.yml → security_checklist}}'
+  cost_estimate:
+    monthly_server_cost: '{{LOAD:cloud_providers/aws.yml → recommended_instances[instance_type].pricing.monthly}}'
+    setup_cost: $0 (DIY deployment)
+    ongoing_costs: Domain name (~$12/year), optional backup storage
+  alternative_deployment_options:
+  - option: Managed Odoo.sh
+    pros: Zero maintenance, automatic backups, enterprise support
+    cons: Higher cost (~$24/user/month), less control
+  - option: Docker deployment on aws
+    pros: Easier updates, containerized isolation
+    cons: Slightly more complex initial setup
+    link: deploy-odoo-18-docker-aws
+  next_steps:
+  - Configure Odoo modules (CRM, Sales, Inventory)
+  - Import your data from existing systems
+  - 'Set up automated backups (see: odoo-backup-automation)'
+  - Configure email sending (SMTP)
+  - Add custom domain and branding
+ai_generated_content:
+  introduction: 'Digital sovereignty means controlling your business data and infrastructure
+    without dependency on vendors who restrict access, limit customization, or increase
+    prices arbitrarily because they hold your operational capability hostage. Deploy
+    Odoo 18 on aws: Complete 2025 Guide on {{ provider_name }} delivers that sovereignty
+    by giving you root-level access to virtual machines running your complete Odoo
+    stack.
+
+
+    Performance under load separates viable production infrastructure from systems
+    that collapse during month-end financial closes or customer deadline pressure.
+    The specific instance configuration in this guide delivers predictable response
+    times even when users simultaneously run complex inventory calculations, generate
+    financial statements, and process bulk sales orders.'
+  deployment_guide: 'The first decision determines your cost structure for the next
+    year: which EC2 instance type matches your workload without overprovisioning.
+    The t3.medium offers 2 vCPUs and 4GB RAM at $30.37 monthly on-demand, suitable
+    for businesses with 10-30 users running standard Odoo modules like Sales, CRM,
+    and Inventory. If your team exceeds 30 users or you''re deploying manufacturing
+    or accounting modules with complex calculations, the m6i.large provides 8GB RAM
+    at $89.28 monthly, which prevents the memory-swap thrashing that kills Odoo responsiveness
+    under load. The wildcard option is the t4g.medium, an ARM-based Graviton instance
+    at $24.30 monthly that delivers identical specs to the t3.medium but costs 20%
+    less. The catch: you must verify your Odoo modules support ARM architecture, which
+    most core modules do, but proprietary third-party addons may not.
+
+
+    Launch your chosen instance through the EC2 console with Ubuntu 24.04 LTS as the
+    base image. AWS provides official Ubuntu AMIs updated monthly, eliminating the
+    malware-laden AMI risk that plagues community images. During launch configuration,
+    create a new key pair for SSH access and download the private key immediately—AWS
+    doesn''t store it, and you''ll need it for every future access. Attach a 50GB
+    gp3 EBS volume as the root device instead of the default gp2; gp3 costs the same
+    but provides 3,000 IOPS baseline versus gp2''s variable performance, which matters
+    when PostgreSQL writes transaction logs during month-end closing processes.
+
+
+    Security group configuration requires precision, not paranoia. Create a new security
+    group with four inbound rules: SSH (port 22) restricted to your office IP address
+    or VPN endpoint, HTTP (port 80) and HTTPS (port 443) open to 0.0.0.0/0 for public
+    access, and port 8069 open to 0.0.0.0/0 temporarily during initial setup. That
+    last rule enables direct Odoo access for testing before you configure reverse
+    proxy SSL termination. After SSL works, delete the 8069 rule entirely. Many guides
+    leave it open permanently, creating an unencrypted access vector that bypasses
+    your HTTPS enforcement. The outbound rules can remain at the default "allow all"
+    setting since EC2 instances need to reach package repositories and external APIs.
+
+
+    Connect via SSH and begin the installation phase. You face a fundamental architecture
+    choice: Docker Compose or native installation. Docker Compose offers faster initial
+    deployment and easier version upgrades—you change one line in a docker-compose.yml
+    file and restart containers. Native installation gives you deeper control over
+    Python dependencies and system-level optimizations, plus it avoids the 10-15%
+    performance overhead Docker networking layers introduce. For most AWS deployments,
+    native installation makes sense because you''re already managing infrastructure—you''ve
+    chosen EC2 over managed hosting precisely to maximize control. Install PostgreSQL
+    16 locally first with apt, then add the Odoo 18 repository, install the odoo package,
+    and configure it to bind to localhost only while you test functionality.
+
+
+    The PostgreSQL decision carries operational weight. Self-hosting PostgreSQL on
+    the same EC2 instance simplifies the architecture and eliminates the $15 monthly
+    RDS cost, but puts database administration on your team. You''ll handle vacuum
+    operations, index optimization, and backup verification yourself. RDS managed
+    PostgreSQL removes those responsibilities and adds automated backups with point-in-time
+    recovery, but introduces 2-4ms network latency between Odoo and the database that
+    impacts report generation and bulk import operations. If your team lacks a database
+    specialist and your Odoo instance handles under 100 concurrent users, RDS is the
+    pragmatic choice. Launch a db.t3.micro with 20GB storage and enable automated
+    backups with a 7-day retention window. Connect Odoo to RDS by updating the db_host,
+    db_port, db_user, and db_password parameters in /etc/odoo/odoo.conf.
+
+
+    SSL termination through Let''s Encrypt provides free certificates with automated
+    renewal, but requires a reverse proxy. Install Nginx, create a server block that
+    proxies requests from port 443 to Odoo''s port 8069, and run Certbot to obtain
+    certificates for your domain. The critical configuration detail most guides omit:
+    set proxy_read_timeout to 600 seconds in your Nginx server block. Odoo''s module
+    installation and large report generation operations can take several minutes,
+    and Nginx''s default 60-second timeout kills these requests prematurely, generating
+    cryptic "bad gateway" errors. Add a cron job to run certbot renew daily—Let''s
+    Encrypt certificates expire after 90 days, and the automated renewal only works
+    if the cron job exists.
+
+
+    AWS-specific optimizations start with EBS volume tuning. Enable EBS optimization
+    on your EC2 instance through the console, which dedicates network bandwidth to
+    storage traffic and prevents disk I/O from competing with Odoo''s HTTP traffic.
+    Attach an IAM role to the instance with CloudWatch agent permissions, install
+    the CloudWatch agent, and configure it to stream Odoo''s log files to CloudWatch
+    Logs. This centralized logging proves essential when debugging issues across multiple
+    Odoo worker processes—grepping local log files becomes unmanageable at scale.
+    Create CloudWatch alarms for CPU utilization above 80% and available memory below
+    500MB so you receive notification before performance degradation reaches users.
+
+
+    The Reserved Instance decision happens after you validate the deployment. Run
+    on-demand pricing for the first month while you confirm the instance size handles
+    your actual workload and user count. If the t3.medium CPU stays below 40% and
+    memory usage never exceeds 3GB, you overprovisioned and should downgrade to a
+    t4g.small before purchasing a reservation. If CPU consistently hits 70% or memory
+    approaches 90%, upgrade to an m6i.large before problems emerge. Once you''ve settled
+    on the right size, purchase a one-year reserved instance through the EC2 console—you''ll
+    pay the full year upfront or choose monthly payments at a slight premium. The
+    36% savings compounds monthly, totaling $133 annually for a t3.medium reservation.
+
+
+    The total monthly AWS cost for a production Odoo 18 deployment on a reserved t3.medium
+    with self-hosted PostgreSQL runs approximately $35: $19.31 for the reserved instance,
+    $5 for 50GB gp3 EBS storage, $3 for CloudWatch Logs and metrics, and $2-3 for
+    data transfer assuming 30GB monthly outbound traffic. Switching to RDS adds $15
+    for a db.t3.micro. These costs scale linearly—doubling your instance size to an
+    m6i.large doubles the compute cost but leaves storage and transfer costs unchanged.
+    The key insight: AWS infrastructure costs remain predictable and transparent,
+    unlike managed Odoo hosting where pricing jumps in opaque tiers as your user count
+    grows.
+
+    '
+  conclusion: 'You now control a production Deploy Odoo 18 on aws: Complete 2025 Guide
+    infrastructure running on {{ provider_name }} at {{ cost_estimate.monthly_total
+    }} monthly—approximately sixty to eighty percent less than equivalent managed
+    Odoo hosting while retaining full administrative access, data ownership, and customization
+    freedom. This deployment gives you digital sovereignty over your business operations
+    without requiring enterprise cloud budgets or dedicated DevOps teams.
+
+
+    The system you built follows production-grade architecture patterns used by businesses
+    operating Odoo at scale. The PostgreSQL tuning, NGINX reverse proxy configuration,
+    automated backup system, and SSL certificate management represent infrastructure
+    decisions that managed hosting providers charge premium prices to abstract away.
+    You implemented them directly in under ninety minutes, and you own the knowledge
+    to maintain, troubleshoot, and scale this system as your business grows.
+
+
+    Next steps focus on operational readiness. Test your backup restoration process
+    within the next seventy-two hours while the deployment steps remain fresh. Configure
+    monitoring alerts for CPU utilization, disk space, and PostgreSQL connection counts.
+    Document your specific configuration decisions in a runbook that future administrators
+    can follow. The infrastructure foundation you established today supports growth
+    from ten users to one hundred without architectural rebuilds—that operational
+    leverage justifies the deployment effort many times over.
+
+    '
+conversion_assets:
+- component_type: callout-box
+  placement_hint: after_introduction
+  generated_copy:
+    headline: Monitor Before Problems Become Outages
+    body: 'Your Deploy Odoo 18 on aws: Complete 2025 Guide system runs production
+      workloads within hours, but you won''t know about performance degradation, disk
+      space exhaustion, or memory pressure until users report problems. Reactive troubleshooting
+      during business hours costs more than proactive monitoring that catches issues
+      overnight.
+
+
+      Our **free Odoo Health Monitor script** tracks CPU, memory, disk usage, and
+      PostgreSQL connections in real-time. The script runs every 5 minutes via cron,
+      logging alerts before thresholds trigger user-visible problems.
+
+      '
+    cta_text: Download Free Monitoring Script
+    cta_link: /downloads/odoo-health-monitoring-script/
+    cta_context: Free production-ready monitoring with alerting. Upgrade to Operations
+      Console for advanced metrics, Grafana dashboards, and predictive alerts.
+- component_type: benefit-list
+  placement_hint: before_steps
+  generated_copy:
+    headline: The Complete Toolkit for Production Operations
+    supporting_elements:
+    - Automated, verified backups with multi-cloud sync (S3, B2, Google Drive)
+    - 24/7 performance monitoring with Odoo-specific dashboards and alerts
+    - Complete disaster recovery playbook with quarterly drill automation
+    - 47-point security hardening checklist for SOC 2 and ISO 27001 compliance
+    - Zero-downtime update and scaling procedures for {{ provider_name }}
+    - 200+ pages of troubleshooting decision trees and operational runbooks
+    cta_text: Unlock All 68+ Production Tools – $699
+    cta_link: https://ariashaw.gumroad.com/l/odoo-master-pack
+- component_type: cta-button
+  placement_hint: after_conclusion
+  generated_copy:
+    button_text: Download Free Backup Script
+    button_link: /downloads/enhanced-backup-script/
+    subtext: Production-ready automation in 5 minutes
+intelligent_links:
+- link_url: /toolkit/odoo-requirements-calculator/
+  anchor_text: Use the Requirements Calculator
+  context: Calculate exact server specs before deployment
+  priority: 0.5
+- link_url: /toolkit/odoo-hosting-advisor/
+  anchor_text: Use the Hosting Advisor
+  context: Vendor-neutral hosting decision framework
+  priority: 1
+- link_url: /toolkit/odoo-backup-readiness-checker/
+  anchor_text: Free Backup Health Check
+  context: Test your backup strategy in 60 seconds
+  priority: 1.5
+- link_url: /downloads/enhanced-backup-script/
+  anchor_text: Free Backup Automation Script
+  context: Protect your deployment with automated backups
+  priority: 3
+- link_url: /install-odoo-18-on-ubuntu-2204/
+  anchor_text: Harden Ubuntu for Odoo Production
+  context: Secure and optimize your Ubuntu installation
+  priority: 4
+visualizations:
+- chart_type: mermaid
+  placement_hint: after_introduction
+  data_context: cloud_deployment workflow visualization
+  mermaid_chart_syntax: "flowchart LR\n    Start([Deploy Odoo 18]) --> Provision[Provision\
+    \ Instance]\n    Provision --> Firewall[Configure Firewall]\n    Firewall -->\
+    \ Install[Install Dependencies]\n    Install --> Deploy[Deploy Odoo]\n    Deploy\
+    \ --> SSL[Configure SSL]\n    SSL --> End([Production Ready])\n\n    classDef\
+    \ process fill:#f8f9fa,stroke:#6c757d,stroke-width:1px\n    classDef endpoint\
+    \ fill:#d4edda,stroke:#28a745,stroke-width:2px\n\n    class Provision,Firewall,Install,Deploy,SSL\
+    \ process\n    class Start,End endpoint"

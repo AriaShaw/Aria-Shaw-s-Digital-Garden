@@ -1,0 +1,219 @@
+# Template: Cloud Deployment Guide
+# Template ID: cloud_deployment
+# Intent Type: practitioner
+# Variables Required: {{provider}}, {{odoo_version}}, {{instance_type}}
+# Reusable Modules: cloud_providers/{{provider}}.yml, odoo_versions/odoo_{{odoo_version}}.yml
+
+metadata:
+  title: "Deploy Odoo {{odoo_version}} on {{provider}}: Complete 2025 Guide"
+  description: "Step-by-step guide to deploy Odoo {{odoo_version}} on {{provider}} {{instance_type}}. Includes server setup, PostgreSQL configuration, NGINX reverse proxy, and SSL. Production-ready deployment in 30 minutes."
+  intent_type: "practitioner"
+  page_slug: "deploy-odoo-{{odoo_version}}-on-{{provider_slug}}"
+  draft_metadata:
+    created_by: "pseo-bulk-generator"
+    template_id: "cloud_deployment"
+    generation_mode: "template"
+    confidence_level: "high"
+    notes_for_reviewer: "Template-based generation using verified cloud provider and Odoo version modules. Review instance recommendations for accuracy."
+
+static_data:
+  provider: "{{LOAD:cloud_providers/{{provider}}.yml}}"
+  odoo_version: "{{LOAD:odoo_versions/odoo_{{odoo_version}}.yml}}"
+
+  recommended_instance:
+    instance_type: "{{instance_type}}"
+    # Pulled from cloud provider module based on use_case
+    use_case: "{{use_case}}"
+
+  deployment_architecture: "single_server"
+
+  deployment_steps:
+    - step: 1
+      title: "Create {{provider}} Account and Instance"
+      commands:
+        - "# Log into {{provider}} dashboard"
+        - "# Create new instance: {{instance_type}}"
+        - "# Select Ubuntu 24.04 LTS as operating system"
+        - "# Choose your preferred data center region"
+        - "# Set root password and add SSH key"
+
+    - step: 2
+      title: "Connect to Server and Update System"
+      commands:
+        - "ssh root@YOUR_SERVER_IP"
+        - "apt update && apt upgrade -y"
+        - "hostnamectl set-hostname odoo-{{provider_slug}}"
+
+    - step: 3
+      title: "Install PostgreSQL {{postgresql_version}}"
+      commands:
+        - "apt install -y postgresql-{{postgresql_version}}"
+        - "sudo -u postgres createuser -s odoo"
+        - "sudo -u postgres createdb odoo --owner=odoo"
+
+    - step: 4
+      title: "Install Odoo {{odoo_version}} Dependencies"
+      commands:
+        - "{{LOAD:odoo_versions/odoo_{{odoo_version}}.yml → installation_reference.ubuntu_24_04.install_dependencies}}"
+
+    - step: 5
+      title: "Install wkhtmltopdf (PDF Generation)"
+      commands:
+        - "{{LOAD:odoo_versions/odoo_{{odoo_version}}.yml → installation_reference.ubuntu_24_04.install_wkhtmltopdf}}"
+
+    - step: 6
+      title: "Create Odoo System User"
+      commands:
+        - "{{LOAD:odoo_versions/odoo_{{odoo_version}}.yml → installation_reference.ubuntu_24_04.create_odoo_user}}"
+
+    - step: 7
+      title: "Clone Odoo {{odoo_version}} from GitHub"
+      commands:
+        - "{{LOAD:odoo_versions/odoo_{{odoo_version}}.yml → installation_reference.ubuntu_24_04.clone_odoo}}"
+
+    - step: 8
+      title: "Install Python Dependencies"
+      commands:
+        - "{{LOAD:odoo_versions/odoo_{{odoo_version}}.yml → installation_reference.ubuntu_24_04.install_python_deps}}"
+
+    - step: 9
+      title: "Configure Odoo (odoo.conf)"
+      commands:
+        - "sudo nano /etc/odoo/odoo.conf"
+      config_snippet: |
+        [options]
+        admin_passwd = YOUR_MASTER_PASSWORD_HERE
+        db_host = False
+        db_port = False
+        db_user = odoo
+        db_password = False
+        addons_path = /opt/odoo/odoo{{odoo_version}}/addons
+        logfile = /var/log/odoo/odoo-server.log
+        xmlrpc_port = 8069
+        workers = {{CALCULATE:(vcpu * 2) + 1}}
+        proxy_mode = True
+
+    - step: 10
+      title: "Create Systemd Service for Odoo"
+      commands:
+        - "sudo nano /etc/systemd/system/odoo.service"
+      service_snippet: |
+        [Unit]
+        Description=Odoo {{odoo_version}}
+        After=network.target postgresql.service
+
+        [Service]
+        Type=simple
+        User=odoo
+        Group=odoo
+        ExecStart=/opt/odoo/odoo{{odoo_version}}/odoo-bin -c /etc/odoo/odoo.conf
+
+        [Install]
+        WantedBy=multi-user.target
+
+    - step: 11
+      title: "Install and Configure NGINX Reverse Proxy"
+      commands:
+        - "{{LOAD:common/nginx_config.yml → complete_config_template}}"
+
+    - step: 12
+      title: "Setup SSL with Let's Encrypt"
+      commands:
+        - "{{LOAD:common/nginx_config.yml → ssl_config.certbot_install}}"
+        - "{{LOAD:common/nginx_config.yml → ssl_config.obtain_certificate}}"
+
+    - step: 13
+      title: "Configure Firewall (UFW)"
+      commands:
+        - "{{LOAD:common/security_hardening.yml → os_security.firewall_ufw}}"
+
+    - step: 14
+      title: "Tune PostgreSQL for Odoo"
+      commands:
+        - "# Edit /etc/postgresql/{{postgresql_version}}/main/postgresql.conf"
+        - "{{LOAD:common/postgresql_tuning.yml → configurations.{{size_category}}.postgresql_conf}}"
+
+    - step: 15
+      title: "Start Odoo and Enable Auto-Start"
+      commands:
+        - "sudo systemctl start odoo"
+        - "sudo systemctl enable odoo"
+        - "sudo systemctl status odoo"
+
+  estimated_deployment_time: "30-45 minutes"
+  skill_level_required: "Intermediate (basic Linux command line knowledge)"
+
+  common_pitfalls:
+    - issue: "{{provider}}-specific: {{LOAD:cloud_providers/{{provider}}.yml → common_pitfalls}}"
+    - issue: "Odoo won't start after installation"
+      solution: "Check logs: sudo journalctl -u odoo -n 50. Common causes: PostgreSQL not running, incorrect file permissions, missing Python dependencies."
+    - issue: "502 Bad Gateway from NGINX"
+      solution: "Verify Odoo is running on port 8069: sudo netstat -tlnp | grep 8069. Check NGINX error log: sudo tail -f /var/log/nginx/error.log"
+    - issue: "SSL certificate won't install"
+      solution: "Ensure DNS A record points to your server IP. Check firewall allows port 80/443."
+
+  security_best_practices:
+    - "{{LOAD:common/security_hardening.yml → security_checklist}}"
+
+  cost_estimate:
+    monthly_server_cost: "{{LOAD:cloud_providers/{{provider}}.yml → recommended_instances[instance_type].pricing.monthly}}"
+    setup_cost: "$0 (DIY deployment)"
+    ongoing_costs: "Domain name (~$12/year), optional backup storage"
+
+  alternative_deployment_options:
+    - option: "Managed Odoo.sh"
+      pros: "Zero maintenance, automatic backups, enterprise support"
+      cons: "Higher cost (~$24/user/month), less control"
+    - option: "Docker deployment on {{provider}}"
+      pros: "Easier updates, containerized isolation"
+      cons: "Slightly more complex initial setup"
+      link: "deploy-odoo-{{odoo_version}}-docker-{{provider_slug}}"
+
+  next_steps:
+    - "Configure Odoo modules (CRM, Sales, Inventory)"
+    - "Import your data from existing systems"
+    - "Set up automated backups (see: odoo-backup-automation)"
+    - "Configure email sending (SMTP)"
+    - "Add custom domain and branding"
+
+# --- AI生成的核心内容 (由 pseo-analysis-agent 填充) ---
+ai_generated_content:
+  introduction: ""
+  step_by_step_guide: ""
+  troubleshooting_section: ""
+  conclusion: ""
+
+# --- AI生成的转化元素 (由 pseo-conversion-copywriter 填充) ---
+conversion_assets:
+  - component_type: "callout-box"
+    placement_hint: "after_introduction"
+    generated_copy: {}
+
+  - component_type: "benefit-list"
+    placement_hint: "before_steps"
+    generated_copy: {}
+
+  - component_type: "cta-button"
+    placement_hint: "after_conclusion"
+    generated_copy: {}
+
+# --- AI生成的战略内链 (由 pseo-link-architect 填充) ---
+intelligent_links:
+  - link_type: "related_tool"
+    context: "After deployment, automate backups"
+    generated_link: {}
+
+  - link_type: "advanced_guide"
+    context: "Scale to high availability"
+    generated_link: {}
+
+  - link_type: "funnel_entry_point"
+    context: "Complete implementation toolkit"
+    generated_link: {}
+
+# --- AI生成的可视化元素 (由 pseo-visualization-agent 填充) ---
+visualizations:
+  - chart_type: "mermaid"
+    placement_hint: "after_architecture_description"
+    data_context: "deployment_architecture flow"
+    mermaid_chart_syntax: ""

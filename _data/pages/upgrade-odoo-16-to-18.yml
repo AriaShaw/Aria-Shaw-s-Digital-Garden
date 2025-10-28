@@ -1,0 +1,226 @@
+metadata:
+  title: 'Upgrade Odoo 16 to 18: Multi-Version Migration Guide 2025'
+  description: Upgrade from Odoo 16 to 18 (skipping version 17). Includes two-step
+    migration path, compatibility checks, and risk mitigation strategies.
+  intent_type: practitioner
+  page_slug: upgrade-odoo-16-to-18
+static_data:
+  source_version: '16.0'
+  target_version: '18.0'
+  upgrade_path: 'Two-step: 16.0 → 17.0 → 18.0'
+  upgrade_difficulty: Medium to High
+  why_two_step:
+    reason: Odoo does not officially support skipping major versions
+    explanation: Database migration scripts are version-sequential. Upgrading 16→17→18
+      ensures all schema changes are applied correctly.
+    direct_upgrade_risk: High - may result in data corruption or missing migrations
+  recommended_approach:
+  - phase: 'Phase 1: Upgrade 16.0 → 17.0'
+    duration: 1-2 weeks (including testing)
+  - phase: 'Phase 2: Upgrade 17.0 → 18.0'
+    duration: 1 week (faster, fewer breaking changes)
+  - phase: Total Timeline
+    duration: 2-3 weeks (conservative estimate)
+  major_changes_16_to_18:
+    python:
+      odoo_16: Python 3.7-3.10
+      odoo_17: Python 3.8-3.11
+      odoo_18: Python 3.10+
+      action: Upgrade to Python 3.10 or 3.11
+    postgresql:
+      odoo_16: PostgreSQL 10+
+      odoo_18: PostgreSQL 12+
+      action: Upgrade PostgreSQL if using version 10 or 11
+    nodejs:
+      odoo_16: Node.js 14+
+      odoo_18: Node.js 16+
+      action: Update Node.js for website/e-commerce features
+  breaking_changes_16_to_17:
+  - Removed website_sale_delivery module (merged into website_sale)
+  - Changed accounting reconciliation widget
+  - Updated purchase order workflow
+  breaking_changes_17_to_18:
+  - Python 3.10+ mandatory
+  - Deprecated ORM methods removed
+  - JavaScript framework updates
+  step_by_step_upgrade:
+    preparation:
+    - task: Full system backup
+      commands:
+      - pg_dump odoo16_db > backup_16_full_$(date +%Y%m%d).sql
+      - tar -czf filestore_16_$(date +%Y%m%d).tar.gz ~/.local/share/Odoo/filestore/
+    - task: Document current setup
+      checklist:
+      - List all installed modules
+      - Note custom module versions
+      - Export user permissions (security groups)
+      - Document integrations (APIs, payment gateways)
+    phase_1_upgrade_to_17:
+    - step: Download Odoo 17
+      commands:
+      - cd /opt
+      - sudo git clone https://github.com/odoo/odoo --depth 1 --branch 17.0 odoo-17
+    - step: Install dependencies
+      commands:
+      - cd /opt/odoo-17
+      - pip3 install -r requirements.txt
+    - step: Create test database
+      commands:
+      - createdb odoo17_test
+      - psql odoo17_test < backup_16_full_*.sql
+    - step: Run upgrade to 17
+      commands:
+      - /opt/odoo-17/odoo-bin -d odoo17_test -u all --stop-after-init
+      - tail -f /var/log/odoo/odoo-server.log
+    - step: Test Odoo 17
+      duration: 3-5 days
+      focus_areas:
+      - Sales and invoicing
+      - Inventory operations
+      - Custom reports
+      - Website functionality
+    - step: Production upgrade to 17
+      commands:
+      - sudo systemctl stop odoo
+      - /opt/odoo-17/odoo-bin -d odoo_production -u all --stop-after-init
+      - '# Update systemd service'
+      - sudo systemctl start odoo
+    phase_2_upgrade_to_18:
+    - step: Backup Odoo 17 database
+      commands:
+      - pg_dump odoo_production > backup_17_to_18_$(date +%Y%m%d).sql
+    - step: Download Odoo 18
+      commands:
+      - cd /opt
+      - sudo git clone https://github.com/odoo/odoo --depth 1 --branch 18.0 odoo-18
+    - step: Upgrade Python if needed
+      commands:
+      - 'python3 --version  # Must be 3.10+'
+      - sudo apt install python3.10
+    - step: Test upgrade to 18
+      commands:
+      - createdb odoo18_test
+      - psql odoo18_test < backup_17_to_18_*.sql
+      - /opt/odoo-18/odoo-bin -d odoo18_test -u all --stop-after-init
+    - step: Production upgrade to 18
+      commands:
+      - sudo systemctl stop odoo
+      - /opt/odoo-18/odoo-bin -d odoo_production -u all --stop-after-init
+      - sudo systemctl start odoo
+  estimated_downtime:
+    phase_1: 1-2 hours (16 → 17 upgrade)
+    phase_2: 30min-1 hour (17 → 18 upgrade)
+    total: 2-3 hours (database upgrade time only)
+  module_compatibility_strategy:
+  - Update community modules to version 18 (check OCA GitHub)
+  - Contact custom module developers for compatibility
+  - Consider disabling non-critical modules temporarily
+  - Use Odoo Studio (Enterprise) to recreate simple customizations
+  risk_mitigation:
+  - strategy: Parallel Testing
+    description: Run Odoo 16, 17, and 18 test databases simultaneously
+  - strategy: Phased Rollout
+    description: Upgrade department by department (start with Finance)
+  - strategy: Extended Parallel Run
+    description: Keep Odoo 16 running read-only for 30 days post-upgrade
+  common_issues:
+  - issue: Module incompatibility at version 17
+    solution: Disable problematic module, upgrade to 18, then re-enable
+  - issue: Custom fields missing after upgrade
+    solution: Check ir_model_fields table, may need manual migration script
+  - issue: Performance degradation
+    solution: Run VACUUM ANALYZE on PostgreSQL, rebuild indexes
+  post_upgrade_optimization:
+  - 'Update PostgreSQL statistics: ANALYZE;'
+  - 'Rebuild Odoo assets: odoo-bin --update=all --stop-after-init'
+  - Clear browser cache for all users
+  - Review and optimize slow queries (enable pg_stat_statements)
+ai_generated_content:
+  introduction: 'Migrating business operations from QuickBooks, Excel spreadsheets,
+    NetSuite, or legacy ERP systems to Odoo requires production infrastructure ready
+    before you begin data migration activities. Attempting to set up servers while
+    simultaneously mapping data fields, validating import procedures, and training
+    users guarantees timeline delays and increases the risk of errors that corrupt
+    production data.
+
+
+    Managed Odoo providers restrict customization, charge premium rates for additional
+    storage or compute resources, and create vendor lock-in through proprietary backup
+    formats and limited data export options. When you deploy on infrastructure you
+    control, you eliminate these restrictions while gaining operational knowledge
+    that survives vendor changes and protects against arbitrary price increases.'
+  upgrade_guide: ''
+  conclusion: 'You achieved practical digital sovereignty by deploying Upgrade Odoo
+    16 to 18: Multi-Version Migration Guide 2025 on infrastructure you control at
+    {{ cost_estimate.monthly_total }} monthly. This system eliminates dependency on
+    managed Odoo hosting providers who lock you into proprietary platforms, restrict
+    customization freedom, and increase prices arbitrarily because they control your
+    data and operational access. You own your Odoo instance, your PostgreSQL database,
+    your backup strategy, and your ability to migrate to different infrastructure
+    providers if business requirements or pricing changes.
+
+
+    The sovereignty advantage compounds over time. Your Odoo data exports to standard
+    PostgreSQL dump files that restore on any compatible infrastructure—{{ provider_name
+    }}, competing cloud providers, or on-premises hardware. Your configuration exists
+    in documented scripts and files you can version control and replicate. Your operational
+    knowledge transfers across infrastructure platforms because you understand the
+    underlying components rather than provider-specific management interfaces. This
+    portability and knowledge ownership protect against vendor lock-in and preserve
+    your ability to optimize costs as your business evolves.
+
+
+    Maintain this sovereignty by documenting your deployment, testing your backups
+    quarterly, and staying current with security updates. The infrastructure you built
+    today serves business needs for years while remaining under your control—that
+    combination of longevity, ownership, and cost efficiency justifies the deployment
+    effort and establishes the operational foundation your business deserves.
+
+    '
+conversion_assets:
+- component_type: callout-box
+  placement_hint: ''
+  generated_copy:
+    headline: Complete Your Digital Sovereignty Stack
+    body: 'You deployed Upgrade Odoo 16 to 18: Multi-Version Migration Guide 2025
+      infrastructure for {{ cost_estimate.monthly_total }} monthly—sixty percent less
+      than managed hosting. But infrastructure alone doesn''t deliver digital sovereignty.
+      You need backup automation, disaster recovery procedures, migration tooling,
+      performance optimization, and operational runbooks.
+
+
+      The **Odoo Digital Sovereignty Master Pack** combines all five modules into
+      a complete operational toolkit: Strategic Command for TCO analysis and roadmap
+      planning, Technical Architecture for server selection and configuration, Data
+      Migration for risk-free transitions, Fortress Protection for backup automation
+      and disaster recovery, and Operations Console for monitoring and performance
+      tuning.
+
+      '
+    cta_text: Get the Master Pack – $699
+    cta_link: https://ariashaw.gumroad.com/l/odoo-master-pack
+    cta_context: 200+ pages of implementation guides, 15+ production-tested scripts,
+      TCO calculators, migration frameworks, and troubleshooting decision trees.
+intelligent_links:
+- link_url: /toolkit/odoo-backup-readiness-checker/
+  anchor_text: Free Backup Health Check
+  context: Test your backup strategy in 60 seconds
+  priority: 1.5
+- link_url: /deploy-odoo-18-on-google/
+  anchor_text: Fresh Odoo 18 Deployment Options
+  context: Consider fresh deployment as alternative to upgrade
+  priority: 5
+visualizations:
+- chart_type: mermaid
+  placement_hint: after_introduction
+  data_context: version_upgrade workflow visualization
+  mermaid_chart_syntax: "flowchart TB\n    Start([Current Version]) --> Backup[Full\
+    \ Backup]\n    Backup --> Stage[Setup Staging]\n    Stage --> Upgrade[Upgrade\
+    \ Modules]\n    Upgrade --> Test{Tests Pass?}\n    Test -->|Yes| Production[Deploy\
+    \ Production]\n    Test -->|No| Rollback[Rollback & Fix]\n    Rollback --> Upgrade\n\
+    \    Production --> End([Upgraded])\n\n    classDef critical fill:#f8d7da,stroke:#dc3545,stroke-width:2px\n\
+    \    classDef process fill:#f8f9fa,stroke:#6c757d,stroke-width:1px\n    classDef\
+    \ success fill:#d4edda,stroke:#28a745,stroke-width:2px\n    classDef decision\
+    \ fill:#fff3cd,stroke:#ffc107,stroke-width:2px\n\n    class Backup,Rollback critical\n\
+    \    class Stage,Upgrade,Production process\n    class Start,End success\n   \
+    \ class Test decision"

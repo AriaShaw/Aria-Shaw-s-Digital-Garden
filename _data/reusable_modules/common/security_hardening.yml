@@ -1,0 +1,304 @@
+# Security Hardening for Odoo Deployments - Common Module
+# Last Updated: 2025-10-27
+# Applicable to: All Odoo versions, Linux-based deployments
+# Verification Status: ✅ VERIFIED
+
+# Operating System Security
+os_security:
+  firewall_ufw:
+    enable: "sudo ufw enable"
+    allow_ssh: "sudo ufw allow 22/tcp"
+    allow_http: "sudo ufw allow 80/tcp"
+    allow_https: "sudo ufw allow 443/tcp"
+    deny_odoo_direct: "sudo ufw deny 8069/tcp"  # Block direct access to Odoo port
+    deny_postgresql: "sudo ufw deny 5432/tcp"  # PostgreSQL should only listen on localhost
+    status: "sudo ufw status verbose"
+
+  fail2ban:
+    install: "sudo apt install -y fail2ban"
+    configure_ssh:
+      jail: "sshd"
+      enabled: true
+      port: 22
+      filter: "sshd"
+      logpath: "/var/log/auth.log"
+      maxretry: 5
+      bantime: 3600
+      findtime: 600
+
+    configure_nginx:
+      jail: "nginx-limit-req"
+      enabled: true
+      port: "http,https"
+      filter: "nginx-limit-req"
+      logpath: "/var/log/nginx/error.log"
+      maxretry: 10
+      bantime: 600
+      findtime: 600
+
+  automatic_updates:
+    ubuntu_debian:
+      install: "sudo apt install -y unattended-upgrades"
+      configure: "sudo dpkg-reconfigure -plow unattended-upgrades"
+
+  ssh_hardening:
+    disable_root_login: "PermitRootLogin no"
+    disable_password_auth: "PasswordAuthentication no"  # Use SSH keys only
+    change_default_port: "Port 2222"  # Optional, reduces automated attacks
+    restart_ssh: "sudo systemctl restart sshd"
+
+# PostgreSQL Security
+postgresql_security:
+  listen_address:
+    setting: "listen_addresses = 'localhost'"
+    location: "/etc/postgresql/15/main/postgresql.conf"
+    reason: "Prevents external database connections"
+
+  pg_hba_conf:
+    location: "/etc/postgresql/15/main/pg_hba.conf"
+    recommended_rules:
+      - "local   all             postgres                                peer"
+      - "local   all             all                                     peer"
+      - "host    odoo            odoo             127.0.0.1/32           md5"
+      - "host    odoo            odoo             ::1/128                md5"
+
+  strong_password:
+    command: "ALTER USER odoo WITH PASSWORD 'STRONG_RANDOM_PASSWORD_HERE';"
+    recommendation: "Use 32+ character passwords with mixed case, numbers, symbols"
+
+  ssl_encryption:
+    enable: "ssl = on"
+    certificate: "ssl_cert_file = '/etc/ssl/certs/ssl-cert-snakeoil.pem'"
+    key: "ssl_key_file = '/etc/ssl/private/ssl-cert-snakeoil.key'"
+
+  backup_encryption:
+    command: "pg_dump odoo | gpg -c --cipher-algo AES256 > odoo_backup_$(date +%Y%m%d).dump.gpg"
+
+# Odoo Application Security
+odoo_security:
+  admin_password:
+    setting: "admin_passwd"
+    location: "/etc/odoo/odoo.conf"
+    recommendation: "Set a strong master password to protect database management"
+    generate: "python3 -c 'import secrets; print(secrets.token_urlsafe(32))'"
+
+  limit_database_operations:
+    list_db: "list_db = False"  # Hide database selector
+    dbfilter: "dbfilter = ^odoo$"  # Only allow specific database name
+    reason: "Prevents attackers from discovering database names"
+
+  proxy_mode:
+    setting: "proxy_mode = True"
+    reason: "Required when behind NGINX/Apache to trust X-Forwarded-* headers"
+
+  log_level:
+    production: "log_level = warn"
+    debugging: "log_level = debug"
+    recommendation: "Use 'warn' in production, 'debug' only for troubleshooting"
+
+  data_dir_permissions:
+    owner: "odoo:odoo"
+    permissions: "700"
+    command: "sudo chown -R odoo:odoo /var/lib/odoo && sudo chmod -R 700 /var/lib/odoo"
+
+  config_file_permissions:
+    owner: "odoo:odoo"
+    permissions: "600"
+    command: "sudo chown odoo:odoo /etc/odoo/odoo.conf && sudo chmod 600 /etc/odoo/odoo.conf"
+
+  disable_xml_rpc:
+    setting: "xmlrpc = False"  # Odoo 11+
+    reason: "Disables insecure XML-RPC interface if not needed"
+
+  session_security:
+    secure_cookie: "Set in NGINX: proxy_cookie_flags ~ secure httponly samesite=strict;"
+
+# SSL/TLS Configuration
+ssl_tls:
+  let_s_encrypt:
+    install_certbot: "sudo apt install -y certbot python3-certbot-nginx"
+    obtain_cert: "sudo certbot --nginx -d odoo.example.com"
+    auto_renew: "sudo certbot renew --dry-run"
+    cron: "0 3 * * * certbot renew --quiet --post-hook 'systemctl reload nginx'"
+
+  ssl_protocols:
+    recommended: "TLSv1.2 TLSv1.3"
+    deprecated: "SSLv2, SSLv3, TLSv1, TLSv1.1"
+
+  ssl_ciphers:
+    modern: "ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384"
+
+  hsts:
+    header: "Strict-Transport-Security: max-age=31536000; includeSubDomains; preload"
+
+# Access Control
+access_control:
+  odoo_user_permissions:
+    principle: "Least privilege - only grant necessary permissions"
+    admin_accounts: "Limit number of administrator accounts to 2-3"
+    password_policy: "Enforce strong passwords, regular rotation"
+
+  two_factor_authentication:
+    module: "auth_totp (Odoo Enterprise)"
+    alternative: "Implement at reverse proxy level with fail2ban"
+
+  ip_whitelisting:
+    nginx_example: |
+      location /web/database {
+        allow 192.168.1.0/24;  # Internal network only
+        deny all;
+      }
+
+  api_rate_limiting:
+    nginx_limit_req: "limit_req_zone $binary_remote_addr zone=api:10m rate=10r/s;"
+
+# File Upload Security
+file_upload:
+  allowed_extensions:
+    recommendation: "Restrict to necessary file types only"
+    example: "Allow: .pdf, .png, .jpg, .xlsx, .csv. Block: .exe, .sh, .php"
+
+  antivirus_scanning:
+    clamav_install: "sudo apt install -y clamav clamav-daemon"
+    clamav_update: "sudo freshclam"
+    odoo_integration: "Use Odoo module 'attachment_antivirus' or custom hook"
+
+  file_permissions:
+    filestore: "sudo chown -R odoo:odoo /var/lib/odoo/filestore && sudo chmod -R 700 /var/lib/odoo/filestore"
+
+# Backup Security
+backup_security:
+  encrypted_backups:
+    postgres: "pg_dump odoo | gpg -c --cipher-algo AES256 > backup.dump.gpg"
+    filestore: "tar -czf - /var/lib/odoo/filestore | gpg -c --cipher-algo AES256 > filestore.tar.gz.gpg"
+
+  offsite_storage:
+    recommendation: "Store encrypted backups in geographically separate location"
+    services: "AWS S3, Backblaze B2, Wasabi (with encryption at rest)"
+
+  backup_retention:
+    local: "7 days"
+    offsite: "30-90 days"
+    compliance: "Follow industry regulations (GDPR, HIPAA, etc.)"
+
+  test_restores:
+    frequency: "Monthly"
+    process: "Restore to staging environment, verify data integrity"
+
+# Monitoring & Intrusion Detection
+monitoring:
+  log_monitoring:
+    odoo_logs: "/var/log/odoo/odoo-server.log"
+    nginx_logs: "/var/log/nginx/odoo.access.log, /var/log/nginx/odoo.error.log"
+    postgresql_logs: "/var/log/postgresql/postgresql-15-main.log"
+    system_logs: "/var/log/auth.log, /var/log/syslog"
+
+  alerts:
+    failed_login_attempts: "Monitor Odoo logs for repeated authentication failures"
+    database_errors: "Alert on PostgreSQL connection failures or query errors"
+    disk_space: "Alert when disk usage exceeds 80%"
+
+  tools:
+    - "Fail2ban (automatic IP banning)"
+    - "Logwatch (daily log summaries)"
+    - "OSSEC (host-based intrusion detection)"
+    - "Prometheus + Grafana (metrics visualization)"
+
+# Compliance & Auditing
+compliance:
+  gdpr:
+    - "Implement data retention policies"
+    - "Enable user data export/deletion features"
+    - "Log all data access and modifications"
+    - "Encrypt personal data at rest and in transit"
+
+  pci_dss:
+    - "Never store full credit card numbers in Odoo"
+    - "Use tokenization via payment gateways (Stripe, Authorize.net)"
+    - "Implement network segmentation"
+    - "Regular security scans and penetration testing"
+
+  audit_logging:
+    enable: "Install 'audit_log' module or use PostgreSQL triggers"
+    retention: "Minimum 12 months, longer for compliance industries"
+
+# Incident Response
+incident_response:
+  preparation:
+    - "Document incident response procedures"
+    - "Maintain list of emergency contacts"
+    - "Regular security drills"
+
+  detection:
+    - "Monitor logs for suspicious activity"
+    - "Automated alerts for anomalies"
+    - "User reporting mechanism"
+
+  containment:
+    - "Isolate affected systems: sudo ufw deny from <attacker_ip>"
+    - "Disable compromised accounts"
+    - "Preserve evidence (log snapshots)"
+
+  recovery:
+    - "Restore from clean backups"
+    - "Patch vulnerabilities"
+    - "Change all passwords and keys"
+
+  post_incident:
+    - "Document incident timeline"
+    - "Root cause analysis"
+    - "Update security procedures"
+    - "Notify affected parties (if required by law)"
+
+# Security Checklist
+security_checklist:
+  - item: "Firewall configured (UFW/iptables)"
+    critical: true
+  - item: "Fail2ban installed and configured"
+    critical: true
+  - item: "SSL/TLS certificate installed (Let's Encrypt)"
+    critical: true
+  - item: "PostgreSQL listening on localhost only"
+    critical: true
+  - item: "Strong passwords set (Odoo admin, PostgreSQL, OS users)"
+    critical: true
+  - item: "SSH key authentication enabled, password auth disabled"
+    critical: true
+  - item: "Automated security updates enabled"
+    critical: true
+  - item: "Encrypted backups stored offsite"
+    critical: true
+  - item: "Odoo list_db = False"
+    critical: false
+  - item: "Two-factor authentication enabled for admins"
+    critical: false
+  - item: "Log monitoring and alerting configured"
+    critical: false
+  - item: "File upload restrictions implemented"
+    critical: false
+  - item: "Regular security audits scheduled"
+    critical: false
+
+# Vulnerability Scanning
+vulnerability_scanning:
+  tools:
+    - name: "Nmap"
+      usage: "sudo nmap -sV -p- <server_ip>"
+      purpose: "Port scanning, service detection"
+
+    - name: "Nikto"
+      usage: "nikto -h https://odoo.example.com"
+      purpose: "Web server vulnerability scanning"
+
+    - name: "OWASP ZAP"
+      usage: "GUI-based web application security scanner"
+      purpose: "Comprehensive web app testing"
+
+  frequency: "Quarterly, or after major changes"
+
+last_verified_date: "2025-10-27"
+data_sources:
+  - "OWASP Top 10"
+  - "CIS Benchmark for Ubuntu Linux"
+  - "Odoo Security Best Practices"
+  - "NIST Cybersecurity Framework"

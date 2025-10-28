@@ -1,0 +1,221 @@
+metadata:
+  title: 'Upgrade Odoo 17 to 18: Complete 2025 Migration Guide'
+  description: Step-by-step guide to upgrade from Odoo 17 to 18. Includes compatibility
+    checks, module updates, breaking changes, and rollback procedures.
+  intent_type: practitioner
+  page_slug: upgrade-odoo-17-to-18
+static_data:
+  source_version: '17.0'
+  target_version: '18.0'
+  upgrade_path: Direct (17.0 → 18.0)
+  upgrade_difficulty: Low to Medium
+  key_changes_in_18:
+  - Python 3.10+ required (17 supported Python 3.8+)
+  - PostgreSQL 12+ required (17 minimum was 10)
+  - New website builder features
+  - Enhanced Studio capabilities
+  - Improved mobile responsiveness
+  breaking_changes:
+  - change: Python version requirement
+    impact: Must upgrade to Python 3.10 or higher before Odoo upgrade
+    fix: sudo apt install python3.10 python3.10-dev
+  - change: Removed deprecated ORM methods
+    impact: Custom modules using old API may break
+    fix: Update custom code to use current ORM methods
+  - change: Changed JavaScript framework components
+    impact: Custom web widgets may need updates
+    fix: Review Odoo 18 JavaScript migration guide
+  upgrade_steps:
+  - step: 1
+    name: Pre-Upgrade Assessment
+    commands:
+    - '# Check current version'
+    - odoo-bin --version
+    - '# List custom modules'
+    - ls /opt/odoo/custom-addons
+    - '# Check Python version'
+    - python3 --version
+  - step: 2
+    name: Backup Everything
+    commands:
+    - '# Database backup'
+    - pg_dump odoo17_db > backup_17_to_18_$(date +%Y%m%d).sql
+    - '# Filestore backup'
+    - tar -czf filestore_17_$(date +%Y%m%d).tar.gz ~/.local/share/Odoo/filestore/
+    - '# Custom addons backup'
+    - tar -czf custom_addons_17_$(date +%Y%m%d).tar.gz /opt/odoo/custom-addons/
+  - step: 3
+    name: Install Python 3.10+ (if needed)
+    commands:
+    - sudo apt update
+    - sudo apt install -y python3.10 python3.10-dev python3.10-venv
+    - sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.10
+      1
+  - step: 4
+    name: Download Odoo 18
+    commands:
+    - cd /opt
+    - sudo git clone https://github.com/odoo/odoo --depth 1 --branch 18.0 odoo-18
+    - sudo chown -R odoo:odoo /opt/odoo-18
+  - step: 5
+    name: Install Odoo 18 Dependencies
+    commands:
+    - sudo apt install -y python3-pip
+    - cd /opt/odoo-18
+    - pip3 install -r requirements.txt
+  - step: 6
+    name: Create Test Database
+    commands:
+    - createdb odoo18_test
+    - psql odoo18_test < backup_17_to_18_$(date +%Y%m%d).sql
+  - step: 7
+    name: Run Upgrade on Test DB
+    commands:
+    - /opt/odoo-18/odoo-bin -d odoo18_test -u all --stop-after-init
+    - '# Check logs for errors'
+    - tail -n 200 /var/log/odoo/odoo-server.log | grep -i error
+  - step: 8
+    name: Test Critical Functions
+    tasks:
+    - Create test sale order
+    - Generate invoice
+    - Process payment
+    - Run inventory operation
+    - Check reports
+    - Test custom modules
+  - step: 9
+    name: Production Upgrade (if tests pass)
+    commands:
+    - sudo systemctl stop odoo
+    - sudo -u odoo /opt/odoo-18/odoo-bin -d odoo_production -u all --stop-after-init
+    - '# Update systemd service to use odoo-18'
+    - sudo nano /etc/systemd/system/odoo.service
+    - '# Change ExecStart to /opt/odoo-18/odoo-bin'
+    - sudo systemctl daemon-reload
+    - sudo systemctl start odoo
+  module_compatibility:
+    core_modules: All Odoo 17 core modules compatible with 18
+    community_modules:
+      check_required: true
+      oca_modules: Check OCA repository for 18.0 branch
+      custom_modules: Test individually, update if needed
+    apps_store:
+      note: Apps from Odoo Apps Store may not have 18.0 version yet
+      action: Contact app developer or wait for update
+  estimated_downtime:
+    small_db: 30 minutes - 1 hour (< 10GB database)
+    medium_db: 1-2 hours (10-50GB database)
+    large_db: 2-4 hours (50GB+ database)
+  rollback_procedure:
+  - step: Stop Odoo 18
+    command: sudo systemctl stop odoo
+  - step: Drop upgraded database
+    command: dropdb odoo_production
+  - step: Restore Odoo 17 backup
+    command: createdb odoo_production && psql odoo_production < backup_17_to_18_*.sql
+  - step: Revert systemd service
+    command: 'sudo nano /etc/systemd/system/odoo.service  # Change back to /opt/odoo-17'
+  - step: Restart Odoo 17
+    command: sudo systemctl daemon-reload && sudo systemctl start odoo
+  post_upgrade_checklist:
+  - Verify all users can login
+  - Test payment gateway integrations
+  - Check scheduled actions (Settings > Technical > Automation > Scheduled Actions)
+  - Validate email server configuration
+  - Test external API integrations
+  - Review security settings
+  common_issues:
+  - issue: Module X not compatible with 18
+    solution: Disable module temporarily, contact developer
+  - issue: Custom reports not rendering
+    solution: Update QWeb templates to Odoo 18 syntax
+  - issue: Database upgrade errors
+    solution: Check /var/log/odoo/odoo-server.log, fix data issues, retry
+ai_generated_content:
+  introduction: 'Upgrade Odoo 17 to 18: Complete 2025 Migration Guide requires specific
+    technical decisions at every layer—operating system selection, PostgreSQL version
+    and configuration, Python environment setup, NGINX reverse proxy implementation,
+    SSL certificate management, and systemd service orchestration. This guide makes
+    those decisions explicit, explaining the reasoning behind each configuration choice
+    and the production implications of alternatives you might encounter.
+
+
+    Performance under load separates viable production infrastructure from systems
+    that collapse during month-end financial closes or customer deadline pressure.
+    The specific instance configuration in this guide delivers predictable response
+    times even when users simultaneously run complex inventory calculations, generate
+    financial statements, and process bulk sales orders.'
+  upgrade_guide: ''
+  conclusion: 'The Upgrade Odoo 17 to 18: Complete 2025 Migration Guide architecture
+    you implemented on {{ provider_name }} provides a scaling foundation that supports
+    business growth without infrastructure rebuilds. The current {{ recommended_instance.instance_type
+    }} configuration handles {{ recommended_instance.recommended_for }}, but the deployment
+    patterns you followed—separated application and database tiers, reverse proxy
+    SSL termination, automated backup systems—scale linearly when user counts increase.
+
+
+    Growth-related infrastructure changes require minimal effort because you built
+    on production-grade foundations from the start. Upgrading to a larger instance
+    type takes thirty minutes and involves stopping services, resizing the instance
+    through {{ provider_name }}''s console, adjusting PostgreSQL parameters for the
+    new RAM allocation, and restarting services. Adding a read replica for reporting
+    workloads requires similar effort. Implementing high availability with load-balanced
+    application servers builds on the NGINX configuration you already deployed. You
+    established architectural patterns that accommodate scaling without starting over.
+
+
+    Your immediate focus should shift to operational excellence. Validate your backup
+    restoration process by performing a complete recovery to a test instance. Establish
+    monitoring baselines for normal CPU, memory, and disk usage patterns so you can
+    identify anomalies before they cause outages. Document configuration decisions
+    and administrative procedures for future team members. The infrastructure work
+    is complete—operational maturity and application layer optimization represent
+    your next leverage points for extracting maximum value from this {{ cost_estimate.monthly_total
+    }} monthly infrastructure investment.
+
+    '
+conversion_assets:
+- component_type: callout-box
+  placement_hint: ''
+  generated_copy:
+    headline: Automate Your Backup Strategy
+    body: 'The deployment you just completed needs backup protection before you migrate
+      production data. Manual backup procedures fail when administrators forget to
+      run them during critical periods or when month-end workload pressure pushes
+      routine maintenance to "tomorrow."
+
+
+      Start with our **free Enhanced Backup Script** that handles daily PostgreSQL
+      backups with compression and rotation policies. The script runs unattended via
+      cron, eliminating manual backup failures that cost businesses thousands in lost
+      data.
+
+      '
+    cta_text: Download Free Backup Script
+    cta_link: /downloads/enhanced-backup-script/
+    cta_context: Free production-ready script with installation guide. Upgrade to
+      Fortress Protection module for cloud sync, disaster recovery drills, and enterprise
+      features.
+intelligent_links:
+- link_url: /toolkit/odoo-backup-readiness-checker/
+  anchor_text: Free Backup Health Check
+  context: Test your backup strategy in 60 seconds
+  priority: 1.5
+- link_url: /deploy-odoo-18-on-google/
+  anchor_text: Fresh Odoo 18 Deployment Options
+  context: Consider fresh deployment as alternative to upgrade
+  priority: 5
+visualizations:
+- chart_type: mermaid
+  placement_hint: after_introduction
+  data_context: version_upgrade workflow visualization
+  mermaid_chart_syntax: "flowchart TB\n    Start([Current Version]) --> Backup[Full\
+    \ Backup]\n    Backup --> Stage[Setup Staging]\n    Stage --> Upgrade[Upgrade\
+    \ Modules]\n    Upgrade --> Test{Tests Pass?}\n    Test -->|Yes| Production[Deploy\
+    \ Production]\n    Test -->|No| Rollback[Rollback & Fix]\n    Rollback --> Upgrade\n\
+    \    Production --> End([Upgraded])\n\n    classDef critical fill:#f8d7da,stroke:#dc3545,stroke-width:2px\n\
+    \    classDef process fill:#f8f9fa,stroke:#6c757d,stroke-width:1px\n    classDef\
+    \ success fill:#d4edda,stroke:#28a745,stroke-width:2px\n    classDef decision\
+    \ fill:#fff3cd,stroke:#ffc107,stroke-width:2px\n\n    class Backup,Rollback critical\n\
+    \    class Stage,Upgrade,Production process\n    class Start,End success\n   \
+    \ class Test decision"
