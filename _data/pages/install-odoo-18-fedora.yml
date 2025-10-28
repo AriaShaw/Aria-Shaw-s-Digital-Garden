@@ -1,13 +1,16 @@
 metadata:
-  title: 'Install Odoo {{odoo_version}} on {{os_name}} {{os_version}}: Complete Guide'
-  description: Step-by-step installation of Odoo {{odoo_version}} on {{os_name}} {{os_version}}.
-    Includes PostgreSQL setup, dependencies, and systemd service configuration.
+  title: 'Install Odoo 18 on Fedora : Complete Guide'
+  description: Step-by-step installation of Odoo 18 on Fedora . Includes PostgreSQL
+    setup, dependencies, and systemd service configuration.
   intent_type: practitioner
-  page_slug: install-odoo-{{odoo_version}}-on-{{os_slug}}
+  page_slug: install-odoo-18-fedora
+  draft_metadata:
+    template_generated: true
+    template_generation_date: '2025-10-28T19:32:18.465048'
 static_data:
-  os_name: '{{os_name}}'
-  os_version: '{{os_version}}'
-  odoo_version: '{{odoo_version}}'
+  os_name: Fedora
+  os_version: ''
+  odoo_version: '18'
   installation_method: from_source
   installation_steps:
   - Update system packages
@@ -20,13 +23,12 @@ static_data:
   - Create systemd service
   - Start and enable Odoo
 ai_generated_content:
-  introduction: 'Install Odoo {{odoo_version}} on {{os_name}} {{os_version}}: Complete
-    Guide requires specific technical decisions at every layer—operating system selection,
-    PostgreSQL version and configuration, Python environment setup, NGINX reverse
-    proxy implementation, SSL certificate management, and systemd service orchestration.
-    This guide makes those decisions explicit, explaining the reasoning behind each
-    configuration choice and the production implications of alternatives you might
-    encounter.
+  introduction: 'Install Odoo 18 on Fedora : Complete Guide requires specific technical
+    decisions at every layer—operating system selection, PostgreSQL version and configuration,
+    Python environment setup, NGINX reverse proxy implementation, SSL certificate
+    management, and systemd service orchestration. This guide makes those decisions
+    explicit, explaining the reasoning behind each configuration choice and the production
+    implications of alternatives you might encounter.
 
 
     The technical foundation you establish today determines whether your Odoo system
@@ -34,15 +36,205 @@ ai_generated_content:
     rebuilds when you hit performance ceilings. Configuration decisions during deployment—PostgreSQL
     tuning, worker process calculations, NGINX timeout settings—either provide growth
     headroom or create bottlenecks that demand expensive remediation later.'
-  installation_guide: ''
+  installation_guide: 'Migrating business operations from QuickBooks, Excel spreadsheets,
+    NetSuite, or legacy ERP systems to Odoo requires production infrastructure ready
+    before you begin data migration activities. Attempting to set up servers while
+    simultaneously mapping data fields, validating import procedures, and training
+    users guarantees timeline delays and increases the risk of errors that corrupt
+    production data.
+
+
+    Performance under load separates viable production infrastructure from systems
+    that collapse during month-end financial closes or customer deadline pressure.
+    The specific instance configuration in this guide delivers predictable response
+    times even when users simultaneously run complex inventory calculations, generate
+    financial statements, and process bulk sales orders.
+
+
+    ## Server Requirements and Architecture Decisions
+
+
+    Installing Odoo 18 on Fedora  requires careful consideration of your architecture
+    before executing installation commands. The single-server deployment documented
+    here suits businesses with 10-50 concurrent users and handles typical ERP workloads—accounting,
+    inventory management, CRM, sales orders—without performance degradation. If your
+    team exceeds 50 users or processes high-volume transactions (e-commerce with thousands
+    of daily orders, manufacturing with complex bill-of-materials calculations), you
+    need separated application and database tiers from the start.
+
+
+    Fedora delivers cutting-edge package versions and rapid access to new PostgreSQL
+    releases, Python versions, and system utilities. The distribution serves as upstream
+    for RHEL, meaning innovations tested in Fedora production deployments eventually
+    stabilize in enterprise distributions. This makes Fedora suitable for development
+    environments and businesses comfortable with more frequent update cycles.
+
+
+    The installation process follows a specific sequence because later steps depend
+    on earlier components. PostgreSQL must exist before you create the Odoo database
+    user. Python dependencies must install before you clone Odoo''s source code. System
+    users must exist before you assign file ownership. Skipping steps or reordering
+    them creates cryptic permission errors and missing library failures that waste
+    hours of troubleshooting time.
+
+
+    ## Step-by-Step Installation Walkthrough
+
+
+    The deployment begins with system preparation. Connect to your server via SSH
+    and update the package repositories to current versions. Fedora  ships with PostgreSQL
+    16, which provides the JSON indexing and full-text search capabilities Odoo requires
+    for efficient record filtering and inventory lookups. Install PostgreSQL first,
+    create a dedicated database user named ''odoo'' with superuser privileges, and
+    initialize an empty database that Odoo will populate during first launch.
+
+
+    Python 3.11 serves as Odoo''s runtime environment. Fedora''s default repositories
+    include the correct version along with essential development headers and build
+    tools. Install the full Python development package, not just the interpreter,
+    because Odoo''s requirements include C-extension libraries like lxml and Pillow
+    that compile native code during installation. Missing gcc or python-dev packages
+    cause installation failures with unclear error messages.
+
+
+    wkhtmltopdf handles PDF generation for invoices, reports, and shipping labels.
+    Odoo embeds this external tool through system calls, so installation location
+    and permissions matter. Download the version specifically packaged for Fedora  from
+    wkhtmltopdf.org, not your distribution''s repositories—the packaged version includes
+    Qt patches that fix rendering issues with complex CSS layouts and ensure consistent
+    page breaks in multi-page reports.
+
+
+    Create a system user named ''odoo'' to run the application process. This dedicated
+    user provides security isolation—if attackers compromise the Odoo process, they
+    gain only ''odoo'' user permissions, not root access to your entire system. Configure
+    this user without shell access and with a locked password, then clone Odoo''s
+    source repository into /opt/odoo/odoo18/ with this user as the owner.
+
+
+    The configuration file at /etc/odoo/odoo.conf contains parameters that determine
+    Odoo''s runtime behavior. Set the master password (admin_passwd) to a strong random
+    string—this password protects database creation, backup restoration, and module
+    installation operations. Configure worker processes using the formula (CPU cores
+    × 2) + 1 to balance concurrency with memory usage. Set proxy_mode = True if you''ll
+    add NGINX reverse proxy later, which most production deployments require for SSL
+    termination.
+
+
+    The systemd service configuration ensures Odoo starts automatically after server
+    reboots and restarts after crashes. Create /etc/systemd/system/odoo.service with
+    proper User, Group, and ExecStart directives pointing to Odoo''s binary and configuration
+    file. Enable the service with systemctl enable, then start it with systemctl start.
+    Check status with systemctl status odoo—you should see "active (running)" and
+    log entries showing successful database connection.
+
+
+    ## Database Performance Tuning
+
+
+    PostgreSQL''s default configuration optimizes for minimal memory usage, not performance.
+    Your Odoo database will execute thousands of queries daily—product searches, invoice
+    generation, inventory updates—and default settings leave 90% of available RAM
+    unused. Edit postgresql.conf to set shared_buffers = 25% of system RAM, effective_cache_size
+    = 50% of system RAM, and work_mem = 16MB for complex query optimization.
+
+
+    Maintenance tasks prevent performance degradation over time. Configure PostgreSQL
+    to automatically vacuum deleted records, which accumulate as users edit and delete
+    transactions. Enable autovacuum with aggressive settings: autovacuum_max_workers
+    = 3, autovacuum_naptime = 10 seconds. Create a weekly cron job to run REINDEX
+    DATABASE on your Odoo database, which rebuilds indexes fragmented by constant
+    updates.
+
+
+    ## Security Hardening
+
+
+    The installation creates an accessible Odoo instance on port 8069, but production
+    security requires multiple layers. Install NGINX as a reverse proxy to handle
+    HTTPS termination, request filtering, and rate limiting. Configure NGINX to forward
+    requests from port 443 to Odoo''s port 8069, setting proxy_read_timeout to 600
+    seconds—Odoo''s module installation and large report generation operations require
+    several minutes to complete, and lower timeouts kill these requests prematurely.
+
+
+    Let''s Encrypt provides free SSL certificates with automated renewal. Install
+    Certbot, run certification for your domain, and add a cron job for automatic renewal
+    every 60 days. SSL certificates expire after 90 days, but renewing at 60 days
+    provides safety margin for renewal failures or network issues.
+
+
+    Firewall configuration requires precision. Use UFW (Uncomplicated Firewall) to
+    allow SSH (port 22), HTTP (port 80), and HTTPS (port 443) inbound traffic. Block
+    direct access to port 8069 from external networks—Odoo should only accept connections
+    from NGINX''s localhost proxy. This prevents attackers from bypassing your reverse
+    proxy''s security features and accessing Odoo''s administrative interfaces directly.
+
+
+    ## Backup Strategy
+
+
+    Production deployments require automated, tested backups before you add real business
+    data. Install the backup script from the Fortress Protection module, which performs
+    PostgreSQL dumps with compression, copies filestore attachments, and syncs backups
+    to off-site storage. Schedule daily backups at 2 AM when user activity minimizes,
+    and retain 30 daily backups, 12 monthly backups, and 7 yearly backups.
+
+
+    Test restoration procedures within the first week. Create a test instance, restore
+    yesterday''s backup, and verify all data loads correctly and modules function
+    properly. Untested backups provide false security—you only discover corruption
+    or missing steps when disaster strikes and recovery fails.
+
+
+    ## Monitoring and Operational Visibility
+
+
+    The free Odoo Health Monitor script tracks CPU usage, memory consumption, disk
+    space, and PostgreSQL connection counts every 5 minutes. Configure alert thresholds
+    at 80% CPU utilization and 500MB free memory—these provide early warning before
+    performance degrades to user-visible levels. Log monitoring output to /var/log/odoo-health.log
+    for historical analysis.
+
+
+    Monitor disk space growth carefully. Odoo''s filestore directory accumulates uploaded
+    attachments, generated PDFs, and cached report images. Plan for 10-20GB growth
+    annually for typical SMB usage, more for document-heavy workflows. Set up alerts
+    when free space drops below 20% to prevent emergency cleanups during month-end
+    processing.
+
+
+    ## Post-Installation Verification
+
+
+    Access Odoo through your browser at https://yourdomain.com. The first-access setup
+    wizard prompts for master password verification, database creation, and initial
+    module selection. Install at minimum: Sales, Inventory, and Accounting for business
+    operations visibility. Add Website and E-commerce if you sell online. Skip unnecessary
+    modules initially—you can install them later without disrupting operations.
+
+
+    Create administrative and standard user accounts immediately. Don''t use the default
+    ''admin'' user for daily operations—create a personal account with limited privileges
+    and reserve ''admin'' for system configuration and module installation. This separation
+    prevents accidental configuration changes and provides audit trail clarity.
+
+
+    The deployment time from SSH connection to operational Odoo instance takes 30-45
+    minutes for experienced administrators, 60-90 minutes for first-time installations.
+    This time investment establishes infrastructure that supports business operations
+    for years, not months. You built a production-grade foundation that handles growth
+    from ten to one hundred users without architectural rebuilds—that scalability
+    and control define digital sovereignty.
+
+    '
   troubleshooting: ''
-  conclusion: 'Your Install Odoo {{odoo_version}} on {{os_name}} {{os_version}}: Complete
-    Guide deployment on {{ provider_name }} is production-ready. The system includes
-    automated daily backups with off-site storage, SSL certificates with automatic
-    renewal, firewall rules that balance security with access requirements, and PostgreSQL
-    tuning optimized for {{ recommended_instance.ram_gb }}GB RAM. You can begin migrating
-    data, configuring Odoo modules, and onboarding users immediately without additional
-    infrastructure preparation.
+  conclusion: 'Your Install Odoo 18 on Fedora : Complete Guide deployment on {{ provider_name
+    }} is production-ready. The system includes automated daily backups with off-site
+    storage, SSL certificates with automatic renewal, firewall rules that balance
+    security with access requirements, and PostgreSQL tuning optimized for {{ recommended_instance.ram_gb
+    }}GB RAM. You can begin migrating data, configuring Odoo modules, and onboarding
+    users immediately without additional infrastructure preparation.
 
 
     The deployment process you followed represents years of accumulated production
@@ -67,11 +259,11 @@ conversion_assets:
   placement_hint: ''
   generated_copy:
     headline: Complete Your Digital Sovereignty Stack
-    body: 'You deployed Install Odoo {{odoo_version}} on {{os_name}} {{os_version}}:
-      Complete Guide infrastructure for {{ cost_estimate.monthly_total }} monthly—sixty
-      percent less than managed hosting. But infrastructure alone doesn''t deliver
-      digital sovereignty. You need backup automation, disaster recovery procedures,
-      migration tooling, performance optimization, and operational runbooks.
+    body: 'You deployed Install Odoo 18 on Fedora : Complete Guide infrastructure
+      for {{ cost_estimate.monthly_total }} monthly—sixty percent less than managed
+      hosting. But infrastructure alone doesn''t deliver digital sovereignty. You
+      need backup automation, disaster recovery procedures, migration tooling, performance
+      optimization, and operational runbooks.
 
 
       The **Odoo Digital Sovereignty Master Pack** combines all five modules into
@@ -99,11 +291,11 @@ intelligent_links:
   anchor_text: Free Backup Automation Script
   context: Protect your deployment with automated backups
   priority: 3
-- link_url: /upgrade-odoo-16-to-18/
+- link_url: /guides/upgrade-odoo-16-to-18/
   anchor_text: Upgrade Path to Odoo 18
   context: Plan for future version upgrades
   priority: 5
-- link_url: /install-odoo-18-on-ubuntu-2404/
+- link_url: /guides/install-odoo-18-rocky-linux/
   anchor_text: Install on {target.os}
   context: Alternative OS options
   priority: 8

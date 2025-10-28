@@ -7,6 +7,8 @@ metadata:
   draft_metadata:
     created_by: pseo-bulk-generator
     template_id: docker_deployment
+    template_generated: true
+    template_generation_date: '2025-10-28T19:32:18.453616'
 static_data:
   deployment_method: Docker Compose
   odoo_version: '18'
@@ -63,6 +65,91 @@ ai_generated_content:
     The monitoring foundation provides visibility into system health. You built infrastructure
     that serves business needs for years, not months—that durability and control define
     digital sovereignty.
+
+    '
+  deployment_guide: 'The first decision determines your cost structure for the next
+    year: which instance type matches your workload without overprovisioning. The
+    t3.medium offers 2 vCPUs and 4GB RAM at $30.37 monthly on-demand, suitable for
+    businesses with 10-30 users running standard Odoo modules like Sales, CRM, and
+    Inventory. If your team exceeds 30 users or you''re deploying manufacturing or
+    accounting modules with complex calculations, the m6i.large provides 8GB RAM at
+    $89.28 monthly, which prevents the memory-swap thrashing that kills Odoo responsiveness
+    under load. The wildcard option is the t4g.medium, an ARM-based Graviton instance
+    at $24.30 monthly that delivers identical specs to the t3.medium but costs 20%
+    less.
+
+
+    Launch your chosen instance through the cloud provider''s console with Ubuntu
+    24.04 LTS as the base image. AWS provides official Ubuntu AMIs updated monthly,
+    eliminating the malware-laden AMI risk that plagues community images. During launch
+    configuration, create a new key pair for SSH access and download the private key
+    immediately—AWS doesn''t store it, and you''ll need it for every future access.
+
+
+    Security group configuration requires precision, not paranoia. Create a new security
+    group with four inbound rules: SSH (port 22) restricted to your office IP address
+    or VPN endpoint, HTTP (port 80) and HTTPS (port 443) open to 0.0.0.0/0 for public
+    access, and port 8069 open to 0.0.0.0/0 temporarily during initial setup. After
+    SSL works, delete the 8069 rule entirely. Many guides leave it open permanently,
+    creating an unencrypted access vector that bypasses your HTTPS enforcement.
+
+
+    Connect via SSH and begin the installation phase. You face a fundamental architecture
+    choice: Docker Compose or native installation. Docker Compose offers faster initial
+    deployment and easier version upgrades—you change one line in a docker-compose.yml
+    file and restart containers. Native installation gives you deeper control over
+    Python dependencies and system-level optimizations, plus it avoids the 10-15%
+    performance overhead Docker networking layers introduce. For most the cloud provider
+    deployments, native installation makes sense because you''re already managing
+    infrastructure—you''ve chosen the cloud provider over managed hosting precisely
+    to maximize control.
+
+
+    Install PostgreSQL 16 locally first with apt, then add the Odoo 18 repository,
+    install the odoo package, and configure it to bind to localhost only while you
+    test functionality.
+
+
+    The PostgreSQL decision carries operational weight. Self-hosting PostgreSQL on
+    the same instance simplifies the architecture and eliminates additional database
+    costs, but puts database administration on your team. You''ll handle vacuum operations,
+    index optimization, and backup verification yourself. RDS managed PostgreSQL removes
+    those responsibilities and adds automated backups with point-in-time recovery,
+    but introduces 2-4ms network latency between Odoo and the database that impacts
+    report generation and bulk import operations. If your team lacks a database specialist
+    and your Odoo instance handles under 100 concurrent users, RDS is the pragmatic
+    choice. Launch a db.t3.micro with 20GB storage and enable automated backups with
+    a 7-day retention window.
+
+
+    SSL termination through Let''s Encrypt provides free certificates with automated
+    renewal, but requires a reverse proxy. Install Nginx, create a server block that
+    proxies requests from port 443 to Odoo''s port 8069, and run Certbot to obtain
+    certificates for your domain. The critical configuration detail most guides omit:
+    set proxy_read_timeout to 600 seconds in your Nginx server block. Odoo''s module
+    installation and large report generation operations can take several minutes,
+    and Nginx''s default 60-second timeout kills these requests prematurely, generating
+    cryptic "bad gateway" errors.
+
+
+    AWS-specific optimizations start with EBS volume tuning. Enable EBS optimization
+    on your EC2 instance through the console, which dedicates network bandwidth to
+    storage traffic and prevents disk I/O from competing with Odoo''s HTTP traffic.
+    Attach an IAM role to the instance with CloudWatch agent permissions, install
+    the CloudWatch agent, and configure it to stream Odoo''s log files to CloudWatch
+    Logs.
+
+
+    The Reserved Instance decision happens after you validate the deployment. Run
+    on-demand pricing for the first month while you confirm the instance size handles
+    your actual workload and user count. Once you''ve settled on the right size, purchase
+    a one-year reserved instance through the EC2 console—you''ll pay the full year
+    upfront or choose monthly payments at a slight premium. The 36% savings compounds
+    monthly, totaling $133 annually for a t3.medium reservation.
+
+
+    The total monthly the cloud provider cost for a production Odoo 18 deployment
+    runs approximately $30-50. This includes compute, storage, and data transfer costs.
 
     '
 conversion_assets:

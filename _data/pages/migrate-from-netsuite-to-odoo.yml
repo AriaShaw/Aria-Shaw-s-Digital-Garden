@@ -4,6 +4,9 @@ metadata:
     conversion, multi-subsidiary setup, and advanced workflow migration.
   intent_type: practitioner
   page_slug: migrate-from-netsuite-to-odoo
+  draft_metadata:
+    template_generated: true
+    template_generation_date: '2025-10-28T19:32:18.572412'
 static_data:
   source_system: NetSuite
   target_system: Odoo 18
@@ -51,7 +54,230 @@ ai_generated_content:
     rebuilds when you hit performance ceilings. Configuration decisions during deployment—PostgreSQL
     tuning, worker process calculations, NGINX timeout settings—either provide growth
     headroom or create bottlenecks that demand expensive remediation later.'
-  migration_guide: ''
+  migration_guide: 'Migrating from NetSuite to Odoo 18 requires production infrastructure
+    ready before you begin data extraction and transformation activities. Attempting
+    to export data, build import scripts, and configure the target system simultaneously
+    guarantees timeline delays and increases the risk of errors that corrupt production
+    data or require complete restarts.
+
+
+    The migration follows a structured four-phase workflow that balances speed with
+    risk mitigation. Phase one focuses on dependency mapping and data extraction.
+    Phase two establishes the Odoo environment with equivalent functionality. Phase
+    three handles data transformation and import validation. Phase four manages cutover
+    procedures and parallel running verification.
+
+
+    ## Phase 1: Preparation and Data Extraction (Week 1-2)
+
+
+    NetSuite''s data export capabilities vary by edition and user permissions. Standard
+    approach uses CSV Search with 5,000 row export limit per search—large datasets
+    require multiple searches with date range filters to overcome the limit. SuiteAnalytics
+    Workbooks provide more flexible exports with custom joins across modules but still
+    face row limits. For enterprise-scale exports, NetSuite''s RESTlet API or SuiteTalk
+    SOAP API enable programmatic data extraction without row limits. Third-party ETL
+    tools like Dell Boomi, Celigo, or custom Python scripts using NetSuite SDK provide
+    most control for complex, high-volume exports.
+
+
+    Document every NetSuite feature your team currently uses because each one represents
+    a capability you''ll need to replicate or replace in Odoo. NetSuite''s SuiteScript
+    customizations (Client Scripts, User Event Scripts, Scheduled Scripts) must convert
+    to Odoo''s Python server actions, automated actions, or custom modules. NetSuite
+    workflows become Odoo''s automated action chains and approval routing. NetSuite''s
+    saved searches translate to Odoo''s filtered views and custom reports. NetSuite''s
+    subsidiary structure maps to Odoo Enterprise''s multi-company architecture with
+    consolidated reporting.
+
+
+    Export your complete dataset including master data (customers, products, vendors)
+    and transactional history (sales orders, invoices, payments). Most migrations
+    import 2-3 years of historical transactions for reporting continuity—older data
+    can remain archived in NetSuite for reference without loading into Odoo''s active
+    database.
+
+
+    ## Phase 2: Odoo Environment Setup (Week 2-3)
+
+
+    Deploy Odoo 18 on production-grade infrastructure before attempting any data imports.
+    The deployment guide earlier in this document establishes the technical foundation—PostgreSQL
+    database, application server, backup systems, monitoring tools. Complete the entire
+    deployment and verify system stability before proceeding to data import activities.
+
+
+    Install the Odoo modules that match your NetSuite functionality:
+
+
+    - Accounting module provides GL, AP/AR, bank reconciliation
+
+    - Sales module handles quotes, orders, and invoicing
+
+    - Purchase module manages procurement and vendor bills
+
+    - Inventory module with multi-location support
+
+    - Manufacturing module (MRP) for bill of materials and work orders
+
+    - Consolidation module for multi-company reporting (Enterprise only)
+
+
+    Configure each module''s settings to match your business processes. Payment terms,
+    tax rates, fiscal year definitions, currency handling, warehouse locations—these
+    configurations must exist before importing transactional data that references
+    them. Missing configurations cause import failures with cryptic error messages
+    about missing foreign key relationships.
+
+
+    ## Phase 3: Data Transformation and Import (Week 3-6)
+
+
+    NetSuite-specific data structures don''t directly map to Odoo''s data model. NetSuite''s
+    sophisticated subsidiary/multi-company structure requires Odoo Enterprise for
+    equivalent functionality. NetSuite subsidiaries become separate res.company records
+    in Odoo with inter-company transactions and consolidated financial reporting.
+    NetSuite''s custom fields and records require Odoo Studio to recreate custom fields
+    and models. NetSuite''s item record structure (inventory item, non-inventory item,
+    service item, assembly item) maps to Odoo product types (stockable, consumable,
+    service) with Bills of Materials for assembly items.
+
+
+    The transformation process converts NetSuite exports into Odoo-compatible CSV
+    files or XML-RPC API calls. Start with master data in this specific order:
+
+
+    1. **Chart of Accounts and Tax Definitions**: Financial configuration must exist
+    before importing transactions that reference account codes and tax rates. Export
+    NetSuite''s chart of accounts, map to Odoo''s account.account structure, and import
+    via CSV through Accounting module.
+
+
+    2. **Customers and Vendors (Partners)**: NetSuite''s customer and vendor records
+    become res.partner entries in Odoo. Map contact information, billing/shipping
+    addresses, payment terms, and credit limits. Handle NetSuite''s customer and vendor
+    records with subsidiary assignments require mapping to Odoo''s partner model with
+    company_id field set appropriately. NetSuite contact records (separate from customer
+    records) become contact-type partner records as children of main partner record.
+    Handle NetSuite''s category and class dimensions by mapping to Odoo analytic tags
+    or creating custom partner fields.
+
+
+    3. **Products and Services**: Export product catalog from NetSuite with SKUs,
+    descriptions, pricing, and cost data. Map to Odoo''s product.product and product.template
+    models, handling NetSuite Items with multiple pricing levels map to Odoo pricelists
+    with customer or quantity-based rules. NetSuite''s matrix items (single item with
+    multiple size/color options) require Odoo product variant structure. NetSuite''s
+    assembly items with BOM structure become Odoo BoMs (product.bom) with component
+    product.bom.line records. Handle NetSuite''s item fulfillment locations by mapping
+    to Odoo stock locations within warehouses.
+
+
+    4. **Transactional History**: Import sales orders, invoices, and payments chronologically
+    starting from your cutoff date (typically 2-3 years prior). NetSuite''s transaction
+    hierarchy (Sales Order > Item Fulfillment > Invoice > Payment) maps to Odoo''s
+    sale.order > stock.picking > account.move > account.payment workflow. Export NetSuite
+    transactions maintaining parent-child relationships—reference NetSuite''s internal
+    IDs or transaction numbers to link related Odoo records during import. Handle
+    NetSuite''s journal entries with multiple subsidiaries by creating inter-company
+    entries in Odoo or consolidating at import time.
+
+
+    Test imports extensively in a staging environment. Create a full copy of your
+    production Odoo instance, import a small data subset (10-20 records per type),
+    and verify all relationships and calculations work correctly. Fix mapping errors
+    in your transformation scripts, then import progressively larger datasets until
+    you''ve validated the complete process.
+
+
+    ## Phase 4: Cutover and Parallel Running (Week 6-8)
+
+
+    The migration cutover requires careful timing to minimize business disruption.
+    Schedule go-live for a weekend or slow business period when you can afford several
+    hours of downtime for final data synchronization and validation.
+
+
+    Execute the cutover in this sequence:
+
+
+    1. **Final NetSuite backup**: Perform a complete backup of NetSuite immediately
+    before starting cutover procedures. This backup serves as your rollback point
+    if critical issues emerge.
+
+
+    2. **Delta synchronization**: Import all NetSuite transactions created since your
+    last test import. Your transformation scripts should handle incremental imports,
+    updating existing records and creating new ones without duplication.
+
+
+    3. **Data validation checks**: Run comprehensive validation queries comparing
+    NetSuite totals to Odoo totals. Customer count, product count, outstanding invoice
+    balances, accounts receivable aging—these must match exactly. Discrepancies indicate
+    import errors that require immediate correction.
+
+
+    4. **User training and access provisioning**: Create Odoo user accounts for all
+    staff members with appropriate security groups and access rights. Conduct brief
+    training sessions covering navigation, transaction entry, and report generation
+    for their specific roles.
+
+
+    5. **Parallel running period**: Operate both NetSuite and Odoo simultaneously
+    for 1-2 weeks. Enter new transactions in Odoo while maintaining NetSuite read-only
+    access for reference. This parallel period builds confidence and identifies gaps
+    in Odoo configuration or training.
+
+
+    6. **NetSuite decommissioning**: After successful parallel running validates Odoo
+    handles all business operations correctly, decommission NetSuite. Cancel any subscriptions,
+    export final reports for archival, and establish read-only access for historical
+    data queries.
+
+
+    ## Common Migration Pitfalls and Solutions
+
+
+    **Challenge**: NetSuite SuiteScript business logic embedded in 50+ custom scripts.
+
+    **Solution**: Audit all SuiteScripts to identify business rules versus UI enhancements.
+    Business rules (pricing calculations, approval workflows, integration logic) must
+    recreate in Odoo Python code. UI enhancements often have Odoo equivalents through
+    view customization. Budget significant development time for complex script conversion.
+
+
+    **Challenge**: NetSuite OneWorld multi-subsidiary setup with inter-company transactions.
+
+    **Solution**: Requires Odoo Enterprise edition for multi-company features. Configure
+    res.company records for each subsidiary, set up inter-company transaction rules,
+    and configure consolidation charts of accounts. NetSuite''s complex subsidiary
+    accounting requires careful mapping to Odoo''s inter-company system.
+
+
+    **Underestimating data cleanup effort**: NetSuite accumulates years of inconsistent
+    data entry—duplicate customer records, products with incorrect categories, transactions
+    with missing information. Plan to spend 30-40% of migration time cleaning source
+    data before import. Bad data imported into Odoo multiplies cleanup effort tenfold.
+
+
+    **Inadequate testing of edge cases**: Your transformation scripts handle common
+    scenarios correctly but fail on edge cases like products without SKUs, customers
+    with only shipping addresses (no billing), or voided invoices. Test your import
+    process with the full dataset, not samples, to expose these issues before go-live.
+
+
+    **Insufficient user training**: Power users with years of NetSuite experience
+    struggle with Odoo''s different workflows and terminology. Budget for comprehensive
+    training and provide job aids documenting common tasks in Odoo terms. Plan for
+    productivity dips during the first 2-4 weeks post-migration.
+
+
+    **Missing validation procedures**: Without systematic validation, you discover
+    missing data or incorrect mappings weeks after go-live when reconstruction becomes
+    impossible. Create validation checklists comparing NetSuite reports to Odoo equivalents:
+    customer aging reports, inventory valuation, profit & loss statements.
+
+    '
   conclusion: 'The Migrate from NetSuite to Odoo 18: Enterprise Migration Guide 2025
     system you deployed demonstrates that production-grade Odoo infrastructure doesn''t
     require managed service providers or enterprise support contracts. You configured
@@ -107,12 +333,12 @@ intelligent_links:
   anchor_text: Free Backup Script
   context: Backup your data before migration
   priority: 1
-- link_url: /migrate-from-quickbooks-to-odoo/
-  anchor_text: 'Migrate from QuickBooks to Odoo 18: Complete 2025 Guide'
+- link_url: /guides/migrate-from-shopify-to-odoo/
+  anchor_text: 'Migrate from Shopify to Odoo 18: E-commerce Integration Guide 2025'
   context: Alternative migration paths
   priority: 8
-- link_url: /migrate-from-shopify-to-odoo/
-  anchor_text: 'Migrate from Shopify to Odoo 18: E-commerce Integration Guide 2025'
+- link_url: /guides/migrate-from-excel-to-odoo/
+  anchor_text: 'Migrate from Excel to Odoo 18: SMB Data Import Guide 2025'
   context: Alternative migration paths
   priority: 8
 visualizations:

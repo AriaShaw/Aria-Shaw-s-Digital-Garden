@@ -4,6 +4,9 @@ metadata:
     persistent volumes, and load balancing.
   intent_type: practitioner
   page_slug: install-odoo-18-kubernetes
+  draft_metadata:
+    template_generated: true
+    template_generation_date: '2025-10-28T19:32:18.478832'
 static_data:
   deployment_method: Kubernetes + Helm
   odoo_version: '18'
@@ -57,6 +60,199 @@ ai_generated_content:
     and establish your backup validation routine. The infrastructure foundation you
     built today won''t require revisiting until you outgrow {{ recommended_instance.recommended_for
     }}—and when that growth happens, you have the operational knowledge to scale confidently.
+
+    '
+  installation_guide: 'Migrating business operations from QuickBooks, Excel spreadsheets,
+    NetSuite, or legacy ERP systems to Odoo requires production infrastructure ready
+    before you begin data migration activities. Attempting to set up servers while
+    simultaneously mapping data fields, validating import procedures, and training
+    users guarantees timeline delays and increases the risk of errors that corrupt
+    production data.
+
+
+    Performance under load separates viable production infrastructure from systems
+    that collapse during month-end financial closes or customer deadline pressure.
+    The specific instance configuration in this guide delivers predictable response
+    times even when users simultaneously run complex inventory calculations, generate
+    financial statements, and process bulk sales orders.
+
+
+    ## Server Requirements and Architecture Decisions
+
+
+    Installing Odoo 18 on Ubuntu 24.04 requires careful consideration of your architecture
+    before executing installation commands. The single-server deployment documented
+    here suits businesses with 10-50 concurrent users and handles typical ERP workloads—accounting,
+    inventory management, CRM, sales orders—without performance degradation. If your
+    team exceeds 50 users or processes high-volume transactions (e-commerce with thousands
+    of daily orders, manufacturing with complex bill-of-materials calculations), you
+    need separated application and database tiers from the start.
+
+
+    Ubuntu Server LTS releases receive five years of security updates and package
+    stability guarantees, which means your Odoo installation avoids forced upgrades
+    when you''re focused on business operations rather than system administration.
+    The distribution''s widespread adoption ensures package availability and community
+    troubleshooting resources—when you encounter issues, someone else has already
+    documented the solution.
+
+
+    The installation process follows a specific sequence because later steps depend
+    on earlier components. PostgreSQL must exist before you create the Odoo database
+    user. Python dependencies must install before you clone Odoo''s source code. System
+    users must exist before you assign file ownership. Skipping steps or reordering
+    them creates cryptic permission errors and missing library failures that waste
+    hours of troubleshooting time.
+
+
+    ## Step-by-Step Installation Walkthrough
+
+
+    The deployment begins with system preparation. Connect to your server via SSH
+    and update the package repositories to current versions. Ubuntu 24.04 ships with
+    PostgreSQL 16, which provides the JSON indexing and full-text search capabilities
+    Odoo requires for efficient record filtering and inventory lookups. Install PostgreSQL
+    first, create a dedicated database user named ''odoo'' with superuser privileges,
+    and initialize an empty database that Odoo will populate during first launch.
+
+
+    Python 3.11 serves as Odoo''s runtime environment. Ubuntu''s default repositories
+    include the correct version along with essential development headers and build
+    tools. Install the full Python development package, not just the interpreter,
+    because Odoo''s requirements include C-extension libraries like lxml and Pillow
+    that compile native code during installation. Missing gcc or python-dev packages
+    cause installation failures with unclear error messages.
+
+
+    wkhtmltopdf handles PDF generation for invoices, reports, and shipping labels.
+    Odoo embeds this external tool through system calls, so installation location
+    and permissions matter. Download the version specifically packaged for Ubuntu
+    24.04 from wkhtmltopdf.org, not your distribution''s repositories—the packaged
+    version includes Qt patches that fix rendering issues with complex CSS layouts
+    and ensure consistent page breaks in multi-page reports.
+
+
+    Create a system user named ''odoo'' to run the application process. This dedicated
+    user provides security isolation—if attackers compromise the Odoo process, they
+    gain only ''odoo'' user permissions, not root access to your entire system. Configure
+    this user without shell access and with a locked password, then clone Odoo''s
+    source repository into /opt/odoo/odoo18/ with this user as the owner.
+
+
+    The configuration file at /etc/odoo/odoo.conf contains parameters that determine
+    Odoo''s runtime behavior. Set the master password (admin_passwd) to a strong random
+    string—this password protects database creation, backup restoration, and module
+    installation operations. Configure worker processes using the formula (CPU cores
+    × 2) + 1 to balance concurrency with memory usage. Set proxy_mode = True if you''ll
+    add NGINX reverse proxy later, which most production deployments require for SSL
+    termination.
+
+
+    The systemd service configuration ensures Odoo starts automatically after server
+    reboots and restarts after crashes. Create /etc/systemd/system/odoo.service with
+    proper User, Group, and ExecStart directives pointing to Odoo''s binary and configuration
+    file. Enable the service with systemctl enable, then start it with systemctl start.
+    Check status with systemctl status odoo—you should see "active (running)" and
+    log entries showing successful database connection.
+
+
+    ## Database Performance Tuning
+
+
+    PostgreSQL''s default configuration optimizes for minimal memory usage, not performance.
+    Your Odoo database will execute thousands of queries daily—product searches, invoice
+    generation, inventory updates—and default settings leave 90% of available RAM
+    unused. Edit postgresql.conf to set shared_buffers = 25% of system RAM, effective_cache_size
+    = 50% of system RAM, and work_mem = 16MB for complex query optimization.
+
+
+    Maintenance tasks prevent performance degradation over time. Configure PostgreSQL
+    to automatically vacuum deleted records, which accumulate as users edit and delete
+    transactions. Enable autovacuum with aggressive settings: autovacuum_max_workers
+    = 3, autovacuum_naptime = 10 seconds. Create a weekly cron job to run REINDEX
+    DATABASE on your Odoo database, which rebuilds indexes fragmented by constant
+    updates.
+
+
+    ## Security Hardening
+
+
+    The installation creates an accessible Odoo instance on port 8069, but production
+    security requires multiple layers. Install NGINX as a reverse proxy to handle
+    HTTPS termination, request filtering, and rate limiting. Configure NGINX to forward
+    requests from port 443 to Odoo''s port 8069, setting proxy_read_timeout to 600
+    seconds—Odoo''s module installation and large report generation operations require
+    several minutes to complete, and lower timeouts kill these requests prematurely.
+
+
+    Let''s Encrypt provides free SSL certificates with automated renewal. Install
+    Certbot, run certification for your domain, and add a cron job for automatic renewal
+    every 60 days. SSL certificates expire after 90 days, but renewing at 60 days
+    provides safety margin for renewal failures or network issues.
+
+
+    Firewall configuration requires precision. Use UFW (Uncomplicated Firewall) to
+    allow SSH (port 22), HTTP (port 80), and HTTPS (port 443) inbound traffic. Block
+    direct access to port 8069 from external networks—Odoo should only accept connections
+    from NGINX''s localhost proxy. This prevents attackers from bypassing your reverse
+    proxy''s security features and accessing Odoo''s administrative interfaces directly.
+
+
+    ## Backup Strategy
+
+
+    Production deployments require automated, tested backups before you add real business
+    data. Install the backup script from the Fortress Protection module, which performs
+    PostgreSQL dumps with compression, copies filestore attachments, and syncs backups
+    to off-site storage. Schedule daily backups at 2 AM when user activity minimizes,
+    and retain 30 daily backups, 12 monthly backups, and 7 yearly backups.
+
+
+    Test restoration procedures within the first week. Create a test instance, restore
+    yesterday''s backup, and verify all data loads correctly and modules function
+    properly. Untested backups provide false security—you only discover corruption
+    or missing steps when disaster strikes and recovery fails.
+
+
+    ## Monitoring and Operational Visibility
+
+
+    The free Odoo Health Monitor script tracks CPU usage, memory consumption, disk
+    space, and PostgreSQL connection counts every 5 minutes. Configure alert thresholds
+    at 80% CPU utilization and 500MB free memory—these provide early warning before
+    performance degrades to user-visible levels. Log monitoring output to /var/log/odoo-health.log
+    for historical analysis.
+
+
+    Monitor disk space growth carefully. Odoo''s filestore directory accumulates uploaded
+    attachments, generated PDFs, and cached report images. Plan for 10-20GB growth
+    annually for typical SMB usage, more for document-heavy workflows. Set up alerts
+    when free space drops below 20% to prevent emergency cleanups during month-end
+    processing.
+
+
+    ## Post-Installation Verification
+
+
+    Access Odoo through your browser at https://yourdomain.com. The first-access setup
+    wizard prompts for master password verification, database creation, and initial
+    module selection. Install at minimum: Sales, Inventory, and Accounting for business
+    operations visibility. Add Website and E-commerce if you sell online. Skip unnecessary
+    modules initially—you can install them later without disrupting operations.
+
+
+    Create administrative and standard user accounts immediately. Don''t use the default
+    ''admin'' user for daily operations—create a personal account with limited privileges
+    and reserve ''admin'' for system configuration and module installation. This separation
+    prevents accidental configuration changes and provides audit trail clarity.
+
+
+    The deployment time from SSH connection to operational Odoo instance takes 30-45
+    minutes for experienced administrators, 60-90 minutes for first-time installations.
+    This time investment establishes infrastructure that supports business operations
+    for years, not months. You built a production-grade foundation that handles growth
+    from ten to one hundred users without architectural rebuilds—that scalability
+    and control define digital sovereignty.
 
     '
 conversion_assets:

@@ -4,6 +4,9 @@ metadata:
     checks, module updates, breaking changes, and rollback procedures.
   intent_type: practitioner
   page_slug: upgrade-odoo-17-to-18
+  draft_metadata:
+    template_generated: true
+    template_generation_date: '2025-10-28T19:32:29.461987'
 static_data:
   source_version: '17.0'
   target_version: '18.0'
@@ -145,7 +148,183 @@ ai_generated_content:
     The specific instance configuration in this guide delivers predictable response
     times even when users simultaneously run complex inventory calculations, generate
     financial statements, and process bulk sales orders.'
-  upgrade_guide: ''
+  upgrade_guide: 'Upgrading Odoo from version 17 to 18.0 requires careful planning
+    and staging environment testing before touching production systems. Odoo version
+    upgrades involve database schema changes, module API modifications, and potential
+    breaking changes in custom code that demand thorough validation before go-live.
+
+
+    The upgrade path from 17 to 18.0 represents a major version jump with significant
+    framework changes. Odoo 18 introduces new UI patterns, modified ORM methods, and
+    restructured standard modules. Database migration scripts transform your existing
+    17 data structures into 18.0 format, but custom modules, third-party apps, and
+    configuration customizations require manual review and adaptation.
+
+
+    ## Pre-Upgrade Assessment and Planning
+
+
+    Begin with comprehensive inventory of your current Odoo installation. Document
+    all installed modules including custom developments and third-party apps from
+    Odoo Apps Store. List any custom fields added through Odoo Studio, server actions,
+    automated actions, and custom reports. This inventory identifies upgrade blockers—modules
+    incompatible with 18.0 or customizations requiring code changes.
+
+
+    Test the upgrade in a staging environment that mirrors production infrastructure.
+    Clone your production database, create a separate server instance running Odoo
+    18.0, and execute the upgrade process there first. Never upgrade production directly—even
+    Odoo''s official upgrade service occasionally encounters edge cases that require
+    troubleshooting.
+
+
+    **Breaking Changes in Odoo 18:**
+
+
+    - **ORM API changes**: Some model methods changed signatures or behavior. Custom
+    code using `write()`, `create()`, or compute methods requires review.
+
+    - **JavaScript framework**: Website and backend JavaScript underwent refactoring.
+    Custom JS widgets need updates for new framework.
+
+    - **View inheritance**: Some standard views restructured their XML, potentially
+    breaking view xpath-based customizations.
+
+    - **Removed modules**: Check if any installed modules were deprecated between
+    v17 and v18 (consult release notes).
+
+
+    ## Upgrade Execution Methods
+
+
+    ### Method 1: Odoo Official Upgrade Service (Recommended for Standard Installations)
+
+
+    Odoo provides a web-based upgrade service at upgrade.odoo.com that handles database
+    migration automatically. Upload your database backup (without filestore for faster
+    upload), select target version 18.0, and wait for processing. The service returns
+    a migrated database typically within hours for small databases, potentially days
+    for multi-GB databases with heavy customization.
+
+
+    Advantages: Handles complex data migrations, tested against thousands of real-world
+    databases, includes Odoo''s upgrade scripts for all standard modules. Limitations:
+    Custom modules don''t migrate automatically, requires internet connection for
+    upload/download, large databases face long processing times.
+
+
+    ### Method 2: OpenUpgrade Open-Source Alternative
+
+
+    OpenUpgrade project provides community-maintained upgrade scripts for migrating
+    between Odoo versions. Clone the OpenUpgrade repository, checkout the 18.0 branch,
+    install dependencies, and run migration against your database copy. OpenUpgrade
+    follows Odoo''s upgrade patterns but adds migrations for community modules not
+    covered by official service.
+
+
+    Advantages: Free for all Odoo editions including Community, handles popular community
+    modules, provides visibility into migration process. Limitations: Requires technical
+    expertise, may lag behind Odoo official releases, limited support for custom modules.
+
+
+    ### Method 3: Manual Module-by-Module Upgrade
+
+
+    For heavily customized installations, manual upgrade provides maximum control.
+    Install Odoo 18.0 in fresh environment, install modules one by one testing each,
+    and migrate data through custom scripts using XML-RPC API or CSV import/export.
+    This approach suits situations where custom code significantly deviates from standard
+    Odoo.
+
+
+    ## Post-Upgrade Validation and Testing
+
+
+    After upgrade completion, systematic validation ensures business operations continue
+    correctly:
+
+
+    **Data Integrity Checks**: Run SQL queries comparing record counts before and
+    after upgrade. Customer count, product count, open sales orders, invoice balances—these
+    must match exactly. Discrepancies indicate migration errors requiring immediate
+    investigation.
+
+
+    **Business Process Testing**: Execute end-to-end workflows for critical operations:
+    create sales order → deliver products → generate invoice → record payment. Test
+    procurement workflows, manufacturing orders if using MRP, and financial period
+    closing procedures. Upgraded systems sometimes exhibit subtle bugs that only appear
+    during specific workflow combinations.
+
+
+    **Custom Module Verification**: Custom modules require code review for API changes
+    between versions. Common API changes between 17 and 18 include modified compute
+    method decorators, changed field properties (like `tracking` behavior), and adjusted
+    security rule evaluation. Review all Python files in custom modules for deprecation
+    warnings. Test all custom functionality thoroughly—scheduled actions, automated
+    actions, custom reports, API integrations with external systems.
+
+
+    **User Acceptance Testing**: Involve power users from each department to validate
+    their workflows function correctly. Accounting staff test month-end closing, inventory
+    managers verify stock adjustments, sales team confirms quotation generation. Fresh
+    perspective often catches issues technical testing misses.
+
+
+    ## Rollback Planning and Go-Live Strategy
+
+
+    Maintain ability to roll back to 17 if critical issues emerge post-upgrade. Keep
+    the original production server untouched while running upgraded system in parallel.
+    Configure parallel system with different domain name or port, allowing side-by-side
+    comparison and gradual user migration.
+
+
+    Schedule upgrade cutover during slow business period—weekend or holiday when transaction
+    volume drops and you afford several hours maintenance window. Communicate upgrade
+    schedule to all users days in advance, providing fallback procedures if urgent
+    access needed during maintenance.
+
+
+    Execute go-live with cutover checklist:
+
+
+    1. Perform final production backup immediately before migration start
+
+    2. Enable maintenance mode blocking user access during upgrade
+
+    3. Execute upgrade procedure (official service, OpenUpgrade, or manual)
+
+    4. Run automated validation queries checking data integrity
+
+    5. Test critical business processes manually
+
+    6. Enable user access and monitor for issues
+
+    7. Maintain 17 system in read-only mode for 1 week as safety net
+
+
+    ## Version-Specific Considerations for 18.0
+
+
+    Odoo 18 introduces enhanced reporting capabilities, improved mobile responsiveness,
+    and optimized database query patterns. After upgrading, explore new features like
+    improved kanban views, enhanced search filters, and updated accounting features
+    that may replace custom developments.
+
+
+    Review Odoo 18 release notes for deprecated features. Any custom code relying
+    on deprecated functions needs refactoring to use recommended replacements before
+    support ends in future versions.
+
+
+    The upgrade from 17 to 18.0 typically takes 4-8 weeks from initial assessment
+    through production cutover for standard installations, potentially 12-16 weeks
+    for complex customized systems. Allocate sufficient time for testing—rushing upgrades
+    causes production issues that damage business operations and user confidence.
+
+    '
   conclusion: 'The Upgrade Odoo 17 to 18: Complete 2025 Migration Guide architecture
     you implemented on {{ provider_name }} provides a scaling foundation that supports
     business growth without infrastructure rebuilds. The current {{ recommended_instance.instance_type
@@ -201,7 +380,7 @@ intelligent_links:
   anchor_text: Free Backup Health Check
   context: Test your backup strategy in 60 seconds
   priority: 1.5
-- link_url: /deploy-odoo-18-on-google/
+- link_url: /guides/deploy-odoo-18-on-vultr/
   anchor_text: Fresh Odoo 18 Deployment Options
   context: Consider fresh deployment as alternative to upgrade
   priority: 5

@@ -54,11 +54,52 @@
 <!-- PRACTITIONER INTENT: Step-by-step guides, actionable instructions, technical details -->
 {% elsif data.metadata.intent_type == "practitioner" %}
 
-  <!-- Step-by-Step Guide -->
-  {% if data.ai_generated_content.step_by_step_guide and data.ai_generated_content.step_by_step_guide != "" %}
+  <!-- Step-by-Step Guide (support multiple field name variants) -->
+  {% assign guide_content = data.ai_generated_content.step_by_step_guide | default: data.ai_generated_content.deployment_guide | default: data.ai_generated_content.installation_guide | default: data.ai_generated_content.migration_guide %}
+  {% if guide_content and guide_content != "" %}
   <div class="implementation-guide">
-    <h2>Implementation Guide</h2>
-    {{ data.ai_generated_content.step_by_step_guide | markdownify }}
+    <h2>{% if data.ai_generated_content.migration_guide and data.ai_generated_content.migration_guide != "" %}Migration Guide{% else %}Implementation Guide{% endif %}</h2>
+    {{ guide_content | markdownify }}
+  </div>
+  {% endif %}
+
+  <!-- Structured Deployment Steps (if present in static_data) -->
+  {% if data.static_data.deployment_steps %}
+  <div class="deployment-steps">
+    <h2>Deployment Steps</h2>
+    {% for step in data.static_data.deployment_steps %}
+    <div class="deployment-step" style="margin: 2rem 0; padding: 1.5rem; background: #f6f8fa; border-left: 4px solid #267CB9; border-radius: 4px;">
+      <h3 style="margin-top: 0; color: #267CB9;">Step {{ step.step }}: {{ step.title }}</h3>
+
+      {% if step.commands %}
+      <div class="commands" style="margin: 1rem 0;">
+        <h4 style="font-size: 0.95rem; color: #586069; margin-bottom: 0.5rem;">Commands:</h4>
+        <div class="highlight">
+          <pre style="background: #ffffff; padding: 1rem; border-radius: 4px; overflow-x: auto; border: 1px solid #d1d5da;"><code>{% for cmd in step.commands %}{{ cmd }}
+{% endfor %}</code></pre>
+        </div>
+      </div>
+      {% endif %}
+
+      {% if step.config_snippet %}
+      <div class="config" style="margin: 1rem 0;">
+        <h4 style="font-size: 0.95rem; color: #586069; margin-bottom: 0.5rem;">Configuration:</h4>
+        <div class="highlight">
+          <pre style="background: #ffffff; padding: 1rem; border-radius: 4px; overflow-x: auto; border: 1px solid #d1d5da;"><code>{{ step.config_snippet }}</code></pre>
+        </div>
+      </div>
+      {% endif %}
+
+      {% if step.service_snippet %}
+      <div class="service" style="margin: 1rem 0;">
+        <h4 style="font-size: 0.95rem; color: #586069; margin-bottom: 0.5rem;">Service File:</h4>
+        <div class="highlight">
+          <pre style="background: #ffffff; padding: 1rem; border-radius: 4px; overflow-x: auto; border: 1px solid #d1d5da;"><code>{{ step.service_snippet }}</code></pre>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+    {% endfor %}
   </div>
   {% endif %}
 
@@ -137,6 +178,87 @@
   <div class="troubleshooting" style="background: #fff5f5; border-left: 4px solid #d73a49; padding: 1.5rem; margin: 2rem 0;">
     <h3 style="margin-top: 0; color: #d73a49;">Common Mistakes to Avoid</h3>
     {{ data.ai_generated_content.common_mistakes | markdownify }}
+  </div>
+  {% endif %}
+
+  <!-- Common Pitfalls (from static_data) -->
+  {% if data.static_data.common_pitfalls %}
+  <div class="common-pitfalls" style="background: #fffbf0; border-left: 4px solid #f9826c; padding: 1.5rem; margin: 2rem 0;">
+    <h2 style="margin-top: 0; color: #c24e00;">Common Pitfalls</h2>
+    {% for pitfall in data.static_data.common_pitfalls %}
+    <div class="pitfall-item" style="margin: 1.5rem 0; padding-bottom: 1rem; border-bottom: 1px solid #f4dcc9;">
+      <h4 style="color: #c24e00; margin-bottom: 0.5rem;">{{ pitfall.issue }}</h4>
+      <p style="margin: 0.5rem 0;"><strong>Solution:</strong> {{ pitfall.solution }}</p>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- Security Best Practices -->
+  {% if data.static_data.security_best_practices %}
+  <div class="security-practices" style="background: #f0f9ff; border-left: 4px solid #0969da; padding: 1.5rem; margin: 2rem 0;">
+    <h2 style="margin-top: 0; color: #0969da;">Security Best Practices</h2>
+    <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+    {% for practice in data.static_data.security_best_practices %}
+      <li style="margin: 0.5rem 0;">{{ practice }}</li>
+    {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
+  <!-- Cost Estimate -->
+  {% if data.static_data.cost_estimate %}
+  <div class="cost-estimate" style="background: #f6f8fa; border: 1px solid #d1d5da; border-radius: 6px; padding: 1.5rem; margin: 2rem 0;">
+    <h2 style="margin-top: 0;">Cost Estimate</h2>
+    <table style="width: 100%; border-collapse: collapse;">
+      {% if data.static_data.cost_estimate.monthly_server_cost %}
+      <tr>
+        <td style="padding: 0.5rem 0; font-weight: 500;">Monthly Server Cost:</td>
+        <td style="padding: 0.5rem 0; text-align: right;">{{ data.static_data.cost_estimate.monthly_server_cost }}</td>
+      </tr>
+      {% endif %}
+      {% if data.static_data.cost_estimate.setup_cost %}
+      <tr>
+        <td style="padding: 0.5rem 0; font-weight: 500;">Setup Cost:</td>
+        <td style="padding: 0.5rem 0; text-align: right;">{{ data.static_data.cost_estimate.setup_cost }}</td>
+      </tr>
+      {% endif %}
+      {% if data.static_data.cost_estimate.ongoing_costs %}
+      <tr>
+        <td style="padding: 0.5rem 0; font-weight: 500;">Ongoing Costs:</td>
+        <td style="padding: 0.5rem 0; text-align: right;">{{ data.static_data.cost_estimate.ongoing_costs }}</td>
+      </tr>
+      {% endif %}
+    </table>
+  </div>
+  {% endif %}
+
+  <!-- Alternative Deployment Options -->
+  {% if data.static_data.alternative_deployment_options %}
+  <div class="alternatives" style="margin: 2rem 0;">
+    <h2>Alternative Deployment Options</h2>
+    {% for alt in data.static_data.alternative_deployment_options %}
+    <div class="alternative-option" style="background: #f6f8fa; border-radius: 6px; padding: 1.25rem; margin: 1rem 0;">
+      <h3 style="margin-top: 0; color: #267CB9;">{{ alt.option }}</h3>
+      <p style="margin: 0.5rem 0;"><strong>Pros:</strong> {{ alt.pros }}</p>
+      <p style="margin: 0.5rem 0;"><strong>Cons:</strong> {{ alt.cons }}</p>
+      {% if alt.link %}
+      <p style="margin: 0.5rem 0;"><a href="/guides/{{ alt.link }}/" style="color: #0969da;">Learn more →</a></p>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- Next Steps -->
+  {% if data.static_data.next_steps %}
+  <div class="next-steps" style="background: #dafbe1; border-left: 4px solid #1a7f37; padding: 1.5rem; margin: 2rem 0;">
+    <h2 style="margin-top: 0; color: #1a7f37;">Next Steps</h2>
+    <ol style="margin: 0.5rem 0; padding-left: 1.5rem;">
+    {% for step in data.static_data.next_steps %}
+      <li style="margin: 0.5rem 0;">{{ step }}</li>
+    {% endfor %}
+    </ol>
   </div>
   {% endif %}
 
