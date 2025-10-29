@@ -28,9 +28,8 @@ const parseXML = promisify(parseString);
 
 // Configuration
 const CONFIG = {
-  SITE_URL: process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}`
-    : process.env.SITE_URL || 'https://ariashaw.com',
+  // Use production domain, not preview URLs
+  SITE_URL: process.env.SITE_URL || 'https://ariashaw.com',
 
   INDEXNOW_KEY: process.env.INDEXNOW_KEY || '537e80460b3a4aa898514c845316796e',
 
