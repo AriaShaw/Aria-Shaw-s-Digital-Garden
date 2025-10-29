@@ -26,6 +26,14 @@ const { parseString } = require('xml2js');
 const { promisify } = require('util');
 const parseXML = promisify(parseString);
 
+// Import Vercel KV (only available in Vercel environment)
+let kv = null;
+try {
+  kv = require('@vercel/kv');
+} catch (error) {
+  console.warn('[WARN] @vercel/kv not available - using local file storage fallback');
+}
+
 // Configuration
 const CONFIG = {
   // Use production domain, not preview URLs
@@ -41,8 +49,10 @@ const CONFIG = {
   ],
 
   // Storage for previous sitemap
-  STORAGE_TYPE: process.env.STORAGE_TYPE || 'vercel-blob', // 'vercel-blob', 'vercel-kv', or 'file'
   STORAGE_KEY: 'indexnow-previous-sitemap',
+
+  // Vercel environment detection
+  IS_VERCEL: !!process.env.VERCEL,
 
   // Rate limiting
   MAX_URLS_PER_BATCH: 10000,
@@ -219,9 +229,28 @@ async function submitToIndexNow(urls, endpoint) {
  * Load previous sitemap from storage
  */
 async function loadPreviousSitemap() {
-  // For now, use simple file-based storage
-  // TODO: Implement Vercel Blob/KV integration
+  // Try Vercel KV first (production environment)
+  if (CONFIG.IS_VERCEL && kv) {
+    try {
+      console.log('[INFO] Loading previous sitemap from Vercel KV...');
+      const cache = await kv.get(CONFIG.STORAGE_KEY);
 
+      if (cache && cache.urls) {
+        console.log(`[INFO] Loaded previous sitemap from Vercel KV (${cache.urls.length} URLs)`);
+        console.log(`[INFO] Previous deployment: ${cache.deployment} at ${cache.timestamp}`);
+        return cache.urls;
+      } else {
+        console.log('[INFO] No previous sitemap found in Vercel KV');
+        return null;
+      }
+    } catch (error) {
+      console.error('[ERROR] Failed to load from Vercel KV:', error.message);
+      // Fall through to file-based storage
+    }
+  }
+
+  // Fallback: Use local file-based storage (for local development)
+  console.log('[INFO] Using local file storage fallback...');
   const fs = require('fs');
   const path = require('path');
   const storageFile = path.join(__dirname, '.indexnow-cache.json');
@@ -230,11 +259,11 @@ async function loadPreviousSitemap() {
     if (fs.existsSync(storageFile)) {
       const data = fs.readFileSync(storageFile, 'utf-8');
       const cache = JSON.parse(data);
-      console.log(`[INFO] Loaded previous sitemap from cache (${cache.urls.length} URLs)`);
+      console.log(`[INFO] Loaded previous sitemap from local cache (${cache.urls.length} URLs)`);
       return cache.urls;
     }
   } catch (error) {
-    console.warn('[WARN] Failed to load previous sitemap:', error.message);
+    console.warn('[WARN] Failed to load previous sitemap from file:', error.message);
   }
 
   return null;
@@ -244,21 +273,37 @@ async function loadPreviousSitemap() {
  * Save current sitemap to storage
  */
 async function saveSitemap(urls) {
+  const cache = {
+    timestamp: new Date().toISOString(),
+    deployment: process.env.VERCEL_GIT_COMMIT_SHA || process.env.VERCEL_DEPLOYMENT_ID || 'local',
+    urls: urls,
+  };
+
+  // Try Vercel KV first (production environment)
+  if (CONFIG.IS_VERCEL && kv) {
+    try {
+      console.log('[INFO] Saving current sitemap to Vercel KV...');
+      await kv.set(CONFIG.STORAGE_KEY, cache);
+      console.log(`[INFO] Saved ${urls.length} URLs to Vercel KV`);
+      console.log(`[INFO] Deployment ID: ${cache.deployment}`);
+      return;
+    } catch (error) {
+      console.error('[ERROR] Failed to save to Vercel KV:', error.message);
+      // Fall through to file-based storage
+    }
+  }
+
+  // Fallback: Use local file-based storage (for local development)
+  console.log('[INFO] Using local file storage fallback...');
   const fs = require('fs');
   const path = require('path');
   const storageFile = path.join(__dirname, '.indexnow-cache.json');
 
   try {
-    const cache = {
-      timestamp: new Date().toISOString(),
-      deployment: process.env.VERCEL_GIT_COMMIT_SHA || 'local',
-      urls: urls,
-    };
-
     fs.writeFileSync(storageFile, JSON.stringify(cache, null, 2), 'utf-8');
-    console.log(`[INFO] Saved ${urls.length} URLs to cache`);
+    console.log(`[INFO] Saved ${urls.length} URLs to local cache`);
   } catch (error) {
-    console.error('[ERROR] Failed to save sitemap cache:', error.message);
+    console.error('[ERROR] Failed to save sitemap to file:', error.message);
   }
 }
 
