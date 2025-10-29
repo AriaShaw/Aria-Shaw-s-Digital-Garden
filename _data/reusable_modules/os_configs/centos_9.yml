@@ -1,0 +1,292 @@
+# CentOS 9 Stream Configuration for Odoo
+# Last Verified: 2025-10-29
+# Data Sources: Official documentation, community guides, package repositories
+
+os_info:
+  name: "CentOS Stream 9"
+  version: "9"
+  family: "RHEL"
+  architecture: ["x86_64", "aarch64"]
+  release_date: "2021-12-03"
+  support_until: "2027-05-31"
+  package_manager: "dnf"
+  init_system: "systemd"
+
+repositories:
+  epel:
+    name: "Extra Packages for Enterprise Linux 9"
+    install_command: |
+      sudo dnf install -y epel-release
+      sudo dnf config-manager --set-enabled crb
+
+  postgresql:
+    name: "PostgreSQL Official Repository"
+    install_command: |
+      sudo dnf install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-9-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+
+  nodejs:
+    name: "NodeSource Repository"
+    install_command: |
+      curl -fsSL https://rpm.nodesource.com/setup_18.x | sudo bash -
+
+system_packages:
+  development:
+    - gcc
+    - gcc-c++
+    - make
+    - git
+    - vim
+    - wget
+    - curl
+    - "Development Tools"
+
+  python:
+    - python3.11
+    - python3.11-devel
+    - python3.11-pip
+    - python3.11-setuptools
+    - python3.11-wheel
+
+  libraries:
+    - bzip2-devel
+    - redhat-rpm-config
+    - libxslt-devel
+    - openldap-devel
+    - libjpeg-devel
+    - freetype-devel
+    - libxml2-devel
+    - libzip-devel
+    - zlib-devel
+    - openssl-devel
+    - libffi-devel
+    - readline-devel
+    - ncurses-devel
+    - sqlite-devel
+    - tk-devel
+    - gdbm-devel
+    - libbz2-dev
+    - libpng-devel
+    - libtiff-devel
+    - libwebp-devel
+
+  postgresql:
+    - postgresql16-server
+    - postgresql16
+    - postgresql16-devel
+    - postgresql16-contrib
+
+  nodejs:
+    - nodejs
+    - npm
+
+  additional:
+    - nginx
+    - certbot
+    - python3-certbot-nginx
+    - firewalld
+    - fail2ban
+
+installation_commands:
+  system_update: |
+    sudo dnf update -y
+    sudo dnf upgrade -y
+
+  install_dependencies: |
+    # Enable repositories
+    sudo dnf install -y epel-release
+    sudo dnf config-manager --set-enabled crb
+
+    # Install development tools
+    sudo dnf groupinstall -y "Development Tools"
+
+    # Install Python 3.11
+    sudo dnf install -y python3.11 python3.11-devel python3.11-pip
+
+    # Install libraries
+    sudo dnf install -y gcc bzip2-devel redhat-rpm-config libxslt-devel \
+      openldap-devel libjpeg-devel freetype-devel libxml2-devel libzip-devel \
+      zlib-devel openssl-devel libffi-devel readline-devel ncurses-devel \
+      sqlite-devel tk-devel gdbm-devel libpng-devel libtiff-devel libwebp-devel
+
+  install_postgresql: |
+    # Add PostgreSQL repository
+    sudo dnf install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-9-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+
+    # Install PostgreSQL 16
+    sudo dnf install -y postgresql16-server postgresql16 postgresql16-devel
+
+    # Initialize database
+    sudo /usr/pgsql-16/bin/postgresql-16-setup initdb
+
+    # Enable and start PostgreSQL
+    sudo systemctl enable postgresql-16
+    sudo systemctl start postgresql-16
+
+  install_nodejs: |
+    # Install Node.js 18
+    curl -fsSL https://rpm.nodesource.com/setup_18.x | sudo bash -
+    sudo dnf install -y nodejs
+
+  install_wkhtmltopdf: |
+    # Download and install wkhtmltopdf
+    wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox-0.12.6.1-2.almalinux9.x86_64.rpm
+    sudo dnf localinstall -y wkhtmltox-0.12.6.1-2.almalinux9.x86_64.rpm
+
+  create_odoo_user: |
+    # Create system user for Odoo
+    sudo useradd -m -d /opt/odoo -U -r -s /bin/bash odoo
+
+  setup_firewall: |
+    # Configure firewall
+    sudo systemctl enable firewalld
+    sudo systemctl start firewalld
+    sudo firewall-cmd --permanent --zone=public --add-service=http
+    sudo firewall-cmd --permanent --zone=public --add-service=https
+    sudo firewall-cmd --permanent --zone=public --add-port=8069/tcp
+    sudo firewall-cmd --permanent --zone=public --add-port=8072/tcp
+    sudo firewall-cmd --reload
+
+selinux_configuration:
+  mode: "permissive"  # enforcing, permissive, disabled
+  commands: |
+    # Set SELinux to permissive mode
+    sudo setenforce 0
+    sudo sed -i 's/^SELINUX=enforcing/SELINUX=permissive/' /etc/selinux/config
+
+postgresql_configuration:
+  version: "16"
+  data_directory: "/var/lib/pgsql/16/data"
+  config_file: "/var/lib/pgsql/16/data/postgresql.conf"
+  hba_file: "/var/lib/pgsql/16/data/pg_hba.conf"
+
+  tuning_parameters:
+    shared_buffers: "256MB"
+    effective_cache_size: "1GB"
+    maintenance_work_mem: "64MB"
+    checkpoint_completion_target: "0.9"
+    wal_buffers: "16MB"
+    default_statistics_target: "100"
+    random_page_cost: "1.1"
+    effective_io_concurrency: "200"
+    min_wal_size: "1GB"
+    max_wal_size: "4GB"
+
+systemd_service:
+  service_file_path: "/etc/systemd/system/odoo.service"
+  service_content: |
+    [Unit]
+    Description=Odoo ERP System
+    Documentation=https://www.odoo.com/documentation
+    Requires=postgresql-16.service
+    After=network.target postgresql-16.service
+
+    [Service]
+    Type=simple
+    SyslogIdentifier=odoo
+    PermissionsStartOnly=true
+    User=odoo
+    Group=odoo
+    ExecStart=/opt/odoo/venv/bin/python3.11 /opt/odoo/odoo/odoo-bin -c /etc/odoo/odoo.conf
+    StandardOutput=journal+console
+    KillMode=mixed
+
+    [Install]
+    WantedBy=multi-user.target
+
+nginx_configuration:
+  config_file: "/etc/nginx/conf.d/odoo.conf"
+  sample_config: |
+    upstream odoo {
+        server 127.0.0.1:8069;
+    }
+
+    upstream odoochat {
+        server 127.0.0.1:8072;
+    }
+
+    server {
+        listen 80;
+        server_name your-domain.com;
+
+        access_log /var/log/nginx/odoo.access.log;
+        error_log /var/log/nginx/odoo.error.log;
+
+        proxy_read_timeout 720s;
+        proxy_connect_timeout 720s;
+        proxy_send_timeout 720s;
+
+        proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+
+        location / {
+            proxy_redirect off;
+            proxy_pass http://odoo;
+        }
+
+        location /longpolling {
+            proxy_pass http://odoochat;
+        }
+
+        location ~* /web/static/ {
+            proxy_cache_valid 200 90m;
+            proxy_buffering on;
+            expires 864000;
+            proxy_pass http://odoo;
+        }
+    }
+
+troubleshooting:
+  common_issues:
+    - issue: "Python module import errors"
+      solution: |
+        Ensure you're using Python 3.11:
+        python3.11 -m pip install -r requirements.txt
+
+    - issue: "PostgreSQL connection refused"
+      solution: |
+        Check PostgreSQL is running:
+        sudo systemctl status postgresql-16
+        Verify pg_hba.conf allows connections
+
+    - issue: "SELinux blocking connections"
+      solution: |
+        Set SELinux to permissive:
+        sudo setenforce 0
+
+    - issue: "Firewall blocking ports"
+      solution: |
+        Open required ports:
+        sudo firewall-cmd --permanent --add-port=8069/tcp
+        sudo firewall-cmd --reload
+
+    - issue: "Permission denied errors"
+      solution: |
+        Fix ownership:
+        sudo chown -R odoo:odoo /opt/odoo
+
+compatibility_notes:
+  odoo_versions:
+    - version: "14"
+      compatible: true
+      notes: "Requires Python 3.6+"
+    - version: "15"
+      compatible: true
+      notes: "Requires Python 3.7+"
+    - version: "16"
+      compatible: true
+      notes: "Requires Python 3.7+"
+    - version: "17"
+      compatible: true
+      notes: "Requires Python 3.10+"
+    - version: "18"
+      compatible: true
+      notes: "Requires Python 3.10+"
+
+  notes: |
+    - CentOS Stream 9 is a rolling release
+    - PowerTools repository is now called "crb" (CodeReady Builder)
+    - Python 3.11 must be installed separately
+    - SELinux often needs to be set to permissive
+    - EPEL repository required for many dependencies

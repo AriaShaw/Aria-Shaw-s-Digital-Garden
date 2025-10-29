@@ -1,0 +1,374 @@
+# Rocky Linux 9 Configuration for Odoo
+# Last Verified: 2025-10-29
+# Data Sources: Official Rocky Linux documentation, community guides
+
+os_info:
+  name: "Rocky Linux"
+  version: "9"
+  family: "RHEL"
+  architecture: ["x86_64", "aarch64"]
+  release_date: "2022-07-14"
+  support_until: "2032-05-31"
+  package_manager: "dnf"
+  init_system: "systemd"
+  description: "Enterprise-grade Linux distribution, 100% bug-for-bug compatible with RHEL"
+
+repositories:
+  epel:
+    name: "Extra Packages for Enterprise Linux 9"
+    install_command: |
+      sudo dnf install -y epel-release
+      sudo dnf config-manager --set-enabled crb
+
+  powertools:
+    name: "PowerTools (CodeReady Builder)"
+    install_command: |
+      sudo dnf config-manager --set-enabled crb
+
+  postgresql:
+    name: "PostgreSQL Official Repository"
+    install_command: |
+      sudo dnf install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-9-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+
+  nodejs:
+    name: "NodeSource Repository"
+    install_command: |
+      curl -fsSL https://rpm.nodesource.com/setup_18.x | sudo bash -
+
+system_packages:
+  development:
+    - gcc
+    - gcc-c++
+    - make
+    - git
+    - vim
+    - wget
+    - curl
+    - tar
+    - "Development Tools"
+
+  python:
+    - python3.11
+    - python3.11-devel
+    - python3.11-pip
+    - python3.11-setuptools
+    - python3.11-wheel
+    - python3.11-debug
+    - python3.11-libs
+
+  libraries:
+    - bzip2-devel
+    - redhat-rpm-config
+    - libxslt-devel
+    - openldap-devel
+    - libjpeg-devel
+    - freetype-devel
+    - libxml2-devel
+    - libzip-devel
+    - zlib1g-dev
+    - openssl-devel
+    - libffi-devel
+    - readline-devel
+    - ncurses-devel
+    - sqlite-devel
+    - tk-devel
+    - gdbm-devel
+    - libc6-dev
+    - libbz2-dev
+    - libpng-devel
+    - libtiff-devel
+    - libwebp-devel
+    - libsasl2-dev
+
+  postgresql:
+    - postgresql16-server
+    - postgresql16
+    - postgresql16-devel
+    - postgresql16-contrib
+
+  nodejs:
+    - nodejs
+    - npm
+
+  additional:
+    - nginx
+    - certbot
+    - python3-certbot-nginx
+    - firewalld
+    - fail2ban
+    - redis
+    - memcached
+
+installation_commands:
+  system_update: |
+    sudo dnf update -y
+    sudo dnf upgrade -y
+
+  install_dependencies: |
+    # Enable repositories
+    sudo dnf install -y epel-release
+    sudo dnf config-manager --set-enabled crb
+
+    # Install development tools
+    sudo dnf groupinstall -y "Development Tools"
+
+    # Install Python 3.11 (Odoo 17+ requirement)
+    sudo dnf install -y python3.11 python3.11-devel python3.11-pip python3.11-setuptools
+
+    # Install required libraries
+    sudo dnf install -y vim git gcc bzip2-devel redhat-rpm-config \
+      libxslt-devel openldap-devel libjpeg-devel freetype-devel \
+      libxml2-devel libzip-devel openssl-devel libffi-devel \
+      readline-devel ncurses-devel sqlite-devel tk-devel gdbm-devel \
+      libpng-devel libtiff-devel libwebp-devel
+
+  install_postgresql: |
+    # Add PostgreSQL 16 repository
+    sudo dnf install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-9-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+
+    # Install PostgreSQL 16
+    sudo dnf install -y postgresql16-server postgresql16 postgresql16-devel
+
+    # Initialize database
+    sudo /usr/pgsql-16/bin/postgresql-16-setup initdb
+
+    # Enable and start PostgreSQL
+    sudo systemctl enable postgresql-16
+    sudo systemctl start postgresql-16
+
+    # Create Odoo database user
+    sudo -u postgres createuser -s odoo
+
+  install_nodejs: |
+    # Install Node.js 18 LTS
+    curl -fsSL https://rpm.nodesource.com/setup_18.x | sudo bash -
+    sudo dnf install -y nodejs
+
+    # Verify installation
+    node --version
+    npm --version
+
+  install_wkhtmltopdf: |
+    # Download and install wkhtmltopdf for Rocky Linux 9
+    wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox-0.12.6.1-2.almalinux9.x86_64.rpm
+    sudo dnf localinstall -y wkhtmltox-0.12.6.1-2.almalinux9.x86_64.rpm
+
+  create_odoo_user: |
+    # Create dedicated system user for Odoo
+    sudo useradd -m -d /opt/odoo -U -r -s /bin/bash odoo
+
+  setup_python_venv: |
+    # Create Python virtual environment
+    sudo -u odoo python3.11 -m venv /opt/odoo/venv
+
+    # Upgrade pip in virtual environment
+    sudo -u odoo /opt/odoo/venv/bin/pip install --upgrade pip wheel setuptools
+
+  setup_firewall: |
+    # Enable and configure firewall
+    sudo systemctl enable firewalld
+    sudo systemctl start firewalld
+
+    # Open required ports
+    sudo firewall-cmd --permanent --zone=public --add-service=http
+    sudo firewall-cmd --permanent --zone=public --add-service=https
+    sudo firewall-cmd --permanent --zone=public --add-port=8069/tcp
+    sudo firewall-cmd --permanent --zone=public --add-port=8072/tcp
+
+    # Reload firewall
+    sudo firewall-cmd --reload
+
+selinux_configuration:
+  mode: "disabled"  # Rocky Linux often requires SELinux disabled for Odoo
+  commands: |
+    # Disable SELinux (required for Odoo)
+    sudo setenforce 0
+    sudo sed -i 's/^SELINUX=enforcing/SELINUX=disabled/' /etc/selinux/config
+
+postgresql_configuration:
+  version: "16"
+  data_directory: "/var/lib/pgsql/16/data"
+  config_file: "/var/lib/pgsql/16/data/postgresql.conf"
+  hba_file: "/var/lib/pgsql/16/data/pg_hba.conf"
+
+  tuning_parameters:
+    shared_buffers: "512MB"
+    effective_cache_size: "2GB"
+    maintenance_work_mem: "128MB"
+    checkpoint_completion_target: "0.9"
+    wal_buffers: "16MB"
+    default_statistics_target: "100"
+    random_page_cost: "1.1"
+    effective_io_concurrency: "200"
+    min_wal_size: "1GB"
+    max_wal_size: "4GB"
+    max_connections: "200"
+
+  hba_config: |
+    # TYPE  DATABASE        USER            ADDRESS                 METHOD
+    local   all             all                                     peer
+    host    all             all             127.0.0.1/32            md5
+    host    all             all             ::1/128                 md5
+
+systemd_service:
+  service_file_path: "/etc/systemd/system/odoo.service"
+  service_content: |
+    [Unit]
+    Description=Odoo ERP System
+    Documentation=https://www.odoo.com/documentation
+    Requires=postgresql-16.service
+    After=network.target postgresql-16.service
+
+    [Service]
+    Type=simple
+    SyslogIdentifier=odoo
+    PermissionsStartOnly=true
+    User=odoo
+    Group=odoo
+    ExecStart=/opt/odoo/venv/bin/python3.11 /opt/odoo/odoo/odoo-bin \
+      --config=/etc/odoo/odoo.conf \
+      --logfile=/var/log/odoo/odoo-server.log
+    StandardOutput=journal+console
+    KillMode=mixed
+    Restart=on-failure
+    RestartSec=5
+
+    [Install]
+    WantedBy=multi-user.target
+
+nginx_configuration:
+  config_file: "/etc/nginx/conf.d/odoo.conf"
+  sample_config: |
+    upstream odoo {
+        server 127.0.0.1:8069;
+    }
+
+    upstream odoochat {
+        server 127.0.0.1:8072;
+    }
+
+    server {
+        listen 80;
+        server_name your-domain.com;
+
+        # Redirect to HTTPS
+        return 301 https://$server_name$request_uri;
+    }
+
+    server {
+        listen 443 ssl http2;
+        server_name your-domain.com;
+
+        ssl_certificate /etc/letsencrypt/live/your-domain.com/fullchain.pem;
+        ssl_certificate_key /etc/letsencrypt/live/your-domain.com/privkey.pem;
+        ssl_session_timeout 30m;
+        ssl_protocols TLSv1.2 TLSv1.3;
+        ssl_ciphers HIGH:!aNULL:!MD5;
+        ssl_prefer_server_ciphers on;
+
+        access_log /var/log/nginx/odoo.access.log;
+        error_log /var/log/nginx/odoo.error.log;
+
+        proxy_read_timeout 720s;
+        proxy_connect_timeout 720s;
+        proxy_send_timeout 720s;
+
+        # Add Headers
+        proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+
+        # Main application
+        location / {
+            proxy_redirect off;
+            proxy_pass http://odoo;
+        }
+
+        # Long polling
+        location /longpolling {
+            proxy_pass http://odoochat;
+        }
+
+        # Cache static files
+        location ~* /web/static/ {
+            proxy_cache_valid 200 90m;
+            proxy_buffering on;
+            expires 864000;
+            proxy_pass http://odoo;
+        }
+    }
+
+troubleshooting:
+  common_issues:
+    - issue: "ModuleNotFoundError: No module named 'module_name'"
+      solution: |
+        Activate virtual environment and install dependencies:
+        source /opt/odoo/venv/bin/activate
+        pip install -r requirements.txt
+
+    - issue: "psycopg2 installation fails"
+      solution: |
+        Install PostgreSQL development packages:
+        sudo dnf install postgresql16-devel
+        pip install psycopg2-binary
+
+    - issue: "SELinux preventing connections"
+      solution: |
+        Disable SELinux (required):
+        sudo setenforce 0
+        sudo sed -i 's/SELINUX=enforcing/SELINUX=disabled/' /etc/selinux/config
+
+    - issue: "Permission denied on log file"
+      solution: |
+        Create log directory with proper permissions:
+        sudo mkdir -p /var/log/odoo
+        sudo chown -R odoo:odoo /var/log/odoo
+
+    - issue: "Firewall blocking access"
+      solution: |
+        Check firewall rules:
+        sudo firewall-cmd --list-all
+        sudo firewall-cmd --permanent --add-port=8069/tcp
+        sudo firewall-cmd --reload
+
+performance_tuning:
+  system_limits: |
+    # Add to /etc/security/limits.conf
+    odoo soft nofile 65536
+    odoo hard nofile 65536
+    odoo soft nproc 32768
+    odoo hard nproc 32768
+
+  kernel_parameters: |
+    # Add to /etc/sysctl.conf
+    net.ipv4.tcp_keepalive_time = 60
+    net.ipv4.tcp_keepalive_intvl = 10
+    net.ipv4.tcp_keepalive_probes = 6
+    vm.swappiness = 10
+
+compatibility_notes:
+  odoo_versions:
+    - version: "14"
+      compatible: true
+      notes: "Works with Python 3.6+"
+    - version: "15"
+      compatible: true
+      notes: "Works with Python 3.7+"
+    - version: "16"
+      compatible: true
+      notes: "Works with Python 3.7+"
+    - version: "17"
+      compatible: true
+      notes: "Requires Python 3.10+, fully supported"
+    - version: "18"
+      compatible: true
+      notes: "Requires Python 3.10+, fully supported"
+
+  notes: |
+    - Rocky Linux 9 is 100% compatible with RHEL 9
+    - Long-term support until 2032
+    - SELinux must be disabled for Odoo
+    - PowerTools is now called "crb" (CodeReady Builder)
+    - Python 3.11 installation required for Odoo 17+
+    - PostgreSQL 16 recommended for best performance

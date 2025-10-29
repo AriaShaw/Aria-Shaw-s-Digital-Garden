@@ -1,0 +1,399 @@
+# Template: Security Hardening Guide
+# Template ID: security_hardening
+# Intent Type: practitioner
+# Coverage: 45 keywords (SSL, firewall, 2FA, compliance, pen testing, OWASP, DDoS, encryption)
+# Variables Required: {{security_focus}}, {{odoo_version}}, {{compliance_standard}}, {{deployment_type}}
+# Reusable Modules: security/{{security_focus}}_checklist.yml, compliance/{{compliance_standard}}.yml
+
+metadata:
+  title: "{{security_topic}} for Odoo {{odoo_version}}: Enterprise Security Guide"
+  description: "Implement {{security_topic}} in Odoo {{odoo_version}}. Covers {{compliance_standard}} compliance, threat mitigation, security controls, and audit procedures. Production-tested configurations."
+  intent_type: "practitioner"
+  page_slug: "{{security_slug}}"
+  draft_metadata:
+    created_by: "pseo-bulk-generator"
+    template_id: "security_hardening"
+    generation_mode: "template"
+    confidence_level: "high"
+    notes_for_reviewer: "Verify compliance requirements are current. Check security tool versions."
+
+static_data:
+  # Security Context
+  security_focus: "{{security_focus}}"  # ssl/firewall/2fa/compliance/encryption/pentest/ddos
+  odoo_version: "{{odoo_version}}"
+  deployment_type: "{{deployment_type}}"  # on-premise/cloud/hybrid
+  risk_level: "{{risk_level}}"  # low/medium/high/critical
+  compliance_framework: "{{compliance_standard}}"  # GDPR/HIPAA/PCI-DSS/SOC2/ISO27001/none
+
+  # Threat Model
+  threat_assessment:
+    primary_threats:
+      - threat: "{{threat_1}}"
+        likelihood: "{{likelihood_1}}"  # low/medium/high
+        impact: "{{impact_1}}"  # low/medium/high/critical
+        cvss_score: "{{cvss_1}}"
+      - threat: "{{threat_2}}"
+        likelihood: "{{likelihood_2}}"
+        impact: "{{impact_2}}"
+        cvss_score: "{{cvss_2}}"
+      - threat: "{{threat_3}}"
+        likelihood: "{{likelihood_3}}"
+        impact: "{{impact_3}}"
+        cvss_score: "{{cvss_3}}"
+
+    attack_vectors:
+      network_layer: ["{{vector_1}}", "{{vector_2}}"]
+      application_layer: ["{{vector_3}}", "{{vector_4}}"]
+      user_layer: ["{{vector_5}}", "{{vector_6}}"]
+      physical_layer: ["{{vector_7}}"]
+
+  # Security Architecture
+  security_layers:
+    perimeter_security:
+      firewall:
+        type: "{{firewall_type}}"  # iptables/ufw/firewalld/cloud-native
+        rules_count: "{{rules_count}}"
+        default_policy: "{{default_policy}}"  # deny-all/allow-established
+
+      intrusion_detection:
+        ids_system: "{{ids_system}}"  # Snort/Suricata/OSSEC/CloudIDS
+        monitoring_scope: "{{monitoring_scope}}"
+
+      ddos_protection:
+        protection_type: "{{ddos_type}}"  # CloudFlare/AWS-Shield/on-premise
+        mitigation_capacity: "{{capacity_gbps}} Gbps"
+
+    application_security:
+      authentication:
+        primary_method: "{{auth_method}}"  # password/2fa/sso/oauth
+        password_policy:
+          min_length: "{{pwd_min_length}}"
+          complexity: "{{pwd_complexity}}"
+          rotation_days: "{{pwd_rotation}}"
+
+        mfa_configuration:
+          mfa_type: "{{mfa_type}}"  # TOTP/SMS/U2F/biometric
+          enforcement: "{{mfa_enforcement}}"  # optional/mandatory/role-based
+          backup_codes: "{{backup_codes_enabled}}"
+
+      authorization:
+        access_model: "{{access_model}}"  # RBAC/ABAC/MAC/DAC
+        privilege_separation: "{{privilege_separation}}"
+        least_privilege: "{{least_privilege_implementation}}"
+
+      session_management:
+        session_timeout: "{{session_timeout_minutes}}"
+        concurrent_sessions: "{{concurrent_allowed}}"
+        session_encryption: "{{session_encryption}}"
+
+    data_security:
+      encryption_at_rest:
+        database: "{{db_encryption}}"  # TDE/field-level/none
+        files: "{{file_encryption}}"  # AES-256/GPG/none
+        backups: "{{backup_encryption}}"
+
+      encryption_in_transit:
+        protocol: "{{tls_version}}"  # TLS1.2/TLS1.3
+        cipher_suites: ["{{cipher_1}}", "{{cipher_2}}", "{{cipher_3}}"]
+        certificate: "{{cert_type}}"  # self-signed/LetsEncrypt/commercial
+
+      data_masking:
+        pii_fields: ["{{pii_field_1}}", "{{pii_field_2}}"]
+        masking_type: "{{masking_type}}"  # static/dynamic/tokenization
+
+  # Implementation Steps
+  security_implementation:
+    - phase: 1
+      title: "Security Baseline Assessment"
+      tasks:
+        - task: "Inventory current security controls"
+          tool: "{{assessment_tool}}"
+          output: "security_baseline_report.pdf"
+        - task: "Identify compliance gaps"
+          standard: "{{compliance_standard}}"
+          checklist: "{{LOAD:compliance/{{compliance_standard}}_checklist.yml}}"
+        - task: "Risk scoring and prioritization"
+          methodology: "CVSS 3.1 + FAIR"
+      verification: "Gap analysis complete, risks documented"
+
+    - phase: 2
+      title: "Network Security Hardening"
+      tasks:
+        - task: "Configure firewall rules"
+          commands:
+            - "# Install firewall"
+            - "apt-get install -y {{firewall_package}}"
+            - "# Configure rules"
+            - "{{firewall_cmd}} --zone=public --add-port=8069/tcp --permanent"
+            - "{{firewall_cmd}} --zone=public --add-port=443/tcp --permanent"
+            - "{{firewall_cmd}} --reload"
+        - task: "Enable intrusion detection"
+          configuration: "{{LOAD:security/ids_config.yml}}"
+        - task: "Set up VPN access (if remote)"
+          vpn_type: "{{vpn_type}}"  # OpenVPN/WireGuard/IPSec
+      verification: "nmap scan shows only required ports open"
+
+    - phase: 3
+      title: "SSL/TLS Configuration"
+      tasks:
+        - task: "Generate/obtain SSL certificate"
+          method: "{{ssl_method}}"  # LetsEncrypt/commercial/self-signed
+          commands:
+            - "# LetsEncrypt example"
+            - "apt-get install -y certbot"
+            - "certbot certonly --standalone -d {{domain_name}}"
+        - task: "Configure NGINX with SSL"
+          config_snippet: |
+            server {
+                listen 443 ssl http2;
+                ssl_certificate /etc/letsencrypt/live/{{domain}}/fullchain.pem;
+                ssl_certificate_key /etc/letsencrypt/live/{{domain}}/privkey.pem;
+                ssl_protocols TLSv1.2 TLSv1.3;
+                ssl_ciphers {{cipher_suite}};
+                ssl_prefer_server_ciphers off;
+                add_header Strict-Transport-Security "max-age=63072000" always;
+            }
+        - task: "Enable HSTS and security headers"
+          headers: ["X-Frame-Options", "X-Content-Type-Options", "CSP"]
+      verification: "SSL Labs scan shows A+ rating"
+
+    - phase: 4
+      title: "Authentication & Access Control"
+      tasks:
+        - task: "Implement 2FA/MFA"
+          odoo_module: "auth_totp"
+          configuration:
+            - "Install auth_totp module"
+            - "Configure per-user in Settings > Users"
+            - "Set enforcement policy"
+        - task: "Configure password policy"
+          settings:
+            min_length: "{{pwd_min_length}}"
+            complexity_regex: "{{pwd_regex}}"
+            history: "{{pwd_history_count}}"
+        - task: "Set up SSO (if applicable)"
+          provider: "{{sso_provider}}"  # SAML/OAuth2/LDAP
+      verification: "Test login with different authentication methods"
+
+    - phase: 5
+      title: "Application Security"
+      tasks:
+        - task: "Enable audit logging"
+          log_items: ["login", "data_access", "configuration_changes"]
+          retention_days: "{{log_retention}}"
+        - task: "Configure CSRF protection"
+          already_enabled: true
+          additional_config: "Verify token rotation"
+        - task: "Implement rate limiting"
+          method: "{{rate_limit_method}}"  # nginx/fail2ban/cloudflare
+          limits:
+            api_calls: "{{api_limit}}/minute"
+            login_attempts: "{{login_limit}}/hour"
+      verification: "Security scanner shows no OWASP Top 10 vulnerabilities"
+
+    - phase: 6
+      title: "Data Protection"
+      tasks:
+        - task: "Enable database encryption"
+          encryption_type: "{{db_encryption_type}}"
+          key_management: "{{key_management_system}}"
+        - task: "Configure backup encryption"
+          backup_tool: "{{backup_tool}}"
+          encryption_method: "GPG with {{key_length}}-bit key"
+        - task: "Implement data retention policies"
+          retention_rules: "{{LOAD:compliance/data_retention_{{compliance_standard}}.yml}}"
+      verification: "Verify encrypted data at rest and in backups"
+
+    - phase: 7
+      title: "Compliance Implementation"
+      tasks:
+        - task: "Document security controls"
+          framework: "{{compliance_standard}}"
+          documentation_format: "{{doc_format}}"
+        - task: "Configure compliance reporting"
+          reports: ["{{report_1}}", "{{report_2}}", "{{report_3}}"]
+        - task: "Set up audit trails"
+          audit_scope: "{{audit_scope}}"
+      verification: "Compliance checklist 100% complete"
+
+    - phase: 8
+      title: "Security Testing"
+      tasks:
+        - task: "Run vulnerability scanner"
+          tools: ["{{scanner_1}}", "{{scanner_2}}"]
+          scan_type: "{{scan_type}}"  # authenticated/unauthenticated
+        - task: "Perform penetration testing"
+          scope: "{{pentest_scope}}"
+          methodology: "OWASP/PTES/NIST"
+        - task: "Security code review"
+          focus_areas: ["custom_modules", "integrations", "api_endpoints"]
+      verification: "All critical/high vulnerabilities remediated"
+
+  # Security Controls Checklist
+  security_controls:
+    preventive_controls:
+      - control: "Input validation"
+        implementation: "{{input_validation_method}}"
+        coverage: "{{coverage_percent}}%"
+      - control: "Output encoding"
+        implementation: "{{output_encoding_method}}"
+        coverage: "{{coverage_percent}}%"
+      - control: "Parameterized queries"
+        implementation: "ORM-enforced"
+        coverage: "100%"
+
+    detective_controls:
+      - control: "Security monitoring"
+        tool: "{{monitoring_tool}}"
+        alerts: "{{alert_count}}"
+      - control: "Log aggregation"
+        system: "{{log_system}}"  # ELK/Splunk/CloudWatch
+        retention: "{{retention_days}} days"
+      - control: "Anomaly detection"
+        method: "{{anomaly_method}}"
+
+    corrective_controls:
+      - control: "Incident response plan"
+        documented: "{{irp_documented}}"
+        tested_date: "{{last_test_date}}"
+      - control: "Automated remediation"
+        scenarios: ["{{scenario_1}}", "{{scenario_2}}"]
+      - control: "Backup/restore procedures"
+        rto: "{{rto_hours}} hours"
+        rpo: "{{rpo_hours}} hours"
+
+  # Compliance Mappings
+  compliance_mappings:
+    gdpr_requirements:
+      article_25: "Data protection by design"
+      article_32: "Security of processing"
+      article_33: "Breach notification"
+      implementation_status: "{{gdpr_status}}"
+
+    pci_dss_requirements:
+      requirement_1: "Firewall configuration"
+      requirement_2: "Default passwords changed"
+      requirement_8: "User authentication"
+      compliance_level: "{{pci_level}}"  # Level 1-4
+
+    hipaa_safeguards:
+      administrative: ["{{admin_1}}", "{{admin_2}}"]
+      physical: ["{{physical_1}}", "{{physical_2}}"]
+      technical: ["{{technical_1}}", "{{technical_2}}"]
+
+  # Security Monitoring & Metrics
+  security_metrics:
+    kpis:
+      - metric: "Mean time to detect (MTTD)"
+        target: "< {{mttd_hours}} hours"
+        current: "{{current_mttd}}"
+      - metric: "Mean time to respond (MTTR)"
+        target: "< {{mttr_hours}} hours"
+        current: "{{current_mttr}}"
+      - metric: "Security incidents/month"
+        target: "< {{incident_target}}"
+        current: "{{current_incidents}}"
+
+    vulnerability_metrics:
+      critical: "{{critical_vulns}}"
+      high: "{{high_vulns}}"
+      medium: "{{medium_vulns}}"
+      low: "{{low_vulns}}"
+      scan_frequency: "{{scan_frequency}}"
+
+  # Security Tools & Resources
+  security_tools:
+    scanning_tools:
+      - tool: "{{scanner_1}}"
+        purpose: "Vulnerability scanning"
+        license: "{{license_1}}"
+      - tool: "{{scanner_2}}"
+        purpose: "Web application testing"
+        license: "{{license_2}}"
+
+    monitoring_tools:
+      - tool: "{{monitor_1}}"
+        purpose: "Real-time threat detection"
+        integration: "{{integration_method}}"
+      - tool: "{{monitor_2}}"
+        purpose: "Log analysis"
+        integration: "{{integration_method_2}}"
+
+    hardening_scripts:
+      - script: "{{script_1}}"
+        purpose: "OS hardening"
+        source: "{{script_source_1}}"
+      - script: "{{script_2}}"
+        purpose: "Database hardening"
+        source: "{{script_source_2}}"
+
+  # Incident Response Procedures
+  incident_response:
+    severity_levels:
+      critical: "Data breach, system compromise"
+      high: "Unauthorized access attempt"
+      medium: "Policy violation"
+      low: "Failed login attempts"
+
+    response_team:
+      - role: "Security Lead"
+        responsibility: "Incident coordination"
+        contact: "{{contact_method}}"
+      - role: "System Administrator"
+        responsibility: "Technical remediation"
+        contact: "{{contact_method_2}}"
+
+    response_phases:
+      1_detection: "Automated alerts or user report"
+      2_analysis: "Determine scope and impact"
+      3_containment: "Isolate affected systems"
+      4_eradication: "Remove threat"
+      5_recovery: "Restore normal operations"
+      6_lessons_learned: "Post-incident review"
+
+# AI-generated content sections (filled by enrichment pipeline)
+ai_generated_content:
+  introduction: ""
+  step_by_step_guide: ""  # Main security implementation content (standard field)
+  troubleshooting_guide: ""
+  conclusion: ""
+
+# Conversion assets (filled by pseo-conversion-copywriter)
+conversion_assets:
+  - component_type: "callout-box"
+    placement_hint: "mid_guide"
+    generated_copy: {}
+
+  - component_type: "urgency-banner"
+    placement_hint: "post_technical"
+    generated_copy: {}
+
+  - component_type: "product-box"
+    placement_hint: "pre_conclusion"
+    generated_copy: {}
+
+# Intelligent internal links (filled by pseo-link-architect)
+intelligent_links:
+  - link_type: "related-security"
+    placement: "in-content"
+    generated_link: {}
+
+  - link_type: "compliance-guide"
+    placement: "after-compliance"
+    generated_link: {}
+
+  - link_type: "security-tool"
+    placement: "footer"
+    generated_link: {}
+
+# Visualizations (filled by pseo-visualization-agent)
+visualizations:
+  - chart_type: "mermaid"
+    title: "Security Architecture Diagram"
+    placement_hint: "after_steps"
+    mermaid_chart_syntax: ""
+
+  - chart_type: "mermaid"
+    title: "Incident Response Flowchart"
+    placement_hint: "after_troubleshooting"
+    mermaid_chart_syntax: ""

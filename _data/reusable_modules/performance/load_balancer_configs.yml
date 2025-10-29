@@ -1,0 +1,676 @@
+# Load Balancer Configurations for Odoo High Availability
+# Last Verified: 2025-10-29
+# Data Sources: HAProxy documentation, Nginx Plus guides, AWS ELB docs, production deployment patterns
+
+load_balancing_overview:
+  description: "Distribute Odoo traffic across multiple application servers for scalability and reliability"
+  benefits:
+    - high_availability: "Eliminate single points of failure"
+    - horizontal_scaling: "Add servers to handle more load"
+    - zero_downtime_deployments: "Rolling updates without service interruption"
+    - geographic_distribution: "Serve users from nearest location"
+    - ssl_termination: "Offload TLS processing from app servers"
+
+  architecture_patterns:
+    single_tier:
+      description: "Load balancer -> Multiple Odoo instances"
+      use_case: "Small to medium deployments"
+
+    multi_tier:
+      description: "Load balancer -> Web servers -> App servers"
+      use_case: "Enterprise deployments with static content caching"
+
+    geo_distributed:
+      description: "Global LB -> Regional LBs -> Local servers"
+      use_case: "Multi-region deployments"
+
+haproxy:
+  description: "High-performance TCP/HTTP load balancer"
+  version: "2.8 LTS"
+
+  installation:
+    ubuntu: |
+      # Install HAProxy 2.8 LTS
+      sudo apt update
+      sudo apt install -y software-properties-common
+      sudo add-apt-repository ppa:vbernat/haproxy-2.8
+      sudo apt update
+      sudo apt install -y haproxy
+
+    rhel: |
+      # Install HAProxy from package
+      sudo dnf install -y haproxy
+
+  configuration:
+    config_file: "/etc/haproxy/haproxy.cfg"
+
+    global_settings: |
+      global
+          log /dev/log local0
+          log /dev/log local1 notice
+          chroot /var/lib/haproxy
+          stats socket /run/haproxy/admin.sock mode 660 level admin
+          stats timeout 30s
+          user haproxy
+          group haproxy
+          daemon
+
+          # Performance tuning
+          maxconn 4096
+          tune.ssl.default-dh-param 2048
+
+          # SSL settings
+          ssl-default-bind-ciphers ECDHE+AESGCM:ECDHE+AES256:ECDHE+AES128
+          ssl-default-bind-options no-sslv3 no-tlsv10 no-tlsv11
+
+      defaults
+          log     global
+          mode    http
+          option  httplog
+          option  dontlognull
+          option  http-server-close
+          option  forwardfor except 127.0.0.0/8
+          option  redispatch
+          retries 3
+          timeout connect 5000
+          timeout client  50000
+          timeout server  50000
+          errorfile 400 /etc/haproxy/errors/400.http
+          errorfile 403 /etc/haproxy/errors/403.http
+          errorfile 408 /etc/haproxy/errors/408.http
+          errorfile 500 /etc/haproxy/errors/500.http
+          errorfile 502 /etc/haproxy/errors/502.http
+          errorfile 503 /etc/haproxy/errors/503.http
+          errorfile 504 /etc/haproxy/errors/504.http
+
+    frontend_config: |
+      frontend odoo_frontend
+          bind *:80
+          bind *:443 ssl crt /etc/ssl/certs/odoo.pem
+
+          # Force HTTPS
+          redirect scheme https if !{ ssl_fc }
+
+          # Headers
+          http-request set-header X-Forwarded-Proto https if { ssl_fc }
+          http-request set-header X-Forwarded-Port 443 if { ssl_fc }
+
+          # ACLs
+          acl is_websocket path_beg /websocket
+          acl is_longpolling path_beg /longpolling
+
+          # Use different backends for different paths
+          use_backend odoo_longpolling if is_longpolling
+          use_backend odoo_websocket if is_websocket
+          default_backend odoo_backend
+
+    backend_config: |
+      backend odoo_backend
+          balance roundrobin
+          option httpchk GET /web/health
+
+          # Sticky sessions using cookies
+          cookie SERVERID insert indirect nocache
+
+          # Odoo servers
+          server odoo1 10.0.1.10:8069 check cookie odoo1 weight 100
+          server odoo2 10.0.1.11:8069 check cookie odoo2 weight 100
+          server odoo3 10.0.1.12:8069 check cookie odoo3 weight 100
+
+          # Health check parameters
+          option httpchk HEAD /web/database/selector
+          http-check expect status 200
+
+      backend odoo_longpolling
+          balance roundrobin
+          server odoo1_lp 10.0.1.10:8072 check
+          server odoo2_lp 10.0.1.11:8072 check
+          server odoo3_lp 10.0.1.12:8072 check
+
+      backend odoo_websocket
+          balance roundrobin
+          server odoo1_ws 10.0.1.10:8072 check
+          server odoo2_ws 10.0.1.11:8072 check
+          server odoo3_ws 10.0.1.12:8072 check
+
+    stats_config: |
+      # Enable statistics page
+      stats enable
+      stats uri /haproxy-stats
+      stats realm HAProxy\ Statistics
+      stats auth admin:secure_password_here
+      stats admin if TRUE
+
+  advanced_features:
+    rate_limiting: |
+      # Limit requests per IP
+      stick-table type ip size 100k expire 30s store http_req_rate(10s)
+      http-request track-sc0 src
+      http-request deny if { sc_http_req_rate(0) gt 100 }
+
+    connection_limits: |
+      # Limit concurrent connections per IP
+      stick-table type ip size 100k expire 30s store conn_cur
+      tcp-request connection track-sc0 src
+      tcp-request connection reject if { sc_conn_cur(0) ge 10 }
+
+    health_checks: |
+      # Advanced health check
+      option httpchk GET /web/health HTTP/1.1\r\nHost:\ www.example.com
+      http-check expect status 200
+      http-check expect string "ok"
+
+nginx:
+  description: "High-performance HTTP server and reverse proxy"
+  version: "1.24"
+
+  installation:
+    ubuntu: |
+      sudo apt update
+      sudo apt install -y nginx
+
+    rhel: |
+      sudo dnf install -y nginx
+
+  configuration:
+    upstream_config: |
+      # Define upstream Odoo servers
+      upstream odoo_backend {
+          least_conn;  # Use least connections algorithm
+
+          # Odoo application servers
+          server 10.0.1.10:8069 weight=100 max_fails=3 fail_timeout=30s;
+          server 10.0.1.11:8069 weight=100 max_fails=3 fail_timeout=30s;
+          server 10.0.1.12:8069 weight=100 max_fails=3 fail_timeout=30s;
+
+          # Keepalive connections to backend
+          keepalive 64;
+      }
+
+      upstream odoo_longpolling {
+          least_conn;
+
+          server 10.0.1.10:8072 max_fails=3 fail_timeout=30s;
+          server 10.0.1.11:8072 max_fails=3 fail_timeout=30s;
+          server 10.0.1.12:8072 max_fails=3 fail_timeout=30s;
+
+          keepalive 32;
+      }
+
+    server_config: |
+      server {
+          listen 80;
+          server_name odoo.example.com;
+          return 301 https://$server_name$request_uri;
+      }
+
+      server {
+          listen 443 ssl http2;
+          server_name odoo.example.com;
+
+          # SSL Configuration
+          ssl_certificate /etc/nginx/ssl/odoo.crt;
+          ssl_certificate_key /etc/nginx/ssl/odoo.key;
+          ssl_session_timeout 1d;
+          ssl_session_cache shared:SSL:50m;
+          ssl_session_tickets off;
+
+          # Modern SSL configuration
+          ssl_protocols TLSv1.2 TLSv1.3;
+          ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256;
+          ssl_prefer_server_ciphers off;
+
+          # Security headers
+          add_header Strict-Transport-Security "max-age=63072000" always;
+          add_header X-Content-Type-Options "nosniff" always;
+          add_header X-Frame-Options "SAMEORIGIN" always;
+
+          # Proxy settings
+          client_max_body_size 100M;
+          proxy_read_timeout 720s;
+          proxy_connect_timeout 720s;
+          proxy_send_timeout 720s;
+
+          # Proxy headers
+          proxy_set_header Host $http_host;
+          proxy_set_header X-Real-IP $remote_addr;
+          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+          proxy_set_header X-Forwarded-Proto $scheme;
+          proxy_set_header X-Forwarded-Host $host;
+          proxy_set_header X-Forwarded-Port $server_port;
+
+          # Main application
+          location / {
+              proxy_pass http://odoo_backend;
+              proxy_http_version 1.1;
+              proxy_set_header Connection "";
+          }
+
+          # Long polling
+          location /longpolling {
+              proxy_pass http://odoo_longpolling;
+              proxy_http_version 1.1;
+              proxy_set_header Upgrade $http_upgrade;
+              proxy_set_header Connection "upgrade";
+          }
+
+          # Static files caching
+          location ~* /web/static/ {
+              proxy_cache_valid 200 90d;
+              proxy_buffering on;
+              expires 90d;
+              proxy_pass http://odoo_backend;
+          }
+      }
+
+  nginx_plus_features:
+    active_health_checks: |
+      # Nginx Plus active health checks
+      upstream odoo_backend {
+          zone backend 64k;
+
+          server 10.0.1.10:8069;
+          server 10.0.1.11:8069;
+          server 10.0.1.12:8069;
+      }
+
+      location / {
+          proxy_pass http://odoo_backend;
+          health_check interval=10 fails=3 passes=2 uri=/web/health;
+      }
+
+    session_persistence: |
+      # IP hash for session persistence
+      upstream odoo_backend {
+          ip_hash;
+          server 10.0.1.10:8069;
+          server 10.0.1.11:8069;
+      }
+
+      # Or use sticky cookies (Nginx Plus)
+      upstream odoo_backend {
+          server 10.0.1.10:8069;
+          server 10.0.1.11:8069;
+          sticky cookie srv_id expires=1h;
+      }
+
+aws_elb:
+  application_load_balancer:
+    description: "Layer 7 load balancer for HTTP/HTTPS traffic"
+
+    terraform_config: |
+      resource "aws_lb" "odoo_alb" {
+        name               = "odoo-alb"
+        internal           = false
+        load_balancer_type = "application"
+        security_groups    = [aws_security_group.alb_sg.id]
+        subnets           = aws_subnet.public.*.id
+
+        enable_deletion_protection = true
+        enable_http2              = true
+        enable_cross_zone_load_balancing = true
+
+        tags = {
+          Name = "odoo-alb"
+          Environment = "production"
+        }
+      }
+
+      resource "aws_lb_target_group" "odoo_tg" {
+        name     = "odoo-tg"
+        port     = 8069
+        protocol = "HTTP"
+        vpc_id   = aws_vpc.main.id
+
+        health_check {
+          enabled             = true
+          healthy_threshold   = 2
+          unhealthy_threshold = 2
+          timeout             = 5
+          interval            = 30
+          path                = "/web/health"
+          matcher             = "200"
+        }
+
+        stickiness {
+          type            = "lb_cookie"
+          cookie_duration = 86400
+          enabled         = true
+        }
+      }
+
+      resource "aws_lb_listener" "odoo_https" {
+        load_balancer_arn = aws_lb.odoo_alb.arn
+        port              = "443"
+        protocol          = "HTTPS"
+        ssl_policy        = "ELBSecurityPolicy-TLS-1-2-2017-01"
+        certificate_arn   = aws_acm_certificate.odoo_cert.arn
+
+        default_action {
+          type             = "forward"
+          target_group_arn = aws_lb_target_group.odoo_tg.arn
+        }
+      }
+
+  network_load_balancer:
+    description: "Layer 4 load balancer for TCP/UDP traffic"
+
+    use_cases:
+      - "Ultra-low latency requirements"
+      - "Static IP addresses needed"
+      - "Non-HTTP protocols"
+
+    terraform_config: |
+      resource "aws_lb" "odoo_nlb" {
+        name               = "odoo-nlb"
+        internal           = false
+        load_balancer_type = "network"
+
+        enable_cross_zone_load_balancing = true
+        enable_deletion_protection = true
+
+        subnet_mapping {
+          subnet_id     = aws_subnet.public_a.id
+          allocation_id = aws_eip.nlb_eip_a.id
+        }
+
+        subnet_mapping {
+          subnet_id     = aws_subnet.public_b.id
+          allocation_id = aws_eip.nlb_eip_b.id
+        }
+      }
+
+azure_load_balancer:
+  application_gateway:
+    description: "Layer 7 load balancer with WAF capabilities"
+
+    arm_template: |
+      {
+        "type": "Microsoft.Network/applicationGateways",
+        "apiVersion": "2021-05-01",
+        "name": "odoo-appgateway",
+        "location": "[resourceGroup().location]",
+        "properties": {
+          "sku": {
+            "name": "WAF_v2",
+            "tier": "WAF_v2",
+            "capacity": 2
+          },
+          "backendAddressPools": [{
+            "name": "odoo-backend-pool",
+            "properties": {
+              "backendAddresses": [
+                {"ipAddress": "10.0.1.10"},
+                {"ipAddress": "10.0.1.11"},
+                {"ipAddress": "10.0.1.12"}
+              ]
+            }
+          }],
+          "probes": [{
+            "name": "odoo-health-probe",
+            "properties": {
+              "protocol": "Http",
+              "path": "/web/health",
+              "interval": 30,
+              "timeout": 30,
+              "unhealthyThreshold": 3
+            }
+          }]
+        }
+      }
+
+gcp_load_balancer:
+  http_load_balancer:
+    description: "Global HTTP(S) load balancer"
+
+    terraform_config: |
+      resource "google_compute_global_forwarding_rule" "odoo_https" {
+        name       = "odoo-https-forwarding-rule"
+        target     = google_compute_target_https_proxy.odoo_https_proxy.id
+        port_range = "443"
+      }
+
+      resource "google_compute_backend_service" "odoo_backend" {
+        name                  = "odoo-backend-service"
+        protocol              = "HTTP"
+        port_name            = "http"
+        timeout_sec          = 30
+        enable_cdn           = true
+        session_affinity     = "CLIENT_IP"
+
+        health_checks = [
+          google_compute_health_check.odoo_health.id,
+        ]
+
+        backend {
+          group           = google_compute_instance_group.odoo_ig.id
+          balancing_mode  = "UTILIZATION"
+          capacity_scaler = 1.0
+        }
+      }
+
+      resource "google_compute_health_check" "odoo_health" {
+        name               = "odoo-health-check"
+        check_interval_sec = 30
+        timeout_sec        = 5
+
+        http_health_check {
+          port         = 8069
+          request_path = "/web/health"
+        }
+      }
+
+kubernetes_ingress:
+  nginx_ingress_controller:
+    description: "Kubernetes-native load balancing"
+
+    deployment: |
+      apiVersion: networking.k8s.io/v1
+      kind: Ingress
+      metadata:
+        name: odoo-ingress
+        annotations:
+          kubernetes.io/ingress.class: nginx
+          nginx.ingress.kubernetes.io/affinity: cookie
+          nginx.ingress.kubernetes.io/affinity-mode: persistent
+          nginx.ingress.kubernetes.io/session-cookie-name: odoo-server
+          nginx.ingress.kubernetes.io/session-cookie-expires: "86400"
+          nginx.ingress.kubernetes.io/proxy-body-size: "100m"
+          nginx.ingress.kubernetes.io/proxy-read-timeout: "720"
+          nginx.ingress.kubernetes.io/proxy-send-timeout: "720"
+      spec:
+        tls:
+        - hosts:
+          - odoo.example.com
+          secretName: odoo-tls
+        rules:
+        - host: odoo.example.com
+          http:
+            paths:
+            - path: /
+              pathType: Prefix
+              backend:
+                service:
+                  name: odoo-service
+                  port:
+                    number: 8069
+            - path: /longpolling
+              pathType: Prefix
+              backend:
+                service:
+                  name: odoo-longpolling-service
+                  port:
+                    number: 8072
+
+  service_config: |
+    apiVersion: v1
+    kind: Service
+    metadata:
+      name: odoo-service
+    spec:
+      type: ClusterIP
+      sessionAffinity: ClientIP
+      sessionAffinityConfig:
+        clientIP:
+          timeoutSeconds: 10800
+      selector:
+        app: odoo
+      ports:
+      - name: http
+        port: 8069
+        targetPort: 8069
+      - name: longpolling
+        port: 8072
+        targetPort: 8072
+
+load_balancing_algorithms:
+  round_robin:
+    description: "Requests distributed sequentially"
+    use_case: "Equal server capacity, stateless applications"
+
+  least_connections:
+    description: "Route to server with fewest active connections"
+    use_case: "Variable request processing times"
+
+  ip_hash:
+    description: "Route based on client IP hash"
+    use_case: "Session persistence without cookies"
+
+  weighted:
+    description: "Distribute based on server weights"
+    use_case: "Servers with different capacities"
+
+  random:
+    description: "Random server selection"
+    use_case: "Simple distribution, testing"
+
+session_persistence:
+  methods:
+    cookie_based:
+      description: "Insert cookie to track server assignment"
+      pros: "Works with any client supporting cookies"
+      cons: "Requires cookie support"
+
+    ip_based:
+      description: "Route based on source IP"
+      pros: "No client requirements"
+      cons: "Issues with NAT, mobile clients"
+
+    application_controlled:
+      description: "Application manages session routing"
+      pros: "Full control, complex logic possible"
+      cons: "Requires application changes"
+
+health_checks:
+  passive:
+    description: "Monitor real traffic for failures"
+    configuration: |
+      # HAProxy passive check
+      option httpchk
+      http-check expect status 200
+
+  active:
+    description: "Proactively test backend health"
+    configuration: |
+      # Nginx Plus active check
+      health_check interval=5 fails=3 passes=2;
+
+  custom_endpoint:
+    implementation: |
+      # Odoo health check endpoint
+      @http.route('/web/health', auth='none')
+      def health_check(self):
+          # Check database connection
+          try:
+              self.env.cr.execute("SELECT 1")
+              db_status = "ok"
+          except:
+              db_status = "error"
+
+          # Check Redis connection
+          try:
+              redis_client.ping()
+              redis_status = "ok"
+          except:
+              redis_status = "error"
+
+          return {
+              'status': 'ok' if db_status == 'ok' and redis_status == 'ok' else 'error',
+              'database': db_status,
+              'redis': redis_status,
+              'timestamp': datetime.now().isoformat()
+          }
+
+ssl_termination:
+  benefits:
+    - "Offload CPU-intensive TLS processing"
+    - "Centralized certificate management"
+    - "Simplified backend configuration"
+
+  configuration:
+    haproxy: |
+      bind *:443 ssl crt /etc/ssl/certs/odoo.pem alpn h2,http/1.1
+
+    nginx: |
+      listen 443 ssl http2;
+      ssl_certificate /etc/nginx/ssl/cert.pem;
+      ssl_certificate_key /etc/nginx/ssl/key.pem;
+
+monitoring:
+  metrics:
+    - active_connections: "Current active connections"
+    - requests_per_second: "Request rate"
+    - response_time: "Average response time"
+    - error_rate: "4xx/5xx error percentage"
+    - backend_health: "Healthy/unhealthy backends"
+
+  tools:
+    prometheus: |
+      # HAProxy exporter
+      - job_name: 'haproxy'
+        static_configs:
+        - targets: ['localhost:9101']
+
+    grafana_dashboard: |
+      # Import dashboard ID 2428 for HAProxy
+      # Import dashboard ID 12086 for Nginx
+
+troubleshooting:
+  common_issues:
+    - issue: "502 Bad Gateway errors"
+      check:
+        - "Backend servers are running"
+        - "Health checks are passing"
+        - "Firewall rules allow traffic"
+        - "Backend timeout settings"
+
+    - issue: "Session persistence not working"
+      check:
+        - "Cookie insertion configured"
+        - "Client accepting cookies"
+        - "Same backend server available"
+
+    - issue: "Uneven load distribution"
+      check:
+        - "Load balancing algorithm"
+        - "Server weights configured correctly"
+        - "Health check status of all backends"
+
+    - issue: "High latency"
+      check:
+        - "Network path to backends"
+        - "Backend server performance"
+        - "Connection pooling settings"
+        - "Keep-alive configuration"
+
+best_practices:
+  - "Always configure health checks"
+  - "Use connection pooling to backends"
+  - "Implement graceful shutdown handling"
+  - "Monitor all load balancer metrics"
+  - "Test failover scenarios regularly"
+  - "Document load balancer configuration"
+  - "Use automation for configuration management"
+  - "Implement rate limiting for DDoS protection"
+  - "Regular security updates for load balancer software"
+  - "Separate longpolling/websocket traffic from main HTTP"

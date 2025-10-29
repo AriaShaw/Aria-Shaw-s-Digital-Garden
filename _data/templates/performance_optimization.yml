@@ -1,0 +1,385 @@
+# Template: Performance Optimization Guide
+# Template ID: performance_optimization
+# Intent Type: practitioner
+# Coverage: 40 keywords (slow queries, memory, caching, load balancing, CDN, workers, database tuning)
+# Variables Required: {{optimization_focus}}, {{odoo_version}}, {{deployment_scale}}, {{current_bottleneck}}
+# Reusable Modules: performance/{{optimization_focus}}_config.yml, database/postgresql_tuning.yml
+
+metadata:
+  title: "{{optimization_topic}} for Odoo {{odoo_version}}: Performance Tuning Guide"
+  description: "Optimize {{optimization_topic}} in Odoo {{odoo_version}}. Achieve {{performance_gain}}% performance improvement with database tuning, caching strategies, and infrastructure optimization. Production-tested configurations."
+  intent_type: "practitioner"
+  page_slug: "{{optimization_slug}}"
+  draft_metadata:
+    created_by: "pseo-bulk-generator"
+    template_id: "performance_optimization"
+    generation_mode: "template"
+    confidence_level: "high"
+    notes_for_reviewer: "Verify performance metrics are realistic. Check tool versions match Odoo {{odoo_version}}."
+
+static_data:
+  # Performance Context
+  optimization_focus: "{{optimization_focus}}"  # database/memory/cache/workers/cdn/query/overall
+  odoo_version: "{{odoo_version}}"
+  deployment_scale: "{{deployment_scale}}"  # small/medium/large/enterprise
+  expected_concurrent_users: "{{concurrent_users}}"
+  expected_daily_transactions: "{{daily_transactions}}"
+  current_infrastructure:
+    cpu_cores: "{{cpu_cores}}"
+    ram_gb: "{{ram_gb}}"
+    storage_type: "{{storage_type}}"  # SSD/NVMe/HDD
+    database_size_gb: "{{db_size_gb}}"
+
+  # Performance Baseline
+  current_metrics:
+    page_load_time:
+      current: "{{current_load_time}}ms"
+      target: "{{target_load_time}}ms"
+      improvement_needed: "{{improvement_percent}}%"
+
+    database_performance:
+      avg_query_time: "{{avg_query_ms}}ms"
+      slow_queries_count: "{{slow_queries}}"
+      deadlocks_per_day: "{{deadlocks}}"
+      cache_hit_ratio: "{{cache_hit_ratio}}%"
+
+    resource_utilization:
+      cpu_usage_avg: "{{cpu_usage}}%"
+      ram_usage_avg: "{{ram_usage}}%"
+      disk_io_wait: "{{io_wait}}%"
+      network_latency: "{{network_latency}}ms"
+
+    application_metrics:
+      requests_per_second: "{{current_rps}}"
+      error_rate: "{{error_rate}}%"
+      timeout_rate: "{{timeout_rate}}%"
+      worker_utilization: "{{worker_util}}%"
+
+  # Bottleneck Analysis
+  identified_bottlenecks:
+    primary_bottleneck:
+      type: "{{bottleneck_type}}"  # database/memory/cpu/network/disk
+      impact: "{{impact_percent}}% performance degradation"
+      root_cause: "{{root_cause}}"
+      evidence: ["{{evidence_1}}", "{{evidence_2}}", "{{evidence_3}}"]
+
+    secondary_bottlenecks:
+      - type: "{{secondary_type_1}}"
+        impact: "{{secondary_impact_1}}%"
+      - type: "{{secondary_type_2}}"
+        impact: "{{secondary_impact_2}}%"
+
+  # Optimization Strategy
+  optimization_phases:
+    - phase: 1
+      title: "Performance Profiling & Analysis"
+      duration: "2-3 days"
+      tasks:
+        - task: "Enable SQL logging and profiling"
+          commands:
+            - "# In odoo.conf"
+            - "log_level = debug_sql"
+            - "log_db_level = debug"
+            - "# PostgreSQL slow query log"
+            - "ALTER SYSTEM SET log_min_duration_statement = 200;"
+            - "SELECT pg_reload_conf();"
+        - task: "Profile Python code execution"
+          tools:
+            - tool: "py-spy"
+              usage: "py-spy record -o profile.svg --pid $(pgrep -f odoo)"
+            - tool: "cProfile"
+              usage: "python -m cProfile -o stats.prof odoo-bin"
+        - task: "Monitor system resources"
+          commands:
+            - "htop -d 10"
+            - "iotop -o"
+            - "nethogs"
+            - "vmstat 1"
+      deliverable: "performance_baseline_report.pdf"
+
+    - phase: 2
+      title: "Database Optimization"
+      duration: "3-5 days"
+      tasks:
+        - task: "PostgreSQL configuration tuning"
+          postgresql_config:
+            shared_buffers: "{{shared_buffers_mb}}MB"  # 25% of RAM
+            effective_cache_size: "{{cache_size_gb}}GB"  # 50-75% of RAM
+            maintenance_work_mem: "{{maintenance_mem_mb}}MB"
+            work_mem: "{{work_mem_mb}}MB"
+            random_page_cost: "{{random_page_cost}}"  # 1.1 for SSD
+            effective_io_concurrency: "{{io_concurrency}}"  # 200 for SSD
+            max_connections: "{{max_connections}}"
+            checkpoint_segments: "{{checkpoint_segments}}"
+            checkpoint_completion_target: "0.9"
+            wal_buffers: "{{wal_buffers_mb}}MB"
+            default_statistics_target: "100"
+
+        - task: "Create optimized indexes"
+          index_strategy:
+            - "CREATE INDEX CONCURRENTLY idx_{{table}}_{{column}} ON {{table}}({{column}});"
+            - "CREATE INDEX idx_covering ON {{table}}({{col1}}) INCLUDE ({{col2}}, {{col3}});"
+            - "CREATE INDEX idx_partial ON {{table}}({{column}}) WHERE {{condition}};"
+
+        - task: "Vacuum and analyze tables"
+          maintenance_commands:
+            - "VACUUM ANALYZE {{table}};"
+            - "REINDEX TABLE {{table}};"
+            - "CLUSTER {{table}} USING {{index}};"
+
+        - task: "Query optimization"
+          techniques:
+            - technique: "Use SELECT specific columns instead of SELECT *"
+            - technique: "Add LIMIT to search queries"
+            - technique: "Use read() instead of browse() for large datasets"
+            - technique: "Implement query result caching"
+
+      verification: "pgbadger analysis shows 50% reduction in slow queries"
+
+    - phase: 3
+      title: "Application-Level Optimization"
+      duration: "2-4 days"
+      tasks:
+        - task: "Configure Odoo workers"
+          worker_config:
+            workers: "{{worker_count}}"  # (CPU cores * 2) + 1
+            max_cron_threads: "{{cron_threads}}"  # 2
+            limit_memory_hard: "{{memory_hard_mb}}MB"  # 2677
+            limit_memory_soft: "{{memory_soft_mb}}MB"  # 2048
+            limit_request: "{{request_limit}}"  # 8192
+            limit_time_cpu: "{{cpu_time_limit}}"  # 60
+            limit_time_real: "{{real_time_limit}}"  # 120
+            limit_time_real_cron: "{{cron_time_limit}}"  # 0 (unlimited)
+
+        - task: "Implement caching strategy"
+          cache_layers:
+            - layer: "ORM Cache"
+              decorator: "@tools.ormcache"
+              ttl: "{{orm_cache_ttl}}"
+            - layer: "Redis Cache"
+              config: "{{LOAD:performance/redis_config.yml}}"
+            - layer: "CDN Cache"
+              provider: "{{cdn_provider}}"
+              cache_rules: "{{cdn_cache_rules}}"
+
+        - task: "Optimize asset delivery"
+          asset_optimization:
+            - "Enable asset bundling"
+            - "Minify CSS/JS"
+            - "Enable gzip compression"
+            - "Implement lazy loading"
+            - "Use WebP images"
+
+        - task: "Code-level optimizations"
+          patterns:
+            - pattern: "Batch operations"
+              example: "self.env['model'].create(vals_list)"
+            - pattern: "Prefetch related records"
+              example: "records.mapped('partner_id')"
+            - pattern: "Use SQL for complex queries"
+              example: "self.env.cr.execute(query)"
+
+      verification: "Application response time < 200ms for 95% of requests"
+
+    - phase: 4
+      title: "Infrastructure Scaling"
+      duration: "3-5 days"
+      tasks:
+        - task: "Implement load balancing"
+          architecture:
+            load_balancer: "{{lb_type}}"  # nginx/haproxy/cloud-lb
+            algorithm: "{{lb_algorithm}}"  # round-robin/least-conn/ip-hash
+            health_checks:
+              endpoint: "/web/health"
+              interval: "{{health_check_interval}}s"
+              timeout: "{{health_timeout}}s"
+
+          nginx_config: |
+            upstream odoo {
+                least_conn;
+                server backend1:8069 max_fails=3 fail_timeout=30s;
+                server backend2:8069 max_fails=3 fail_timeout=30s;
+                keepalive 64;
+            }
+
+        - task: "Configure Redis caching"
+          redis_setup:
+            installation: "apt-get install redis-server"
+            configuration:
+              maxmemory: "{{redis_memory_gb}}gb"
+              maxmemory_policy: "allkeys-lru"
+              tcp_keepalive: "60"
+              tcp_backlog: "511"
+              databases: "16"
+
+        - task: "Set up CDN"
+          cdn_configuration:
+            provider: "{{cdn_provider}}"  # CloudFlare/CloudFront/Fastly
+            cache_static_assets: true
+            cache_ttl: "{{cdn_ttl_days}} days"
+            purge_strategy: "{{purge_strategy}}"
+
+        - task: "Database replication"
+          replication_setup:
+            type: "{{replication_type}}"  # streaming/logical
+            slaves: "{{slave_count}}"
+            read_write_splitting: true
+            lag_monitoring: "{{lag_threshold_ms}}ms"
+
+      verification: "Load test shows linear scaling with added resources"
+
+    - phase: 5
+      title: "Monitoring & Alerting"
+      duration: "1-2 days"
+      tasks:
+        - task: "Set up monitoring stack"
+          monitoring_tools:
+            metrics: "{{metrics_tool}}"  # Prometheus/DataDog/NewRelic
+            logs: "{{logs_tool}}"  # ELK/Splunk/CloudWatch
+            apm: "{{apm_tool}}"  # AppDynamics/Dynatrace
+
+        - task: "Configure performance alerts"
+          alert_rules:
+            - metric: "response_time"
+              threshold: "> {{alert_response_ms}}ms"
+              action: "notify_slack"
+            - metric: "error_rate"
+              threshold: "> {{alert_error_rate}}%"
+              action: "page_oncall"
+            - metric: "database_connections"
+              threshold: "> {{alert_connections}}"
+              action: "auto_scale"
+
+        - task: "Create performance dashboard"
+          dashboard_panels:
+            - "Request rate & response time"
+            - "Database query performance"
+            - "Cache hit ratios"
+            - "Resource utilization"
+            - "Error rates & types"
+
+      verification: "All metrics visible in real-time dashboard"
+
+  # Performance Tuning Parameters
+  tuning_parameters:
+    database_tuning:
+      connection_pooling:
+        pool_size: "{{db_pool_size}}"
+        max_overflow: "{{db_max_overflow}}"
+        pool_timeout: "{{db_pool_timeout}}"
+        pool_recycle: "{{db_pool_recycle}}"
+
+      query_optimization:
+        statement_timeout: "{{statement_timeout_ms}}ms"
+        lock_timeout: "{{lock_timeout_ms}}ms"
+        idle_in_transaction_timeout: "{{idle_timeout_ms}}ms"
+
+    application_tuning:
+      request_handling:
+        max_request_size: "{{max_request_mb}}MB"
+        upload_max_size: "{{upload_max_mb}}MB"
+        session_timeout: "{{session_timeout_min}}min"
+
+      background_jobs:
+        cron_interval: "{{cron_interval_min}}min"
+        job_queue_size: "{{queue_size}}"
+        retry_attempts: "{{retry_count}}"
+
+    system_tuning:
+      kernel_parameters:
+        vm_swappiness: "{{swappiness}}"  # 10 for database servers
+        net_core_somaxconn: "{{somaxconn}}"  # 65535
+        net_ipv4_tcp_max_syn_backlog: "{{syn_backlog}}"  # 8192
+        fs_file_max: "{{file_max}}"  # 2097152
+
+      ulimits:
+        nofile: "{{nofile_limit}}"  # 65536
+        nproc: "{{nproc_limit}}"  # 32768
+        memlock: "unlimited"
+
+  # Performance Testing
+  load_testing:
+    tool: "{{load_test_tool}}"  # JMeter/Locust/K6
+    scenarios:
+      - scenario: "Normal load"
+        users: "{{normal_users}}"
+        duration: "{{normal_duration}}min"
+        target_rps: "{{normal_rps}}"
+
+      - scenario: "Peak load"
+        users: "{{peak_users}}"
+        duration: "{{peak_duration}}min"
+        target_rps: "{{peak_rps}}"
+
+      - scenario: "Stress test"
+        users: "{{stress_users}}"
+        duration: "{{stress_duration}}min"
+        target_rps: "{{stress_rps}}"
+
+    success_criteria:
+      response_time_p95: "< {{p95_threshold}}ms"
+      response_time_p99: "< {{p99_threshold}}ms"
+      error_rate: "< {{error_threshold}}%"
+      throughput: "> {{throughput_threshold}} req/s"
+
+  # Cost-Benefit Analysis
+  optimization_roi:
+    costs:
+      infrastructure_upgrade: "${{infra_cost}}"
+      implementation_hours: "{{impl_hours}}"
+      tools_licensing: "${{tools_cost}}"
+
+    benefits:
+      performance_improvement: "{{improvement_percent}}%"
+      user_satisfaction_increase: "{{satisfaction_percent}}%"
+      infrastructure_savings: "${{savings_monthly}}/month"
+      reduced_downtime: "{{downtime_reduction_hours}} hours/month"
+
+    payback_period: "{{payback_months}} months"
+
+# AI-generated content sections (filled by enrichment pipeline)
+ai_generated_content:
+  introduction: ""
+  step_by_step_guide: ""  # Main optimization guide content (standard field)
+  troubleshooting_guide: ""
+  conclusion: ""
+
+# Conversion assets (filled by pseo-conversion-copywriter)
+conversion_assets:
+  - component_type: "callout-box"
+    placement_hint: "mid_guide"
+    generated_copy: {}
+
+  - component_type: "benefit-list"
+    placement_hint: "post_technical"
+    generated_copy: {}
+
+  - component_type: "product-box"
+    placement_hint: "pre_conclusion"
+    generated_copy: {}
+
+# Intelligent internal links (filled by pseo-link-architect)
+intelligent_links:
+  - link_type: "related-optimization"
+    placement: "in-content"
+    generated_link: {}
+
+  - link_type: "infrastructure-guide"
+    placement: "after-scaling"
+    generated_link: {}
+
+  - link_type: "monitoring-setup"
+    placement: "footer"
+    generated_link: {}
+
+# Visualizations (filled by pseo-visualization-agent)
+visualizations:
+  - chart_type: "mermaid"
+    title: "Performance Architecture"
+    placement_hint: "after_steps"
+    mermaid_chart_syntax: ""
+
+  - chart_type: "mermaid"
+    title: "Performance Metrics Timeline"
+    placement_hint: "after_troubleshooting"
+    mermaid_chart_syntax: ""

@@ -1,0 +1,919 @@
+# Odoo Module Development Patterns and Best Practices
+# Last Verified: 2025-10-29
+# Data Sources: Odoo documentation, development guidelines, community best practices
+
+module_structure:
+  standard_layout:
+    description: "Standard Odoo module directory structure"
+    structure: |
+      my_module/
+      ├── __init__.py
+      ├── __manifest__.py
+      ├── controllers/
+      │   ├── __init__.py
+      │   └── main.py
+      ├── data/
+      │   ├── ir_sequence_data.xml
+      │   ├── ir_cron_data.xml
+      │   └── mail_template_data.xml
+      ├── demo/
+      │   └── demo_data.xml
+      ├── i18n/
+      │   ├── es.po
+      │   └── fr.po
+      ├── models/
+      │   ├── __init__.py
+      │   ├── sale_order.py
+      │   └── res_partner.py
+      ├── report/
+      │   ├── report_templates.xml
+      │   └── report_views.xml
+      ├── security/
+      │   ├── ir.model.access.csv
+      │   └── security_groups.xml
+      ├── static/
+      │   ├── description/
+      │   │   ├── icon.png
+      │   │   └── index.html
+      │   ├── src/
+      │   │   ├── css/
+      │   │   ├── js/
+      │   │   ├── scss/
+      │   │   └── xml/
+      │   └── tests/
+      ├── tests/
+      │   ├── __init__.py
+      │   └── test_sale_order.py
+      ├── views/
+      │   ├── sale_order_views.xml
+      │   ├── res_partner_views.xml
+      │   └── menu_views.xml
+      └── wizard/
+          ├── __init__.py
+          └── export_wizard.py
+
+manifest_file:
+  basic_manifest: |
+    # __manifest__.py
+    {
+        'name': 'My Custom Module',
+        'version': '17.0.1.0.0',
+        'category': 'Sales/Sales',
+        'summary': 'Short module description',
+        'description': """
+    Long description of module functionality
+    ========================================
+
+    This module provides:
+    * Feature 1
+    * Feature 2
+    * Feature 3
+        """,
+        'author': 'Your Company',
+        'website': 'https://www.yourcompany.com',
+        'license': 'LGPL-3',
+        'depends': [
+            'base',
+            'sale_management',
+            'account',
+        ],
+        'data': [
+            'security/security_groups.xml',
+            'security/ir.model.access.csv',
+            'data/ir_sequence_data.xml',
+            'views/sale_order_views.xml',
+            'views/res_partner_views.xml',
+            'views/menu_views.xml',
+            'report/report_templates.xml',
+            'wizard/export_wizard_views.xml',
+        ],
+        'demo': [
+            'demo/demo_data.xml',
+        ],
+        'qweb': [
+            'static/src/xml/*.xml',
+        ],
+        'installable': True,
+        'application': False,
+        'auto_install': False,
+    }
+
+  advanced_manifest: |
+    {
+        'name': 'Advanced Module',
+        'version': '17.0.2.1.3',
+        'depends': ['base', 'web', 'mail'],
+        'external_dependencies': {
+            'python': ['pandas', 'numpy', 'requests'],
+            'bin': ['wkhtmltopdf'],
+        },
+        'data': [...],
+        'assets': {
+            'web.assets_backend': [
+                'my_module/static/src/scss/custom.scss',
+                'my_module/static/src/js/widget.js',
+                'my_module/static/src/xml/templates.xml',
+            ],
+            'web.assets_frontend': [
+                'my_module/static/src/css/website.css',
+            ],
+        },
+        'pre_init_hook': 'pre_init_check',
+        'post_init_hook': 'post_init_configure',
+        'uninstall_hook': 'uninstall_cleanup',
+        'images': ['static/description/banner.png'],
+        'sequence': 10,
+        'installable': True,
+        'auto_install': False,
+        'application': True,
+    }
+
+model_patterns:
+  basic_model: |
+    from odoo import models, fields, api
+    from odoo.exceptions import ValidationError, UserError
+
+    class CustomModel(models.Model):
+        _name = 'custom.model'
+        _description = 'Custom Model'
+        _inherit = ['mail.thread', 'mail.activity.mixin']
+        _rec_name = 'name'
+        _order = 'sequence, name'
+
+        # Basic fields
+        name = fields.Char(
+            string='Name',
+            required=True,
+            tracking=True,
+            help='Enter the name'
+        )
+
+        active = fields.Boolean(
+            string='Active',
+            default=True
+        )
+
+        sequence = fields.Integer(
+            string='Sequence',
+            default=10
+        )
+
+        # Relational fields
+        partner_id = fields.Many2one(
+            'res.partner',
+            string='Partner',
+            required=True,
+            ondelete='restrict'
+        )
+
+        line_ids = fields.One2many(
+            'custom.model.line',
+            'parent_id',
+            string='Lines'
+        )
+
+        tag_ids = fields.Many2many(
+            'custom.tag',
+            'custom_model_tag_rel',
+            'model_id',
+            'tag_id',
+            string='Tags'
+        )
+
+        # Computed fields
+        total_amount = fields.Float(
+            string='Total Amount',
+            compute='_compute_total_amount',
+            store=True
+        )
+
+        @api.depends('line_ids.amount')
+        def _compute_total_amount(self):
+            for record in self:
+                record.total_amount = sum(record.line_ids.mapped('amount'))
+
+        # Constraints
+        @api.constrains('name')
+        def _check_name(self):
+            for record in self:
+                if len(record.name) < 3:
+                    raise ValidationError("Name must be at least 3 characters long")
+
+        _sql_constraints = [
+            ('name_uniq', 'UNIQUE(name)', 'Name must be unique!'),
+        ]
+
+  inherited_model: |
+    class SaleOrderInherit(models.Model):
+        _inherit = 'sale.order'
+
+        # Add new fields
+        custom_field = fields.Char(string='Custom Field')
+        priority = fields.Selection([
+            ('0', 'Low'),
+            ('1', 'Normal'),
+            ('2', 'High'),
+            ('3', 'Urgent')
+        ], default='1')
+
+        # Override existing methods
+        @api.model
+        def create(self, vals):
+            """Override create to add custom logic"""
+            if 'custom_field' not in vals:
+                vals['custom_field'] = self._get_default_custom_field()
+
+            # Call super
+            order = super(SaleOrderInherit, self).create(vals)
+
+            # Additional logic after creation
+            order._send_custom_notification()
+
+            return order
+
+        def write(self, vals):
+            """Override write to track changes"""
+            # Logic before write
+            old_values = {
+                record.id: record.custom_field
+                for record in self
+            }
+
+            result = super(SaleOrderInherit, self).write(vals)
+
+            # Logic after write
+            if 'custom_field' in vals:
+                for record in self:
+                    if old_values[record.id] != record.custom_field:
+                        record._log_custom_field_change(old_values[record.id])
+
+            return result
+
+        # Add new methods
+        def _send_custom_notification(self):
+            """Send notification on creation"""
+            # Implementation
+            pass
+
+computed_fields:
+  patterns:
+    simple_compute: |
+      # Simple computed field
+      display_name = fields.Char(
+          compute='_compute_display_name'
+      )
+
+      def _compute_display_name(self):
+          for record in self:
+              record.display_name = f"{record.name} - {record.code}"
+
+    stored_compute: |
+      # Stored computed field with dependencies
+      total_amount = fields.Float(
+          compute='_compute_amounts',
+          store=True,
+          recursive=True
+      )
+
+      discount_amount = fields.Float(
+          compute='_compute_amounts',
+          store=True
+      )
+
+      @api.depends('line_ids.price_total', 'discount_percent')
+      def _compute_amounts(self):
+          for record in self:
+              total = sum(record.line_ids.mapped('price_total'))
+              record.total_amount = total
+              record.discount_amount = total * record.discount_percent / 100
+
+    inverse_compute: |
+      # Computed field with inverse
+      full_name = fields.Char(
+          compute='_compute_full_name',
+          inverse='_inverse_full_name',
+          search='_search_full_name'
+      )
+
+      def _compute_full_name(self):
+          for record in self:
+              record.full_name = f"{record.first_name} {record.last_name}"
+
+      def _inverse_full_name(self):
+          for record in self:
+              if record.full_name:
+                  parts = record.full_name.split(' ', 1)
+                  record.first_name = parts[0]
+                  record.last_name = parts[1] if len(parts) > 1 else ''
+
+      def _search_full_name(self, operator, value):
+          return ['|',
+                  ('first_name', operator, value),
+                  ('last_name', operator, value)]
+
+    related_fields: |
+      # Related fields for easy access
+      partner_email = fields.Char(
+          related='partner_id.email',
+          string='Partner Email',
+          store=True,
+          readonly=False
+      )
+
+      company_currency_id = fields.Many2one(
+          related='company_id.currency_id',
+          string='Company Currency'
+      )
+
+onchange_methods:
+  basic_onchange: |
+    @api.onchange('partner_id')
+    def _onchange_partner(self):
+        """Update fields when partner changes"""
+        if self.partner_id:
+            self.email = self.partner_id.email
+            self.phone = self.partner_id.phone
+            self.payment_term_id = self.partner_id.property_payment_term_id
+
+            # Return warning if needed
+            if self.partner_id.credit_limit_exceeded:
+                return {
+                    'warning': {
+                        'title': 'Credit Limit',
+                        'message': 'Partner has exceeded credit limit!'
+                    }
+                }
+
+    @api.onchange('product_id')
+    def _onchange_product(self):
+        """Update fields and domain when product changes"""
+        if self.product_id:
+            self.name = self.product_id.display_name
+            self.price_unit = self.product_id.list_price
+
+            # Update domain for another field
+            return {
+                'domain': {
+                    'attribute_id': [('product_id', '=', self.product_id.id)]
+                }
+            }
+
+view_patterns:
+  form_view: |
+    <record id="view_custom_model_form" model="ir.ui.view">
+        <field name="name">custom.model.form</field>
+        <field name="model">custom.model</field>
+        <field name="arch" type="xml">
+            <form string="Custom Model">
+                <header>
+                    <button name="action_confirm" string="Confirm"
+                            type="object" class="btn-primary"
+                            attrs="{'invisible': [('state', '!=', 'draft')]}"/>
+                    <button name="action_cancel" string="Cancel"
+                            type="object"
+                            attrs="{'invisible': [('state', '!=', 'draft')]}"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,confirmed,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_lines" type="object"
+                                class="oe_stat_button" icon="fa-list">
+                            <field name="line_count" widget="statinfo"/>
+                            <span>Lines</span>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Archived"
+                            attrs="{'invisible': [('active', '=', True)]}"/>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Name..."/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group name="left">
+                            <field name="partner_id"/>
+                            <field name="date"/>
+                            <field name="user_id"/>
+                        </group>
+                        <group name="right">
+                            <field name="amount"/>
+                            <field name="currency_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Lines" name="lines">
+                            <field name="line_ids">
+                                <tree editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="product_id"/>
+                                    <field name="quantity"/>
+                                    <field name="price_unit"/>
+                                    <field name="amount" sum="Total"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Other Info" name="other">
+                            <group>
+                                <field name="notes"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+  tree_view: |
+    <record id="view_custom_model_tree" model="ir.ui.view">
+        <field name="name">custom.model.tree</field>
+        <field name="model">custom.model</field>
+        <field name="arch" type="xml">
+            <tree string="Custom Models"
+                  decoration-danger="state=='cancel'"
+                  decoration-success="state=='done'"
+                  decoration-muted="active==False">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="date"/>
+                <field name="amount" sum="Total"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'done'"
+                       decoration-info="state == 'draft'"/>
+                <field name="active" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+  search_view: |
+    <record id="view_custom_model_search" model="ir.ui.view">
+        <field name="name">custom.model.search</field>
+        <field name="model">custom.model</field>
+        <field name="arch" type="xml">
+            <search string="Search Custom Model">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <filter name="my_records" string="My Records"
+                        domain="[('user_id', '=', uid)]"/>
+                <filter name="current_month" string="Current Month"
+                        domain="[('date', '&gt;=', (context_today()).strftime('%Y-%m-01'))]"/>
+                <separator/>
+                <filter name="archived" string="Archived"
+                        domain="[('active', '=', False)]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_partner" string="Partner"
+                            context="{'group_by': 'partner_id'}"/>
+                    <filter name="group_date" string="Date"
+                            context="{'group_by': 'date:month'}"/>
+                    <filter name="group_state" string="State"
+                            context="{'group_by': 'state'}"/>
+                </group>
+                <searchpanel>
+                    <field name="state" icon="fa-tasks" enable_counters="1"/>
+                    <field name="partner_id" select="multi" enable_counters="1"/>
+                </searchpanel>
+            </search>
+        </field>
+    </record>
+
+action_patterns:
+  window_action: |
+    <record id="action_custom_model" model="ir.actions.act_window">
+        <field name="name">Custom Models</field>
+        <field name="res_model">custom.model</field>
+        <field name="view_mode">tree,form,kanban,pivot,graph</field>
+        <field name="search_view_id" ref="view_custom_model_search"/>
+        <field name="context">{
+            'default_user_id': uid,
+            'search_default_my_records': 1
+        }</field>
+        <field name="domain">[('active', '=', True)]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first record!
+            </p>
+            <p>
+                Click Create to add a new record.
+            </p>
+        </field>
+    </record>
+
+  server_action: |
+    <record id="action_custom_server" model="ir.actions.server">
+        <field name="name">Process Records</field>
+        <field name="model_id" ref="model_custom_model"/>
+        <field name="binding_model_id" ref="model_custom_model"/>
+        <field name="state">code</field>
+        <field name="code">
+    records = env['custom.model'].browse(env.context.get('active_ids', []))
+    for record in records:
+        record.process()
+        </field>
+    </record>
+
+  url_action: |
+    <record id="action_open_website" model="ir.actions.act_url">
+        <field name="name">Open Documentation</field>
+        <field name="url">https://www.odoo.com/documentation</field>
+        <field name="target">new</field>
+    </record>
+
+security_patterns:
+  access_rights: |
+    # security/ir.model.access.csv
+    id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+    access_custom_model_user,custom.model.user,model_custom_model,base.group_user,1,1,1,0
+    access_custom_model_manager,custom.model.manager,model_custom_model,custom_group_manager,1,1,1,1
+
+  record_rules: |
+    <record id="custom_model_user_rule" model="ir.rule">
+        <field name="name">User can only see own records</field>
+        <field name="model_id" ref="model_custom_model"/>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+  security_groups: |
+    <record id="custom_group_user" model="res.groups">
+        <field name="name">Custom User</field>
+        <field name="category_id" ref="base.module_category_operations"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="custom_group_manager" model="res.groups">
+        <field name="name">Custom Manager</field>
+        <field name="category_id" ref="base.module_category_operations"/>
+        <field name="implied_ids" eval="[(4, ref('custom_group_user'))]"/>
+        <field name="users" eval="[(4, ref('base.user_root'))]"/>
+    </record>
+
+wizard_patterns:
+  transient_model: |
+    from odoo import models, fields, api
+
+    class ExportWizard(models.TransientModel):
+        _name = 'export.wizard'
+        _description = 'Export Wizard'
+
+        date_from = fields.Date(
+            string='Date From',
+            required=True,
+            default=fields.Date.context_today
+        )
+
+        date_to = fields.Date(
+            string='Date To',
+            required=True,
+            default=fields.Date.context_today
+        )
+
+        format = fields.Selection([
+            ('csv', 'CSV'),
+            ('excel', 'Excel'),
+            ('pdf', 'PDF')
+        ], default='csv', required=True)
+
+        include_archived = fields.Boolean(
+            string='Include Archived',
+            default=False
+        )
+
+        def action_export(self):
+            """Export data based on wizard settings"""
+            domain = [
+                ('date', '>=', self.date_from),
+                ('date', '<=', self.date_to)
+            ]
+
+            if not self.include_archived:
+                domain.append(('active', '=', True))
+
+            records = self.env['custom.model'].search(domain)
+
+            if self.format == 'csv':
+                return self._export_csv(records)
+            elif self.format == 'excel':
+                return self._export_excel(records)
+            else:
+                return self._export_pdf(records)
+
+        def _export_csv(self, records):
+            """Export to CSV"""
+            # Generate CSV content
+            csv_content = self._generate_csv(records)
+
+            # Return download action
+            attachment = self.env['ir.attachment'].create({
+                'name': f'export_{fields.Date.today()}.csv',
+                'type': 'binary',
+                'datas': base64.b64encode(csv_content.encode()),
+                'mimetype': 'text/csv'
+            })
+
+            return {
+                'type': 'ir.actions.act_url',
+                'url': f'/web/content/{attachment.id}?download=true',
+                'target': 'self'
+            }
+
+report_patterns:
+  qweb_report: |
+    <!-- Report definition -->
+    <record id="report_custom_model" model="ir.actions.report">
+        <field name="name">Custom Report</field>
+        <field name="model">custom.model</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">my_module.report_custom_model_document</field>
+        <field name="report_file">my_module.report_custom_model</field>
+        <field name="print_report_name">'Custom Report - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="model_custom_model"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- Report template -->
+    <template id="report_custom_model_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>
+                            <span t-field="doc.name"/>
+                        </h2>
+                        <div class="row mt32 mb32">
+                            <div class="col-6">
+                                <strong>Partner:</strong>
+                                <span t-field="doc.partner_id"/>
+                            </div>
+                            <div class="col-6">
+                                <strong>Date:</strong>
+                                <span t-field="doc.date"/>
+                            </div>
+                        </div>
+
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Quantity</th>
+                                    <th>Price</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="doc.line_ids" t-as="line">
+                                    <tr>
+                                        <td><span t-field="line.product_id"/></td>
+                                        <td><span t-field="line.quantity"/></td>
+                                        <td><span t-field="line.price_unit"/></td>
+                                        <td><span t-field="line.amount"/></td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="3">Total</th>
+                                    <th><span t-field="doc.total_amount"/></th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+testing_patterns:
+  unit_tests: |
+    from odoo.tests import common, tagged
+
+    @tagged('custom_model')
+    class TestCustomModel(common.TransactionCase):
+
+        def setUp(self):
+            super().setUp()
+            self.Model = self.env['custom.model']
+            self.partner = self.env['res.partner'].create({
+                'name': 'Test Partner'
+            })
+
+        def test_01_create_record(self):
+            """Test record creation"""
+            record = self.Model.create({
+                'name': 'Test Record',
+                'partner_id': self.partner.id
+            })
+            self.assertTrue(record)
+            self.assertEqual(record.name, 'Test Record')
+
+        def test_02_compute_total(self):
+            """Test total computation"""
+            record = self.Model.create({
+                'name': 'Test',
+                'partner_id': self.partner.id
+            })
+
+            # Create lines
+            self.env['custom.model.line'].create({
+                'parent_id': record.id,
+                'amount': 100
+            })
+            self.env['custom.model.line'].create({
+                'parent_id': record.id,
+                'amount': 200
+            })
+
+            # Check computation
+            record._compute_total_amount()
+            self.assertEqual(record.total_amount, 300)
+
+        def test_03_constraint(self):
+            """Test name constraint"""
+            with self.assertRaises(ValidationError):
+                self.Model.create({
+                    'name': 'AB',  # Too short
+                    'partner_id': self.partner.id
+                })
+
+        def test_04_access_rights(self):
+            """Test access rights"""
+            user = self.env['res.users'].create({
+                'name': 'Test User',
+                'login': 'test_user'
+            })
+
+            # Switch to test user
+            Model = self.Model.with_user(user)
+
+            # Test create permission
+            record = Model.create({
+                'name': 'User Record',
+                'partner_id': self.partner.id
+            })
+            self.assertTrue(record)
+
+  integration_tests: |
+    @tagged('post_install', '-at_install')
+    class TestIntegration(common.HttpCase):
+
+        def test_01_workflow(self):
+            """Test complete workflow"""
+            # Login
+            self.authenticate('admin', 'admin')
+
+            # Create via RPC
+            record_id = self.xmlrpc_object.execute(
+                self.db, self.uid, 'admin',
+                'custom.model', 'create',
+                {'name': 'Integration Test', 'partner_id': 1}
+            )
+
+            # Confirm via RPC
+            self.xmlrpc_object.execute(
+                self.db, self.uid, 'admin',
+                'custom.model', 'action_confirm',
+                [record_id]
+            )
+
+            # Check state
+            record = self.env['custom.model'].browse(record_id)
+            self.assertEqual(record.state, 'confirmed')
+
+performance_optimization:
+  prefetch_optimization: |
+    # Optimize prefetching for better performance
+    def action_process_batch(self):
+        """Process records in batch with optimized prefetching"""
+        # Prefetch all records at once
+        records = self.search([('state', '=', 'draft')])
+
+        # Prefetch related fields
+        records.mapped('partner_id.country_id')
+        records.mapped('line_ids.product_id')
+
+        # Process with prefetched data
+        for record in records:
+            # All data is already in cache
+            record._process_record()
+
+  sql_optimization: |
+    def get_statistics_sql(self):
+        """Use raw SQL for complex statistics"""
+        query = """
+            SELECT
+                p.id as partner_id,
+                p.name as partner_name,
+                COUNT(cm.id) as order_count,
+                SUM(cm.total_amount) as total_amount,
+                AVG(cm.total_amount) as avg_amount
+            FROM
+                custom_model cm
+                JOIN res_partner p ON cm.partner_id = p.id
+            WHERE
+                cm.state = 'done'
+                AND cm.date >= %s
+            GROUP BY
+                p.id, p.name
+            ORDER BY
+                total_amount DESC
+            LIMIT 100
+        """
+
+        self.env.cr.execute(query, [fields.Date.today() - timedelta(days=30)])
+        return self.env.cr.dictfetchall()
+
+  caching_patterns: |
+    from odoo.tools import ormcache
+
+    class CachedModel(models.Model):
+        _name = 'cached.model'
+
+        @api.model
+        @ormcache('domain', 'limit')
+        def get_cached_records(self, domain, limit=10):
+            """Cache frequent queries"""
+            return self.search(domain, limit=limit).read(['name', 'value'])
+
+        def write(self, vals):
+            """Clear cache on write"""
+            self.clear_caches()
+            return super().write(vals)
+
+        @api.model
+        def clear_cache(self):
+            """Manual cache clearing"""
+            self.get_cached_records.clear_cache(self)
+
+migration_patterns:
+  pre_migration: |
+    # migrations/17.0.1.0/pre-migration.py
+    def migrate(cr, version):
+        """Pre-migration script"""
+        if not version:
+            return
+
+        # Rename columns before ORM loads
+        cr.execute("""
+            ALTER TABLE custom_model
+            RENAME COLUMN old_field TO new_field
+        """)
+
+        # Add new required column with default
+        cr.execute("""
+            ALTER TABLE custom_model
+            ADD COLUMN IF NOT EXISTS required_field VARCHAR DEFAULT 'default'
+        """)
+
+  post_migration: |
+    # migrations/17.0.1.0/post-migration.py
+    from odoo import api, SUPERUSER_ID
+
+    def migrate(cr, version):
+        """Post-migration script"""
+        if not version:
+            return
+
+        env = api.Environment(cr, SUPERUSER_ID, {})
+
+        # Update data using ORM
+        records = env['custom.model'].search([])
+        for record in records:
+            record.new_field = record._compute_new_field_value()
+
+        # Delete obsolete data
+        env['ir.model.data'].search([
+            ('module', '=', 'my_module'),
+            ('model', '=', 'obsolete.model')
+        ]).unlink()
+
+best_practices:
+  - "Follow Odoo coding guidelines (OCA standards)"
+  - "Use meaningful names for models, fields, and methods"
+  - "Always add help text to fields"
+  - "Implement proper security (access rights and record rules)"
+  - "Write comprehensive tests (unit and integration)"
+  - "Document your code with docstrings"
+  - "Use translations for user-facing strings"
+  - "Optimize database queries (use search_read, avoid N+1)"
+  - "Handle exceptions gracefully"
+  - "Use computed fields instead of methods when possible"
+  - "Implement proper data validation"
+  - "Follow the DRY principle (Don't Repeat Yourself)"
+  - "Use inheritance properly (don't override unnecessarily)"
+  - "Version your module correctly"
+  - "Add demo data for testing"
+  - "Use proper field types (don't use Char for numbers)"
+  - "Implement uninstall hooks for cleanup"
+  - "Use context appropriately"
+  - "Avoid SQL injection (use query parameters)"
+  - "Test with multiple companies and languages"

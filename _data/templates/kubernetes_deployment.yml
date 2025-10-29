@@ -1,0 +1,535 @@
+# Template: Kubernetes Deployment Guide
+# Template ID: kubernetes_deployment
+# Intent Type: practitioner
+# Coverage: 20+ keywords (kubernetes, k8s, helm, operators, cloud-native)
+# Variables Required: {{odoo_version}}, {{k8s_provider}}, {{cluster_size}}, {{namespace}}
+# Reusable Modules: odoo_versions/odoo_{{odoo_version}}.yml, orchestration/k8s_configs.yml
+
+metadata:
+  title: "Odoo {{odoo_version}} Kubernetes Deployment: Enterprise Cloud-Native Guide"
+  description: "Deploy Odoo {{odoo_version}} on {{k8s_provider}} Kubernetes. Complete guide with Helm charts, auto-scaling, service mesh, monitoring, and production best practices."
+  intent_type: "practitioner"
+  page_slug: "odoo-{{odoo_version}}-kubernetes-{{k8s_provider}}"
+  draft_metadata:
+    created_by: "pseo-bulk-generator"
+    template_id: "kubernetes_deployment"
+    generation_mode: "template"
+    confidence_level: "high"
+    notes_for_reviewer: "Verify Kubernetes API versions and Helm chart syntax. Check cloud provider specific configurations."
+
+static_data:
+  # Kubernetes Context
+  odoo_version: "{{odoo_version}}"  # 14/15/16/17/18
+  k8s_provider: "{{k8s_provider}}"  # eks/aks/gke/openshift/rancher/self-managed
+  cluster_size: "{{cluster_size}}"  # small/medium/large/enterprise
+  namespace: "{{namespace}}"  # odoo-prod/odoo-staging/odoo-dev
+
+  # Cluster Architecture
+  cluster_architecture:
+    kubernetes_version: "{{k8s_version}}"  # 1.28/1.29/1.30
+    node_pools:
+      - pool: "system"
+        instance_type: "{{system_node_type}}"
+        min_nodes: "{{system_min_nodes}}"
+        max_nodes: "{{system_max_nodes}}"
+
+      - pool: "application"
+        instance_type: "{{app_node_type}}"
+        min_nodes: "{{app_min_nodes}}"
+        max_nodes: "{{app_max_nodes}}"
+
+      - pool: "database"
+        instance_type: "{{db_node_type}}"
+        node_count: "{{db_node_count}}"
+        taints: "database=true:NoSchedule"
+
+    components:
+      - component: "Deployment/StatefulSet"
+        purpose: "Manage Odoo application pods"
+        replicas: "{{app_replicas}}"
+
+      - component: "Service"
+        purpose: "Load balancing and service discovery"
+        type: "{{service_type}}"  # ClusterIP/LoadBalancer
+
+      - component: "Ingress"
+        purpose: "External access and SSL termination"
+        controller: "{{ingress_controller}}"  # nginx/traefik
+
+      - component: "ConfigMap"
+        purpose: "Configuration management"
+        updates: "Rolling restart"
+
+      - component: "Secret"
+        purpose: "Sensitive data storage"
+        encryption: "At rest"
+
+      - component: "PersistentVolume"
+        purpose: "Data persistence"
+        storage_class: "{{storage_class}}"
+
+  # Helm Chart Configuration
+  helm_configuration:
+    chart_name: "odoo-enterprise"
+    chart_version: "{{chart_version}}"
+    repository: "{{helm_repository}}"
+
+    values_structure:
+      image:
+        repository: "{{image_repository}}"
+        tag: "{{odoo_version}}"
+        pullPolicy: "IfNotPresent"
+
+      replicas:
+        min: "{{min_replicas}}"
+        max: "{{max_replicas}}"
+
+      resources:
+        requests:
+          cpu: "{{cpu_request}}"
+          memory: "{{memory_request}}"
+        limits:
+          cpu: "{{cpu_limit}}"
+          memory: "{{memory_limit}}"
+
+      persistence:
+        enabled: true
+        storageClass: "{{storage_class}}"
+        size: "{{volume_size}}"
+
+      ingress:
+        enabled: true
+        className: "{{ingress_class}}"
+        host: "{{application_domain}}"
+        tls_enabled: "{{tls_enabled}}"
+
+  # Deployment Steps
+  deployment_steps:
+    - step: 1
+      title: "Prepare Kubernetes Cluster"
+      actions:
+        - action: "Create namespace"
+          command: "kubectl create namespace {{namespace}}"
+        - action: "Set context"
+          command: "kubectl config set-context --current --namespace={{namespace}}"
+        - action: "Create secrets"
+          command: "kubectl create secret generic odoo-secrets --from-env-file=.env"
+
+    - step: 2
+      title: "Install Prerequisites"
+      prerequisites:
+        - component: "Cert-Manager"
+          install_command: "helm install cert-manager jetstack/cert-manager --version {{cert_manager_version}}"
+        - component: "Ingress Controller"
+          install_command: "helm install nginx-ingress ingress-nginx/ingress-nginx"
+        - component: "Metrics Server"
+          install_command: "kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml"
+
+    - step: 3
+      title: "Deploy PostgreSQL"
+      deployment_type: "StatefulSet"
+      helm_command: "helm install postgres bitnami/postgresql -f postgres-values.yaml"
+      persistence:
+        size: "{{postgres_volume_size}}"
+        storage_class: "{{postgres_storage_class}}"
+
+    - step: 4
+      title: "Deploy Odoo Application"
+      deployment_command: "helm install odoo ./odoo-chart -f values-{{k8s_provider}}.yaml"
+      verification_commands:
+        - "kubectl get pods -l app=odoo"
+        - "kubectl get svc odoo"
+        - "kubectl get ingress"
+
+  # Auto-scaling Configuration
+  autoscaling_config:
+    horizontal_pod_autoscaler:
+      min_replicas: "{{hpa_min_replicas}}"
+      max_replicas: "{{hpa_max_replicas}}"
+      metrics:
+        - type: "Resource"
+          resource: "cpu"
+          target: "{{cpu_target_percentage}}"
+        - type: "Resource"
+          resource: "memory"
+          target: "{{memory_target_percentage}}"
+
+    vertical_pod_autoscaler:
+      update_policy: "{{vpa_update_policy}}"  # Off/Initial/Auto
+      resource_policy:
+        container_policies:
+          - container_name: "odoo"
+            min_allowed:
+              cpu: "{{vpa_min_cpu}}"
+              memory: "{{vpa_min_memory}}"
+            max_allowed:
+              cpu: "{{vpa_max_cpu}}"
+              memory: "{{vpa_max_memory}}"
+
+    cluster_autoscaler:
+      enabled: "{{cluster_autoscaler_enabled}}"
+      scale_down_delay: "{{scale_down_delay}}"
+      skip_nodes_with_system_pods: true
+      skip_nodes_with_local_storage: true
+
+  # Service Mesh Integration
+  service_mesh:
+    provider: "{{mesh_provider}}"  # istio/linkerd/consul
+    features:
+      - feature: "mTLS"
+        enabled: "{{mtls_enabled}}"
+        mode: "STRICT"
+      - feature: "Traffic Management"
+        enabled: true
+        retry_attempts: "{{retry_attempts}}"
+      - feature: "Circuit Breaking"
+        enabled: "{{circuit_breaking_enabled}}"
+        threshold: "{{circuit_breaking_threshold}}"
+
+    traffic_policies:
+      - policy: "load_balancing"
+        algorithm: "{{lb_algorithm}}"  # round_robin/least_request/random
+      - policy: "connection_pool"
+        max_connections: "{{max_connections}}"
+      - policy: "outlier_detection"
+        consecutive_errors: "{{consecutive_errors}}"
+
+  # Monitoring Stack
+  monitoring:
+    prometheus:
+      enabled: true
+      retention: "{{metrics_retention}}"
+      storage_size: "{{prometheus_storage}}"
+      scrape_interval: "{{scrape_interval}}"
+
+    grafana:
+      enabled: true
+      admin_password: "{{grafana_admin_password}}"
+      dashboards:
+        - "Kubernetes Cluster Overview"
+        - "Odoo Application Metrics"
+        - "PostgreSQL Performance"
+        - "Ingress Controller Stats"
+
+    logging:
+      solution: "{{logging_solution}}"  # elk/efk/loki
+      retention_days: "{{log_retention_days}}"
+      storage_size: "{{log_storage_size}}"
+
+    alerting:
+      enabled: true
+      notification_channels:
+        - channel: "{{alert_channel}}"  # email/slack/pagerduty
+          severity: "{{alert_severity}}"
+
+  # Security Policies
+  security_policies:
+    pod_security_standards:
+      enforce: "{{pss_level}}"  # privileged/baseline/restricted
+      audit: "restricted"
+      warn: "restricted"
+
+    network_policies:
+      - name: "deny-all-ingress"
+        policy_type: "Ingress"
+        rule: "Deny all traffic by default"
+      - name: "allow-odoo-ingress"
+        policy_type: "Ingress"
+        rule: "Allow traffic from ingress controller to Odoo"
+      - name: "allow-odoo-to-postgres"
+        policy_type: "Egress"
+        rule: "Allow Odoo to PostgreSQL"
+
+    rbac:
+      service_account: "odoo-sa"
+      role: "odoo-role"
+      role_binding: "odoo-rolebinding"
+      cluster_role: "{{cluster_role_needed}}"
+
+  # Backup and Disaster Recovery
+  backup_config:
+    solution: "{{backup_solution}}"  # velero/kasten/native
+    schedule: "{{backup_schedule}}"  # cron expression
+    retention: "{{backup_retention}}"
+    storage_location: "{{backup_storage}}"  # s3/azure-blob/gcs
+
+  # Cost Optimization
+  cost_optimization:
+    spot_instances:
+      enabled: "{{spot_enabled}}"
+      percentage: "{{spot_percentage}}"
+
+    resource_quotas:
+      cpu_limit: "{{namespace_cpu_limit}}"
+      memory_limit: "{{namespace_memory_limit}}"
+      pvc_limit: "{{namespace_pvc_limit}}"
+
+ai_generated_content:
+  introduction: ""
+
+  # Main Kubernetes deployment guide - standard field
+  deployment_guide: ""
+
+  # Step-by-step Helm setup - standard field
+  step_by_step_guide: ""
+
+  # Production deployment strategies - standard field
+  implementation_guide: ""
+
+  # Troubleshooting Kubernetes issues - standard field
+  troubleshooting_guide: ""
+
+  # Security best practices - standard field
+  security_guide: ""
+
+  # Performance and scaling optimization - standard field
+  optimization_guide: ""
+
+  conclusion: ""
+
+intelligent_links:
+  - link_text: "Kubernetes Best Practices"
+    relevance_score: 0.95
+    intent_match: "technical"
+    placement_hint: "mid_guide"
+    generated_link: ""
+
+  - link_text: "Helm Chart Customization"
+    relevance_score: 0.92
+    intent_match: "implementation"
+    placement_hint: "post_helm"
+    generated_link: ""
+
+  - link_text: "Service Mesh Setup Guide"
+    relevance_score: 0.88
+    intent_match: "advanced"
+    placement_hint: "post_content"
+    generated_link: ""
+
+conversion_assets:
+  - asset_id: "k8s_hero"
+    component_type: "hero-section"
+    headline: "Deploy Odoo {{odoo_version}} on Kubernetes"
+    subheadline: "Enterprise-scale cloud-native deployment"
+    cta_text: "Get Helm Charts"
+    cta_link: "#helm-installation"
+    placement_hint: "above_fold"
+    generated_copy: ""
+
+  - asset_id: "helm_chart_callout"
+    component_type: "callout-box"
+    headline: "Production-Ready Helm Chart"
+    body: "Deploy Odoo on {{k8s_provider}} with our enterprise Helm chart including monitoring and auto-scaling"
+    cta_text: "Download Helm Chart"
+    cta_link: "/resources/helm-odoo-{{odoo_version}}"
+    placement_hint: "mid_guide"
+    style: "success"
+    generated_copy: ""
+
+  - asset_id: "k8s_benefits"
+    component_type: "benefit-list"
+    headline: "Why Kubernetes for Odoo?"
+    benefits:
+      - "Automatic scaling based on load"
+      - "Self-healing infrastructure"
+      - "Zero-downtime deployments"
+      - "Multi-cloud flexibility"
+      - "Cost optimization through efficient resource usage"
+    placement_hint: "post_technical"
+    generated_copy: ""
+
+  - asset_id: "consultation_cta"
+    component_type: "cta-button"
+    text: "Get Kubernetes Consulting"
+    link: "/kubernetes-consulting"
+    style: "primary"
+    placement_hint: "pre_conclusion"
+    generated_copy: ""
+
+  - asset_id: "assessment_form"
+    component_type: "lead-form"
+    headline: "Free Kubernetes Readiness Assessment"
+    fields: ["name", "email", "company", "current_infrastructure"]
+    submit_text: "Get Assessment"
+    placement_hint: "post_content"
+    generated_copy: ""
+
+code_examples:
+  - example_id: "deployment_yaml"
+    title: "Kubernetes Deployment YAML"
+    language: "yaml"
+    code: |
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: odoo
+        namespace: {{namespace}}
+        labels:
+          app: odoo
+          version: "{{odoo_version}}"
+      spec:
+        replicas: {{min_replicas}}
+        selector:
+          matchLabels:
+            app: odoo
+        template:
+          metadata:
+            labels:
+              app: odoo
+              version: "{{odoo_version}}"
+          spec:
+            containers:
+            - name: odoo
+              image: {{image_repository}}:{{odoo_version}}
+              ports:
+              - containerPort: 8069
+                name: http
+              - containerPort: 8072
+                name: longpolling
+              env:
+              - name: HOST
+                value: postgres-service
+              - name: USER
+                valueFrom:
+                  secretKeyRef:
+                    name: odoo-secrets
+                    key: db-user
+              - name: PASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    name: odoo-secrets
+                    key: db-password
+              resources:
+                requests:
+                  memory: "{{memory_request}}"
+                  cpu: "{{cpu_request}}"
+                limits:
+                  memory: "{{memory_limit}}"
+                  cpu: "{{cpu_limit}}"
+              livenessProbe:
+                httpGet:
+                  path: /web/health
+                  port: 8069
+                initialDelaySeconds: 30
+                periodSeconds: 10
+              readinessProbe:
+                httpGet:
+                  path: /web/database/selector
+                  port: 8069
+                initialDelaySeconds: 5
+                periodSeconds: 5
+              volumeMounts:
+              - name: odoo-data
+                mountPath: /var/lib/odoo
+              - name: odoo-config
+                mountPath: /etc/odoo
+            volumes:
+            - name: odoo-data
+              persistentVolumeClaim:
+                claimName: odoo-pvc
+            - name: odoo-config
+              configMap:
+                name: odoo-config
+
+  - example_id: "helm_values"
+    title: "Helm Values Configuration"
+    language: "yaml"
+    code: |
+      # values-{{k8s_provider}}.yaml
+      replicaCount: {{min_replicas}}
+
+      image:
+        repository: {{image_repository}}
+        tag: "{{odoo_version}}"
+        pullPolicy: IfNotPresent
+
+      nameOverride: ""
+      fullnameOverride: "odoo-{{odoo_version}}"
+
+      service:
+        type: LoadBalancer
+        port: 80
+        targetPort: 8069
+        annotations:
+          # Provider-specific annotations
+          {{service_annotations}}
+
+      ingress:
+        enabled: true
+        className: {{ingress_class}}
+        annotations:
+          cert-manager.io/cluster-issuer: letsencrypt-prod
+          nginx.ingress.kubernetes.io/proxy-body-size: "100m"
+          nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+          nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+        hosts:
+          - host: {{application_domain}}
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - secretName: odoo-tls
+            hosts:
+              - {{application_domain}}
+
+      resources:
+        requests:
+          cpu: {{cpu_request}}
+          memory: {{memory_request}}
+        limits:
+          cpu: {{cpu_limit}}
+          memory: {{memory_limit}}
+
+      autoscaling:
+        enabled: true
+        minReplicas: {{hpa_min_replicas}}
+        maxReplicas: {{hpa_max_replicas}}
+        targetCPUUtilizationPercentage: {{cpu_target_percentage}}
+        targetMemoryUtilizationPercentage: {{memory_target_percentage}}
+
+      persistence:
+        enabled: true
+        storageClass: "{{storage_class}}"
+        accessMode: ReadWriteOnce
+        size: {{volume_size}}
+
+      postgresql:
+        enabled: true
+        auth:
+          postgresPassword: "{{postgres_password}}"
+          username: "odoo"
+          password: "{{odoo_db_password}}"
+          database: "odoo"
+        primary:
+          persistence:
+            enabled: true
+            size: {{postgres_volume_size}}
+            storageClass: "{{postgres_storage_class}}"
+
+      redis:
+        enabled: {{redis_enabled}}
+        auth:
+          enabled: true
+          password: "{{redis_password}}"
+        master:
+          persistence:
+            enabled: true
+            size: {{redis_volume_size}}
+
+related_keywords:
+  primary:
+    - "odoo {{odoo_version}} kubernetes"
+    - "odoo k8s deployment"
+    - "odoo helm chart"
+
+  secondary:
+    - "odoo {{k8s_provider}}"
+    - "odoo kubernetes scaling"
+    - "odoo cloud native"
+
+  long_tail:
+    - "how to deploy odoo {{odoo_version}} on {{k8s_provider}} kubernetes"
+    - "odoo kubernetes production deployment guide"
+    - "odoo {{odoo_version}} helm chart configuration"
+    - "odoo kubernetes auto-scaling setup"
+    - "odoo {{k8s_provider}} best practices"

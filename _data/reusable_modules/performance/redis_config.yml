@@ -1,0 +1,459 @@
+# Redis Configuration for Odoo Performance Optimization
+# Last Verified: 2025-10-29
+# Data Sources: Redis documentation, Odoo performance guides, production deployment best practices
+
+redis_overview:
+  description: "In-memory data structure store for caching, session storage, and message queuing in Odoo"
+  version: "7.2"
+  role_in_odoo:
+    - session_storage: "Store user sessions for horizontal scaling"
+    - cache_backend: "Cache computed fields and frequent queries"
+    - message_queue: "Handle asynchronous job processing"
+    - lock_manager: "Distributed locking for multi-worker setups"
+
+  performance_benefits:
+    - response_time_reduction: "60-80% reduction for cached operations"
+    - database_load_reduction: "40-60% fewer database queries"
+    - session_management: "Instant session retrieval across workers"
+    - concurrent_user_support: "10x more concurrent users"
+
+installation:
+  ubuntu:
+    commands: |
+      # Install Redis server
+      sudo apt update
+      sudo apt install -y redis-server redis-tools
+
+      # Enable and start Redis
+      sudo systemctl enable redis-server
+      sudo systemctl start redis-server
+
+      # Verify installation
+      redis-cli ping
+
+  rhel_based:
+    commands: |
+      # Install Redis from EPEL
+      sudo dnf install -y epel-release
+      sudo dnf install -y redis
+
+      # Enable and start Redis
+      sudo systemctl enable redis
+      sudo systemctl start redis
+
+      # Set to start on boot
+      sudo systemctl enable redis
+
+  docker:
+    commands: |
+      # Run Redis container
+      docker run -d \
+        --name odoo-redis \
+        -p 6379:6379 \
+        -v redis-data:/data \
+        --restart unless-stopped \
+        redis:7.2-alpine redis-server --appendonly yes
+
+redis_configuration:
+  config_file: "/etc/redis/redis.conf"
+
+  basic_settings:
+    bind: "127.0.0.1 ::1"  # Listen on localhost only
+    protected_mode: "yes"
+    port: 6379
+    tcp_backlog: 511
+    tcp_keepalive: 300
+    timeout: 0
+    daemonize: "yes"
+    supervised: "systemd"
+    pidfile: "/var/run/redis/redis-server.pid"
+    loglevel: "notice"
+    logfile: "/var/log/redis/redis-server.log"
+    databases: 16
+
+  memory_management:
+    maxmemory: "2gb"  # Adjust based on available RAM
+    maxmemory_policy: "allkeys-lru"  # Best for Odoo caching
+    maxmemory_samples: 5
+
+    policies_explained:
+      allkeys_lru: "Evict least recently used keys (recommended for Odoo)"
+      volatile_lru: "Evict least recently used keys with TTL"
+      allkeys_lfu: "Evict least frequently used keys"
+      volatile_ttl: "Evict keys with shortest TTL"
+      noeviction: "Don't evict, return errors when memory full"
+
+  persistence_options:
+    rdb_persistence:
+      save: |
+        save 900 1     # Save after 900 sec if at least 1 key changed
+        save 300 10    # Save after 300 sec if at least 10 keys changed
+        save 60 10000  # Save after 60 sec if at least 10000 keys changed
+      stop_writes_on_bgsave_error: "yes"
+      rdbcompression: "yes"
+      rdbchecksum: "yes"
+      dbfilename: "dump.rdb"
+      dir: "/var/lib/redis"
+
+    aof_persistence:
+      appendonly: "yes"  # Enable for better durability
+      appendfilename: "appendonly.aof"
+      appendfsync: "everysec"  # Balance between performance and safety
+      no_appendfsync_on_rewrite: "no"
+      auto_aof_rewrite_percentage: 100
+      auto_aof_rewrite_min_size: "64mb"
+
+  performance_tuning:
+    # Connection handling
+    tcp_keepalive: 300
+    tcp_backlog: 511
+
+    # Slow log
+    slowlog_log_slower_than: 10000  # Log queries slower than 10ms
+    slowlog_max_len: 128
+
+    # Client output buffer limits
+    client_output_buffer_limit: |
+      normal 0 0 0
+      replica 256mb 64mb 60
+      pubsub 32mb 8mb 60
+
+    # Threading
+    io_threads: 4  # For Redis 6.0+
+    io_threads_do_reads: "yes"
+
+  security:
+    requirepass: "your-strong-password-here"
+
+    acl_configuration: |
+      # Create Odoo user with specific permissions
+      ACL SETUSER odoo on >odoo_password ~* &* +@all
+
+      # Create monitoring user (read-only)
+      ACL SETUSER monitor on >monitor_password ~* &* +ping +info +config|get +client +slowlog
+
+    rename_dangerous_commands: |
+      rename-command FLUSHDB ""
+      rename-command FLUSHALL ""
+      rename-command KEYS ""
+      rename-command CONFIG "CONFIG_e8f9c6d5"
+
+odoo_integration:
+  session_storage:
+    python_packages: |
+      pip install redis
+      pip install python-redis-lock
+
+    odoo_config: |
+      # In odoo.conf
+      [options]
+      session_store = redis
+      session_store_host = localhost
+      session_store_port = 6379
+      session_store_dbindex = 1
+      session_store_pass = your-strong-password-here
+      session_store_prefix = odoo_session
+
+    python_implementation: |
+      # Custom session store implementation
+      import redis
+      import pickle
+      from werkzeug.contrib.sessions import SessionStore
+
+      class RedisSessionStore(SessionStore):
+          def __init__(self, session_class=None, host='localhost',
+                       port=6379, db=0, password=None, prefix='session:'):
+              super(RedisSessionStore, self).__init__(session_class)
+              self.redis = redis.StrictRedis(
+                  host=host, port=port, db=db,
+                  password=password, decode_responses=False
+              )
+              self.prefix = prefix
+
+          def save(self, session):
+              key = self.prefix + session.sid
+              data = pickle.dumps(dict(session))
+              self.redis.setex(key, 3600, data)  # 1 hour TTL
+
+          def delete(self, session):
+              key = self.prefix + session.sid
+              self.redis.delete(key)
+
+          def get(self, sid):
+              key = self.prefix + sid
+              data = self.redis.get(key)
+              if data:
+                  return self.session_class(pickle.loads(data), sid=sid)
+              return self.new()
+
+  cache_backend:
+    configuration: |
+      # Cache implementation for Odoo
+      from odoo.tools import cache
+      import redis
+      import pickle
+
+      class RedisCache:
+          def __init__(self, host='localhost', port=6379, db=2,
+                       password=None, prefix='cache:', ttl=3600):
+              self.client = redis.StrictRedis(
+                  host=host, port=port, db=db,
+                  password=password, decode_responses=False
+              )
+              self.prefix = prefix
+              self.ttl = ttl
+
+          def get(self, key):
+              redis_key = f"{self.prefix}{key}"
+              value = self.client.get(redis_key)
+              if value:
+                  return pickle.loads(value)
+              return None
+
+          def set(self, key, value, ttl=None):
+              redis_key = f"{self.prefix}{key}"
+              ttl = ttl or self.ttl
+              serialized = pickle.dumps(value)
+              self.client.setex(redis_key, ttl, serialized)
+
+          def delete(self, key):
+              redis_key = f"{self.prefix}{key}"
+              self.client.delete(redis_key)
+
+          def clear(self, prefix=None):
+              pattern = f"{self.prefix}{prefix}*" if prefix else f"{self.prefix}*"
+              for key in self.client.scan_iter(match=pattern):
+                  self.client.delete(key)
+
+  job_queue:
+    configuration: |
+      # Redis as job queue backend
+      # Using python-rq for job queue management
+      pip install rq
+
+      # Queue configuration
+      from rq import Queue
+      from redis import Redis
+
+      redis_conn = Redis(host='localhost', port=6379, db=3, password='password')
+
+      # Create queues with different priorities
+      high_queue = Queue('high', connection=redis_conn, default_timeout='5m')
+      default_queue = Queue('default', connection=redis_conn, default_timeout='10m')
+      low_queue = Queue('low', connection=redis_conn, default_timeout='30m')
+
+monitoring:
+  commands:
+    basic_info: |
+      # Server info
+      redis-cli INFO server
+
+      # Memory usage
+      redis-cli INFO memory
+
+      # Check connected clients
+      redis-cli CLIENT LIST
+
+      # Monitor commands in real-time
+      redis-cli MONITOR
+
+      # Check slow queries
+      redis-cli SLOWLOG GET 10
+
+    performance_metrics: |
+      # Operations per second
+      redis-cli --stat
+
+      # Memory usage by key pattern
+      redis-cli --bigkeys
+
+      # Database size
+      redis-cli DBSIZE
+
+      # Get configuration
+      redis-cli CONFIG GET maxmemory
+
+  prometheus_metrics:
+    exporter_setup: |
+      # Install Redis exporter for Prometheus
+      wget https://github.com/oliver006/redis_exporter/releases/download/v1.55.0/redis_exporter-v1.55.0.linux-amd64.tar.gz
+      tar xvf redis_exporter-v1.55.0.linux-amd64.tar.gz
+      sudo mv redis_exporter /usr/local/bin/
+
+      # Create systemd service
+      sudo tee /etc/systemd/system/redis_exporter.service << EOF
+      [Unit]
+      Description=Redis Exporter
+      After=network.target
+
+      [Service]
+      User=redis
+      Group=redis
+      Type=simple
+      ExecStart=/usr/local/bin/redis_exporter \
+        --redis.addr=localhost:6379 \
+        --redis.password=your-password
+
+      [Install]
+      WantedBy=multi-user.target
+      EOF
+
+    key_metrics:
+      - connected_clients: "Number of connected clients"
+      - used_memory: "Memory used by Redis"
+      - evicted_keys: "Number of evicted keys"
+      - keyspace_hits: "Successful key lookups"
+      - keyspace_misses: "Failed key lookups"
+      - commands_processed: "Total commands processed"
+      - instantaneous_ops_per_sec: "Current operations per second"
+
+clustering:
+  redis_sentinel:
+    description: "High availability with automatic failover"
+    configuration: |
+      # sentinel.conf
+      port 26379
+      dir /tmp
+      sentinel monitor odoo-master 127.0.0.1 6379 2
+      sentinel auth-pass odoo-master your-password
+      sentinel down-after-milliseconds odoo-master 5000
+      sentinel parallel-syncs odoo-master 1
+      sentinel failover-timeout odoo-master 60000
+
+  redis_cluster:
+    description: "Horizontal scaling with data sharding"
+    setup: |
+      # Create cluster with 6 nodes (3 masters, 3 replicas)
+      redis-cli --cluster create \
+        127.0.0.1:7001 127.0.0.1:7002 127.0.0.1:7003 \
+        127.0.0.1:7004 127.0.0.1:7005 127.0.0.1:7006 \
+        --cluster-replicas 1
+
+optimization_tips:
+  memory_optimization:
+    - tip: "Use compression for large values"
+      implementation: "Enable LZF compression in Redis"
+
+    - tip: "Set appropriate TTL for cache entries"
+      implementation: "Use EXPIRE command or SETEX for automatic expiration"
+
+    - tip: "Monitor memory fragmentation"
+      implementation: "Check mem_fragmentation_ratio in INFO memory"
+
+    - tip: "Use Redis data types efficiently"
+      implementation: "Use hashes for objects, sorted sets for rankings"
+
+  performance_optimization:
+    - tip: "Use pipelining for bulk operations"
+      implementation: |
+        pipe = redis_client.pipeline()
+        for key, value in items:
+            pipe.set(key, value)
+        pipe.execute()
+
+    - tip: "Implement connection pooling"
+      implementation: |
+        pool = redis.ConnectionPool(
+            host='localhost', port=6379, db=0,
+            max_connections=50
+        )
+        redis_client = redis.Redis(connection_pool=pool)
+
+    - tip: "Use Lua scripts for atomic operations"
+      implementation: "EVAL or SCRIPT LOAD for complex atomic operations"
+
+  odoo_specific:
+    - tip: "Separate databases for different purposes"
+      implementation: |
+        DB 0: General cache
+        DB 1: Session storage
+        DB 2: Computed fields cache
+        DB 3: Job queue
+
+    - tip: "Implement cache warming"
+      implementation: "Preload frequently accessed data on startup"
+
+    - tip: "Use cache tags for invalidation"
+      implementation: "Tag related cache entries for batch invalidation"
+
+troubleshooting:
+  common_issues:
+    - issue: "OOM (Out of Memory) errors"
+      solution: |
+        # Check memory usage
+        redis-cli INFO memory
+
+        # Set memory limit
+        redis-cli CONFIG SET maxmemory 2gb
+
+        # Set eviction policy
+        redis-cli CONFIG SET maxmemory-policy allkeys-lru
+
+    - issue: "High latency on operations"
+      solution: |
+        # Check slow log
+        redis-cli SLOWLOG GET 10
+
+        # Analyze big keys
+        redis-cli --bigkeys
+
+        # Check client connections
+        redis-cli CLIENT LIST
+
+    - issue: "Connection refused errors"
+      solution: |
+        # Check Redis is running
+        sudo systemctl status redis
+
+        # Check bind address in redis.conf
+        grep "^bind" /etc/redis/redis.conf
+
+        # Check firewall rules
+        sudo ufw status
+
+    - issue: "Authentication failures"
+      solution: |
+        # Test authentication
+        redis-cli -a your-password ping
+
+        # Check ACL users
+        redis-cli ACL LIST
+
+        # Reset password if needed
+        redis-cli CONFIG SET requirepass new-password
+
+    - issue: "Persistence not working"
+      solution: |
+        # Check RDB saves
+        redis-cli LASTSAVE
+
+        # Check AOF status
+        redis-cli INFO persistence
+
+        # Manually trigger save
+        redis-cli BGSAVE
+
+best_practices:
+  deployment:
+    - "Always use authentication in production"
+    - "Enable persistence for critical data"
+    - "Monitor memory usage and set limits"
+    - "Use separate Redis instances for different workloads"
+    - "Implement backup strategy for RDB/AOF files"
+    - "Use Redis Sentinel or Cluster for HA"
+
+  security:
+    - "Bind to localhost only unless necessary"
+    - "Use strong passwords (32+ characters)"
+    - "Rename or disable dangerous commands"
+    - "Use ACLs for fine-grained access control"
+    - "Enable TLS for network encryption"
+    - "Regular security updates"
+
+  performance:
+    - "Use connection pooling"
+    - "Batch operations with pipelining"
+    - "Choose appropriate data structures"
+    - "Set reasonable TTLs for cache entries"
+    - "Monitor slow queries"
+    - "Use dedicated server for Redis"
