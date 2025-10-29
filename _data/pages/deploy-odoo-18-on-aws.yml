@@ -13,12 +13,11 @@ metadata:
     notes_for_reviewer: Template-based generation using verified cloud provider and
       Odoo version modules. Review instance recommendations for accuracy.
 static_data:
-  provider: '{{LOAD:cloud_providers/aws.yml}}'
-  odoo_version: '{{LOAD:odoo_versions/odoo_18.yml}}'
   recommended_instance:
     instance_type: lightsail
     use_case: production
   deployment_architecture: single_server
+  size_category: medium
   deployment_steps:
   - step: 1
     title: Create aws Account and Instance
@@ -43,23 +42,28 @@ static_data:
   - step: 4
     title: Install Odoo 18 Dependencies
     commands:
-    - '{{LOAD:odoo_versions/odoo_18.yml → installation_reference.ubuntu_24_04.install_dependencies}}'
+    - sudo apt install -y python3.11 python3-pip python3-dev libxml2-dev libxslt1-dev
+      libevent-dev libsasl2-dev libldap2-dev pkg-config libtiff5-dev libjpeg8-dev
+      libopenjp2-7-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev libharfbuzz-dev
+      libfribidi-dev libxcb1-dev libpq-dev git
   - step: 5
     title: Install wkhtmltopdf (PDF Generation)
     commands:
-    - '{{LOAD:odoo_versions/odoo_18.yml → installation_reference.ubuntu_24_04.install_wkhtmltopdf}}'
+    - sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.noble_amd64.deb
+      && sudo dpkg -i wkhtmltox_0.12.6.1-2.noble_amd64.deb
   - step: 6
     title: Create Odoo System User
     commands:
-    - '{{LOAD:odoo_versions/odoo_18.yml → installation_reference.ubuntu_24_04.create_odoo_user}}'
+    - sudo adduser --system --home=/opt/odoo --group odoo
   - step: 7
     title: Clone Odoo 18 from GitHub
     commands:
-    - '{{LOAD:odoo_versions/odoo_18.yml → installation_reference.ubuntu_24_04.clone_odoo}}'
+    - sudo su - odoo -s /bin/bash && git clone https://www.github.com/odoo/odoo --depth
+      1 --branch 18.0 /opt/odoo/odoo18
   - step: 8
     title: Install Python Dependencies
     commands:
-    - '{{LOAD:odoo_versions/odoo_18.yml → installation_reference.ubuntu_24_04.install_python_deps}}'
+    - pip3 install -r /opt/odoo/odoo18/requirements.txt
   - step: 9
     title: Configure Odoo (odoo.conf)
     commands:
@@ -117,21 +121,58 @@ static_data:
   - step: 11
     title: Install and Configure NGINX Reverse Proxy
     commands:
-    - '{{LOAD:common/nginx_config.yml → complete_config_template}}'
+    - "# Upstream Odoo\nupstream odoo {\n  server 127.0.0.1:8069;\n}\n\nupstream odoo_chat\
+      \ {\n  server 127.0.0.1:8072;\n}\n\n# HTTP to HTTPS Redirect\nserver {\n  listen\
+      \ 80;\n  server_name odoo.example.com;\n  return 301 https://$host$request_uri;\n\
+      }\n\n# HTTPS Server\nserver {\n  listen 443 ssl http2;\n  server_name odoo.example.com;\n\
+      \n  # SSL Configuration\n  ssl_certificate /etc/letsencrypt/live/odoo.example.com/fullchain.pem;\n\
+      \  ssl_certificate_key /etc/letsencrypt/live/odoo.example.com/privkey.pem;\n\
+      \  ssl_session_timeout 30m;\n  ssl_protocols TLSv1.2 TLSv1.3;\n  ssl_ciphers\
+      \ HIGH:!aNULL:!MD5;\n  ssl_prefer_server_ciphers off;\n\n  # Logging\n  access_log\
+      \ /var/log/nginx/odoo.access.log;\n  error_log /var/log/nginx/odoo.error.log;\n\
+      \n  # Security Headers\n  add_header X-Frame-Options SAMEORIGIN always;\n  add_header\
+      \ X-Content-Type-Options nosniff always;\n  add_header X-XSS-Protection \"1;\
+      \ mode=block\" always;\n  add_header Strict-Transport-Security \"max-age=31536000;\
+      \ includeSubDomains\" always;\n\n  # Proxy Settings\n  proxy_read_timeout 720s;\n\
+      \  proxy_connect_timeout 720s;\n  proxy_send_timeout 720s;\n  proxy_set_header\
+      \ X-Forwarded-Host $host;\n  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;\n\
+      \  proxy_set_header X-Forwarded-Proto $scheme;\n  proxy_set_header X-Real-IP\
+      \ $remote_addr;\n  proxy_set_header Host $http_host;\n  proxy_redirect off;\n\
+      \n  # File Upload Size\n  client_max_body_size 256M;\n\n  # Proxy Buffers\n\
+      \  proxy_buffers 16 64k;\n  proxy_buffer_size 128k;\n\n  # Gzip\n  gzip on;\n\
+      \  gzip_types text/css text/scss text/plain text/xml application/xml application/json\
+      \ application/javascript;\n\n  # Longpolling (Live Updates, POS)\n  location\
+      \ /longpolling {\n    proxy_pass http://odoo_chat;\n  }\n\n  # Static Files\
+      \ Caching\n  location ~* /web/static/ {\n    proxy_cache_valid 200 90m;\n  \
+      \  proxy_buffering on;\n    expires 864000;\n    proxy_pass http://odoo;\n \
+      \ }\n\n  # Root Location\n  location / {\n    proxy_pass http://odoo;\n  }\n\
+      }\n"
   - step: 12
     title: Setup SSL with Let's Encrypt
     commands:
-    - '{{LOAD:common/nginx_config.yml → ssl_config.certbot_install}}'
-    - '{{LOAD:common/nginx_config.yml → ssl_config.obtain_certificate}}'
+    - '{''ubuntu_debian'': ''sudo apt install -y certbot python3-certbot-nginx''}'
+    - '{''command'': ''sudo certbot --nginx -d odoo.example.com''}'
   - step: 13
     title: Configure Firewall (UFW)
     commands:
-    - '{{LOAD:common/security_hardening.yml → os_security.firewall_ufw}}'
+    - '{''enable'': ''sudo ufw enable'', ''allow_ssh'': ''sudo ufw allow 22/tcp'',
+      ''allow_http'': ''sudo ufw allow 80/tcp'', ''allow_https'': ''sudo ufw allow
+      443/tcp'', ''deny_odoo_direct'': ''sudo ufw deny 8069/tcp'', ''deny_postgresql'':
+      ''sudo ufw deny 5432/tcp'', ''status'': ''sudo ufw status verbose''}'
   - step: 14
     title: Tune PostgreSQL for Odoo
     commands:
     - '# Edit /etc/postgresql/15/main/postgresql.conf'
-    - '{{LOAD:common/postgresql_tuning.yml → configurations.{{size_category}}.postgresql_conf}}'
+    - '{''shared_buffers'': ''4GB'', ''effective_cache_size'': ''8GB'', ''maintenance_work_mem'':
+      ''512MB'', ''work_mem'': ''32MB'', ''wal_buffers'': ''16MB'', ''checkpoint_completion_target'':
+      0.9, ''checkpoint_timeout'': ''15min'', ''max_wal_size'': ''2GB'', ''min_wal_size'':
+      ''1GB'', ''max_connections'': 150, ''random_page_cost'': 1.1, ''effective_io_concurrency'':
+      200, ''default_statistics_target'': 100, ''max_worker_processes'': 8, ''max_parallel_workers_per_gather'':
+      4, ''max_parallel_workers'': 8, ''parallel_tuple_cost'': 0.1, ''parallel_setup_cost'':
+      1000, ''log_min_duration_statement'': 500, ''log_line_prefix'': ''%t [%p]: [%l-1]
+      user=%u,db=%d,app=%a,client=%h '', ''log_checkpoints'': ''on'', ''log_lock_waits'':
+      ''on'', ''log_temp_files'': 0, ''autovacuum'': ''on'', ''autovacuum_max_workers'':
+      3, ''autovacuum_naptime'': ''30s''}'
   - step: 15
     title: Start Odoo and Enable Auto-Start
     commands:
@@ -141,7 +182,15 @@ static_data:
   estimated_deployment_time: 30-45 minutes
   skill_level_required: Intermediate (basic Linux command line knowledge)
   common_pitfalls:
-  - issue: 'aws-specific: {{LOAD:cloud_providers/aws.yml → common_pitfalls}}'
+  - issue: 'aws-specific: [{''issue'': ''Data transfer costs unexpectedly high'',
+      ''solution'': ''Use CloudFront CDN for static assets, enable S3 Transfer Acceleration''},
+      {''issue'': ''EBS costs accumulating from snapshots'', ''solution'': ''Implement
+      snapshot lifecycle policy, delete old snapshots''}, {''issue'': ''Unused Elastic
+      IPs charges'', ''solution'': ''Release unused Elastic IPs ($3.60/month each)''},
+      {''issue'': ''Running instances in expensive regions'', ''solution'': ''Deploy
+      in us-east-1 or us-west-2 for lowest pricing''}, {''issue'': ''Lightsail bandwidth
+      overage charges'', ''solution'': ''Monitor bandwidth usage, upgrade to higher
+      tier if consistently exceeding limits''}]'
   - issue: Odoo won't start after installation
     solution: 'Check logs: sudo journalctl -u odoo -n 50. Common causes: PostgreSQL
       not running, incorrect file permissions, missing Python dependencies.'
@@ -152,9 +201,20 @@ static_data:
     solution: Ensure DNS A record points to your server IP. Check firewall allows
       port 80/443.
   security_best_practices:
-  - '{{LOAD:common/security_hardening.yml → security_checklist}}'
+  - '[{''item'': ''Firewall configured (UFW/iptables)'', ''critical'': True}, {''item'':
+    ''Fail2ban installed and configured'', ''critical'': True}, {''item'': "SSL/TLS
+    certificate installed (Let''s Encrypt)", ''critical'': True}, {''item'': ''PostgreSQL
+    listening on localhost only'', ''critical'': True}, {''item'': ''Strong passwords
+    set (Odoo admin, PostgreSQL, OS users)'', ''critical'': True}, {''item'': ''SSH
+    key authentication enabled, password auth disabled'', ''critical'': True}, {''item'':
+    ''Automated security updates enabled'', ''critical'': True}, {''item'': ''Encrypted
+    backups stored offsite'', ''critical'': True}, {''item'': ''Odoo list_db = False'',
+    ''critical'': False}, {''item'': ''Two-factor authentication enabled for admins'',
+    ''critical'': False}, {''item'': ''Log monitoring and alerting configured'', ''critical'':
+    False}, {''item'': ''File upload restrictions implemented'', ''critical'': False},
+    {''item'': ''Regular security audits scheduled'', ''critical'': False}]'
   cost_estimate:
-    monthly_server_cost: '{{LOAD:cloud_providers/aws.yml → lightsail_instances.lightsail.pricing.monthly}}'
+    monthly_server_cost: '80'
     setup_cost: $0 (DIY deployment)
     ongoing_costs: Domain name (~$12/year), optional backup storage
   alternative_deployment_options:
@@ -315,12 +375,11 @@ ai_generated_content:
     less.
 
 
-    Launch your chosen instance through {{Load:Cloud_Providers/Aws.Yml}}''s console
-    with Ubuntu 24.04 LTS as the base image. AWS provides official Ubuntu AMIs updated
-    monthly, eliminating the malware-laden AMI risk that plagues community images.
-    During launch configuration, create a new key pair for SSH access and download
-    the private key immediately—AWS doesn''t store it, and you''ll need it for every
-    future access.
+    Launch your chosen instance through AWS''s console with Ubuntu 24.04 LTS as the
+    base image. AWS provides official Ubuntu AMIs updated monthly, eliminating the
+    malware-laden AMI risk that plagues community images. During launch configuration,
+    create a new key pair for SSH access and download the private key immediately—AWS
+    doesn''t store it, and you''ll need it for every future access.
 
 
     Security group configuration requires precision, not paranoia. Create a new security
@@ -336,15 +395,14 @@ ai_generated_content:
     deployment and easier version upgrades—you change one line in a docker-compose.yml
     file and restart containers. Native installation gives you deeper control over
     Python dependencies and system-level optimizations, plus it avoids the 10-15%
-    performance overhead Docker networking layers introduce. For most {{Load:Cloud_Providers/Aws.Yml}}
-    deployments, native installation makes sense because you''re already managing
-    infrastructure—you''ve chosen {{Load:Cloud_Providers/Aws.Yml}} over managed hosting
-    precisely to maximize control.
+    performance overhead Docker networking layers introduce. For most AWS deployments,
+    native installation makes sense because you''re already managing infrastructure—you''ve
+    chosen AWS over managed hosting precisely to maximize control.
 
 
-    Install PostgreSQL 16 locally first with apt, then add the Odoo {{LOAD:odoo_versions/odoo_18.yml}}
-    repository, install the odoo package, and configure it to bind to localhost only
-    while you test functionality.
+    Install PostgreSQL 16 locally first with apt, then add the Odoo Odoo 18 repository,
+    install the odoo package, and configure it to bind to localhost only while you
+    test functionality.
 
 
     The PostgreSQL decision carries operational weight. Self-hosting PostgreSQL on
@@ -385,9 +443,8 @@ ai_generated_content:
     monthly, totaling $133 annually for a t3.medium reservation.
 
 
-    The total monthly {{Load:Cloud_Providers/Aws.Yml}} cost for a production Odoo
-    {{LOAD:odoo_versions/odoo_18.yml}} deployment runs approximately $30-50. This
-    includes compute, storage, and data transfer costs.
+    The total monthly AWS cost for a production Odoo Odoo 18 deployment runs approximately
+    $30-50. This includes compute, storage, and data transfer costs.
 
     '
 conversion_assets:

@@ -1,0 +1,380 @@
+# OS Security Module for Odoo Deployments
+# Last Updated: 2025-10-29
+# Applicable to: Ubuntu, Debian, CentOS/RHEL
+# Verification Status: ✅ VERIFIED
+
+# Firewall Configuration
+firewall_ufw:
+  description: "UFW (Uncomplicated Firewall) configuration for Ubuntu/Debian"
+
+  installation:
+    ubuntu_debian: "sudo apt install -y ufw"
+
+  basic_rules:
+    - rule: "Allow SSH"
+      command: "sudo ufw allow 22/tcp"
+      comment: "SSH access (change port if using non-standard)"
+
+    - rule: "Allow HTTP"
+      command: "sudo ufw allow 80/tcp"
+      comment: "Web traffic"
+
+    - rule: "Allow HTTPS"
+      command: "sudo ufw allow 443/tcp"
+      comment: "Secure web traffic"
+
+    - rule: "Allow Odoo (internal only)"
+      command: "sudo ufw allow from 10.0.0.0/8 to any port 8069"
+      comment: "Odoo access from internal network only"
+
+    - rule: "Allow PostgreSQL (internal only)"
+      command: "sudo ufw allow from 10.0.0.0/8 to any port 5432"
+      comment: "Database access from internal network only"
+
+  enable_firewall: "sudo ufw --force enable"
+
+  status_check: "sudo ufw status verbose"
+
+  advanced_rules:
+    rate_limiting:
+      ssh: "sudo ufw limit ssh/tcp"
+      comment: "Prevent brute force attacks on SSH"
+
+    specific_ip:
+      command: "sudo ufw allow from {{trusted_ip}} to any port 22"
+      comment: "Allow SSH only from specific IP"
+
+firewall_iptables:
+  description: "iptables configuration for CentOS/RHEL"
+
+  installation:
+    rhel_centos: "sudo yum install -y iptables-services"
+
+  basic_rules:
+    - rule: "Allow established connections"
+      command: "sudo iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT"
+
+    - rule: "Allow loopback"
+      command: "sudo iptables -A INPUT -i lo -j ACCEPT"
+
+    - rule: "Allow SSH"
+      command: "sudo iptables -A INPUT -p tcp --dport 22 -j ACCEPT"
+
+    - rule: "Allow HTTP"
+      command: "sudo iptables -A INPUT -p tcp --dport 80 -j ACCEPT"
+
+    - rule: "Allow HTTPS"
+      command: "sudo iptables -A INPUT -p tcp --dport 443 -j ACCEPT"
+
+    - rule: "Drop all other traffic"
+      command: "sudo iptables -A INPUT -j DROP"
+
+  save_rules:
+    rhel_centos: "sudo service iptables save"
+    ubuntu_debian: "sudo iptables-save > /etc/iptables/rules.v4"
+
+# SSH Hardening
+ssh_hardening:
+  config_file: "/etc/ssh/sshd_config"
+
+  settings:
+    - setting: "Port"
+      value: "{{custom_ssh_port}}"
+      default: "22"
+      description: "Change default SSH port"
+
+    - setting: "PermitRootLogin"
+      value: "no"
+      description: "Disable root login via SSH"
+
+    - setting: "PasswordAuthentication"
+      value: "no"
+      description: "Use SSH keys only"
+
+    - setting: "PubkeyAuthentication"
+      value: "yes"
+      description: "Enable public key authentication"
+
+    - setting: "MaxAuthTries"
+      value: "3"
+      description: "Limit authentication attempts"
+
+    - setting: "ClientAliveInterval"
+      value: "300"
+      description: "Disconnect idle sessions after 5 minutes"
+
+    - setting: "ClientAliveCountMax"
+      value: "2"
+      description: "Maximum number of client alive messages"
+
+    - setting: "Protocol"
+      value: "2"
+      description: "Use SSH protocol 2 only"
+
+  restart_ssh:
+    ubuntu_debian: "sudo systemctl restart ssh"
+    rhel_centos: "sudo systemctl restart sshd"
+
+  generate_ssh_key: "ssh-keygen -t ed25519 -C 'odoo-server'"
+
+# System Hardening
+system_hardening:
+  kernel_parameters:
+    sysctl_conf: "/etc/sysctl.conf"
+
+    settings:
+      - parameter: "net.ipv4.tcp_syncookies"
+        value: "1"
+        description: "Enable TCP SYN cookie protection"
+
+      - parameter: "net.ipv4.ip_forward"
+        value: "0"
+        description: "Disable IP forwarding"
+
+      - parameter: "net.ipv4.conf.all.send_redirects"
+        value: "0"
+        description: "Disable ICMP redirects"
+
+      - parameter: "net.ipv4.conf.all.accept_source_route"
+        value: "0"
+        description: "Disable source routing"
+
+      - parameter: "net.ipv4.conf.all.rp_filter"
+        value: "1"
+        description: "Enable reverse path filtering"
+
+      - parameter: "net.ipv4.conf.all.log_martians"
+        value: "1"
+        description: "Log packets with impossible addresses"
+
+    apply_settings: "sudo sysctl -p"
+
+  disable_unnecessary_services:
+    - service: "bluetooth"
+      command: "sudo systemctl disable bluetooth"
+
+    - service: "cups"
+      command: "sudo systemctl disable cups"
+
+    - service: "avahi-daemon"
+      command: "sudo systemctl disable avahi-daemon"
+
+# User and Permission Management
+user_permissions:
+  odoo_user:
+    create_user: "sudo useradd -m -U -r -d /opt/odoo -s /bin/bash odoo"
+
+    permissions:
+      - path: "/opt/odoo"
+        ownership: "odoo:odoo"
+        permissions: "755"
+        command: "sudo chown -R odoo:odoo /opt/odoo && sudo chmod -R 755 /opt/odoo"
+
+      - path: "/var/log/odoo"
+        ownership: "odoo:odoo"
+        permissions: "750"
+        command: "sudo mkdir -p /var/log/odoo && sudo chown odoo:odoo /var/log/odoo && sudo chmod 750 /var/log/odoo"
+
+      - path: "/etc/odoo"
+        ownership: "odoo:odoo"
+        permissions: "750"
+        command: "sudo chown odoo:odoo /etc/odoo && sudo chmod 750 /etc/odoo"
+
+  sudo_configuration:
+    file: "/etc/sudoers.d/odoo"
+    content: |
+      # Allow odoo user to restart odoo service
+      odoo ALL=(ALL) NOPASSWD: /bin/systemctl restart odoo
+      odoo ALL=(ALL) NOPASSWD: /bin/systemctl stop odoo
+      odoo ALL=(ALL) NOPASSWD: /bin/systemctl start odoo
+
+# SELinux (for RHEL/CentOS)
+selinux:
+  check_status: "sestatus"
+
+  set_permissive: "sudo setenforce 0"
+
+  set_enforcing: "sudo setenforce 1"
+
+  permanent_config: "/etc/selinux/config"
+
+  odoo_contexts:
+    - path: "/opt/odoo"
+      context: "httpd_sys_rw_content_t"
+      command: "sudo semanage fcontext -a -t httpd_sys_rw_content_t '/opt/odoo(/.*)?'"
+
+    - path: "/var/log/odoo"
+      context: "httpd_log_t"
+      command: "sudo semanage fcontext -a -t httpd_log_t '/var/log/odoo(/.*)?'"
+
+  apply_contexts: "sudo restorecon -Rv /opt/odoo /var/log/odoo"
+
+# AppArmor (for Ubuntu/Debian)
+apparmor:
+  check_status: "sudo aa-status"
+
+  odoo_profile: "/etc/apparmor.d/usr.bin.odoo"
+
+  create_profile: |
+    #include <tunables/global>
+
+    /usr/bin/odoo {
+      #include <abstractions/base>
+      #include <abstractions/python>
+
+      /opt/odoo/** r,
+      /opt/odoo/**.pyc rw,
+      /var/log/odoo/* rw,
+      /etc/odoo/* r,
+
+      # PostgreSQL access
+      network tcp,
+
+      # Temp files
+      /tmp/** rw,
+      /var/tmp/** rw,
+    }
+
+  reload_profiles: "sudo systemctl reload apparmor"
+
+# Fail2Ban Configuration
+fail2ban:
+  installation:
+    ubuntu_debian: "sudo apt install -y fail2ban"
+    rhel_centos: "sudo yum install -y fail2ban"
+
+  odoo_jail: "/etc/fail2ban/jail.d/odoo.conf"
+
+  jail_config: |
+    [odoo]
+    enabled = true
+    port = 8069
+    filter = odoo
+    logpath = /var/log/odoo/odoo-server.log
+    maxretry = 5
+    findtime = 900
+    bantime = 3600
+
+  filter_config: "/etc/fail2ban/filter.d/odoo.conf"
+
+  filter_rules: |
+    [Definition]
+    failregex = ^.*Login failed for db:.*from <HOST>.*$
+    ignoreregex =
+
+  restart_fail2ban: "sudo systemctl restart fail2ban"
+
+  check_status: "sudo fail2ban-client status odoo"
+
+# SSL/TLS Security
+ssl_security:
+  strong_ciphers: "ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384"
+
+  protocols: "TLSv1.2 TLSv1.3"
+
+  dhparam:
+    generate: "sudo openssl dhparam -out /etc/ssl/certs/dhparam.pem 4096"
+    location: "/etc/ssl/certs/dhparam.pem"
+
+  headers:
+    - header: "Strict-Transport-Security"
+      value: "max-age=31536000; includeSubDomains; preload"
+
+    - header: "X-Frame-Options"
+      value: "SAMEORIGIN"
+
+    - header: "X-Content-Type-Options"
+      value: "nosniff"
+
+    - header: "X-XSS-Protection"
+      value: "1; mode=block"
+
+# Monitoring and Auditing
+monitoring:
+  auditd:
+    installation:
+      ubuntu_debian: "sudo apt install -y auditd"
+      rhel_centos: "sudo yum install -y audit"
+
+    odoo_rules:
+      - rule: "Monitor Odoo config changes"
+        command: "sudo auditctl -w /etc/odoo/ -p wa -k odoo_config"
+
+      - rule: "Monitor Odoo binary"
+        command: "sudo auditctl -w /usr/bin/odoo -p x -k odoo_exec"
+
+    view_logs: "sudo aureport -k odoo_config"
+
+  log_rotation: "/etc/logrotate.d/odoo"
+
+  logrotate_config: |
+    /var/log/odoo/*.log {
+        daily
+        rotate 30
+        compress
+        delaycompress
+        notifempty
+        create 0640 odoo odoo
+        sharedscripts
+        postrotate
+            systemctl reload odoo > /dev/null 2>&1 || true
+        endscript
+    }
+
+# Security Checklist
+security_checklist:
+  - task: "Change default SSH port"
+    priority: "High"
+    verification: "sudo netstat -tlnp | grep sshd"
+
+  - task: "Disable root SSH login"
+    priority: "Critical"
+    verification: "grep PermitRootLogin /etc/ssh/sshd_config"
+
+  - task: "Configure firewall"
+    priority: "Critical"
+    verification: "sudo ufw status"
+
+  - task: "Set up fail2ban"
+    priority: "High"
+    verification: "sudo systemctl status fail2ban"
+
+  - task: "Enable SSL/TLS"
+    priority: "Critical"
+    verification: "openssl s_client -connect localhost:443"
+
+  - task: "Configure proper file permissions"
+    priority: "High"
+    verification: "ls -la /opt/odoo"
+
+  - task: "Set up log rotation"
+    priority: "Medium"
+    verification: "cat /etc/logrotate.d/odoo"
+
+  - task: "Enable system auditing"
+    priority: "Medium"
+    verification: "sudo systemctl status auditd"
+
+# Common Security Issues and Solutions
+common_issues:
+  - issue: "Exposed Odoo port 8069"
+    risk: "Direct access bypasses security layers"
+    solution: "Block port 8069 externally, use reverse proxy"
+
+  - issue: "Weak database passwords"
+    risk: "Database compromise"
+    solution: "Use strong passwords, rotate regularly"
+
+  - issue: "Running Odoo as root"
+    risk: "System compromise if Odoo is exploited"
+    solution: "Always run as dedicated odoo user"
+
+  - issue: "Debug mode enabled in production"
+    risk: "Information disclosure"
+    solution: "Set debug = False in production"
+
+last_verified_date: "2025-10-29"
+data_sources:
+  - "CIS Ubuntu Linux Benchmark"
+  - "OWASP Security Guidelines"
+  - "Odoo Security Best Practices"
