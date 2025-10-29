@@ -41,19 +41,159 @@ static_data:
     timeline: 6-12 months
     team_required: NetSuite admin + Odoo developer + Project Manager
 ai_generated_content:
-  introduction: 'Migrating business operations from QuickBooks, Excel spreadsheets,
-    NetSuite, or legacy ERP systems to Odoo requires production infrastructure ready
-    before you begin data migration activities. Attempting to set up servers while
-    simultaneously mapping data fields, validating import procedures, and training
-    users guarantees timeline delays and increases the risk of errors that corrupt
-    production data.
+  introduction: 'NetSuite and Odoo structure business data differently—not just in
+    database schema and table relationships, but in fundamental assumptions about
+    how companies organize customers, products, transactions, and operational workflows.
+    Where NetSuite might combine shipping and billing addresses in single customer
+    records, Odoo separates them into distinct contact types. Where NetSuite tracks
+    inventory with simple quantity fields, Odoo implements multi-location warehousing
+    with stock moves and lot traceability. These aren''t simple field-to-field mappings—they''re
+    conceptual transformations that require understanding both systems'' data models.
 
 
-    Managed Odoo providers restrict customization, charge premium rates for additional
-    storage or compute resources, and create vendor lock-in through proprietary backup
-    formats and limited data export options. When you deploy on infrastructure you
-    control, you eliminate these restrictions while gaining operational knowledge
-    that survives vendor changes and protects against arbitrary price increases.'
+    The mapping complexity multiplies with customization. If your NetSuite implementation
+    includes custom fields, modified workflows, or integrated third-party applications,
+    every customization becomes a migration decision point. Do you recreate the NetSuite
+    customization in Odoo, or redesign the workflow using Odoo''s native capabilities?
+    Do you import custom field data into Odoo''s flexible field system, or archive
+    it for reference while implementing cleaner data structures? Each decision affects
+    migration scope, timeline, and the risk of data loss during transformation.
+
+
+    This guide provides Migrate from NetSuite to Odoo 18: Enterprise Migration Guide
+    2025 field mapping templates that document the standard transformations between
+    NetSuite and Odoo data structures. You will map customer records including contact
+    hierarchies and payment terms, transform product catalogs with variants and pricing
+    rules, convert transaction histories with proper date handling and currency normalization,
+    and migrate operational data like inventory locations and supplier relationships.
+    The mapping phase alone requires 1-2 weeks, but produces documented transformations
+    that survive system upgrades and serve as training material for staff learning
+    Odoo''s data model.
+
+    '
+  conclusion: 'Your Migrate from NetSuite to Odoo 18: Enterprise Migration Guide 2025
+    deployment on your cloud provider is production-ready. The system includes automated
+    daily backups with off-site storage, SSL certificates with automatic renewal,
+    firewall rules that balance security with access requirements, and PostgreSQL
+    tuning optimized for 8GB RAM. You can begin migrating data, configuring Odoo modules,
+    and onboarding users immediately without additional infrastructure preparation.
+
+
+    The deployment process you followed represents years of accumulated production
+    experience distilled into ninety minutes of focused implementation. The specific
+    NGINX timeout settings prevent module installation failures. The PostgreSQL shared_buffers
+    calculation matches your instance RAM profile. The systemd service configuration
+    ensures Odoo restarts automatically after system updates. These aren''t theoretical
+    best practices—they''re battle-tested configurations that prevent the operational
+    problems that plague under-prepared Odoo deployments.
+
+
+    Next actions focus on application layer setup rather than infrastructure concerns.
+    Install your required Odoo modules, import your data using the migration scripts
+    provided in the Fortress Protection module, configure user accounts and permissions,
+    and establish your backup validation routine. The infrastructure foundation you
+    built today won''t require revisiting until you outgrow 10-25 users—and when that
+    growth happens, you have the operational knowledge to scale confidently.
+
+
+
+    Production security requires defense-in-depth. Access our [security hardening
+    toolkit](/downloads/security-hardening-toolkit/) with automated audit scripts,
+    intrusion detection setup, and CIS benchmark implementation for Ubuntu and Debian
+    systems.'
+  troubleshooting_guide: '## Common Issues and Solutions
+
+
+    **Issue: Odoo service fails to start after installation**
+
+
+    Check the service status and logs to identify the specific error. Run `systemctl
+    status odoo` to see if systemd reports configuration file errors, permission problems,
+    or missing dependencies. Most startup failures trace to incorrect paths in the
+    configuration file—verify `/etc/odoo/odoo.conf` contains valid paths to the Odoo
+    installation directory, addons folders, and log file location. Migration-specific
+    startup failures often involve database schema incompatibilities. Check Odoo logs
+    for "column does not exist" or "relation does not exist" errors—these indicate
+    incomplete migration or incompatible module versions. Verify all custom modules
+    are compatible with the target Odoo version. Disable custom modules temporarily
+    to isolate whether they cause startup failures.
+
+
+    **Issue: Database connection errors**
+
+
+    Odoo cannot connect to PostgreSQL, typically showing "FATAL: password authentication
+    failed" or "could not connect to server" errors. Verify PostgreSQL is running
+    with `systemctl status postgresql`, confirm the Odoo database user exists with
+    correct credentials, and check `pg_hba.conf` allows local connections. The Odoo
+    configuration file''s `db_user`, `db_password`, and `db_host` parameters must
+    match your PostgreSQL setup exactly—case sensitivity matters for usernames.
+
+
+    **Issue: Port 8069 not accessible from browser**
+
+
+    The firewall blocks incoming connections to Odoo''s default port. During migration,
+    you may run both old and new Odoo instances simultaneously. Configure the new
+    instance on a different port (e.g., 8070) to avoid conflicts, then update firewall
+    rules to allow both ports during the parallel running period. After cutover completes,
+    remove the old instance''s port from firewall rules. For production deployments
+    behind NGINX reverse proxy, you should block external port 8069 access entirely
+    and only expose ports 80/443, which NGINX proxies to Odoo''s localhost:8069.
+
+
+    **Issue: Module installation fails with dependency errors**
+
+
+    Odoo modules declare dependencies on other modules, and installation fails if
+    dependencies are missing or if circular dependencies exist. Read the error message
+    carefully—it specifies which module dependency is missing. Install missing modules
+    through the Apps menu first, then retry the original module installation. For
+    custom modules, verify the `__manifest__.py` file declares all dependencies in
+    the `depends` list.
+
+
+    **Issue: PDF generation produces blank or malformed documents**
+
+
+    Migrated report templates may use deprecated QWeb syntax or reference removed
+    fields. Test all report types (invoices, delivery orders, purchase orders) immediately
+    after migration. Broken reports show XML parsing errors in logs. Recreate problematic
+    reports using Odoo''s Studio or fix the QWeb templates in custom modules. Standard
+    Odoo reports rarely break—issues typically come from customized templates.
+
+
+    **Issue: Performance degradation with increasing users**
+
+
+    Post-migration performance issues often trace to missing database indexes or outdated
+    statistics. Run `REINDEX DATABASE` on your Odoo database after large data imports:
+    `psql -d odoo_db -c ''REINDEX DATABASE odoo_db''`. Update PostgreSQL statistics
+    with `VACUUM ANALYZE` to help the query planner choose efficient execution paths.
+    Large migrations benefit from temporarily increasing PostgreSQL''s `maintenance_work_mem`
+    for faster index building.
+
+
+    **Issue: Backup or restore operations fail**
+
+
+    Backup both source and target systems before cutover. Create a backup of the old
+    system immediately before final data export, and backup the new Odoo instance
+    after import but before user access begins. Store backups off-server—migration
+    failures sometimes corrupt local storage. Verify backups are restorable by testing
+    restoration on a separate server.
+
+
+    **Issue: SSL certificate errors or mixed content warnings**
+
+
+    Migrated systems may have hardcoded URLs in database records pointing to the old
+    system. Search for old domain references in `ir.config_parameter` system settings
+    and update to the new domain. Use SQL queries to find hardcoded URLs: `SELECT
+    * FROM ir_attachment WHERE url LIKE ''%olddomain.com%''`. Update attachment URLs
+    and regenerate reports that embed URLs.
+
+    '
   migration_guide: 'Migrating from NetSuite to Odoo 18 requires production infrastructure
     ready before you begin data extraction and transformation activities. Attempting
     to export data, build import scripts, and configure the target system simultaneously
@@ -278,35 +418,6 @@ ai_generated_content:
     customer aging reports, inventory valuation, profit & loss statements.
 
     '
-  conclusion: 'Your Migrate from NetSuite to Odoo 18: Enterprise Migration Guide 2025
-    deployment on your cloud provider is production-ready. The system includes automated
-    daily backups with off-site storage, SSL certificates with automatic renewal,
-    firewall rules that balance security with access requirements, and PostgreSQL
-    tuning optimized for 8GB RAM. You can begin migrating data, configuring Odoo modules,
-    and onboarding users immediately without additional infrastructure preparation.
-
-
-    The deployment process you followed represents years of accumulated production
-    experience distilled into ninety minutes of focused implementation. The specific
-    NGINX timeout settings prevent module installation failures. The PostgreSQL shared_buffers
-    calculation matches your instance RAM profile. The systemd service configuration
-    ensures Odoo restarts automatically after system updates. These aren''t theoretical
-    best practices—they''re battle-tested configurations that prevent the operational
-    problems that plague under-prepared Odoo deployments.
-
-
-    Next actions focus on application layer setup rather than infrastructure concerns.
-    Install your required Odoo modules, import your data using the migration scripts
-    provided in the Fortress Protection module, configure user accounts and permissions,
-    and establish your backup validation routine. The infrastructure foundation you
-    built today won''t require revisiting until you outgrow 10-25 users—and when that
-    growth happens, you have the operational knowledge to scale confidently.
-
-
-
-    New to self-hosting Odoo? Join 2,400+ business owners getting our weekly implementation
-    guides delivered straight to your inbox. Each guide covers one specific challenge
-    with tested solutions and ready-to-use configurations.'
 conversion_assets:
 - component_type: callout-box
   placement_hint: mid_guide

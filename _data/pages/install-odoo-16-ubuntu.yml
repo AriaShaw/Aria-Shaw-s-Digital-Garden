@@ -23,32 +23,164 @@ static_data:
   - Create systemd service
   - Start and enable Odoo
 ai_generated_content:
-  introduction: 'Digital sovereignty means controlling your business data and infrastructure
-    without dependency on vendors who restrict access, limit customization, or increase
-    prices arbitrarily because they hold your operational capability hostage. Install
-    Odoo 16 on Ubuntu 20.04: Complete Guide on your cloud provider delivers that sovereignty
-    by giving you root-level access to virtual machines running your complete Odoo
-    stack.
+  introduction: 'Ubuntu 20.04 delivers the specific combination of long-term support,
+    modern kernel features, and package versions that Odoo 16 requires without manual
+    dependency management. Where earlier Ubuntu releases force you to add third-party
+    repositories for recent Python builds or compile PostgreSQL from source, 20.04
+    includes Python 3.11 and PostgreSQL 15 in official apt repositories maintained
+    through {{ static_data.support_end_date }}.
 
 
-    The technical foundation you establish today determines whether your Odoo system
-    scales smoothly from ten users to one hundred, or requires disruptive infrastructure
-    rebuilds when you hit performance ceilings. Configuration decisions during deployment—PostgreSQL
-    tuning, worker process calculations, NGINX timeout settings—either provide growth
-    headroom or create bottlenecks that demand expensive remediation later.'
-  installation_guide: 'Migrating business operations from QuickBooks, Excel spreadsheets,
-    NetSuite, or legacy ERP systems to Odoo requires production infrastructure ready
-    before you begin data migration activities. Attempting to set up servers while
-    simultaneously mapping data fields, validating import procedures, and training
-    users guarantees timeline delays and increases the risk of errors that corrupt
-    production data.
+    The technical implications extend beyond package availability. Ubuntu 20.04 ships
+    with systemd {{ static_data.systemd_version }}, which includes hardening features
+    like ProtectSystem and PrivateTmp that sandbox Odoo processes without performance
+    overhead. The kernel version supports transparent huge pages, which PostgreSQL
+    leverages for query caching efficiency on systems with 8GB or more RAM. These
+    aren''t theoretical optimizations—they''re measurable improvements in report generation
+    speed and concurrent user capacity.
 
 
-    Performance under load separates viable production infrastructure from systems
-    that collapse during month-end financial closes or customer deadline pressure.
-    The specific instance configuration in this guide delivers predictable response
-    times even when users simultaneously run complex inventory calculations, generate
-    financial statements, and process bulk sales orders.
+    This installation guide focuses specifically on Install Odoo 16 on Ubuntu 20.04:
+    Complete Guide, accounting for the distribution-specific differences in package
+    names, default firewall configurations, and service management commands that generic
+    Odoo tutorials ignore. You will configure the OS for production Odoo workloads,
+    install all required dependencies from verified repositories, tune PostgreSQL
+    for your hardware profile, and implement automated monitoring. The process takes
+    under an hour and produces a system configuration that matches what managed Odoo
+    hosting providers charge three hundred dollars monthly to maintain.
+
+    '
+  conclusion: 'Your Install Odoo 16 on Ubuntu 20.04: Complete Guide installation establishes
+    the operating system foundation that Odoo 16 requires for production deployment.
+    The Ubuntu 20.04 system you configured includes Python 3.11, PostgreSQL 15, tuned
+    kernel parameters for database workloads, and systemd service management that
+    ensures Odoo restarts automatically after system updates or unexpected failures.
+
+
+    This installation approach prioritizes long-term operational stability over deployment
+    speed. The time invested in partition layout decisions, PostgreSQL tuning for
+    8GB RAM, and proper systemd service configuration pays dividends for years through
+    predictable performance, simplified troubleshooting, and resistance to the configuration
+    drift that plagues hastily deployed systems. You built infrastructure that supports
+    business operations through growth, module additions, and version upgrades without
+    requiring OS reinstallation or architectural changes.
+
+
+    Next steps focus on Odoo application layer setup. Install your required modules,
+    configure database parameters specific to your business workflows, import your
+    data, and establish your backup validation routine. The OS foundation you completed
+    today won''t require revisiting until {{ static_data.support_end_date }}—that
+    five-year stability window eliminates infrastructure churn and lets you focus
+    on extracting business value from Odoo rather than managing operating system maintenance.
+
+
+
+    Bookmark this guide, then [subscribe to our troubleshooting newsletter](/subscribe/)
+    for solutions to the 47 most common Odoo production issues. Get decision trees,
+    diagnostic commands, and tested fixes delivered monthly.'
+  troubleshooting_guide: '## Common Issues and Solutions
+
+
+    **Issue: Odoo service fails to start after installation**
+
+
+    Check the service status and logs to identify the specific error. Run `systemctl
+    status odoo` to see if systemd reports configuration file errors, permission problems,
+    or missing dependencies. Most startup failures trace to incorrect paths in the
+    configuration file—verify `/etc/odoo/odoo.conf` contains valid paths to the Odoo
+    installation directory, addons folders, and log file location. Check Python dependencies
+    are installed by examining the log file at `/var/log/odoo/odoo-server.log`. Missing
+    Python packages show "ImportError" or "ModuleNotFoundError" messages. Install
+    missing packages using pip: `pip3 install package-name`. Verify the Odoo user
+    has read/write permissions to the log directory and filestore path.
+
+
+    **Issue: Database connection errors**
+
+
+    Odoo cannot connect to PostgreSQL, typically showing "FATAL: password authentication
+    failed" or "could not connect to server" errors. Verify PostgreSQL is running
+    with `systemctl status postgresql`, confirm the Odoo database user exists with
+    correct credentials, and check `pg_hba.conf` allows local connections. The Odoo
+    configuration file''s `db_user`, `db_password`, and `db_host` parameters must
+    match your PostgreSQL setup exactly—case sensitivity matters for usernames.
+
+
+    **Issue: Port 8069 not accessible from browser**
+
+
+    The firewall blocks incoming connections to Odoo''s default port. Use UFW (Ubuntu/Debian)
+    or firewalld (CentOS/Rocky Linux) to allow the port. For UFW: `sudo ufw allow
+    8069/tcp`. For firewalld: `sudo firewall-cmd --permanent --add-port=8069/tcp &&
+    sudo firewall-cmd --reload`. For production deployments behind NGINX reverse proxy,
+    you should block external port 8069 access entirely and only expose ports 80/443,
+    which NGINX proxies to Odoo''s localhost:8069.
+
+
+    **Issue: Module installation fails with dependency errors**
+
+
+    Odoo modules declare dependencies on other modules, and installation fails if
+    dependencies are missing or if circular dependencies exist. Read the error message
+    carefully—it specifies which module dependency is missing. Install missing modules
+    through the Apps menu first, then retry the original module installation. For
+    custom modules, verify the `__manifest__.py` file declares all dependencies in
+    the `depends` list.
+
+
+    **Issue: PDF generation produces blank or malformed documents**
+
+
+    wkhtmltopdf installation issues cause this. Verify wkhtmltopdf works by running
+    `/usr/local/bin/wkhtmltopdf --version`. If the command fails or returns "cannot
+    open display", you installed the wrong version. Download the patched Qt version
+    from wkhtmltopdf.org specifically for your OS distribution. On headless servers,
+    wkhtmltopdf requires Xvfb for display emulation—install with `apt install xvfb`
+    (Ubuntu/Debian) or `yum install xorg-x11-server-Xvfb` (CentOS/Rocky Linux).
+
+
+    **Issue: Performance degradation with increasing users**
+
+
+    PostgreSQL tuning is usually the bottleneck. Check `shared_buffers` in `/etc/postgresql/*/main/postgresql.conf`
+    is set to 25% of system RAM. Monitor slow queries with `pg_stat_statements` extension.
+    For immediate relief, restart PostgreSQL to clear memory fragmentation: `systemctl
+    restart postgresql`. Long-term, add RAM or separate database to dedicated server.
+
+
+    **Issue: Backup or restore operations fail**
+
+
+    Check disk space with `df -h`—insufficient space causes silent backup failures.
+    Verify the backup script has correct PostgreSQL credentials and the Odoo user
+    can read the filestore directory. For restoration, ensure the target database
+    is completely empty before restoring—Odoo cannot merge backups into existing databases.
+    Use `dropdb` and `createdb` to ensure a clean target.
+
+
+    **Issue: SSL certificate errors or mixed content warnings**
+
+
+    Mixed content warnings occur when NGINX properly serves HTTPS but Odoo generates
+    HTTP links internally. Set `proxy_mode = True` in `/etc/odoo/odoo.conf` and restart
+    Odoo. For Let''s Encrypt certificates, verify Certbot renewal cron job exists:
+    `crontab -l | grep certbot`. Test renewal manually with `certbot renew --dry-run`.
+
+    '
+  installation_guide: 'Installing Odoo 16 on Ubuntu 20.04 from source code provides
+    complete control over your ERP infrastructure—from database configuration through
+    module selection to upgrade timing. Unlike managed hosting that abstracts infrastructure
+    behind opaque control panels, source installation gives you direct access to configuration
+    files, PostgreSQL tuning parameters, and system resources that determine whether
+    your Odoo instance handles ten users or one hundred.
+
+
+    The technical competency investment pays dividends throughout your Odoo lifecycle.
+    When performance issues emerge, you diagnose PostgreSQL query patterns rather
+    than filing support tickets. When security updates release, you apply them on
+    your schedule after testing in staging environments. When module conflicts break
+    functionality, you inspect Python stack traces and patch code directly. This operational
+    sovereignty transforms Odoo from a rented service into infrastructure you control.
 
 
     ## Server Requirements and Architecture Decisions
@@ -229,36 +361,6 @@ ai_generated_content:
     and control define digital sovereignty.
 
     '
-  troubleshooting: ''
-  conclusion: 'The Install Odoo 16 on Ubuntu 20.04: Complete Guide system you deployed
-    demonstrates that production-grade Odoo infrastructure doesn''t require managed
-    service providers or enterprise support contracts. You configured every component
-    yourself—from your cloud provider firewall rules through PostgreSQL parameter
-    tuning to Let''s Encrypt SSL automation—and gained operational knowledge that
-    survives vendor changes, price increases, and service discontinuations.
-
-
-    This hands-on deployment approach delivers advantages that extend beyond immediate
-    cost savings. You understand exactly how Odoo connects to PostgreSQL, how NGINX
-    handles SSL termination and request proxying, where log files accumulate, and
-    which processes consume memory under load. That knowledge eliminates the helpless
-    dependency on support tickets and vendor response times that paralyzes businesses
-    when production issues emerge during month-end financial closes or customer deadline
-    pressure.
-
-
-    Your infrastructure now supports the next growth phase. The recommended instance
-    type instance with 8GB RAM handles 10-25 users, and you know exactly how to upgrade
-    to larger instance types when user counts exceed current capacity. The automated
-    backup system protects against data loss. The monitoring foundation provides visibility
-    into system health. You built infrastructure that serves business needs for years,
-    not months—that durability and control define digital sovereignty.
-
-
-
-    Don''t wait for users to report problems. Download the [Odoo health monitoring
-    script](/downloads/odoo-health-monitoring-script/) to track CPU, memory, PostgreSQL
-    performance, and response times with automated alerts when thresholds breach.'
 conversion_assets:
 - component_type: callout-box
   placement_hint: mid_guide

@@ -23,33 +23,170 @@ static_data:
   - Create systemd service
   - Start and enable Odoo
 ai_generated_content:
-  introduction: 'Install Odoo 18 on Fedora : Complete Guide requires specific technical
-    decisions at every layer—operating system selection, PostgreSQL version and configuration,
-    Python environment setup, NGINX reverse proxy implementation, SSL certificate
-    management, and systemd service orchestration. This guide makes those decisions
-    explicit, explaining the reasoning behind each configuration choice and the production
-    implications of alternatives you might encounter.
+  introduction: 'Install Odoo 18 on Fedora : Complete Guide establishes the operating
+    system foundation that Odoo 18 will run on for the next three to five years. The
+    choice between Fedora versions, configuration decisions during installation, and
+    the packages you include or exclude will determine whether your Odoo system scales
+    smoothly from ten users to one hundred, or requires disruptive infrastructure
+    rebuilds when you hit performance ceilings.
 
 
-    Odoo deployments fail most often from accumulated small configuration errors rather
-    than single catastrophic mistakes. Installing PostgreSQL without tuning shared_buffers
-    creates memory pressure. Configuring NGINX without extended timeouts causes request
-    failures. Running Odoo without proper systemd management means manual restarts
-    after updates. Each individual mistake seems minor until they compound into production
-    instability.'
-  installation_guide: 'Migrating business operations from QuickBooks, Excel spreadsheets,
-    NetSuite, or legacy ERP systems to Odoo requires production infrastructure ready
-    before you begin data migration activities. Attempting to set up servers while
-    simultaneously mapping data fields, validating import procedures, and training
-    users guarantees timeline delays and increases the risk of errors that corrupt
-    production data.
+    The compatibility matrix matters more than most guides acknowledge. Odoo 18 officially
+    supports Fedora , but that support encompasses specific Python versions, PostgreSQL
+    releases, and system library dependencies that change between OS point releases.
+    Installing on Fedora  ensures you get Python 3.11 and PostgreSQL 15 from official
+    repositories without manual compilation or third-party PPAs that introduce security
+    and maintenance risks.
 
 
-    Performance under load separates viable production infrastructure from systems
-    that collapse during month-end financial closes or customer deadline pressure.
-    The specific instance configuration in this guide delivers predictable response
-    times even when users simultaneously run complex inventory calculations, generate
-    financial statements, and process bulk sales orders.
+    This guide walks through the complete installation process for Install Odoo 18
+    on Fedora : Complete Guide, starting with OS preparation and partition layout
+    decisions that affect database performance, continuing through Python environment
+    configuration and PostgreSQL tuning for 8GB systems, and concluding with systemd
+    service setup and automated backup configuration. You will learn the specific
+    apt packages required for Odoo''s Python dependencies, the PostgreSQL settings
+    that prevent memory swap under load, and the firewall rules that balance security
+    with administrative access. The total installation time runs approximately forty-five
+    minutes, resulting in a production-ready Odoo Odoo 18 system on Fedora infrastructure
+    you control.
+
+    '
+  conclusion: 'Your Install Odoo 18 on Fedora : Complete Guide deployment implements
+    defense-in-depth security hardening that transforms Fedora  into a production
+    environment meeting enterprise security baselines. The system includes automatic
+    security patching through unattended-upgrades, AppArmor process isolation, SSH
+    key-only authentication, UFW firewall rules restricting access to required ports,
+    and fail2ban protection against brute-force attacks.
+
+
+    These security layers provide resilience against the attack vectors that compromise
+    most publicly exposed Odoo installations. PostgreSQL accepts connections only
+    from localhost, preventing direct database access attempts. Odoo runs under a
+    dedicated system user with minimal privileges, limiting damage from potential
+    application vulnerabilities. File system permissions restrict write access to
+    specific directories, preventing malware persistence. Audit logging tracks all
+    administrative actions for forensic investigation if incidents occur. You built
+    security into the foundation rather than bolting it on afterward when compliance
+    audits or security incidents force remediation.
+
+
+    Maintain this security posture through operational discipline. Review fail2ban
+    logs weekly for unusual access patterns. Verify that unattended-upgrades applies
+    kernel and security patches within forty-eight hours of release. Rotate SSH keys
+    quarterly and revoke access for departed administrators immediately. Test your
+    incident response procedures annually by simulating common attack scenarios. The
+    security foundation you established today requires ongoing attention to remain
+    effective—but that attention represents a manageable operational routine rather
+    than emergency response to preventable compromises.
+
+
+
+    Don''t wait for users to report problems. Download the [Odoo health monitoring
+    script](/downloads/odoo-health-monitoring-script/) to track CPU, memory, PostgreSQL
+    performance, and response times with automated alerts when thresholds breach.'
+  troubleshooting_guide: '## Common Issues and Solutions
+
+
+    **Issue: Odoo service fails to start after installation**
+
+
+    Check the service status and logs to identify the specific error. Run `systemctl
+    status odoo` to see if systemd reports configuration file errors, permission problems,
+    or missing dependencies. Most startup failures trace to incorrect paths in the
+    configuration file—verify `/etc/odoo/odoo.conf` contains valid paths to the Odoo
+    installation directory, addons folders, and log file location. Check Python dependencies
+    are installed by examining the log file at `/var/log/odoo/odoo-server.log`. Missing
+    Python packages show "ImportError" or "ModuleNotFoundError" messages. Install
+    missing packages using pip: `pip3 install package-name`. Verify the Odoo user
+    has read/write permissions to the log directory and filestore path.
+
+
+    **Issue: Database connection errors**
+
+
+    Odoo cannot connect to PostgreSQL, typically showing "FATAL: password authentication
+    failed" or "could not connect to server" errors. Verify PostgreSQL is running
+    with `systemctl status postgresql`, confirm the Odoo database user exists with
+    correct credentials, and check `pg_hba.conf` allows local connections. The Odoo
+    configuration file''s `db_user`, `db_password`, and `db_host` parameters must
+    match your PostgreSQL setup exactly—case sensitivity matters for usernames.
+
+
+    **Issue: Port 8069 not accessible from browser**
+
+
+    The firewall blocks incoming connections to Odoo''s default port. Use UFW (Ubuntu/Debian)
+    or firewalld (CentOS/Rocky Linux) to allow the port. For UFW: `sudo ufw allow
+    8069/tcp`. For firewalld: `sudo firewall-cmd --permanent --add-port=8069/tcp &&
+    sudo firewall-cmd --reload`. For production deployments behind NGINX reverse proxy,
+    you should block external port 8069 access entirely and only expose ports 80/443,
+    which NGINX proxies to Odoo''s localhost:8069.
+
+
+    **Issue: Module installation fails with dependency errors**
+
+
+    Odoo modules declare dependencies on other modules, and installation fails if
+    dependencies are missing or if circular dependencies exist. Read the error message
+    carefully—it specifies which module dependency is missing. Install missing modules
+    through the Apps menu first, then retry the original module installation. For
+    custom modules, verify the `__manifest__.py` file declares all dependencies in
+    the `depends` list.
+
+
+    **Issue: PDF generation produces blank or malformed documents**
+
+
+    wkhtmltopdf installation issues cause this. Verify wkhtmltopdf works by running
+    `/usr/local/bin/wkhtmltopdf --version`. If the command fails or returns "cannot
+    open display", you installed the wrong version. Download the patched Qt version
+    from wkhtmltopdf.org specifically for your OS distribution. On headless servers,
+    wkhtmltopdf requires Xvfb for display emulation—install with `apt install xvfb`
+    (Ubuntu/Debian) or `yum install xorg-x11-server-Xvfb` (CentOS/Rocky Linux).
+
+
+    **Issue: Performance degradation with increasing users**
+
+
+    PostgreSQL tuning is usually the bottleneck. Check `shared_buffers` in `/etc/postgresql/*/main/postgresql.conf`
+    is set to 25% of system RAM. Monitor slow queries with `pg_stat_statements` extension.
+    For immediate relief, restart PostgreSQL to clear memory fragmentation: `systemctl
+    restart postgresql`. Long-term, add RAM or separate database to dedicated server.
+
+
+    **Issue: Backup or restore operations fail**
+
+
+    Check disk space with `df -h`—insufficient space causes silent backup failures.
+    Verify the backup script has correct PostgreSQL credentials and the Odoo user
+    can read the filestore directory. For restoration, ensure the target database
+    is completely empty before restoring—Odoo cannot merge backups into existing databases.
+    Use `dropdb` and `createdb` to ensure a clean target.
+
+
+    **Issue: SSL certificate errors or mixed content warnings**
+
+
+    Mixed content warnings occur when NGINX properly serves HTTPS but Odoo generates
+    HTTP links internally. Set `proxy_mode = True` in `/etc/odoo/odoo.conf` and restart
+    Odoo. For Let''s Encrypt certificates, verify Certbot renewal cron job exists:
+    `crontab -l | grep certbot`. Test renewal manually with `certbot renew --dry-run`.
+
+    '
+  installation_guide: 'Installing Odoo 18 on Fedora  from source code provides complete
+    control over your ERP infrastructure—from database configuration through module
+    selection to upgrade timing. Unlike managed hosting that abstracts infrastructure
+    behind opaque control panels, source installation gives you direct access to configuration
+    files, PostgreSQL tuning parameters, and system resources that determine whether
+    your Odoo instance handles ten users or one hundred.
+
+
+    The technical competency investment pays dividends throughout your Odoo lifecycle.
+    When performance issues emerge, you diagnose PostgreSQL query patterns rather
+    than filing support tickets. When security updates release, you apply them on
+    your schedule after testing in staging environments. When module conflicts break
+    functionality, you inspect Python stack traces and patch code directly. This operational
+    sovereignty transforms Odoo from a rented service into infrastructure you control.
 
 
     ## Server Requirements and Architecture Decisions
@@ -229,39 +366,6 @@ ai_generated_content:
     and control define digital sovereignty.
 
     '
-  troubleshooting: ''
-  conclusion: 'The Install Odoo 18 on Fedora : Complete Guide architecture you implemented
-    on your cloud provider provides a scaling foundation that supports business growth
-    without infrastructure rebuilds. The current recommended instance type configuration
-    handles 10-25 users, but the deployment patterns you followed—separated application
-    and database tiers, reverse proxy SSL termination, automated backup systems—scale
-    linearly when user counts increase.
-
-
-    Growth-related infrastructure changes require minimal effort because you built
-    on production-grade foundations from the start. Upgrading to a larger instance
-    type takes thirty minutes and involves stopping services, resizing the instance
-    through your cloud provider''s console, adjusting PostgreSQL parameters for the
-    new RAM allocation, and restarting services. Adding a read replica for reporting
-    workloads requires similar effort. Implementing high availability with load-balanced
-    application servers builds on the NGINX configuration you already deployed. You
-    established architectural patterns that accommodate scaling without starting over.
-
-
-    Your immediate focus should shift to operational excellence. Validate your backup
-    restoration process by performing a complete recovery to a test instance. Establish
-    monitoring baselines for normal CPU, memory, and disk usage patterns so you can
-    identify anomalies before they cause outages. Document configuration decisions
-    and administrative procedures for future team members. The infrastructure work
-    is complete—operational maturity and application layer optimization represent
-    your next leverage points for extracting maximum value from this $50-100 monthly
-    infrastructure investment.
-
-
-
-    Before declaring your deployment complete, run the [backup readiness checker](/toolkit/odoo-backup-readiness-checker/).
-    This 60-second assessment validates encryption, tests restoration procedures,
-    and confirms off-site storage configuration.'
 conversion_assets:
 - component_type: callout-box
   placement_hint: mid_guide

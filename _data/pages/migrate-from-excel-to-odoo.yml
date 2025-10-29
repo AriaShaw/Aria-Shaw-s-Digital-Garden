@@ -137,18 +137,163 @@ static_data:
     medium_dataset: 4-8 hours (1000-10000 rows)
     large_dataset: 2-5 days (10000+ rows with complex relationships)
 ai_generated_content:
-  introduction: 'Deploying Migrate from Excel to Odoo 18: SMB Data Import Guide 2025
-    doesn''t require enterprise budgets or vendor lock-in. Where managed Odoo hosting
-    providers charge three hundred to five hundred dollars monthly for comparable
-    infrastructure, your cloud provider delivers production-grade virtual machines
-    at $50-100 with full root access and complete data ownership.
+  introduction: 'Migrate from Excel to Odoo 18: SMB Data Import Guide 2025 addresses
+    the highest-risk operation in ERP implementations: moving years of transactional
+    history, customer relationships, and operational data from Excel Spreadsheets
+    to Odoo without corruption, loss, or business disruption. Unlike fresh Odoo deployments
+    where you start with clean databases and establish new workflows, migration carries
+    the weight of existing business commitments—open sales orders, pending invoices,
+    inventory obligations, and customer payment histories that must transfer intact
+    or cause immediate operational failures.
 
 
-    The technical foundation you establish today determines whether your Odoo system
-    scales smoothly from ten users to one hundred, or requires disruptive infrastructure
-    rebuilds when you hit performance ceilings. Configuration decisions during deployment—PostgreSQL
-    tuning, worker process calculations, NGINX timeout settings—either provide growth
-    headroom or create bottlenecks that demand expensive remediation later.'
+    The risk profile differs fundamentally from typical software projects. When you
+    deploy new infrastructure or upgrade between Odoo versions, failures delay timelines
+    but rarely corrupt existing data. Migration failures destroy information. A misconfigured
+    field mapping overwrites customer credit limits. An incorrect date format converts
+    two years of transaction timestamps to invalid values. A skipped validation step
+    imports duplicate records that corrupt financial reports for months before anyone
+    notices the discrepancy. These aren''t hypothetical scenarios—they''re documented
+    migration failures that cost businesses tens of thousands in recovery efforts
+    and lost customer trust.
+
+
+    This guide implements Migrate from Excel to Odoo 18: SMB Data Import Guide 2025
+    using a four-phase methodology that prioritizes data validation over speed, reversibility
+    over convenience, and parallel operation over risky cutover events. You will extract
+    complete datasets from Excel Spreadsheets, map fields to Odoo''s schema with validation
+    rules that catch format mismatches before import, test migration procedures against
+    staging environments that mirror production data volumes, and execute the final
+    cutover with rollback procedures that restore Excel Spreadsheets if critical issues
+    emerge. The complete migration timeline runs 4-6 weeks, but delivers operational
+    Odoo systems with verified data integrity rather than corrupted databases that
+    require expensive forensic recovery.
+
+    '
+  conclusion: 'You achieved practical digital sovereignty by deploying Migrate from
+    Excel to Odoo 18: SMB Data Import Guide 2025 on infrastructure you control at
+    $50-100 monthly. This system eliminates dependency on managed Odoo hosting providers
+    who lock you into proprietary platforms, restrict customization freedom, and increase
+    prices arbitrarily because they control your data and operational access. You
+    own your Odoo instance, your PostgreSQL database, your backup strategy, and your
+    ability to migrate to different infrastructure providers if business requirements
+    or pricing changes.
+
+
+    The sovereignty advantage compounds over time. Your Odoo data exports to standard
+    PostgreSQL dump files that restore on any compatible infrastructure—your cloud
+    provider, competing cloud providers, or on-premises hardware. Your configuration
+    exists in documented scripts and files you can version control and replicate.
+    Your operational knowledge transfers across infrastructure platforms because you
+    understand the underlying components rather than provider-specific management
+    interfaces. This portability and knowledge ownership protect against vendor lock-in
+    and preserve your ability to optimize costs as your business evolves.
+
+
+    Maintain this sovereignty by documenting your deployment, testing your backups
+    quarterly, and staying current with security updates. The infrastructure you built
+    today serves business needs for years while remaining under your control—that
+    combination of longevity, ownership, and cost efficiency justifies the deployment
+    effort and establishes the operational foundation your business deserves.
+
+
+
+    Bookmark this guide, then [subscribe to our troubleshooting newsletter](/subscribe/)
+    for solutions to the 47 most common Odoo production issues. Get decision trees,
+    diagnostic commands, and tested fixes delivered monthly.'
+  troubleshooting_guide: '## Common Issues and Solutions
+
+
+    **Issue: Odoo service fails to start after installation**
+
+
+    Check the service status and logs to identify the specific error. Run `systemctl
+    status odoo` to see if systemd reports configuration file errors, permission problems,
+    or missing dependencies. Most startup failures trace to incorrect paths in the
+    configuration file—verify `/etc/odoo/odoo.conf` contains valid paths to the Odoo
+    installation directory, addons folders, and log file location. Migration-specific
+    startup failures often involve database schema incompatibilities. Check Odoo logs
+    for "column does not exist" or "relation does not exist" errors—these indicate
+    incomplete migration or incompatible module versions. Verify all custom modules
+    are compatible with the target Odoo version. Disable custom modules temporarily
+    to isolate whether they cause startup failures.
+
+
+    **Issue: Database connection errors**
+
+
+    Odoo cannot connect to PostgreSQL, typically showing "FATAL: password authentication
+    failed" or "could not connect to server" errors. Verify PostgreSQL is running
+    with `systemctl status postgresql`, confirm the Odoo database user exists with
+    correct credentials, and check `pg_hba.conf` allows local connections. The Odoo
+    configuration file''s `db_user`, `db_password`, and `db_host` parameters must
+    match your PostgreSQL setup exactly—case sensitivity matters for usernames.
+
+
+    **Issue: Port 8069 not accessible from browser**
+
+
+    The firewall blocks incoming connections to Odoo''s default port. During migration,
+    you may run both old and new Odoo instances simultaneously. Configure the new
+    instance on a different port (e.g., 8070) to avoid conflicts, then update firewall
+    rules to allow both ports during the parallel running period. After cutover completes,
+    remove the old instance''s port from firewall rules. For production deployments
+    behind NGINX reverse proxy, you should block external port 8069 access entirely
+    and only expose ports 80/443, which NGINX proxies to Odoo''s localhost:8069.
+
+
+    **Issue: Module installation fails with dependency errors**
+
+
+    Odoo modules declare dependencies on other modules, and installation fails if
+    dependencies are missing or if circular dependencies exist. Read the error message
+    carefully—it specifies which module dependency is missing. Install missing modules
+    through the Apps menu first, then retry the original module installation. For
+    custom modules, verify the `__manifest__.py` file declares all dependencies in
+    the `depends` list.
+
+
+    **Issue: PDF generation produces blank or malformed documents**
+
+
+    Migrated report templates may use deprecated QWeb syntax or reference removed
+    fields. Test all report types (invoices, delivery orders, purchase orders) immediately
+    after migration. Broken reports show XML parsing errors in logs. Recreate problematic
+    reports using Odoo''s Studio or fix the QWeb templates in custom modules. Standard
+    Odoo reports rarely break—issues typically come from customized templates.
+
+
+    **Issue: Performance degradation with increasing users**
+
+
+    Post-migration performance issues often trace to missing database indexes or outdated
+    statistics. Run `REINDEX DATABASE` on your Odoo database after large data imports:
+    `psql -d odoo_db -c ''REINDEX DATABASE odoo_db''`. Update PostgreSQL statistics
+    with `VACUUM ANALYZE` to help the query planner choose efficient execution paths.
+    Large migrations benefit from temporarily increasing PostgreSQL''s `maintenance_work_mem`
+    for faster index building.
+
+
+    **Issue: Backup or restore operations fail**
+
+
+    Backup both source and target systems before cutover. Create a backup of the old
+    system immediately before final data export, and backup the new Odoo instance
+    after import but before user access begins. Store backups off-server—migration
+    failures sometimes corrupt local storage. Verify backups are restorable by testing
+    restoration on a separate server.
+
+
+    **Issue: SSL certificate errors or mixed content warnings**
+
+
+    Migrated systems may have hardcoded URLs in database records pointing to the old
+    system. Search for old domain references in `ir.config_parameter` system settings
+    and update to the new domain. Use SQL queries to find hardcoded URLs: `SELECT
+    * FROM ir_attachment WHERE url LIKE ''%olddomain.com%''`. Update attachment URLs
+    and regenerate reports that embed URLs.
+
+    '
   migration_guide: 'Migrating from Excel Spreadsheets to Odoo 18 requires production
     infrastructure ready before you begin data extraction and transformation activities.
     Attempting to export data, build import scripts, and configure the target system
@@ -365,38 +510,6 @@ ai_generated_content:
     statements.
 
     '
-  conclusion: 'The Migrate from Excel to Odoo 18: SMB Data Import Guide 2025 architecture
-    you implemented on your cloud provider provides a scaling foundation that supports
-    business growth without infrastructure rebuilds. The current standard tier instance
-    configuration handles 10-25 users, but the deployment patterns you followed—separated
-    application and database tiers, reverse proxy SSL termination, automated backup
-    systems—scale linearly when user counts increase.
-
-
-    Growth-related infrastructure changes require minimal effort because you built
-    on production-grade foundations from the start. Upgrading to a larger instance
-    type takes thirty minutes and involves stopping services, resizing the instance
-    through your cloud provider''s console, adjusting PostgreSQL parameters for the
-    new RAM allocation, and restarting services. Adding a read replica for reporting
-    workloads requires similar effort. Implementing high availability with load-balanced
-    application servers builds on the NGINX configuration you already deployed. You
-    established architectural patterns that accommodate scaling without starting over.
-
-
-    Your immediate focus should shift to operational excellence. Validate your backup
-    restoration process by performing a complete recovery to a test instance. Establish
-    monitoring baselines for normal CPU, memory, and disk usage patterns so you can
-    identify anomalies before they cause outages. Document configuration decisions
-    and administrative procedures for future team members. The infrastructure work
-    is complete—operational maturity and application layer optimization represent
-    your next leverage points for extracting maximum value from this $50-100 monthly
-    infrastructure investment.
-
-
-
-    Secure your deployment with our [enhanced backup automation toolkit](/downloads/enhanced-backup-script/).
-    Get encrypted backups, multi-cloud sync, and automated disaster recovery testing—the
-    same tools powering production Odoo instances handling millions in transactions.'
 conversion_assets:
 - component_type: callout-box
   placement_hint: mid_guide

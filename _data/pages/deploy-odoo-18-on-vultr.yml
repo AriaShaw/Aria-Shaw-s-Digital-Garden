@@ -174,49 +174,143 @@ static_data:
   - Configure email sending (SMTP)
   - Add custom domain and branding
 ai_generated_content:
-  introduction: 'Digital sovereignty means controlling your business data and infrastructure
-    without dependency on vendors who restrict access, limit customization, or increase
-    prices arbitrarily because they hold your operational capability hostage. Deploy
-    Odoo 18 on vultr: Complete 2025 Guide on Vultr delivers that sovereignty by giving
-    you root-level access to virtual machines running your complete Odoo stack.
+  introduction: 'Deploy Odoo 18 on vultr: Complete 2025 Guide requires specific technical
+    decisions at every layer—operating system selection, PostgreSQL version and configuration,
+    Python environment setup, NGINX reverse proxy implementation, SSL certificate
+    management, and systemd service orchestration. This guide makes those decisions
+    explicit, explaining the reasoning behind each configuration choice and the production
+    implications of alternatives you might encounter.
 
 
-    This guide eliminates the guesswork that plagues most cloud deployments. You won''t
-    find vague recommendations to ''choose an appropriate instance size'' here. Every
-    configuration parameter includes the specific value, the technical rationale,
-    and the production failure mode it prevents.'
-  conclusion: 'The Deploy Odoo 18 on vultr: Complete 2025 Guide architecture you implemented
-    on Vultr provides a scaling foundation that supports business growth without infrastructure
-    rebuilds. The current vx1 configuration handles 10-25 users, but the deployment
-    patterns you followed—separated application and database tiers, reverse proxy
-    SSL termination, automated backup systems—scale linearly when user counts increase.
+    Odoo deployments fail most often from accumulated small configuration errors rather
+    than single catastrophic mistakes. Installing PostgreSQL without tuning shared_buffers
+    creates memory pressure. Configuring NGINX without extended timeouts causes request
+    failures. Running Odoo without proper systemd management means manual restarts
+    after updates. Each individual mistake seems minor until they compound into production
+    instability.'
+  conclusion: 'You achieved practical digital sovereignty by deploying Deploy Odoo
+    18 on vultr: Complete 2025 Guide on infrastructure you control at $50-100 monthly.
+    This system eliminates dependency on managed Odoo hosting providers who lock you
+    into proprietary platforms, restrict customization freedom, and increase prices
+    arbitrarily because they control your data and operational access. You own your
+    Odoo instance, your PostgreSQL database, your backup strategy, and your ability
+    to migrate to different infrastructure providers if business requirements or pricing
+    changes.
 
 
-    Growth-related infrastructure changes require minimal effort because you built
-    on production-grade foundations from the start. Upgrading to a larger instance
-    type takes thirty minutes and involves stopping services, resizing the instance
-    through Vultr''s console, adjusting PostgreSQL parameters for the new RAM allocation,
-    and restarting services. Adding a read replica for reporting workloads requires
-    similar effort. Implementing high availability with load-balanced application
-    servers builds on the NGINX configuration you already deployed. You established
-    architectural patterns that accommodate scaling without starting over.
+    The sovereignty advantage compounds over time. Your Odoo data exports to standard
+    PostgreSQL dump files that restore on any compatible infrastructure—Vultr, competing
+    cloud providers, or on-premises hardware. Your configuration exists in documented
+    scripts and files you can version control and replicate. Your operational knowledge
+    transfers across infrastructure platforms because you understand the underlying
+    components rather than provider-specific management interfaces. This portability
+    and knowledge ownership protect against vendor lock-in and preserve your ability
+    to optimize costs as your business evolves.
 
 
-    Your immediate focus should shift to operational excellence. Validate your backup
-    restoration process by performing a complete recovery to a test instance. Establish
-    monitoring baselines for normal CPU, memory, and disk usage patterns so you can
-    identify anomalies before they cause outages. Document configuration decisions
-    and administrative procedures for future team members. The infrastructure work
-    is complete—operational maturity and application layer optimization represent
-    your next leverage points for extracting maximum value from this $50-100 monthly
-    infrastructure investment.
+    Maintain this sovereignty by documenting your deployment, testing your backups
+    quarterly, and staying current with security updates. The infrastructure you built
+    today serves business needs for years while remaining under your control—that
+    combination of longevity, ownership, and cost efficiency justifies the deployment
+    effort and establishes the operational foundation your business deserves.
 
 
 
-    PostgreSQL defaults leave performance on the table. Grab our [PostgreSQL tuning
-    script](/downloads/postgresql-performance-tuning/) to optimize shared_buffers,
-    work_mem, and connection pooling for your specific hardware profile and workload
-    patterns.'
+    Before declaring your deployment complete, run the [backup readiness checker](/toolkit/odoo-backup-readiness-checker/).
+    This 60-second assessment validates encryption, tests restoration procedures,
+    and confirms off-site storage configuration.'
+  troubleshooting_guide: '## Common Issues and Solutions
+
+
+    **Issue: Odoo service fails to start after installation**
+
+
+    Check the service status and logs to identify the specific error. Run `systemctl
+    status odoo` to see if systemd reports configuration file errors, permission problems,
+    or missing dependencies. Most startup failures trace to incorrect paths in the
+    configuration file—verify `/etc/odoo/odoo.conf` contains valid paths to the Odoo
+    installation directory, addons folders, and log file location. Cloud-specific
+    issues often involve security group or firewall rules blocking access. Verify
+    your cloud provider''s security groups allow port 8069 inbound traffic. Check
+    the instance''s system logs through the cloud console for out-of-memory errors
+    or disk space issues. Cloud instances with insufficient RAM (less than 4GB) cannot
+    run Odoo reliably—workers crash under load, requiring instance resize.
+
+
+    **Issue: Database connection errors**
+
+
+    Odoo cannot connect to PostgreSQL, typically showing "FATAL: password authentication
+    failed" or "could not connect to server" errors. Verify PostgreSQL is running
+    with `systemctl status postgresql`, confirm the Odoo database user exists with
+    correct credentials, and check `pg_hba.conf` allows local connections. The Odoo
+    configuration file''s `db_user`, `db_password`, and `db_host` parameters must
+    match your PostgreSQL setup exactly—case sensitivity matters for usernames.
+
+
+    **Issue: Port 8069 not accessible from browser**
+
+
+    The firewall blocks incoming connections to Odoo''s default port. Cloud providers
+    use both network-level security groups and OS-level firewalls. Configure security
+    group rules in your cloud console to allow port 8069 from 0.0.0.0/0 (or restrict
+    to specific IP ranges). Then configure the OS firewall as described above. Both
+    layers must permit traffic for connections to succeed. For production deployments
+    behind NGINX reverse proxy, you should block external port 8069 access entirely
+    and only expose ports 80/443, which NGINX proxies to Odoo''s localhost:8069.
+
+
+    **Issue: Module installation fails with dependency errors**
+
+
+    Odoo modules declare dependencies on other modules, and installation fails if
+    dependencies are missing or if circular dependencies exist. Read the error message
+    carefully—it specifies which module dependency is missing. Install missing modules
+    through the Apps menu first, then retry the original module installation. For
+    custom modules, verify the `__manifest__.py` file declares all dependencies in
+    the `depends` list.
+
+
+    **Issue: PDF generation produces blank or malformed documents**
+
+
+    Cloud instances often use minimal OS images without X11 libraries. Install complete
+    wkhtmltopdf dependencies: `apt install -y libxrender1 libfontconfig1 libxext6`
+    (Ubuntu) or equivalent for your distribution. Verify fonts are available for PDF
+    rendering: `fc-list` should show multiple font families. Missing fonts cause PDFs
+    with blank characters or incorrect layout.
+
+
+    **Issue: Performance degradation with increasing users**
+
+
+    Cloud instance sizing matters more than on-premises servers. Burstable instances
+    (AWS t-series, Azure B-series) accumulate CPU credits during idle periods but
+    throttle under sustained load. Monitor CPU credit balance in your cloud console.
+    If credits deplete regularly, upgrade to a general-purpose instance type. Enable
+    detailed monitoring to identify whether CPU, memory, or disk I/O is the bottleneck.
+
+
+    **Issue: Backup or restore operations fail**
+
+
+    Cloud storage integration requires proper IAM permissions and network connectivity.
+    Verify the instance can reach S3/Azure Blob/GCS endpoints with `curl` or `wget`.
+    Check IAM role attached to the instance has write permissions to your backup bucket.
+    For cross-region backups, ensure your bucket policy allows writes from the instance''s
+    region. Test backup scripts manually before scheduling automated runs.
+
+
+    **Issue: SSL certificate errors or mixed content warnings**
+
+
+    Cloud load balancers can terminate SSL, making NGINX configuration different.
+    If using a load balancer for SSL, configure it to forward `X-Forwarded-Proto`
+    headers, and set NGINX to trust these headers with `proxy_set_header X-Forwarded-Proto
+    $scheme`. Verify the load balancer''s health checks target the correct port and
+    path—failed health checks prevent traffic routing.
+
+    '
   deployment_guide: 'The first decision determines your cost structure for the next
     year: which instance type matches your workload without overprovisioning. The
     t3.medium offers 2 vCPUs and 4GB RAM at $30.37 monthly on-demand, suitable for

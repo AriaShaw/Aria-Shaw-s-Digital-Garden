@@ -23,12 +23,11 @@ static_data:
   - Monthly price cap protection
   - GDPR-compliant EU datacenters
 ai_generated_content:
-  introduction: 'Deploy Odoo 18 on Hetzner Cloud: Complete 2025 Guide requires specific
-    technical decisions at every layer—operating system selection, PostgreSQL version
-    and configuration, Python environment setup, NGINX reverse proxy implementation,
-    SSL certificate management, and systemd service orchestration. This guide makes
-    those decisions explicit, explaining the reasoning behind each configuration choice
-    and the production implications of alternatives you might encounter.
+  introduction: 'Hetzner Cloud''s CPX31 (Dedicated AMD) instance delivers the compute
+    and memory resources that Odoo 18 requires for production deployments serving
+    Medium Business (30-80 users). The 4 dedicated vCPUs handle concurrent user requests
+    without CPU steal, while 8GB RAM provides sufficient headroom for PostgreSQL query
+    caching.
 
 
     Odoo deployments fail most often from accumulated small configuration errors rather
@@ -37,80 +36,214 @@ ai_generated_content:
     failures. Running Odoo without proper systemd management means manual restarts
     after updates. Each individual mistake seems minor until they compound into production
     instability.'
-  deployment_guide: 'Start by understanding Hetzner''s CPX-series pricing structure
-    because it directly impacts your five-year total cost of ownership. The CPX21
-    delivers three dedicated AMD vCPUs and four gigabytes of RAM for ten dollars and
-    fifty-nine cents monthly, suitable for fifteen to forty users running standard
-    Odoo modules without heavy customization. The CPX31 doubles the RAM to eight gigabytes,
-    adds a fourth dedicated vCPU, and includes one hundred sixty gigabytes of local
-    NVMe storage for eighteen dollars and fifty-nine cents. Most businesses implementing
-    Odoo should select the CPX31. The additional eight dollars monthly buys meaningful
-    headroom for PostgreSQL query caching, background workers, and the inevitable
-    module additions that occur six months after go-live.
+  conclusion: 'Your Deploy Odoo 18 on Hetzner Cloud: Complete 2025 Guide deployment
+    on Hetzner Cloud is production-ready. The system includes automated daily backups
+    with off-site storage, SSL certificates with automatic renewal, firewall rules
+    that balance security with access requirements, and PostgreSQL tuning optimized
+    for 8GB RAM. You can begin migrating data, configuring Odoo modules, and onboarding
+    users immediately without additional infrastructure preparation.
 
 
-    The datacenter selection carries implications beyond latency. Hetzner''s European
-    datacenters in Falkenstein, Nuremberg, and Helsinki include twenty terabytes of
-    monthly traffic at no additional cost, reflecting the company''s German roots
-    and EU-centric infrastructure investments. The Ashburn, Virginia datacenter includes
-    only one terabyte, with overage charges applying beyond that threshold. For businesses
-    serving primarily European customers or those requiring GDPR-compliant data residency,
-    the EU datacenter choice is obvious.
+    The deployment process you followed represents years of accumulated production
+    experience distilled into ninety minutes of focused implementation. The specific
+    NGINX timeout settings prevent module installation failures. The PostgreSQL shared_buffers
+    calculation matches your instance RAM profile. The systemd service configuration
+    ensures Odoo restarts automatically after system updates. These aren''t theoretical
+    best practices—they''re battle-tested configurations that prevent the operational
+    problems that plague under-prepared Odoo deployments.
 
 
-    Create your Hetzner Cloud account and immediately configure SSH key authentication.
-    Generate an ed25519 SSH key pair on your local workstation, upload the public
-    key to the Hetzner Cloud Console under Security. Launch a CPX31 instance selecting
-    Ubuntu 24.04 LTS. Hetzner''s cloud-init integration means your server will be
-    accessible via SSH within sixty seconds.
+    Next actions focus on application layer setup rather than infrastructure concerns.
+    Install your required Odoo modules, import your data using the migration scripts
+    provided in the Fortress Protection module, configure user accounts and permissions,
+    and establish your backup validation routine. The infrastructure foundation you
+    built today won''t require revisiting until you outgrow Medium Business (30-80
+    users)—and when that growth happens, you have the operational knowledge to scale
+    confidently.
 
 
-    Configure the firewall before installing any services using both Hetzner''s cloud-level
-    firewall and UFW. Install PostgreSQL 16 from the official repository, create a
-    dedicated odoo user, and tune configuration for 8GB RAM. Install Odoo 18 from
-    source to /opt/odoo, create a systemd service, and configure workers using the
-    formula workers equals CPU count times two plus one, resulting in nine workers
-    for four cores.
+
+    Ready to automate your Odoo operations? Download our [complete automation script
+    package](/downloads/odoo-automation-suite/) with backup, monitoring, and maintenance
+    scripts. Each script includes comprehensive documentation and production-ready
+    configurations.'
+  troubleshooting_guide: '## Common Issues and Solutions
 
 
-    Install NGINX as reverse proxy, configure SSL termination with Let''s Encrypt
-    via Certbot. Implement automated PostgreSQL backups using pg_dump with daily retention
-    and upload to off-site storage. The total production cost runs approximately thirty-four
-    dollars monthly: eighteen dollars fifty-nine cents for CPX31, five dollars for
-    backup storage, and minimal costs for snapshots.
+    **Issue: Odoo service fails to start after installation**
+
+
+    Check the service status and logs to identify the specific error. Run `systemctl
+    status odoo` to see if systemd reports configuration file errors, permission problems,
+    or missing dependencies. Most startup failures trace to incorrect paths in the
+    configuration file—verify `/etc/odoo/odoo.conf` contains valid paths to the Odoo
+    installation directory, addons folders, and log file location. Cloud-specific
+    issues often involve security group or firewall rules blocking access. Verify
+    your cloud provider''s security groups allow port 8069 inbound traffic. Check
+    the instance''s system logs through the cloud console for out-of-memory errors
+    or disk space issues. Cloud instances with insufficient RAM (less than 4GB) cannot
+    run Odoo reliably—workers crash under load, requiring instance resize.
+
+
+    **Issue: Database connection errors**
+
+
+    Odoo cannot connect to PostgreSQL, typically showing "FATAL: password authentication
+    failed" or "could not connect to server" errors. Verify PostgreSQL is running
+    with `systemctl status postgresql`, confirm the Odoo database user exists with
+    correct credentials, and check `pg_hba.conf` allows local connections. The Odoo
+    configuration file''s `db_user`, `db_password`, and `db_host` parameters must
+    match your PostgreSQL setup exactly—case sensitivity matters for usernames.
+
+
+    **Issue: Port 8069 not accessible from browser**
+
+
+    The firewall blocks incoming connections to Odoo''s default port. Cloud providers
+    use both network-level security groups and OS-level firewalls. Configure security
+    group rules in your cloud console to allow port 8069 from 0.0.0.0/0 (or restrict
+    to specific IP ranges). Then configure the OS firewall as described above. Both
+    layers must permit traffic for connections to succeed. For production deployments
+    behind NGINX reverse proxy, you should block external port 8069 access entirely
+    and only expose ports 80/443, which NGINX proxies to Odoo''s localhost:8069.
+
+
+    **Issue: Module installation fails with dependency errors**
+
+
+    Odoo modules declare dependencies on other modules, and installation fails if
+    dependencies are missing or if circular dependencies exist. Read the error message
+    carefully—it specifies which module dependency is missing. Install missing modules
+    through the Apps menu first, then retry the original module installation. For
+    custom modules, verify the `__manifest__.py` file declares all dependencies in
+    the `depends` list.
+
+
+    **Issue: PDF generation produces blank or malformed documents**
+
+
+    Cloud instances often use minimal OS images without X11 libraries. Install complete
+    wkhtmltopdf dependencies: `apt install -y libxrender1 libfontconfig1 libxext6`
+    (Ubuntu) or equivalent for your distribution. Verify fonts are available for PDF
+    rendering: `fc-list` should show multiple font families. Missing fonts cause PDFs
+    with blank characters or incorrect layout.
+
+
+    **Issue: Performance degradation with increasing users**
+
+
+    Cloud instance sizing matters more than on-premises servers. Burstable instances
+    (AWS t-series, Azure B-series) accumulate CPU credits during idle periods but
+    throttle under sustained load. Monitor CPU credit balance in your cloud console.
+    If credits deplete regularly, upgrade to a general-purpose instance type. Enable
+    detailed monitoring to identify whether CPU, memory, or disk I/O is the bottleneck.
+
+
+    **Issue: Backup or restore operations fail**
+
+
+    Cloud storage integration requires proper IAM permissions and network connectivity.
+    Verify the instance can reach S3/Azure Blob/GCS endpoints with `curl` or `wget`.
+    Check IAM role attached to the instance has write permissions to your backup bucket.
+    For cross-region backups, ensure your bucket policy allows writes from the instance''s
+    region. Test backup scripts manually before scheduling automated runs.
+
+
+    **Issue: SSL certificate errors or mixed content warnings**
+
+
+    Cloud load balancers can terminate SSL, making NGINX configuration different.
+    If using a load balancer for SSL, configure it to forward `X-Forwarded-Proto`
+    headers, and set NGINX to trust these headers with `proxy_set_header X-Forwarded-Proto
+    $scheme`. Verify the load balancer''s health checks target the correct port and
+    path—failed health checks prevent traffic routing.
 
     '
-  conclusion: 'You achieved practical digital sovereignty by deploying Deploy Odoo
-    18 on Hetzner Cloud: Complete 2025 Guide on infrastructure you control at $50-100
-    monthly. This system eliminates dependency on managed Odoo hosting providers who
-    lock you into proprietary platforms, restrict customization freedom, and increase
-    prices arbitrarily because they control your data and operational access. You
-    own your Odoo instance, your PostgreSQL database, your backup strategy, and your
-    ability to migrate to different infrastructure providers if business requirements
-    or pricing changes.
+  deployment_guide: 'The first decision determines your cost structure for the next
+    year: which instance type matches your workload without overprovisioning. The
+    t3.medium offers 2 vCPUs and 4GB RAM at $30.37 monthly on-demand, suitable for
+    businesses with 10-30 users running standard Odoo modules like Sales, CRM, and
+    Inventory. If your team exceeds 30 users or you''re deploying manufacturing or
+    accounting modules with complex calculations, the m6i.large provides 8GB RAM at
+    $89.28 monthly, which prevents the memory-swap thrashing that kills Odoo responsiveness
+    under load. The wildcard option is the t4g.medium, an ARM-based Graviton instance
+    at $24.30 monthly that delivers identical specs to the t3.medium but costs 20%
+    less.
 
 
-    The sovereignty advantage compounds over time. Your Odoo data exports to standard
-    PostgreSQL dump files that restore on any compatible infrastructure—Hetzner Cloud,
-    competing cloud providers, or on-premises hardware. Your configuration exists
-    in documented scripts and files you can version control and replicate. Your operational
-    knowledge transfers across infrastructure platforms because you understand the
-    underlying components rather than provider-specific management interfaces. This
-    portability and knowledge ownership protect against vendor lock-in and preserve
-    your ability to optimize costs as your business evolves.
+    Launch your chosen instance through the cloud provider''s console with Ubuntu
+    24.04 LTS as the base image. AWS provides official Ubuntu AMIs updated monthly,
+    eliminating the malware-laden AMI risk that plagues community images. During launch
+    configuration, create a new key pair for SSH access and download the private key
+    immediately—AWS doesn''t store it, and you''ll need it for every future access.
 
 
-    Maintain this sovereignty by documenting your deployment, testing your backups
-    quarterly, and staying current with security updates. The infrastructure you built
-    today serves business needs for years while remaining under your control—that
-    combination of longevity, ownership, and cost efficiency justifies the deployment
-    effort and establishes the operational foundation your business deserves.
+    Security group configuration requires precision, not paranoia. Create a new security
+    group with four inbound rules: SSH (port 22) restricted to your office IP address
+    or VPN endpoint, HTTP (port 80) and HTTPS (port 443) open to 0.0.0.0/0 for public
+    access, and port 8069 open to 0.0.0.0/0 temporarily during initial setup. After
+    SSL works, delete the 8069 rule entirely. Many guides leave it open permanently,
+    creating an unencrypted access vector that bypasses your HTTPS enforcement.
 
 
+    Connect via SSH and begin the installation phase. You face a fundamental architecture
+    choice: Docker Compose or native installation. Docker Compose offers faster initial
+    deployment and easier version upgrades—you change one line in a docker-compose.yml
+    file and restart containers. Native installation gives you deeper control over
+    Python dependencies and system-level optimizations, plus it avoids the 10-15%
+    performance overhead Docker networking layers introduce. For most the cloud provider
+    deployments, native installation makes sense because you''re already managing
+    infrastructure—you''ve chosen the cloud provider over managed hosting precisely
+    to maximize control.
 
-    Before declaring your deployment complete, run the [backup readiness checker](/toolkit/odoo-backup-readiness-checker/).
-    This 60-second assessment validates encryption, tests restoration procedures,
-    and confirms off-site storage configuration.'
+
+    Install PostgreSQL 16 locally first with apt, then add the Odoo 18 repository,
+    install the odoo package, and configure it to bind to localhost only while you
+    test functionality.
+
+
+    The PostgreSQL decision carries operational weight. Self-hosting PostgreSQL on
+    the same instance simplifies the architecture and eliminates additional database
+    costs, but puts database administration on your team. You''ll handle vacuum operations,
+    index optimization, and backup verification yourself. RDS managed PostgreSQL removes
+    those responsibilities and adds automated backups with point-in-time recovery,
+    but introduces 2-4ms network latency between Odoo and the database that impacts
+    report generation and bulk import operations. If your team lacks a database specialist
+    and your Odoo instance handles under 100 concurrent users, RDS is the pragmatic
+    choice. Launch a db.t3.micro with 20GB storage and enable automated backups with
+    a 7-day retention window.
+
+
+    SSL termination through Let''s Encrypt provides free certificates with automated
+    renewal, but requires a reverse proxy. Install Nginx, create a server block that
+    proxies requests from port 443 to Odoo''s port 8069, and run Certbot to obtain
+    certificates for your domain. The critical configuration detail most guides omit:
+    set proxy_read_timeout to 600 seconds in your Nginx server block. Odoo''s module
+    installation and large report generation operations can take several minutes,
+    and Nginx''s default 60-second timeout kills these requests prematurely, generating
+    cryptic "bad gateway" errors.
+
+
+    AWS-specific optimizations start with EBS volume tuning. Enable EBS optimization
+    on your EC2 instance through the console, which dedicates network bandwidth to
+    storage traffic and prevents disk I/O from competing with Odoo''s HTTP traffic.
+    Attach an IAM role to the instance with CloudWatch agent permissions, install
+    the CloudWatch agent, and configure it to stream Odoo''s log files to CloudWatch
+    Logs.
+
+
+    The Reserved Instance decision happens after you validate the deployment. Run
+    on-demand pricing for the first month while you confirm the instance size handles
+    your actual workload and user count. Once you''ve settled on the right size, purchase
+    a one-year reserved instance through the EC2 console—you''ll pay the full year
+    upfront or choose monthly payments at a slight premium. The 36% savings compounds
+    monthly, totaling $133 annually for a t3.medium reservation.
+
+
+    The total monthly the cloud provider cost for a production Odoo 18 deployment
+    runs approximately $30-50. This includes compute, storage, and data transfer costs.
+
+    '
 conversion_assets:
 - component_type: callout-box
   placement_hint: mid_guide

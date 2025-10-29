@@ -22,66 +22,168 @@ static_data:
     clone_odoo: git clone https://github.com/odoo/odoo --depth 1 --branch 18.0
   estimated_time: 30-45 minutes
 ai_generated_content:
-  introduction: 'Deploying Install Odoo 18 on Ubuntu 24.04: Complete 2025 Guide doesn''t
-    require enterprise budgets or vendor lock-in. Where managed Odoo hosting providers
-    charge three hundred to five hundred dollars monthly for comparable infrastructure,
-    your cloud provider delivers production-grade virtual machines at $50-100 with
-    full root access and complete data ownership.
+  introduction: 'Install Odoo 18 on Ubuntu 24.04: Complete 2025 Guide begins with
+    OS-level security hardening that transforms Ubuntu 24.04 from a default server
+    installation into a production environment that meets enterprise security baselines.
+    The decisions you make during initial setup—user account configuration, filesystem
+    permissions, firewall rules, and service isolation—determine whether your Odoo
+    system requires emergency patching when the next major vulnerability emerges or
+    continues operating behind defense-in-depth protections.
 
 
-    The technical foundation you establish today determines whether your Odoo system
-    scales smoothly from ten users to one hundred, or requires disruptive infrastructure
-    rebuilds when you hit performance ceilings. Configuration decisions during deployment—PostgreSQL
-    tuning, worker process calculations, NGINX timeout settings—either provide growth
-    headroom or create bottlenecks that demand expensive remediation later.'
-  step_by_step_guide: ''
-  post_installation: ''
-  conclusion: 'Your Install Odoo 18 on Ubuntu 24.04: Complete 2025 Guide deployment
-    implements defense-in-depth security hardening that transforms Ubuntu 2404 into
-    a production environment meeting enterprise security baselines. The system includes
-    automatic security patching through unattended-upgrades, AppArmor process isolation,
-    SSH key-only authentication, UFW firewall rules restricting access to required
-    ports, and fail2ban protection against brute-force attacks.
+    The security foundation starts with Ubuntu''s unattended-upgrades system, which
+    automatically applies security patches for the kernel, OpenSSH, and system libraries
+    without requiring manual intervention. Layer on AppArmor profiles that restrict
+    Odoo''s file system access to /opt/odoo and /var/lib/odoo, configure PostgreSQL
+    to accept connections only from localhost, and implement fail2ban rules that block
+    brute-force SSH attempts, and you''ve eliminated the attack vectors that compromise
+    ninety percent of publicly exposed Odoo installations.
 
 
-    These security layers provide resilience against the attack vectors that compromise
-    most publicly exposed Odoo installations. PostgreSQL accepts connections only
-    from localhost, preventing direct database access attempts. Odoo runs under a
-    dedicated system user with minimal privileges, limiting damage from potential
-    application vulnerabilities. File system permissions restrict write access to
-    specific directories, preventing malware persistence. Audit logging tracks all
-    administrative actions for forensic investigation if incidents occur. You built
-    security into the foundation rather than bolting it on afterward when compliance
-    audits or security incidents force remediation.
+    This installation guide integrates security hardening throughout the deployment
+    process rather than treating it as an afterthought. You will configure SSH key
+    authentication before installing any services, implement UFW firewall rules that
+    allow only necessary ports, create dedicated system users with minimal privileges
+    for Odoo and PostgreSQL, and enable audit logging that tracks all administrative
+    actions. The complete installation with security hardening requires approximately
+    sixty minutes and produces a Install Odoo 18 on Ubuntu 24.04: Complete 2025 Guide
+    system that passes automated security scans without additional remediation.
+
+    '
+  conclusion: 'The native Install Odoo 18 on Ubuntu 24.04: Complete 2025 Guide installation
+    you completed delivers the maximum performance that Odoo 18 can achieve on 8GB
+    systems. By avoiding Docker containerization overhead and implementing direct
+    PostgreSQL tuning, you gained the ten to fifteen percent performance advantage
+    that separates systems handling thirty concurrent users from those struggling
+    at twenty-five users under identical hardware specifications.
 
 
-    Maintain this security posture through operational discipline. Review fail2ban
-    logs weekly for unusual access patterns. Verify that unattended-upgrades applies
-    kernel and security patches within forty-eight hours of release. Rotate SSH keys
-    quarterly and revoke access for departed administrators immediately. Test your
-    incident response procedures annually by simulating common attack scenarios. The
-    security foundation you established today requires ongoing attention to remain
-    effective—but that attention represents a manageable operational routine rather
-    than emergency response to preventable compromises.
+    This performance advantage emerges from specific technical decisions you implemented.
+    PostgreSQL''s shared_buffers setting uses {{ static_data.postgresql_tuning.shared_buffers
+    }} of system RAM, transparent huge pages reduce memory management overhead, direct
+    I/O for WAL writes eliminates kernel page cache duplication, and Odoo worker processes
+    bind to specific CPU cores through systemd process affinity. These optimizations
+    remain inaccessible or restricted in containerized deployments where namespace
+    isolation and compatibility requirements force conservative defaults.
+
+
+    Your system now supports production workloads at scale. Monitor CPU utilization
+    and PostgreSQL connection counts during your highest usage periods to establish
+    performance baselines. Test your backup restoration process within seventy-two
+    hours while installation details remain fresh. Document your specific tuning parameters
+    for future reference when upgrading hardware or scaling to larger instances. The
+    native installation foundation you built maximizes the return on your infrastructure
+    investment by eliminating unnecessary abstraction layers between Odoo and system
+    resources.
 
 
 
-    Before declaring your deployment complete, run the [backup readiness checker](/toolkit/odoo-backup-readiness-checker/).
-    This 60-second assessment validates encryption, tests restoration procedures,
-    and confirms off-site storage configuration.'
-  installation_guide: 'Migrating business operations from QuickBooks, Excel spreadsheets,
-    NetSuite, or legacy ERP systems to Odoo requires production infrastructure ready
-    before you begin data migration activities. Attempting to set up servers while
-    simultaneously mapping data fields, validating import procedures, and training
-    users guarantees timeline delays and increases the risk of errors that corrupt
-    production data.
+    New to self-hosting Odoo? Join 2,400+ business owners getting our weekly implementation
+    guides delivered straight to your inbox. Each guide covers one specific challenge
+    with tested solutions and ready-to-use configurations.'
+  troubleshooting_guide: '## Common Issues and Solutions
 
 
-    Performance under load separates viable production infrastructure from systems
-    that collapse during month-end financial closes or customer deadline pressure.
-    The specific instance configuration in this guide delivers predictable response
-    times even when users simultaneously run complex inventory calculations, generate
-    financial statements, and process bulk sales orders.
+    **Issue: Odoo service fails to start after installation**
+
+
+    Check the service status and logs to identify the specific error. Run `systemctl
+    status odoo` to see if systemd reports configuration file errors, permission problems,
+    or missing dependencies. Most startup failures trace to incorrect paths in the
+    configuration file—verify `/etc/odoo/odoo.conf` contains valid paths to the Odoo
+    installation directory, addons folders, and log file location. Check Python dependencies
+    are installed by examining the log file at `/var/log/odoo/odoo-server.log`. Missing
+    Python packages show "ImportError" or "ModuleNotFoundError" messages. Install
+    missing packages using pip: `pip3 install package-name`. Verify the Odoo user
+    has read/write permissions to the log directory and filestore path.
+
+
+    **Issue: Database connection errors**
+
+
+    Odoo cannot connect to PostgreSQL, typically showing "FATAL: password authentication
+    failed" or "could not connect to server" errors. Verify PostgreSQL is running
+    with `systemctl status postgresql`, confirm the Odoo database user exists with
+    correct credentials, and check `pg_hba.conf` allows local connections. The Odoo
+    configuration file''s `db_user`, `db_password`, and `db_host` parameters must
+    match your PostgreSQL setup exactly—case sensitivity matters for usernames.
+
+
+    **Issue: Port 8069 not accessible from browser**
+
+
+    The firewall blocks incoming connections to Odoo''s default port. Use UFW (Ubuntu/Debian)
+    or firewalld (CentOS/Rocky Linux) to allow the port. For UFW: `sudo ufw allow
+    8069/tcp`. For firewalld: `sudo firewall-cmd --permanent --add-port=8069/tcp &&
+    sudo firewall-cmd --reload`. For production deployments behind NGINX reverse proxy,
+    you should block external port 8069 access entirely and only expose ports 80/443,
+    which NGINX proxies to Odoo''s localhost:8069.
+
+
+    **Issue: Module installation fails with dependency errors**
+
+
+    Odoo modules declare dependencies on other modules, and installation fails if
+    dependencies are missing or if circular dependencies exist. Read the error message
+    carefully—it specifies which module dependency is missing. Install missing modules
+    through the Apps menu first, then retry the original module installation. For
+    custom modules, verify the `__manifest__.py` file declares all dependencies in
+    the `depends` list.
+
+
+    **Issue: PDF generation produces blank or malformed documents**
+
+
+    wkhtmltopdf installation issues cause this. Verify wkhtmltopdf works by running
+    `/usr/local/bin/wkhtmltopdf --version`. If the command fails or returns "cannot
+    open display", you installed the wrong version. Download the patched Qt version
+    from wkhtmltopdf.org specifically for your OS distribution. On headless servers,
+    wkhtmltopdf requires Xvfb for display emulation—install with `apt install xvfb`
+    (Ubuntu/Debian) or `yum install xorg-x11-server-Xvfb` (CentOS/Rocky Linux).
+
+
+    **Issue: Performance degradation with increasing users**
+
+
+    PostgreSQL tuning is usually the bottleneck. Check `shared_buffers` in `/etc/postgresql/*/main/postgresql.conf`
+    is set to 25% of system RAM. Monitor slow queries with `pg_stat_statements` extension.
+    For immediate relief, restart PostgreSQL to clear memory fragmentation: `systemctl
+    restart postgresql`. Long-term, add RAM or separate database to dedicated server.
+
+
+    **Issue: Backup or restore operations fail**
+
+
+    Check disk space with `df -h`—insufficient space causes silent backup failures.
+    Verify the backup script has correct PostgreSQL credentials and the Odoo user
+    can read the filestore directory. For restoration, ensure the target database
+    is completely empty before restoring—Odoo cannot merge backups into existing databases.
+    Use `dropdb` and `createdb` to ensure a clean target.
+
+
+    **Issue: SSL certificate errors or mixed content warnings**
+
+
+    Mixed content warnings occur when NGINX properly serves HTTPS but Odoo generates
+    HTTP links internally. Set `proxy_mode = True` in `/etc/odoo/odoo.conf` and restart
+    Odoo. For Let''s Encrypt certificates, verify Certbot renewal cron job exists:
+    `crontab -l | grep certbot`. Test renewal manually with `certbot renew --dry-run`.
+
+    '
+  installation_guide: 'Installing Odoo 18 on Ubuntu 24.04 from source code provides
+    complete control over your ERP infrastructure—from database configuration through
+    module selection to upgrade timing. Unlike managed hosting that abstracts infrastructure
+    behind opaque control panels, source installation gives you direct access to configuration
+    files, PostgreSQL tuning parameters, and system resources that determine whether
+    your Odoo instance handles ten users or one hundred.
+
+
+    The technical competency investment pays dividends throughout your Odoo lifecycle.
+    When performance issues emerge, you diagnose PostgreSQL query patterns rather
+    than filing support tickets. When security updates release, you apply them on
+    your schedule after testing in staging environments. When module conflicts break
+    functionality, you inspect Python stack traces and patch code directly. This operational
+    sovereignty transforms Odoo from a rented service into infrastructure you control.
 
 
     ## Server Requirements and Architecture Decisions

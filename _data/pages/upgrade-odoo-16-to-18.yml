@@ -139,20 +139,137 @@ static_data:
   - Clear browser cache for all users
   - Review and optimize slow queries (enable pg_stat_statements)
 ai_generated_content:
-  introduction: 'Digital sovereignty means controlling your business data and infrastructure
-    without dependency on vendors who restrict access, limit customization, or increase
-    prices arbitrarily because they hold your operational capability hostage. Upgrade
-    Odoo 16 to 18: Multi-Version Migration Guide 2025 on your cloud provider delivers
-    that sovereignty by giving you root-level access to virtual machines running your
-    complete Odoo stack.
+  introduction: 'Upgrade Odoo 16 to 18: Multi-Version Migration Guide 2025 requires
+    specific technical decisions at every layer—operating system selection, PostgreSQL
+    version and configuration, Python environment setup, NGINX reverse proxy implementation,
+    SSL certificate management, and systemd service orchestration. This guide makes
+    those decisions explicit, explaining the reasoning behind each configuration choice
+    and the production implications of alternatives you might encounter.
 
 
-    Odoo deployments fail most often from accumulated small configuration errors rather
-    than single catastrophic mistakes. Installing PostgreSQL without tuning shared_buffers
-    creates memory pressure. Configuring NGINX without extended timeouts causes request
-    failures. Running Odoo without proper systemd management means manual restarts
-    after updates. Each individual mistake seems minor until they compound into production
-    instability.'
+    This guide eliminates the guesswork that plagues most cloud deployments. You won''t
+    find vague recommendations to ''choose an appropriate instance size'' here. Every
+    configuration parameter includes the specific value, the technical rationale,
+    and the production failure mode it prevents.'
+  conclusion: 'The Upgrade Odoo 16 to 18: Multi-Version Migration Guide 2025 system
+    you deployed demonstrates that production-grade Odoo infrastructure doesn''t require
+    managed service providers or enterprise support contracts. You configured every
+    component yourself—from your cloud provider firewall rules through PostgreSQL
+    parameter tuning to Let''s Encrypt SSL automation—and gained operational knowledge
+    that survives vendor changes, price increases, and service discontinuations.
+
+
+    This hands-on deployment approach delivers advantages that extend beyond immediate
+    cost savings. You understand exactly how Odoo connects to PostgreSQL, how NGINX
+    handles SSL termination and request proxying, where log files accumulate, and
+    which processes consume memory under load. That knowledge eliminates the helpless
+    dependency on support tickets and vendor response times that paralyzes businesses
+    when production issues emerge during month-end financial closes or customer deadline
+    pressure.
+
+
+    Your infrastructure now supports the next growth phase. The recommended instance
+    type instance with 8GB RAM handles 10-25 users, and you know exactly how to upgrade
+    to larger instance types when user counts exceed current capacity. The automated
+    backup system protects against data loss. The monitoring foundation provides visibility
+    into system health. You built infrastructure that serves business needs for years,
+    not months—that durability and control define digital sovereignty.
+
+
+
+    PostgreSQL defaults leave performance on the table. Grab our [PostgreSQL tuning
+    script](/downloads/postgresql-performance-tuning/) to optimize shared_buffers,
+    work_mem, and connection pooling for your specific hardware profile and workload
+    patterns.'
+  troubleshooting_guide: '## Common Issues and Solutions
+
+
+    **Issue: Odoo service fails to start after installation**
+
+
+    Check the service status and logs to identify the specific error. Run `systemctl
+    status odoo` to see if systemd reports configuration file errors, permission problems,
+    or missing dependencies. Most startup failures trace to incorrect paths in the
+    configuration file—verify `/etc/odoo/odoo.conf` contains valid paths to the Odoo
+    installation directory, addons folders, and log file location. Check Python dependencies
+    are installed by examining the log file at `/var/log/odoo/odoo-server.log`. Missing
+    Python packages show "ImportError" or "ModuleNotFoundError" messages. Install
+    missing packages using pip: `pip3 install package-name`. Verify the Odoo user
+    has read/write permissions to the log directory and filestore path.
+
+
+    **Issue: Database connection errors**
+
+
+    Odoo cannot connect to PostgreSQL, typically showing "FATAL: password authentication
+    failed" or "could not connect to server" errors. Verify PostgreSQL is running
+    with `systemctl status postgresql`, confirm the Odoo database user exists with
+    correct credentials, and check `pg_hba.conf` allows local connections. The Odoo
+    configuration file''s `db_user`, `db_password`, and `db_host` parameters must
+    match your PostgreSQL setup exactly—case sensitivity matters for usernames.
+
+
+    **Issue: Port 8069 not accessible from browser**
+
+
+    The firewall blocks incoming connections to Odoo''s default port. Use UFW (Ubuntu/Debian)
+    or firewalld (CentOS/Rocky Linux) to allow the port. For UFW: `sudo ufw allow
+    8069/tcp`. For firewalld: `sudo firewall-cmd --permanent --add-port=8069/tcp &&
+    sudo firewall-cmd --reload`. For production deployments behind NGINX reverse proxy,
+    you should block external port 8069 access entirely and only expose ports 80/443,
+    which NGINX proxies to Odoo''s localhost:8069.
+
+
+    **Issue: Module installation fails with dependency errors**
+
+
+    Odoo modules declare dependencies on other modules, and installation fails if
+    dependencies are missing or if circular dependencies exist. Read the error message
+    carefully—it specifies which module dependency is missing. Install missing modules
+    through the Apps menu first, then retry the original module installation. For
+    custom modules, verify the `__manifest__.py` file declares all dependencies in
+    the `depends` list.
+
+
+    **Issue: PDF generation produces blank or malformed documents**
+
+
+    wkhtmltopdf installation issues cause this. Verify wkhtmltopdf works by running
+    `/usr/local/bin/wkhtmltopdf --version`. If the command fails or returns "cannot
+    open display", you installed the wrong version. Download the patched Qt version
+    from wkhtmltopdf.org specifically for your OS distribution. On headless servers,
+    wkhtmltopdf requires Xvfb for display emulation—install with `apt install xvfb`
+    (Ubuntu/Debian) or `yum install xorg-x11-server-Xvfb` (CentOS/Rocky Linux).
+
+
+    **Issue: Performance degradation with increasing users**
+
+
+    PostgreSQL tuning is usually the bottleneck. Check `shared_buffers` in `/etc/postgresql/*/main/postgresql.conf`
+    is set to 25% of system RAM. Monitor slow queries with `pg_stat_statements` extension.
+    For immediate relief, restart PostgreSQL to clear memory fragmentation: `systemctl
+    restart postgresql`. Long-term, add RAM or separate database to dedicated server.
+
+
+    **Issue: Backup or restore operations fail**
+
+
+    Check disk space with `df -h`—insufficient space causes silent backup failures.
+    Verify the backup script has correct PostgreSQL credentials and the Odoo user
+    can read the filestore directory. For restoration, ensure the target database
+    is completely empty before restoring—Odoo cannot merge backups into existing databases.
+    Use `dropdb` and `createdb` to ensure a clean target.
+
+
+    **Issue: SSL certificate errors or mixed content warnings**
+
+
+    Mixed content warnings occur when NGINX properly serves HTTPS but Odoo generates
+    HTTP links internally. Set `proxy_mode = True` in `/etc/odoo/odoo.conf` and restart
+    Odoo. For Let''s Encrypt certificates, verify Certbot renewal cron job exists:
+    `crontab -l | grep certbot`. Test renewal manually with `certbot renew --dry-run`.
+
+    '
   upgrade_guide: 'Upgrading Odoo from version 17 to 18.0 requires careful planning
     and staging environment testing before touching production systems. Odoo version
     upgrades involve database schema changes, module API modifications, and potential
@@ -330,37 +447,6 @@ ai_generated_content:
     causes production issues that damage business operations and user confidence.
 
     '
-  conclusion: 'You achieved practical digital sovereignty by deploying Upgrade Odoo
-    16 to 18: Multi-Version Migration Guide 2025 on infrastructure you control at
-    $50-100 monthly. This system eliminates dependency on managed Odoo hosting providers
-    who lock you into proprietary platforms, restrict customization freedom, and increase
-    prices arbitrarily because they control your data and operational access. You
-    own your Odoo instance, your PostgreSQL database, your backup strategy, and your
-    ability to migrate to different infrastructure providers if business requirements
-    or pricing changes.
-
-
-    The sovereignty advantage compounds over time. Your Odoo data exports to standard
-    PostgreSQL dump files that restore on any compatible infrastructure—your cloud
-    provider, competing cloud providers, or on-premises hardware. Your configuration
-    exists in documented scripts and files you can version control and replicate.
-    Your operational knowledge transfers across infrastructure platforms because you
-    understand the underlying components rather than provider-specific management
-    interfaces. This portability and knowledge ownership protect against vendor lock-in
-    and preserve your ability to optimize costs as your business evolves.
-
-
-    Maintain this sovereignty by documenting your deployment, testing your backups
-    quarterly, and staying current with security updates. The infrastructure you built
-    today serves business needs for years while remaining under your control—that
-    combination of longevity, ownership, and cost efficiency justifies the deployment
-    effort and establishes the operational foundation your business deserves.
-
-
-
-    Bookmark this guide, then [subscribe to our troubleshooting newsletter](/subscribe/)
-    for solutions to the 47 most common Odoo production issues. Get decision trees,
-    diagnostic commands, and tested fixes delivered monthly.'
 conversion_assets:
 - component_type: callout-box
   placement_hint: mid_guide
