@@ -111,7 +111,9 @@ static_data:
           output: "security_baseline_report.pdf"
         - task: "Identify compliance gaps"
           standard: "{{compliance_standard}}"
-          checklist: "{{LOAD:compliance/{{compliance_standard}}_checklist.yml}}"
+          checklist_reference: "compliance/{{compliance_standard}}_checklist"
+          # Note: Actual checklist should be provided during content assembly
+          # if compliance/{{compliance_standard}}_checklist.yml module exists
         - task: "Risk scoring and prioritization"
           methodology: "CVSS 3.1 + FAIR"
       verification: "Gap analysis complete, risks documented"
@@ -128,7 +130,9 @@ static_data:
             - "{{firewall_cmd}} --zone=public --add-port=443/tcp --permanent"
             - "{{firewall_cmd}} --reload"
         - task: "Enable intrusion detection"
-          configuration: "{{LOAD:security/ids_config.yml}}"
+          ids_tool: "{{ids_tool}}"  # Snort/Suricata/OSSEC
+          config_reference: "security/ids_config"
+          # Note: IDS configuration should be provided based on selected tool
         - task: "Set up VPN access (if remote)"
           vpn_type: "{{vpn_type}}"  # OpenVPN/WireGuard/IPSec
       verification: "nmap scan shows only required ports open"
@@ -201,7 +205,10 @@ static_data:
           backup_tool: "{{backup_tool}}"
           encryption_method: "GPG with {{key_length}}-bit key"
         - task: "Implement data retention policies"
-          retention_rules: "{{LOAD:compliance/data_retention_{{compliance_standard}}.yml}}"
+          compliance_standard: "{{compliance_standard}}"
+          retention_reference: "compliance/data_retention_{{compliance_standard}}"
+          # Note: Specific retention rules should be defined based on compliance standard
+          # (e.g., GDPR: 30 days for logs, SOX: 7 years for financial records)
       verification: "Verify encrypted data at rest and in backups"
 
     - phase: 7
