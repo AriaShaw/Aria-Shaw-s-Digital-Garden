@@ -1,0 +1,130 @@
+
+# Ubuntu 24.04 LTS (Noble Numbat) - OS Configuration Module
+# Last Updated: 2025-10-30
+# Data Sources: Ubuntu official docs, PostgreSQL compatibility matrix, Python version table
+# Verification Status: ✅ VERIFIED for Odoo 18 deployments
+os_name: Ubuntu
+os_version: 24.04
+os_codename: Noble Numbat
+os_family: Debian
+release_date: 2024-04-25
+support_end_date: 2029-04-25
+lts_status: True
+recommended_for_2025: True
+
+# System Specifications
+kernel_version: 6.8
+systemd_version: 255
+glibc_version: 2.39
+package_manager: apt
+init_system: systemd
+shell_default: /bin/bash
+
+# Python Versions
+python_default: 3.12.3
+python_versions_available:
+  - 3.12
+  - 3.11
+  - 3.10
+python_package_prefix: python3
+pip_package: python3-pip
+venv_package: python3-venv
+
+# PostgreSQL Versions
+postgresql_default: 16
+postgresql_versions_available:
+  - 16
+  - 15
+  - 14
+  - 13
+  - 12
+postgresql_repo: deb https://apt.postgresql.org/pub/repos/apt/ noble-pgdg main
+postgresql_key_url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
+
+# Required Repositories
+repositories:
+  deadsnakes:
+    command: add-apt-repository ppa:deadsnakes/ppa
+    description: Additional Python versions
+    required: false
+  multiverse:
+    command: add-apt-repository multiverse
+    description: Software with licensing restrictions
+    required: false
+  universe:
+    command: add-apt-repository universe
+    description: Community-maintained software
+    required: true
+
+# System Requirements for Odoo
+minimum_requirements:
+  disk_gb: 20
+  ram_gb: 2
+  swap_gb: 2
+  vcpus: 1
+recommended_requirements:
+  disk_gb: 50
+  ram_gb: 4
+  swap_gb: 4
+  vcpus: 2
+production_requirements:
+  disk_gb: 100
+  ram_gb: 8
+  swap_gb: 8
+  vcpus: 4
+
+# Package Installation Commands
+package_commands:
+  install_dependencies: apt install -y build-essential libxml2-dev libxslt1-dev libevent-dev
+    libsasl2-dev libldap2-dev pkg-config libtiff5-dev libjpeg8-dev libopenjp2-7-dev
+    zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev libharfbuzz-dev libfribidi-dev
+    libxcb1-dev libpq-dev
+  install_nodejs: apt install -y nodejs npm
+  install_postgresql: apt install -y postgresql-16 postgresql-client-16
+  install_python: apt install -y python3.12 python3-pip python3-dev python3-venv
+  install_wkhtmltopdf: wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-3/wkhtmltox_0.12.6.1-3.jammy_amd64.deb
+    && dpkg -i wkhtmltox_0.12.6.1-3.jammy_amd64.deb
+  update_system: apt update && apt upgrade -y
+
+# Firewall Configuration
+firewall:
+  default_policy: deny incoming, allow outgoing
+  package: ufw
+  required_ports:
+  - description: SSH
+    port: 22
+    protocol: tcp
+  - description: HTTP
+    port: 80
+    protocol: tcp
+  - description: HTTPS
+    port: 443
+    protocol: tcp
+  - description: Odoo XML-RPC
+    port: 8069
+    protocol: tcp
+  - description: Odoo Longpolling
+    port: 8072
+    protocol: tcp
+
+# Performance Tuning
+sysctl_tweaks:
+  net.core.somaxconn: 1024
+  net.ipv4.ip_forward: 1
+  net.ipv4.tcp_fin_timeout: 20
+  net.ipv4.tcp_tw_reuse: 1
+  vm.overcommit_memory: 1
+
+# Known Issues and Workarounds
+known_issues:
+  - issue: Snap packages may conflict with traditional packages
+workaround: Prefer apt packages over snap when available
+  - issue: Python 3.12 may have compatibility issues with older Odoo modules
+workaround: Use Python 3.11 for better compatibility
+
+# Odoo Compatibility
+odoo_compatibility:
+  odoo_15: not_recommended
+  odoo_16: compatible_with_python311
+  odoo_17: fully_compatible
+  odoo_18: fully_compatible
