@@ -34,55 +34,6 @@ static_data:
   # Legacy naming (for backward compatibility)
   problem_category: "{{problem_category}}"
 
-  diagnostic_steps:
-    - step: 1
-      title: "Check Error Logs"
-      commands:
-        - "sudo tail -n 100 /var/log/odoo/odoo-server.log"
-        - "sudo journalctl -u odoo -n 50"
-        - "grep ERROR /var/log/odoo/odoo-server.log | tail -20"
-
-    - step: 2
-      title: "Verify {{component}} Status"
-      commands:
-        - "sudo systemctl status odoo"
-        - "sudo -u postgres psql -c 'SELECT version();'"
-        - "python3 -c 'import {{module_name}}; print({{module_name}}.__version__)'"
-
-    - step: 3
-      title: "Test {{component}} Connection"
-      diagnostic_script: |
-        # Test database connection
-        sudo -u postgres psql -d odoo -c "\dt"
-        # Check Odoo configuration
-        grep -E "{{config_param}}" /etc/odoo/odoo.conf
-
-  common_solutions:
-    - error_pattern: "{{error_pattern_1}}"
-      solution: "{{solution_1}}"
-      commands:
-        - "{{fix_command_1}}"
-
-    - error_pattern: "{{error_pattern_2}}"
-      solution: "{{solution_2}}"
-      commands:
-        - "{{fix_command_2}}"
-
-  prevention_strategies:
-    - "Regular system updates: apt update && apt upgrade"
-    - "Monitor disk space: df -h"
-    - "Check log file sizes: du -sh /var/log/odoo/*"
-    - "Validate configuration: python3 odoo-bin --test-enable --stop-after-init"
-
-  debugging_tools:
-    - tool: "Odoo Shell"
-      command: "python3 odoo-bin shell -d DATABASE_NAME"
-      use_case: "Interactive debugging and database inspection"
-
-    - tool: "PostgreSQL Query Analysis"
-      command: "EXPLAIN ANALYZE SELECT ..."
-      use_case: "Performance bottleneck identification"
-
   estimated_resolution_time: "15-60 minutes"
   skill_level_required: "Intermediate to Advanced"
 

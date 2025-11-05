@@ -97,160 +97,6 @@
   </div>
   {% endif %}
 
-  <!-- Structured Steps (support ALL step field variants) -->
-  {% assign steps = data.static_data.deployment_steps | default: data.static_data.installation_steps | default: data.static_data.integration_steps | default: data.static_data.configuration_sections | default: data.static_data.configuration_workflows | default: data.static_data.migration_phases | default: data.static_data.development_workflow | default: data.static_data.optimization_workflow | default: data.static_data.optimization_areas | default: data.static_data.security_hardening | default: data.static_data.diagnostic_steps | default: data.static_data.practical_guide %}
-
-  {% if steps %}
-  <div class="deployment-steps">
-    <h2>
-      {% if data.static_data.installation_steps %}Installation Steps
-      {% elsif data.static_data.integration_steps %}Integration Steps
-      {% elsif data.static_data.configuration_sections or data.static_data.configuration_workflows %}Configuration Steps
-      {% elsif data.static_data.migration_phases %}Migration Phases
-      {% elsif data.static_data.development_workflow %}Development Workflow
-      {% elsif data.static_data.optimization_workflow or data.static_data.optimization_areas %}Optimization Steps
-      {% elsif data.static_data.security_hardening %}Security Hardening Steps
-      {% elsif data.static_data.diagnostic_steps %}Diagnostic Steps
-      {% else %}Implementation Steps
-      {% endif %}
-    </h2>
-
-    {% for step in steps %}
-    <div class="deployment-step" style="margin: 2rem 0; padding: 1.5rem; background: #f6f8fa; border-left: 4px solid #267CB9; border-radius: 4px;">
-      <!-- Handle different step structures -->
-      {% if step.step %}
-        <h3 style="margin-top: 0; color: #267CB9;">Step {{ step.step }}: {{ step.title | default: step.name }}</h3>
-      {% elsif step.phase %}
-        <h3 style="margin-top: 0; color: #267CB9;">Phase {{ step.phase }}: {{ step.name | default: step.title }}</h3>
-      {% elsif step.area %}
-        <h3 style="margin-top: 0; color: #267CB9;">{{ step.area }}</h3>
-      {% elsif step.category %}
-        <h3 style="margin-top: 0; color: #267CB9;">{{ step.category }}</h3>
-      {% elsif step.section %}
-        <h3 style="margin-top: 0; color: #267CB9;">{{ step.section }}</h3>
-      {% else %}
-        <h3 style="margin-top: 0; color: #267CB9;">{{ step.title | default: step.name }}</h3>
-      {% endif %}
-
-      <!-- Commands (support multiple field names) -->
-      {% assign commands = step.commands | default: step.tasks | default: step.actions %}
-      {% if commands %}
-      <div class="commands" style="margin: 1rem 0;">
-        <h4 style="font-size: 0.95rem; color: #586069; margin-bottom: 0.5rem;">
-          {% if step.tasks %}Tasks:{% else %}Commands:{% endif %}
-        </h4>
-        {% if commands.first %}
-          {% if step.tasks %}
-            <ul>
-            {% for cmd in commands %}
-              <li>{{ cmd }}</li>
-            {% endfor %}
-            </ul>
-          {% else %}
-            <div class="highlight">
-              <pre style="background: #ffffff; padding: 1rem; border-radius: 4px; overflow-x: auto; border: 1px solid #d1d5da;"><code>{% for cmd in commands %}{{ cmd }}
-{% endfor %}</code></pre>
-            </div>
-          {% endif %}
-        {% else %}
-          <div class="highlight">
-            <pre style="background: #ffffff; padding: 1rem; border-radius: 4px; overflow-x: auto; border: 1px solid #d1d5da;"><code>{{ commands }}</code></pre>
-          </div>
-        {% endif %}
-      </div>
-      {% endif %}
-
-      <!-- Configuration (support multiple field names) -->
-      {% assign config = step.config_snippet | default: step.configuration | default: step.implementation | default: step.config_file %}
-      {% if config and config != step.config_file %}
-      <div class="config" style="margin: 1rem 0;">
-        <h4 style="font-size: 0.95rem; color: #586069; margin-bottom: 0.5rem;">Configuration:</h4>
-        <div class="highlight">
-          <pre style="background: #ffffff; padding: 1rem; border-radius: 4px; overflow-x: auto; border: 1px solid #d1d5da;"><code>{{ config }}</code></pre>
-        </div>
-      </div>
-      {% endif %}
-
-      <!-- Service snippet -->
-      {% if step.service_snippet %}
-      <div class="service" style="margin: 1rem 0;">
-        <h4 style="font-size: 0.95rem; color: #586069; margin-bottom: 0.5rem;">Service File:</h4>
-        <div class="highlight">
-          <pre style="background: #ffffff; padding: 1rem; border-radius: 4px; overflow-x: auto; border: 1px solid #d1d5da;"><code>{{ step.service_snippet }}</code></pre>
-        </div>
-      </div>
-      {% endif %}
-
-      <!-- Handle nested techniques/measures/settings for new templates -->
-      {% if step.techniques %}
-        {% for technique in step.techniques %}
-        <div style="margin: 1rem 0; padding: 1rem; background: white; border: 1px solid #d1d5da; border-radius: 4px;">
-          <h4 style="margin-top: 0;">{{ technique.technique | default: technique.name }}</h4>
-          {% if technique.implementation %}
-            <div class="highlight">
-              <pre style="background: #f6f8fa; padding: 0.75rem; border-radius: 4px;"><code>{{ technique.implementation }}</code></pre>
-            </div>
-          {% endif %}
-          {% if technique.expected_improvement %}
-            <p style="margin: 0.5rem 0;"><strong>Expected Improvement:</strong> {{ technique.expected_improvement }}</p>
-          {% endif %}
-        </div>
-        {% endfor %}
-      {% endif %}
-
-      {% if step.measures %}
-        {% for measure in step.measures %}
-        <div style="margin: 1rem 0; padding: 1rem; background: white; border: 1px solid #d1d5da; border-radius: 4px;">
-          <h4 style="margin-top: 0;">{{ measure.measure | default: measure.name }}</h4>
-          {% if measure.commands %}
-            <div class="highlight">
-              <pre style="background: #f6f8fa; padding: 0.75rem; border-radius: 4px;"><code>{% for cmd in measure.commands %}{{ cmd }}
-{% endfor %}</code></pre>
-            </div>
-          {% endif %}
-          {% if measure.implementation %}
-            <div class="highlight">
-              <pre style="background: #f6f8fa; padding: 0.75rem; border-radius: 4px;"><code>{{ measure.implementation }}</code></pre>
-            </div>
-          {% endif %}
-        </div>
-        {% endfor %}
-      {% endif %}
-
-      {% if step.settings %}
-        {% for setting in step.settings %}
-        <div style="margin: 0.75rem 0; padding: 0.75rem; background: white; border-left: 3px solid #0969da;">
-          <strong>{{ setting.name }}:</strong>
-          {% if setting.recommended %}
-            <span style="color: #1a7f37;">{{ setting.recommended }}</span> (recommended)
-          {% elsif setting.value %}
-            {{ setting.value }}
-          {% else %}
-            {{ setting.default }} (default)
-          {% endif %}
-          {% if setting.description %}
-            <br><small style="color: #586069;">{{ setting.description }}</small>
-          {% endif %}
-        </div>
-        {% endfor %}
-      {% endif %}
-    </div>
-    {% endfor %}
-  </div>
-  {% endif %}
-
-  <!-- Prerequisites (new template field) -->
-  {% if data.static_data.prerequisites %}
-  <div class="prerequisites" style="background: #f0f9ff; border-left: 4px solid #0969da; padding: 1.5rem; margin: 2rem 0;">
-    <h3 style="margin-top: 0; color: #0969da;">Prerequisites</h3>
-    <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
-    {% for prereq in data.static_data.prerequisites %}
-      <li style="margin: 0.5rem 0;">{{ prereq }}</li>
-    {% endfor %}
-    </ul>
-  </div>
-  {% endif %}
-
   <!-- Visualizations: After Prerequisites (Phase 1 preparation charts) -->
   {% if data.visualizations %}
     {% for viz in data.visualizations %}
@@ -373,24 +219,6 @@
   {% endif %}
   {% endif %}
 
-  <!-- Common Solutions (new template field for troubleshooting) -->
-  {% if data.static_data.common_solutions %}
-  <div class="common-solutions" style="background: #fff5f5; border-left: 4px solid #d73a49; padding: 1.5rem; margin: 2rem 0;">
-    <h3 style="margin-top: 0; color: #d73a49;">Common Solutions</h3>
-    {% for solution in data.static_data.common_solutions %}
-    <div style="margin: 1.5rem 0; padding-bottom: 1rem; border-bottom: 1px solid #fcdcdb;">
-      <h4 style="color: #d73a49;">{{ solution.error_pattern | default: solution.scenario }}</h4>
-      <p><strong>Solution:</strong> {{ solution.solution }}</p>
-      {% if solution.commands %}
-        <div class="highlight">
-          <pre style="background: white; padding: 0.75rem; border: 1px solid #fcdcdb;"><code>{% for cmd in solution.commands %}{{ cmd }}
-{% endfor %}</code></pre>
-        </div>
-      {% endif %}
-    </div>
-    {% endfor %}
-  </div>
-  {% endif %}
 
   <!-- Common Mistakes / Troubleshooting -->
   {% if data.ai_generated_content.common_mistakes and data.ai_generated_content.common_mistakes != "" %}
@@ -400,49 +228,7 @@
   </div>
   {% endif %}
 
-  <!-- Common Pitfalls (from static_data) -->
-  {% assign pitfalls = data.static_data.common_pitfalls | default: data.static_data.common_issues | default: data.static_data.common_mistakes %}
-  {% if pitfalls %}
-  <div class="common-pitfalls" style="background: #fffbf0; border-left: 4px solid #f9826c; padding: 1.5rem; margin: 2rem 0;">
-    <h2 style="margin-top: 0; color: #c24e00;">
-      {% if data.static_data.common_issues %}Common Issues{% else %}Common Pitfalls{% endif %}
-    </h2>
-    {% for pitfall in pitfalls %}
-    <div class="pitfall-item" style="margin: 1.5rem 0; padding-bottom: 1rem; border-bottom: 1px solid #f4dcc9;">
-      <h4 style="color: #c24e00; margin-bottom: 0.5rem;">{{ pitfall.issue | default: pitfall.mistake }}</h4>
-      <p style="margin: 0.5rem 0;"><strong>Solution:</strong> {{ pitfall.solution | default: pitfall.consequence }}</p>
-    </div>
-    {% endfor %}
-  </div>
-  {% endif %}
 
-  <!-- Security Best Practices (support multiple field names) -->
-  {% assign security_practices = data.static_data.security_best_practices | default: data.static_data.best_practices %}
-  {% if security_practices %}
-  <div class="security-practices" style="background: #f0f9ff; border-left: 4px solid #0969da; padding: 1.5rem; margin: 2rem 0;">
-    <h2 style="margin-top: 0; color: #0969da;">
-      {% if data.static_data.security_best_practices %}Security Best Practices{% else %}Best Practices{% endif %}
-    </h2>
-    <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
-    {% for practice in security_practices %}
-      {% if practice.item %}
-        <li style="margin: 0.5rem 0;">
-          {{ practice.item }}
-          {% if practice.critical == true %}
-          <span style="color: #d73a49; font-weight: 600; margin-left: 0.5rem;">[Critical]</span>
-          {% endif %}
-        </li>
-      {% elsif practice.practice %}
-        <li style="margin: 0.5rem 0;">
-          <strong>{{ practice.practice }}:</strong> {{ practice.implementation | default: practice.description }}
-        </li>
-      {% else %}
-        <li style="margin: 0.5rem 0;">{{ practice }}</li>
-      {% endif %}
-    {% endfor %}
-    </ul>
-  </div>
-  {% endif %}
 
   <!-- Cost Estimate -->
   {% if data.static_data.cost_estimate %}
@@ -489,39 +275,6 @@
   </div>
   {% endif %}
 
-  <!-- Next Steps -->
-  {% if data.static_data.next_steps %}
-  <div class="next-steps" style="background: #dafbe1; border-left: 4px solid #1a7f37; padding: 1.5rem; margin: 2rem 0;">
-    <h2 style="margin-top: 0; color: #1a7f37;">Next Steps</h2>
-    <ol style="margin: 0.5rem 0; padding-left: 1.5rem;">
-    {% for step in data.static_data.next_steps %}
-      <li style="margin: 0.5rem 0;">{{ step }}</li>
-    {% endfor %}
-    </ol>
-  </div>
-  {% endif %}
-
-  <!-- Post-Installation Tasks (new template field) -->
-  {% if data.static_data.post_installation %}
-  <div class="post-installation" style="background: #dafbe1; border-left: 4px solid #1a7f37; padding: 1.5rem; margin: 2rem 0;">
-    <h2 style="margin-top: 0; color: #1a7f37;">Post-Installation Tasks</h2>
-    {% for task in data.static_data.post_installation %}
-    <div style="margin: 0.75rem 0;">
-      <strong>{{ task.task }}:</strong>
-      {% if task.priority == 'High' %}
-        <span style="color: #d73a49;">[{{ task.priority }}]</span>
-      {% elsif task.priority == 'Medium' %}
-        <span style="color: #f9826c;">[{{ task.priority }}]</span>
-      {% else %}
-        <span style="color: #586069;">[{{ task.priority }}]</span>
-      {% endif %}
-      {% if task.guide_link %}
-        <br><a href="/guides/{{ task.guide_link }}/" style="color: #0969da;">View Guide →</a>
-      {% endif %}
-    </div>
-    {% endfor %}
-  </div>
-  {% endif %}
 
   <!-- Visualizations: After Common Mistakes / Before Troubleshooting -->
   {% if data.visualizations %}
@@ -612,18 +365,6 @@
 
 {% endif %}
 
-<!-- FAQ Section (new template field) -->
-{% if data.static_data.faq %}
-<div class="faq-section" style="margin: 2rem 0;">
-  <h2>Frequently Asked Questions</h2>
-  {% for item in data.static_data.faq %}
-  <div style="margin: 1.5rem 0; padding: 1rem; background: #f6f8fa; border-radius: 6px;">
-    <h4 style="margin-top: 0; color: #0969da;">{{ item.question }}</h4>
-    <p style="margin: 0.5rem 0;">{{ item.answer }}</p>
-  </div>
-  {% endfor %}
-</div>
-{% endif %}
 
 <!-- Visualizations: Catch-all for any remaining placement hints (before conclusion) -->
 {% if data.visualizations %}

@@ -31,6 +31,7 @@ static_data:
   operating_system: "{{os}}"
   version: "{{odoo_version}}"
 
+  # System requirements table (data preserved for rendering)
   system_requirements:
     minimum:
       cpu: "{{minimum_cpu_cores}} cores"
@@ -43,90 +44,6 @@ static_data:
       ram: "{{recommended_ram_gb}}GB"
       disk: "{{recommended_disk_gb}}GB"
       os_version: "Latest LTS"
-
-  prerequisites:
-    - "Update system packages: sudo apt update && sudo apt upgrade -y"
-    - "Install build essentials: sudo apt install build-essential -y"
-    - "Install Python {{python_version}}: sudo apt install python{{python_version}} -y"
-    - "Install PostgreSQL {{postgresql_version}}: sudo apt install postgresql-{{postgresql_version}} -y"
-
-  installation_steps:
-    - step: 1
-      title: "Prepare System Environment"
-      commands:
-        - "sudo apt update"
-        - "sudo apt upgrade -y"
-        - "sudo apt install -y curl wget git"
-
-    - step: 2
-      title: "Add Odoo Repository"
-      commands:
-        - "wget -O - https://nightly.odoo.com/odoo.key | sudo apt-key add -"
-        - "echo 'deb http://nightly.odoo.com/{{odoo_version}}.0/nightly/deb/ ./' | sudo tee /etc/apt/sources.list.d/odoo.list"
-        - "sudo apt update"
-
-    - step: 3
-      title: "Install Odoo {{odoo_version}} Core"
-      commands:
-        - "sudo apt install -y odoo"
-        - "sudo systemctl enable {{service_name}}"
-        - "sudo systemctl start {{service_name}}"
-
-    - step: 4
-      title: "Configure Odoo {{odoo_version}}"
-      config_file: "/etc/odoo/odoo.conf"
-      configuration: |
-        # Basic configuration
-        port = {{default_port}}
-        data_dir = /var/lib/odoo
-        log_file = /var/log/odoo/odoo.log
-        workers = {{worker_count}}
-
-    - step: 5
-      title: "Create Database and User"
-      commands:
-        - "sudo -u postgres createuser -s {{db_user}}"
-        - "sudo -u postgres createdb {{db_name}} --owner={{db_user}}"
-
-    - step: 6
-      title: "Install Additional Modules"
-      commands:
-        - "sudo pip3 install {{required_python_packages}}"
-        - "sudo apt install -y {{additional_packages}}"
-
-    - step: 7
-      title: "Configure Firewall"
-      commands:
-        - "sudo ufw allow {{default_port}}/tcp"
-        - "sudo ufw allow 22/tcp"
-        - "sudo ufw enable"
-
-    - step: 8
-      title: "Verify Installation"
-      verification_commands:
-        - "odoo --version"
-        - "sudo systemctl status {{service_name}}"
-        - "curl http://localhost:{{default_port}}"
-
-  post_installation:
-    - task: "Set up SSL certificate"
-      priority: "High"
-      guide_link: "setup-ssl-odoo"
-
-    - task: "Configure automated backups"
-      priority: "High"
-      guide_link: "backup-odoo"
-
-    - task: "Set up monitoring"
-      priority: "Medium"
-      guide_link: "monitor-odoo"
-
-  common_issues:
-    - issue: "Service fails to start"
-      solution: "Check logs: sudo journalctl -u {{service_name}} -n 50"
-
-    - issue: "Permission denied errors"
-      solution: "Fix ownership: sudo chown -R {{user}}:{{group}} /var/lib/odoo"
 
   estimated_time: "30-45 minutes"
   difficulty_level: "Intermediate"
