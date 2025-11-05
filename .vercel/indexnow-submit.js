@@ -29,7 +29,9 @@ const parseXML = promisify(parseString);
 // Import Vercel KV (only available in Vercel environment)
 let kv = null;
 try {
-  kv = require('@vercel/kv');
+  // Correct import: destructure kv from @vercel/kv module
+  const vercelKV = require('@vercel/kv');
+  kv = vercelKV.kv;
 } catch (error) {
   console.warn('[WARN] @vercel/kv not available - using local file storage fallback');
 }
@@ -53,6 +55,7 @@ const CONFIG = {
 
   // Vercel environment detection
   IS_VERCEL: !!process.env.VERCEL,
+  IS_PRODUCTION: process.env.VERCEL_ENV === 'production',
 
   // Rate limiting
   MAX_URLS_PER_BATCH: 10000,
@@ -315,6 +318,15 @@ async function main() {
   console.log('IndexNow Auto-Submission for Vercel');
   console.log('='.repeat(80));
   console.log();
+
+  // Only run in production environment
+  if (CONFIG.IS_VERCEL && !CONFIG.IS_PRODUCTION) {
+    console.log('[SKIP] Not in production environment (VERCEL_ENV=' + (process.env.VERCEL_ENV || 'undefined') + ')');
+    console.log('[INFO] IndexNow submission is only enabled for production deployments');
+    console.log('[INFO] This prevents preview/development URLs from being indexed');
+    console.log('='.repeat(80));
+    return;
+  }
 
   try {
     // Step 1: Fetch current sitemap
