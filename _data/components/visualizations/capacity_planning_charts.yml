@@ -1,0 +1,532 @@
+# Capacity Planning Chart Variants
+# Semantic matching for capacity planning and hardware sizing visualizations
+# 10 variants covering different capacity planning scenarios
+
+variants:
+  - id: capacity_chart_001
+    semantic_tags:
+      - capacity_planning
+      - hardware_sizing
+      - single_server
+      - user_count_sizing
+    context_requirements:
+      must_have: []
+      optional: ["user_count", "concurrent_users", "ram_gb", "cpu_cores"]
+    chart_complexity: medium
+    environment_type: production
+    deployment_scenario: bare_metal
+    chart_template: |
+      flowchart LR
+          Start([User Count Analysis]) --> Count{Concurrent Users?}
+          Count -->|10-25 Users| Small[Small Configuration]
+          Count -->|25-50 Users| Medium[Medium Configuration]
+          Count -->|50-100 Users| Large[Large Configuration]
+          Count -->|100+ Users| Multi[Multi-Server Required]
+
+          Small --> Specs1["4 CPU Cores<br/>8GB RAM<br/>100GB SSD"]
+          Medium --> Specs2["8 CPU Cores<br/>16GB RAM<br/>250GB SSD<br/>1000 IOPS"]
+          Large --> Specs3["16 CPU Cores<br/>32GB RAM<br/>500GB SSD<br/>3000 IOPS"]
+          Multi --> Architecture[["See Multi-Server<br/>Architecture Guide"]]
+
+          Specs1 --> End([Infrastructure Ready])
+          Specs2 --> End
+          Specs3 --> End
+
+          classDef decision fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+          classDef small fill:#d1ecf1,stroke:#17a2b8,stroke-width:2px
+          classDef medium fill:#cfe2ff,stroke:#0d6efd,stroke-width:2px
+          classDef large fill:#d4edda,stroke:#28a745,stroke-width:2px
+          classDef warning fill:#f8d7da,stroke:#dc3545,stroke-width:2px
+          classDef success fill:#d4edda,stroke:#28a745,stroke-width:2px
+
+          class Count decision
+          class Small,Specs1 small
+          class Medium,Specs2 medium
+          class Large,Specs3 large
+          class Multi warning
+          class Start,End success
+
+  - id: capacity_chart_002
+    semantic_tags:
+      - capacity_planning
+      - multi_server
+      - architecture_tiers
+      - separated_tiers
+    context_requirements:
+      must_have: []
+      optional: ["server_count", "user_count", "architecture_type"]
+    chart_complexity: complex
+    environment_type: production
+    deployment_scenario: bare_metal
+    chart_template: |
+      flowchart TB
+          subgraph LB["Load Balancer Tier"]
+              HAProxy["HAProxy / Nginx<br/>2vCPU / 4GB RAM"]
+          end
+
+          subgraph AppTier["Application Server Tier"]
+              App1["Odoo App Server 1<br/>8 CPU / 16GB RAM"]
+              App2["Odoo App Server 2<br/>8 CPU / 16GB RAM"]
+              App3["Odoo App Server N<br/>8 CPU / 16GB RAM"]
+          end
+
+          subgraph DBTier["Database Tier"]
+              direction LR
+              Primary["PostgreSQL Primary<br/>16 CPU / 64GB RAM<br/>10000 IOPS SSD"]
+              Standby["PostgreSQL Standby<br/>16 CPU / 64GB RAM<br/>Streaming Replication"]
+          end
+
+          subgraph Storage["Shared Storage Tier"]
+              NFS["NFS / GlusterFS<br/>Filestore Storage<br/>5TB Capacity"]
+          end
+
+          HAProxy --> App1
+          HAProxy --> App2
+          HAProxy --> App3
+
+          App1 -.->|Read/Write| Primary
+          App2 -.->|Read/Write| Primary
+          App3 -.->|Read/Write| Primary
+
+          App1 -.->|File Access| NFS
+          App2 -.->|File Access| NFS
+          App3 -.->|File Access| NFS
+
+          Primary -.->|Replication| Standby
+
+          classDef lb fill:#ff9800,stroke:#f57c00,stroke-width:2px,color:#fff
+          classDef app fill:#2196f3,stroke:#1976d2,stroke-width:2px,color:#fff
+          classDef db fill:#4caf50,stroke:#388e3c,stroke-width:2px,color:#fff
+          classDef storage fill:#9c27b0,stroke:#7b1fa2,stroke-width:2px,color:#fff
+
+          class HAProxy lb
+          class App1,App2,App3 app
+          class Primary,Standby db
+          class NFS storage
+
+  - id: capacity_chart_003
+    semantic_tags:
+      - capacity_planning
+      - decision_tree
+      - architecture_selection
+      - sizing_guidance
+    context_requirements:
+      must_have: []
+      optional: ["user_count", "availability_requirement", "budget"]
+    chart_complexity: complex
+    environment_type: production
+    deployment_scenario: bare_metal
+    chart_template: |
+      flowchart TD
+          Start([Capacity Planning]) --> Users{How Many<br/>Concurrent Users?}
+
+          Users -->|1-50| Avail1{High Availability<br/>Required?}
+          Users -->|50-150| Tier2[Separated App/DB Tiers]
+          Users -->|150-500| MultiApp[Multi-App + Read Replicas]
+          Users -->|500+| Enterprise[Enterprise HA Cluster]
+
+          Avail1 -->|No| Single[Single Server<br/>4-16 CPU / 8-32GB RAM]
+          Avail1 -->|Yes| SmallHA[Active-Passive Setup<br/>2× Servers]
+
+          Tier2 --> Avail2{High Availability?}
+          Avail2 -->|No| Basic2["App: 8 CPU / 16GB<br/>DB: 16 CPU / 64GB"]
+          Avail2 -->|Yes| HA2["2× App Servers<br/>DB with Standby"]
+
+          MultiApp --> LoadBal[Load Balancer Required]
+          LoadBal --> AppScale["N× App Servers<br/>8 CPU / 16GB each"]
+          AppScale --> DBRep[DB Replication<br/>Primary + 2 Replicas]
+
+          Enterprise --> FullHA[Full HA Stack]
+          FullHA --> Geo{Geographic<br/>Distribution?}
+          Geo -->|No| Regional[Regional HA Cluster]
+          Geo -->|Yes| MultiRegion[Multi-Region Deployment]
+
+          Single --> End([Deploy])
+          SmallHA --> End
+          Basic2 --> End
+          HA2 --> End
+          DBRep --> End
+          Regional --> End
+          MultiRegion --> End
+
+          classDef decision fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+          classDef small fill:#d1ecf1,stroke:#17a2b8,stroke-width:2px
+          classDef medium fill:#cfe2ff,stroke:#0d6efd,stroke-width:2px
+          classDef large fill:#198754,stroke:#146c43,stroke-width:2px,color:#fff
+          classDef success fill:#d4edda,stroke:#28a745,stroke-width:2px
+
+          class Users,Avail1,Avail2,Geo decision
+          class Single,SmallHA small
+          class Tier2,Basic2,HA2 medium
+          class MultiApp,AppScale,Enterprise,FullHA large
+          class Start,End success
+
+  - id: capacity_chart_004
+    semantic_tags:
+      - capacity_planning
+      - performance_scaling
+      - resource_correlation
+      - capacity_metrics
+    context_requirements:
+      must_have: []
+      optional: ["current_users", "target_users", "performance_baseline"]
+    chart_complexity: medium
+    environment_type: production
+    deployment_scenario: bare_metal
+    chart_template: |
+      flowchart LR
+          Users[User Growth] --> CPU[CPU Scaling]
+          Users --> RAM[RAM Scaling]
+          Users --> IOPS[IOPS Scaling]
+          Users --> Network[Network Bandwidth]
+
+          CPU --> CPU25["25 Users:<br/>4 Cores @ 40%"]
+          CPU --> CPU50["50 Users:<br/>8 Cores @ 50%"]
+          CPU --> CPU100["100 Users:<br/>16 Cores @ 60%"]
+
+          RAM --> RAM25["25 Users:<br/>8GB<br/>~50% Utilization"]
+          RAM --> RAM50["50 Users:<br/>16GB<br/>~60% Utilization"]
+          RAM --> RAM100["100 Users:<br/>32GB<br/>~70% Utilization"]
+
+          IOPS --> IOPS25["25 Users:<br/>500 IOPS<br/>Peak: 1000"]
+          IOPS --> IOPS50["50 Users:<br/>1500 IOPS<br/>Peak: 3000"]
+          IOPS --> IOPS100["100 Users:<br/>3000 IOPS<br/>Peak: 6000"]
+
+          Network --> Net25["25 Users:<br/>10 Mbps avg"]
+          Network --> Net50["50 Users:<br/>25 Mbps avg"]
+          Network --> Net100["100 Users:<br/>50 Mbps avg"]
+
+          classDef metric fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+          classDef small fill:#d1ecf1,stroke:#17a2b8,stroke-width:1px
+          classDef medium fill:#cfe2ff,stroke:#0d6efd,stroke-width:1px
+          classDef large fill:#198754,stroke:#146c43,stroke-width:2px,color:#fff
+
+          class Users,CPU,RAM,IOPS,Network metric
+          class CPU25,RAM25,IOPS25,Net25 small
+          class CPU50,RAM50,IOPS50,Net50 medium
+          class CPU100,RAM100,IOPS100,Net100 large
+
+  - id: capacity_chart_005
+    semantic_tags:
+      - capacity_planning
+      - monitoring
+      - capacity_alerts
+      - threshold_management
+    context_requirements:
+      must_have: []
+      optional: ["monitoring_tool", "alert_configuration"]
+    chart_complexity: medium
+    environment_type: production
+    deployment_scenario: bare_metal
+    chart_template: |
+      flowchart TB
+          Monitor[Capacity Monitoring] --> CPU[CPU Utilization]
+          Monitor --> Memory[Memory Usage]
+          Monitor --> Disk[Disk I/O]
+          Monitor --> DB[Database Metrics]
+
+          CPU --> CPU70{">70%<br/>Average?"}
+          Memory --> Mem80{">80%<br/>Used?"}
+          Disk --> IOPS90{">90%<br/>IOPS Capacity?"}
+          DB --> Conn80{">80%<br/>Max Connections?"}
+
+          CPU70 -->|Yes| CPUWarn["[WARNING] Plan CPU Upgrade<br/>Add Cores or Servers"]
+          CPU70 -->|No| CPUOk["[OK] CPU Healthy"]
+
+          Mem80 -->|Yes| MemWarn["[WARNING] Plan RAM Upgrade<br/>Tune PostgreSQL Config"]
+          Mem80 -->|No| MemOk["[OK] Memory Healthy"]
+
+          IOPS90 -->|Yes| IOWarn["[CRITICAL] IOPS Limit<br/>Upgrade Storage Tier"]
+          IOPS90 -->|No| IOOk["[OK] I/O Healthy"]
+
+          Conn80 -->|Yes| DBWarn["[WARNING] Connection Pool Issue<br/>Add Connection Pooler"]
+          Conn80 -->|No| DBOk["[OK] Database Healthy"]
+
+          CPUWarn --> Review[Quarterly Capacity Review]
+          MemWarn --> Review
+          IOWarn --> Urgent[Emergency Upgrade Required]
+          DBWarn --> Review
+
+          CPUOk --> Continue[Monitor Trending]
+          MemOk --> Continue
+          IOOk --> Continue
+          DBOk --> Continue
+
+          classDef monitor fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+          classDef decision fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+          classDef warning fill:#f8d7da,stroke:#dc3545,stroke-width:2px,color:#000
+          classDef critical fill:#dc3545,stroke:#b02a37,stroke-width:3px,color:#fff
+          classDef ok fill:#d4edda,stroke:#28a745,stroke-width:2px
+
+          class Monitor,CPU,Memory,Disk,DB monitor
+          class CPU70,Mem80,IOPS90,Conn80 decision
+          class CPUWarn,MemWarn,DBWarn warning
+          class IOWarn,Urgent critical
+          class CPUOk,MemOk,IOOk,DBOk ok
+
+  - id: capacity_chart_006
+    semantic_tags:
+      - capacity_planning
+      - storage_growth
+      - data_retention
+      - capacity_projection
+    context_requirements:
+      must_have: []
+      optional: ["current_database_size", "growth_rate", "retention_policy"]
+    chart_complexity: simple
+    environment_type: production
+    deployment_scenario: bare_metal
+    chart_template: |
+      flowchart LR
+          Start([Storage Planning]) --> Current[Current Database Size]
+          Current --> Growth{Monthly<br/>Growth Rate?}
+
+          Growth -->|5GB/month| Plan1["12 months: +60GB<br/>24 months: +120GB<br/>Provision: 250GB"]
+          Growth -->|10GB/month| Plan2["12 months: +120GB<br/>24 months: +240GB<br/>Provision: 500GB"]
+          Growth -->|25GB/month| Plan3["12 months: +300GB<br/>24 months: +600GB<br/>Provision: 1TB"]
+
+          Plan1 --> Buffer1["Add 30% Buffer<br/>Total: 325GB"]
+          Plan2 --> Buffer2["Add 30% Buffer<br/>Total: 650GB"]
+          Plan3 --> Buffer3["Add 30% Buffer<br/>Total: 1.3TB"]
+
+          Buffer1 --> IOPS1["500 IOPS Baseline<br/>1000 IOPS Burst"]
+          Buffer2 --> IOPS2["1500 IOPS Baseline<br/>3000 IOPS Burst"]
+          Buffer3 --> IOPS3["3000 IOPS Baseline<br/>6000 IOPS Burst"]
+
+          IOPS1 --> End([Provision Storage])
+          IOPS2 --> End
+          IOPS3 --> End
+
+          classDef decision fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+          classDef small fill:#d1ecf1,stroke:#17a2b8,stroke-width:2px
+          classDef medium fill:#cfe2ff,stroke:#0d6efd,stroke-width:2px
+          classDef large fill:#198754,stroke:#146c43,stroke-width:2px,color:#fff
+          classDef success fill:#d4edda,stroke:#28a745,stroke-width:2px
+
+          class Growth decision
+          class Plan1,Buffer1,IOPS1 small
+          class Plan2,Buffer2,IOPS2 medium
+          class Plan3,Buffer3,IOPS3 large
+          class Start,End success
+
+  - id: capacity_chart_007
+    semantic_tags:
+      - capacity_planning
+      - high_availability
+      - active_active
+      - active_passive
+    context_requirements:
+      must_have: []
+      optional: ["availability_requirement", "rto", "rpo"]
+    chart_complexity: complex
+    environment_type: production
+    deployment_scenario: bare_metal
+    chart_template: |
+      flowchart TB
+          subgraph ActivePassive["Active-Passive HA Architecture"]
+              direction TB
+              LB1["Load Balancer<br/>VIP Failover"]
+
+              subgraph Primary1["Primary Site"]
+                  App1A["Active App Server<br/>8 CPU / 16GB"]
+                  DB1A["Active Database<br/>16 CPU / 64GB"]
+              end
+
+              subgraph Standby1["Standby Site"]
+                  App1B["Passive App Server<br/>8 CPU / 16GB"]
+                  DB1B["Standby Database<br/>Streaming Replication"]
+              end
+
+              LB1 --> App1A
+              LB1 -.->|Failover| App1B
+              App1A --> DB1A
+              DB1A -.->|Async Replication| DB1B
+          end
+
+          subgraph ActiveActive["Active-Active HA Architecture"]
+              direction TB
+              LB2["Global Load Balancer<br/>DNS / GeoDNS"]
+
+              subgraph Site1["Site 1"]
+                  AppG1["App Server Group 1<br/>N× Servers"]
+                  DBG1["Database Cluster 1<br/>Multi-Master"]
+              end
+
+              subgraph Site2["Site 2"]
+                  AppG2["App Server Group 2<br/>N× Servers"]
+                  DBG2["Database Cluster 2<br/>Multi-Master"]
+              end
+
+              LB2 --> AppG1
+              LB2 --> AppG2
+              AppG1 --> DBG1
+              AppG2 --> DBG2
+              DBG1 <-.->|Bidirectional<br/>Replication| DBG2
+          end
+
+          classDef lb fill:#ff9800,stroke:#f57c00,stroke-width:2px,color:#fff
+          classDef active fill:#4caf50,stroke:#388e3c,stroke-width:2px,color:#fff
+          classDef passive fill:#9e9e9e,stroke:#616161,stroke-width:2px,color:#fff
+          classDef cluster fill:#2196f3,stroke:#1976d2,stroke-width:2px,color:#fff
+
+          class LB1,LB2 lb
+          class App1A,DB1A,AppG1,DBG1,AppG2,DBG2 active
+          class App1B,DB1B passive
+
+  - id: capacity_chart_008
+    semantic_tags:
+      - capacity_planning
+      - cost_analysis
+      - tco_comparison
+      - budget_optimization
+    context_requirements:
+      must_have: []
+      optional: ["budget", "deployment_duration", "cloud_provider"]
+    chart_complexity: simple
+    environment_type: production
+    deployment_scenario: cloud
+    chart_template: |
+      flowchart LR
+          Start([TCO Analysis]) --> Scenario{Deployment<br/>Type?}
+
+          Scenario -->|On-Premise| OnPrem[On-Premise Hardware]
+          Scenario -->|Cloud IaaS| Cloud[Cloud Infrastructure]
+          Scenario -->|Managed| Managed[Managed Hosting]
+
+          OnPrem --> OnPremCost["Upfront: $8,000<br/>Monthly: $200<br/>3-Year: $15,200"]
+          Cloud --> CloudCost["Upfront: $0<br/>Monthly: $600<br/>3-Year: $21,600"]
+          Managed --> ManagedCost["Upfront: $0<br/>Monthly: $1,200<br/>3-Year: $43,200"]
+
+          OnPremCost --> OnPremPros["Pros: Lower 3-year TCO<br/>Full control<br/>Data sovereignty"]
+          CloudCost --> CloudPros["Pros: No upfront cost<br/>Flexible scaling<br/>Global regions"]
+          ManagedCost --> ManagedPros["Pros: Zero ops overhead<br/>SLA guarantees<br/>Expert support"]
+
+          OnPremPros --> OnPremCons["Cons: High upfront cost<br/>Hardware refresh<br/>Ops expertise needed"]
+          CloudPros --> CloudCons["Cons: Higher monthly cost<br/>Vendor dependency<br/>Network latency"]
+          ManagedPros --> ManagedCons["Cons: Highest total cost<br/>Limited customization<br/>Vendor lock-in"]
+
+          OnPremCons --> Decision{Best Fit?}
+          CloudCons --> Decision
+          ManagedCons --> Decision
+
+          Decision -->|Cost Sensitive<br/>Long-term| SelectOnPrem[Choose On-Premise]
+          Decision -->|Growth Uncertain<br/>Global Needs| SelectCloud[Choose Cloud]
+          Decision -->|Minimal IT Staff<br/>SLA Critical| SelectManaged[Choose Managed]
+
+          classDef scenario fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+          classDef cost fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+          classDef pros fill:#d4edda,stroke:#28a745,stroke-width:1px
+          classDef cons fill:#f8d7da,stroke:#dc3545,stroke-width:1px
+          classDef decision fill:#9c27b0,stroke:#7b1fa2,stroke-width:2px,color:#fff
+
+          class Scenario,Decision scenario
+          class OnPremCost,CloudCost,ManagedCost cost
+          class OnPremPros,CloudPros,ManagedPros pros
+          class OnPremCons,CloudCons,ManagedCons cons
+          class SelectOnPrem,SelectCloud,SelectManaged decision
+
+  - id: capacity_chart_009
+    semantic_tags:
+      - capacity_planning
+      - resource_allocation
+      - postgresql_tuning
+      - worker_configuration
+    context_requirements:
+      must_have: []
+      optional: ["ram_gb", "cpu_cores", "workload_type"]
+    chart_complexity: medium
+    environment_type: production
+    deployment_scenario: bare_metal
+    chart_template: |
+      flowchart TB
+          RAM[Total Server RAM] --> PG[PostgreSQL Allocation]
+          RAM --> Odoo[Odoo Workers Allocation]
+          RAM --> OS[OS + Overhead]
+
+          PG --> SharedBuffers["shared_buffers:<br/>25% of RAM<br/>(e.g., 16GB RAM = 4GB)"]
+          PG --> EffectiveCache["effective_cache_size:<br/>75% of RAM<br/>(e.g., 16GB RAM = 12GB)"]
+          PG --> WorkMem["work_mem:<br/>RAM / (connections × 2)<br/>(e.g., 16GB / 200 = 80MB)"]
+
+          Odoo --> WorkerCount["Worker Count:<br/>(CPU Cores × 2) + 1<br/>(e.g., 8 cores = 17 workers)"]
+          Odoo --> WorkerMem["Worker Memory:<br/>~500MB per worker<br/>(17 workers = 8.5GB)"]
+          Odoo --> LimitMemHard["limit_memory_hard:<br/>2GB per worker"]
+
+          OS --> OSMem["OS Base: 2GB<br/>Cache: Remaining RAM<br/>Buffer: 10-20%"]
+
+          SharedBuffers --> Validation{Validate<br/>Total}
+          EffectiveCache --> Validation
+          WorkMem --> Validation
+          WorkerMem --> Validation
+          OSMem --> Validation
+
+          Validation -->|Total ≤ RAM| Optimal["[SUCCESS] Optimal Configuration"]
+          Validation -->|Total > RAM| Reduce["[WARNING] Reduce Workers or<br/>Decrease work_mem"]
+
+          classDef resource fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+          classDef pg fill:#4caf50,stroke:#388e3c,stroke-width:2px,color:#fff
+          classDef odoo fill:#2196f3,stroke:#1976d2,stroke-width:2px,color:#fff
+          classDef os fill:#9e9e9e,stroke:#616161,stroke-width:2px,color:#fff
+          classDef decision fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+          classDef ok fill:#d4edda,stroke:#28a745,stroke-width:2px
+          classDef warning fill:#f8d7da,stroke:#dc3545,stroke-width:2px
+
+          class RAM resource
+          class PG,SharedBuffers,EffectiveCache,WorkMem pg
+          class Odoo,WorkerCount,WorkerMem,LimitMemHard odoo
+          class OS,OSMem os
+          class Validation decision
+          class Optimal ok
+          class Reduce warning
+
+  - id: capacity_chart_010
+    semantic_tags:
+      - capacity_planning
+      - scaling_roadmap
+      - growth_planning
+      - capacity_timeline
+    context_requirements:
+      must_have: []
+      optional: ["current_users", "growth_rate", "planning_horizon"]
+    chart_complexity: medium
+    environment_type: production
+    deployment_scenario: bare_metal
+    chart_template: |
+      flowchart LR
+          Today([Current: 25 Users<br/>Single Server]) --> Q1{Quarter 1<br/>Growth Check}
+
+          Q1 -->|<40 Users| Q1Monitor["Monitor Performance<br/>No Action Required"]
+          Q1 -->|40-60 Users| Q1Tune["Optimize PostgreSQL<br/>Add Monitoring"]
+          Q1 -->|>60 Users| Q1Urgent["[URGENT] Plan Separated Tiers"]
+
+          Q1Monitor --> Q2{Quarter 2<br/>60 Users Projected}
+          Q1Tune --> Q2
+
+          Q2 -->|Approach 75 Users| Tier2Plan["Plan Separated Tiers<br/>Budget Approval<br/>Architecture Design"]
+          Q2 -->|<60 Users| Q2Monitor["Continue Monitoring"]
+
+          Tier2Plan --> Q3{Quarter 3<br/>90 Users Projected}
+          Q2Monitor --> Q3
+
+          Q3 --> Migrate["Execute Migration<br/>App: 8 CPU / 16GB<br/>DB: 16 CPU / 64GB"]
+
+          Migrate --> Q4{Quarter 4<br/>120 Users}
+
+          Q4 --> NextPhase["Plan Next Growth Phase:<br/>150+ Users = Load Balancer<br/>200+ Users = Multi-App Servers<br/>300+ Users = DB Replication"]
+
+          NextPhase --> Year2([Year 2 Planning<br/>500 Users Target])
+
+          classDef current fill:#d4edda,stroke:#28a745,stroke-width:2px
+          classDef decision fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+          classDef monitor fill:#e3f2fd,stroke:#1976d2,stroke-width:1px
+          classDef action fill:#cfe2ff,stroke:#0d6efd,stroke-width:2px
+          classDef urgent fill:#f8d7da,stroke:#dc3545,stroke-width:2px
+          classDef migrate fill:#9c27b0,stroke:#7b1fa2,stroke-width:2px,color:#fff
+          classDef future fill:#f8f9fa,stroke:#6c757d,stroke-width:2px
+
+          class Today,Year2 current
+          class Q1,Q2,Q3,Q4 decision
+          class Q1Monitor,Q2Monitor monitor
+          class Q1Tune,Tier2Plan action
+          class Q1Urgent urgent
+          class Migrate migrate
+          class NextPhase future

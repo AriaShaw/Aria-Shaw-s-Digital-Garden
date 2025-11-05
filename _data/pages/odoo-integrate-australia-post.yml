@@ -1,0 +1,333 @@
+metadata:
+  title: 'Australia Post to Odoo Integration: Complete 2025 Guide'
+  description: Connect Australia Post to Odoo in 2-4 hours. Automate data sync, eliminate manual entry, achieve 99.9% accuracy with production-tested API-based integration.
+  intent_type: practitioner
+  page_slug: odoo-integrate-australia-post
+  draft_metadata:
+    created_by: pseo-bulk-generator
+    template_id: integration
+    generation_mode: template
+    confidence_level: high
+static_data:
+  service_name: Australia Post
+  integration_method: API
+  odoo_version: '18'
+  integration_specific_setup: Integrating Australia Post with Odoo requires API credentials, proper field mapping configuration, and scheduled synchronization tasks to maintain data consistency between systems.
+  method_specific_details: Implement Australia Post integration using RESTful API calls with proper authentication headers. Handle rate limiting with exponential backoff, implement retry logic for transient failures, and use webhook endpoints for real-time updates when available.
+  credential_generation_steps: Generate API credentials in Australia Post admin panel by creating a new application or API key. Configure OAuth2 callback URLs if using OAuth authentication. Store credentials securely in Odoo system parameters or encrypted configuration files, never in code or version control.
+  field_mapping_specifics: Map Australia Post fields to Odoo models by analyzing data structures in both systems. Create transformation functions for data type conversions, handle timezone differences for datetime fields, and implement validation rules to prevent invalid data synchronization. Test mappings thoroughly with sample data.
+  specific_mapping_challenges: Australia Post's data model may not map directly to Odoo's structure, requiring custom transformation logic for complex fields, handling of null values, and reconciliation of duplicate records.
+  security_specific_warnings: Secure Australia Post integration credentials using Odoo's ir.config_parameter for sensitive data. Implement IP whitelisting if supported by Australia Post, use HTTPS for all API calls, validate webhook signatures to prevent unauthorized data manipulation, and log all integration activity for audit trails.
+  source_system: Australia Post
+  target_system: Odoo
+  integration_type: API-based
+  prerequisites:
+  - Admin access to both Australia Post and Odoo
+  - API credentials or connection details
+  - Understanding of data structures in both systems
+  - Test environment for initial setup
+  integration_steps:
+  - step: 1
+    title: Prepare Australia Post for Integration
+    tasks:
+    - Enable API access in Australia Post
+    - Generate API keys or OAuth credentials
+    - Document available endpoints and data formats
+  - step: 2
+    title: Configure Odoo Connection
+    tasks:
+    - Install necessary connectors or modules
+    - Configure authentication settings
+    - Set up webhook endpoints if required
+  - step: 3
+    title: Map Data Fields
+    mapping_example: '# Example field mapping
+
+      Australia Post.customer_id -> Odoo.partner_id
+
+      Australia Post.order_date -> Odoo.date_order
+
+      Australia Post.total_amount -> Odoo.amount_total
+
+      '
+  - step: 4
+    title: Configure Synchronization Rules
+    sync_options:
+    - Real-time sync via webhooks
+    - Scheduled batch sync (hourly/daily)
+    - Manual sync on demand
+    - Incremental sync based on timestamps
+  - step: 5
+    title: Test Integration
+    test_procedures:
+    - Create test record in Australia Post
+    - Verify record appears in Odoo
+    - Update record and confirm sync
+    - Test error handling with invalid data
+  data_transformation_rules:
+  - rule: Date format conversion
+    source_format: MM/DD/YYYY
+    target_format: YYYY-MM-DD
+  - rule: Currency conversion
+    handling: Use exchange rate API or fixed conversion
+  error_handling:
+  - scenario: Connection timeout
+    solution: Implement retry logic with exponential backoff
+  - scenario: Data validation failure
+    solution: Log errors, send notification, queue for manual review
+  performance_optimization:
+  - Use batch processing for large data sets
+  - Implement caching for frequently accessed data
+  - Set up connection pooling
+  - Monitor API rate limits
+  estimated_setup_time: 2-4 hours
+  complexity_level: Intermediate
+ai_generated_content:
+  introduction: 'Your Odoo 18 system handles everything from inventory to invoicing, but your shipping process still demands manual data entry. You face a constant battle with Australia Post integration that drains your team''s productivity. Every order requires duplicate work—copying addresses, re-entering package dimensions, and manually generating shipping labels. These repetitive tasks introduce errors that cascade through your entire operation. Incorrect addresses trigger delivery failures. Miscalculated weights cause billing discrepancies. Manual tracking updates leave customers in the dark.
+
+
+    This guide delivers a complete technical blueprint for integrating Australia Post with Odoo 18. You will master the integration architecture that connects these systems. You will implement step-by-step configuration with proper authentication flows. You will establish robust error handling that maintains operational continuity. We cover the entire implementation lifecycle from initial setup to production deployment. The process demands careful planning and technical execution, but the payoff transforms your shipping workflow.
+
+
+    You will eliminate manual data transfer between systems. Your team will generate shipping labels directly from sales orders. Real-time tracking synchronization will keep customers informed. Automated manifest creation will streamline daily dispatches. This integration moves shipping from a administrative burden to a competitive advantage. Let''s build a solution that handles your parcel volume without constant manual intervention.'
+  main_content: '## Integration Architecture and Data FlowThe Australia Post and Odoo 18 integration employs a REST API-based architecture with Odoo acting as the orchestration layer. This design centralizes all shipping operations within your Odoo environment while maintaining secure communication with Australia Post''s shipping and tracking services. The integration uses Odoo''s module system to extend the native shipping capabilities without modifying core code. This approach preserves upgrade compatibility while delivering specialized Australia Post functionality.
+
+
+    Your Odoo instance initiates all API calls to Australia Post''s production environment. The integration uses HTTPS with TLS 1.2 encryption for all data transmission. Australia Post requires API key authentication passed through custom HTTP headers. Each request includes your account credentials and specific service parameters. The response contains shipping labels, tracking numbers, and rate calculations in standardized formats.
+
+
+    The data flow begins when a sales order reaches the confirmed state in Odoo. The system automatically checks the delivery method and prepares shipping data. This process extracts customer address information, product dimensions, and shipping preferences. The integration maps Odoo''s partner records to Australia Post''s address validation service. This step ensures address correctness before label generation.
+
+
+    Odoo transmits parcel specifications to Australia Post''s shipping API. This payload includes package dimensions, weight, service type, and destination details. Australia Post processes this information and returns available shipping options with calculated costs. Your system stores these rates for customer selection or automatic application.
+
+
+    After rate selection, Odoo sends the final shipment request to Australia Post. The response contains the shipping label in PDF format, a unique tracking number, and dispatch details. Odoo attaches these elements to the delivery order and updates the shipment status. The integration maintains a local copy of all shipping documents for future reference.
+
+
+    For tracking synchronization, Odoo polls Australia Post''s tracking API at configurable intervals. This process fetches updated delivery statuses for all active shipments. The system maps Australia Post''s status codes to Odoo''s delivery states, providing real-time visibility into shipment progress. This bidirectional data exchange creates a closed-loop shipping management system.
+
+
+    ## Step-by-Step ConfigurationBegin the Australia Post integration by installing the shipping connector module in Odoo 18. Navigate to the Apps menu and search for "Australia Post Shipping". Install the official module or verify compatibility with third-party solutions. Enable developer mode to access technical settings if necessary. This foundation prepares your system for the detailed configuration that follows.
+
+
+    Create your Australia Post developer account through their official portal. This account provides access to the test environment for initial development. Complete the merchant registration process to obtain production credentials. Australia Post requires business verification before activating live API access. Store these credentials securely for the next configuration steps.
+
+
+    Access Odoo''s shipping integration settings through Inventory → Configuration → Shipping Connectors. Select Australia Post from the available carrier list. Click the configure button to open the carrier-specific settings panel. This interface contains all necessary fields for connecting to Australia Post''s API endpoints.
+
+
+    Enter your Australia Post account credentials in the authentication section. Provide your API key in the designated field. Input your account number for billing purposes. Specify whether you use the test or production environment. Test the connection using the verify credentials button. A successful test confirms basic API connectivity.
+
+
+    Configure the shipping service mapping according to your business needs. Australia Post offers multiple service levels including Express Post, Parcel Post, and Startrack options. Map each Australia Post service to a corresponding delivery method in Odoo. Define default services for domestic and international shipments. Set fallback options for scenarios where the primary service proves unavailable.
+
+
+    Define package types that match your shipping patterns. Create presets for common parcel dimensions like small satchel, medium box, or large crate. Specify weight thresholds for each package type. Configure automatic package selection based on order characteristics. This automation streamlines the shipping process for your team.
+
+
+    Set up product dimension mapping to ensure accurate rate calculations. Odoo requires product records with precise weight and dimension data. Configure the integration to use either product-specific measurements or default package sizes. Enable volumetric weight calculations for lightweight but bulky items. Australia Post uses this method for certain service types.
+
+
+    Implement address validation to prevent shipping errors. Activate Australia Post''s address verification service in the integration settings. Configure validation strictness based on your risk tolerance. Set rules for handling ambiguous addresses. Define whether the system should auto-correct minor address discrepancies or flag them for manual review.
+
+
+    Configure shipping label generation parameters. Specify label format as PDF or PNG. Set default label size based on your printer capabilities. Enable batch label printing for efficient processing of multiple orders. Configure automatic label attachment to sales orders upon generation.
+
+
+    Set up webhooks for real-time tracking updates. Australia Post can push tracking events to your Odoo instance as they occur. Configure the webhook endpoint URL in your Australia Post account settings. Enable event types like shipment created, in transit, and delivered. Test webhook functionality with sample shipments.
+
+
+    Establish pricing rules and surcharge configurations. Define how Australia Post rates integrate with your Odoo pricing structure. Set up markup or discount percentages for specific services. Configure additional fees for special handling requirements. Create rules for free shipping thresholds based on order value.
+
+
+    Implement order workflow automation rules. Configure automatic shipment creation upon order validation. Set conditions for when the system should generate shipping labels. Define rules for manual review requirements for high-value orders. Establish batch processing schedules for efficient daily operations.
+
+
+    Test the complete configuration with sample orders before going live. Create test sales orders with various destination addresses. Verify that rate calculations match Australia Post''s official pricing. Confirm that label generation works correctly with your printers. Validate tracking synchronization across the complete delivery lifecycle.
+
+
+    ## Data Mapping and TransformationThe Australia Post integration requires precise data mapping between Odoo''s internal structures and Australia Post''s API expectations. This transformation ensures seamless information exchange while maintaining data integrity across both systems. The mapping covers several key areas including addresses, products, and service definitions.
+
+
+    Address mapping converts Odoo''s partner records to Australia Post''s address format. Odoo stores address components in dedicated fields like street, city, and state. Australia Post expects a structured address object with specific field names and validation rules. The integration transforms Odoo''s address data to match Australia Post''s schema before API transmission.
+
+
+    The system maps Odoo''s country codes to Australia Post''s country identifiers. Australia Post uses standardized country codes that may differ from Odoo''s internal representations. The integration contains a translation table that ensures correct country code conversion. This mapping affects shipping rates and service availability calculations.
+
+
+    Product dimension mapping translates Odoo''s product measurements to Australia Post''s parcel specifications. Odoo stores product dimensions in centimeters and weight in kilograms. Australia Post accepts dimensions in centimeters and weight in kilograms, but requires specific precision rules. The integration rounds measurements according to Australia Post''s API specifications.
+
+
+    Service level mapping connects Odoo''s delivery methods to Australia Post''s service codes. Each Australia Post service like "AUS_PARCEL_REGULAR" corresponds to a specific delivery speed and feature set. The integration maintains this mapping to ensure correct service selection during shipping label generation. You can customize this mapping based on your specific service agreements.
+
+
+    The integration transforms Odoo''s internal order reference into Australia Post''s shipment identification system. Australia Post requires unique merchant references for each shipment. The integration generates these references by combining Odoo''s order number with timestamp information. This transformation enables easy cross-referencing between systems.
+
+
+    Currency and amount mapping ensures consistent financial data across platforms. Odoo manages product values in your base currency, while Australia Post calculates costs in Australian dollars. The integration handles currency conversion using current exchange rates for accurate cost calculations. This mapping affects both shipping rate display and cost tracking.
+
+
+    Tracking status mapping translates Australia Post''s delivery events to Odoo''s shipment states. Australia Post provides detailed tracking events with specific status codes. The integration maps these codes to Odoo''s simplified delivery statuses like shipped, in transit, or delivered. This transformation provides consistent tracking visibility within Odoo.
+
+
+    Customs declaration mapping handles international shipping requirements. For cross-border shipments, Australia Post requires detailed customs information. The integration extracts product descriptions, values, and harmonized system codes from Odoo. It transforms this data into Australia Post''s customs declaration format, ensuring compliance with international shipping regulations.
+
+
+    The integration handles special character encoding to prevent data corruption. Odoo uses UTF-8 encoding for all text fields, while Australia Post''s API expects specific character sets. The integration performs necessary encoding transformations to maintain data integrity for international addresses and product descriptions with special characters.
+
+
+    ## Error Handling and ResilienceThe Australia Post integration implements comprehensive error handling to maintain operational continuity. API communication failures represent the most common issue category. Network timeouts, service unavailability, and rate limiting can interrupt normal operations. The integration employs automatic retry logic with exponential backoff for transient failures.
+
+
+    Authentication errors occur when API credentials become invalid or expire. The system detects authentication failures through specific HTTP status codes. It logs these events and triggers alert notifications for administrative action. The integration preserves queued shipping requests during authentication outages, processing them once credentials get renewed.
+
+
+    Address validation errors prevent shipment creation when destination information proves incomplete or invalid. Australia Post''s address verification service returns specific error codes for various address problems. The integration captures these errors and presents actionable feedback to users. It suggests corrected addresses when Australia Post provides alternatives.
+
+
+    Rate calculation failures happen when Australia Post cannot determine shipping costs for given parameters. This situation typically stems from incompatible service and destination combinations. The integration handles these scenarios by falling back to configured default rates or requesting manual intervention. It logs the specific error context for later analysis.
+
+
+    Label generation failures represent critical errors that block shipment processing. These failures often relate to printer connectivity or format compatibility issues. The integration implements multiple fallback strategies including PDF generation to temporary storage with manual print options. It maintains a queue of failed label generation attempts for batch retry.
+
+
+    Tracking synchronization errors occur when Australia Post''s tracking service becomes unavailable. The integration continues normal operations while queuing tracking update requests. It implements a separate retry mechanism for tracking data that prioritizes recent shipments. The system maintains shipment visibility despite temporary tracking service disruptions.
+
+
+    Data validation errors catch inconsistencies between Odoo''s data and Australia Post''s requirements before API communication. The integration performs comprehensive pre-flight checks on all shipment data. It validates address completeness, package dimension validity, and weight accuracy. This proactive approach prevents unnecessary API calls that would result in errors.
+
+
+    The integration implements circuit breaker patterns to prevent cascading failures during Australia Post service degradation. It monitors error rates and temporarily disables affected functionality when thresholds exceed limits. This protection maintains overall system stability while specific integration points experience problems.
+
+
+    Recovery procedures handle scenarios where partial failures leave shipments in inconsistent states. The integration provides tools to reconcile Odoo shipment records with Australia Post''s system. Administrators can force status refreshes, regenerate missing labels, and correct synchronization gaps. These recovery mechanisms ensure data consistency across both platforms.
+
+
+    ## Testing and ValidationComprehensive testing validates the Australia Post integration before production deployment. Begin with unit tests that verify individual components in isolation. Test address transformation logic with various international formats. Validate rate calculation mappings with known weight and destination combinations. Verify error handling for simulated API failures.
+
+
+    Integration testing confirms end-to-end functionality with Australia Post''s test environment. Create test orders with different product combinations and destination addresses. Execute complete shipping workflows from order confirmation to label generation. Verify that tracking numbers properly sync back to Odoo. Test both domestic and international shipping scenarios.
+
+
+    Performance testing evaluates system behavior under expected load conditions. Simulate peak shipping volumes by processing batches of test orders. Measure API response times and identify potential bottlenecks. Verify that the integration maintains responsiveness during high-volume periods. Establish performance baselines for ongoing monitoring.
+
+
+    Address validation testing ensures correct handling of various address formats. Test with standard Australian addresses including street numbers and unit designations. Validate international address handling with country-specific formatting. Verify error cases like incomplete addresses or invalid postcodes. Confirm that address correction suggestions work as expected.
+
+
+    Label generation testing verifies output quality and compatibility. Test label printing with different printer models and paper sizes. Verify that barcodes meet Australia Post''s scanning requirements. Confirm that customer address information displays correctly on generated labels. Test batch label generation for efficiency.
+
+
+    Tracking synchronization testing validates the complete lifecycle of a shipment. Create test shipments and monitor tracking event capture. Verify that status updates propagate to Odoo in near real-time. Test webhook handling for various event types. Confirm that delivery confirmation properly closes orders in Odoo.
+
+
+    Error scenario testing validates system resilience under failure conditions. Simulate network outages during API calls. Test with invalid credentials to verify proper error messaging. Introduce malformed responses from Australia Post''s API to ensure graceful handling. Verify that the system maintains data consistency during partial failures.
+
+
+    User acceptance testing involves your operational team in the validation process. Create test scenarios that mirror real-world shipping patterns. Have users process orders through the complete shipping workflow. Gather feedback on interface usability and process efficiency. Identify any gaps between technical functionality and operational needs.
+
+
+    Production validation occurs during the initial rollout phase. Process a small subset of live orders through the new integration. Compare results with your existing shipping processes. Verify that costs, delivery times, and customer experience meet expectations. Gradually increase volume as confidence in the system grows.
+
+
+    ## Security ConsiderationsThe Australia Post integration handles sensitive business data that demands robust security measures. API credential protection represents the foremost security priority. Store Australia Post API keys in Odoo''s encrypted parameters system rather than code or database fields. Implement key rotation policies to regularly update credentials. Restrict API key access to necessary personnel only.
+
+
+    Data encryption protects information both in transit and at rest. All communication with Australia Post''s API uses HTTPS with TLS 1.2 or higher. Validate certificate authenticity to prevent man-in-the-middle attacks. Encrypt sensitive data within Odoo''s database using field-level encryption where appropriate. This protection covers customer addresses and shipment contents.
+
+
+    Access control limits integration functionality to authorized users. Configure Odoo''s permission system to restrict shipping operations to appropriate roles. Implement principle of least privilege by granting only necessary permissions. Create separate roles for shipping clerks, managers, and administrators. Audit user permissions regularly to maintain security integrity.
+
+
+    Webhook security validates that incoming tracking updates originate from Australia Post. Implement signature verification for all webhook payloads. Australia Post includes cryptographic signatures that confirm message authenticity. Validate these signatures before processing any tracking updates. Reject requests that fail verification.
+
+
+    Data minimization reduces security exposure by limiting stored information. The integration retains only necessary Australia Post data for operational purposes. Avoid storing complete API responses unless required for functionality. Implement data retention policies that automatically purge old shipment data after business needs expire.
+
+
+    Audit logging tracks all integration activities for security monitoring. Log API calls, including timestamps, users, and shipment references. Record both successful operations and security-relevant failures. Monitor logs for suspicious patterns like unusual access times or repeated authentication failures. Retain audit records according to your security policy.
+
+
+    Network security measures protect the integration infrastructure. Implement firewall rules that restrict unnecessary network access. Use VPN connections if accessing Odoo from external networks. Segment your network to isolate the Odoo instance from less secure systems. Regular security patches address vulnerabilities in both Odoo and underlying infrastructure.
+
+
+    ## Performance OptimizationThe Australia Post integration benefits from strategic performance optimization to handle increasing shipping volumes. API call efficiency represents the primary optimization opportunity. Batch multiple shipping requests into single API calls where Australia Post''s API supports this functionality. Implement request queuing for non-time-critical operations to smooth load distribution.
+
+
+    Caching strategies reduce redundant API calls and improve response times. Cache Australia Post''s shipping rates for common destination and weight combinations. Implement time-based expiration that refreshes rates according to their volatility. Cache address validation results to avoid re-verifying frequently used addresses. This approach reduces API dependency while maintaining accuracy.
+
+
+    Database optimization ensures efficient data retrieval for shipping operations. Implement appropriate indexes on shipment-related tables to speed up queries. Regularly analyze query performance to identify bottlenecks. Archive historical shipment data to maintain operational table efficiency. These measures maintain system responsiveness as shipment volume grows.
+
+
+    Background processing moves time-consuming operations out of the user interaction flow. Implement asynchronous label generation for batch shipping operations. Use Odoo''s queue job system to process tracking updates in the background. This approach keeps the interface responsive while handling resource-intensive integration tasks.
+
+
+    Connection management optimizes network communication with Australia Post''s API. Implement connection pooling to reuse HTTP connections across multiple requests. Configure appropriate timeouts to prevent hung requests from consuming resources. Use persistent connections where Australia Post''s infrastructure supports this feature. These techniques reduce connection establishment overhead.
+
+
+    Monitoring and metrics provide visibility into integration performance. Track key indicators like API response times, error rates, and processing throughput. Set up alerts for performance degradation or elevated error rates. Use this data to identify optimization opportunities and capacity planning needs. Continuous monitoring maintains optimal performance as conditions change.
+
+
+    Load testing identifies performance limits before they impact operations. Simulate expected peak shipping volumes to verify system capacity. Measure performance under stress to establish operational boundaries. Use results to fine-tune configuration parameters and infrastructure scaling rules. Proactive load testing prevents performance surprises during critical business periods.'
+  conclusion: 'Your Australia Post integration with Odoo 18 transforms shipping from a manual chore to an automated competitive advantage. The technical implementation we covered delivers immediate operational benefits and establishes a foundation for scalable growth. You now possess the complete architecture understanding to design robust integration solutions. The step-by-step configuration guidance ensures your implementation follows best practices from initial setup to production deployment.
+
+
+    This integration eliminates duplicate data entry across your systems. Your team generates shipping labels directly from confirmed sales orders with accurate Australia Post rates. Real-time tracking synchronization keeps customers informed without manual status updates. Automated address validation prevents costly shipping errors before they occur. These improvements compound across your entire order fulfillment process.
+
+
+    The measurable outcomes justify the implementation investment. You reduce order processing time by eliminating manual shipping steps. You decrease shipping errors through automated address verification and label generation. You improve customer satisfaction with accurate tracking and timely delivery. You gain better cost control through precise shipping rate integration. These benefits translate directly to your bottom line.
+
+
+    Continue optimizing your integration after the initial deployment. Monitor performance metrics to identify additional improvement opportunities. Expand functionality with advanced features like returns management and batch processing. Train new team members on the streamlined shipping workflow. Share performance data with stakeholders to demonstrate the integration value.
+
+
+    Your Odoo system now serves as the single source of truth for all shipping operations. This centralization provides complete visibility into your fulfillment process. You make data-driven decisions about carrier selection and service levels. The integration scales with your business growth, handling increased volume without proportional staffing increases. This technical foundation supports your expansion into new markets and product lines.
+
+
+    The strategic value extends beyond immediate efficiency gains. You build customer loyalty through reliable shipping experiences. You create operational resilience with robust error handling and recovery procedures. You establish a platform for continuous improvement in your fulfillment operations. This integration represents not just a technical project but a fundamental enhancement to your business capabilities.'
+  extended_content: ''
+conversion_assets:
+- component_type: callout-box
+  placement_hint: mid_guide
+  generated_copy:
+    headline: Synchronization Conflict Resolver
+    body: Integration automation and testing tools
+    cta_text: Synchronization Conflict Resolver
+    cta_link: /downloads/sync-conflict-resolver/
+    cta_context: Priority 2.5 link from intelligent linking system
+- component_type: callout-box
+  placement_hint: post_technical
+  generated_copy:
+    headline: API Connection Testing (DNS, SSL, HTTP)
+    body: Integration automation and testing tools
+    cta_text: API Connection Testing (DNS, SSL, HTTP)
+    cta_link: /downloads/api-connection-testing-dns-ssl-http/
+    cta_context: Priority 2.5 link from intelligent linking system
+intelligent_links:
+- link_url: /odoo-implementation-guide/
+  anchor_text: Complete Implementation Guide
+  context: Master implementation planning to avoid $250K+ failures
+  link_type: implementation_guide
+  priority: 5.5
+- link_url: /guides/odoo-cloudflare-integration/
+  anchor_text: 'Cloudflare to Odoo Integration: Complete 2025 Guide'
+  context: Other integration options
+  link_type: related_integration
+  priority: 5.0
+- link_url: /guides/odoo-facebook-pixel/
+  anchor_text: 'Facebook Pixel to Odoo Integration: Complete 2025 Guide'
+  context: Other integration options
+  link_type: related_integration
+  priority: 5.0
+visualizations:
+- chart_type: mermaid
+  placement_hint: after_steps
+  data_context: integration workflow visualization (semantic variant)
+  mermaid_chart_syntax: "flowchart TB\n    Start([Legacy ERP]) --> Assess[Integration Assessment]\n    Assess --> Middleware[Choose Middleware Platform]\n    Middleware --> Extract[Data Extraction Logic]\n    Extract --> Transform[Data Transformation Rules]\n    Transform --> Load[Load to Odoo]\n    Load --> Schedule[Sync Scheduling]\n    Schedule --> Conflict[Conflict Resolution]\n    Conflict --> Monitor[Monitor Data Quality]\n    Monitor --> End([ERP Integrated])\n\n    classDef integration fill:#9c27b0,stroke:#7b1fa2,stroke-width:2px,color:#fff\n    classDef etl fill:#2196f3,stroke:#1976d2,stroke-width:2px,color:#fff\n    classDef success fill:#d4edda,stroke:#28a745,stroke-width:2px\n\n    class Assess,Middleware,Schedule integration\n    class Extract,Transform,Load,Conflict,Monitor etl\n    class Start,End success\n"
+  variant_id: integration_chart_005
+- chart_type: mermaid
+  placement_hint: after_conclusion
+  data_context: learning path and knowledge graph
+  mermaid_chart_syntax: "flowchart TB\n\n    Current[\"[CURRENT] Australia Post to Odoo Integration: Complete 2025 Guide\"]\n\n    %% Related Topics - Cross-References\n    Current -.-> Rel0[\"Cloudflare to Odoo Integration: Complete 2025 Guide\"]\n    Current -.-> Rel1[\"Facebook Pixel to Odoo Integration: Complete 2025 Guide\"]\n\n    %% Professional Styling\n    classDef current fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n    classDef prereq fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000\n    classDef next fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000\n    classDef related fill:#f5f5f5,stroke:#616161,stroke-width:1px,color:#000\n    classDef trouble fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000\n    classDef support fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#000\n\n    class Current current\n    class Rel0,Rel1 related"

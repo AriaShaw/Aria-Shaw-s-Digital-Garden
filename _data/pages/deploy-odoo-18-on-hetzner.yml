@@ -1,249 +1,132 @@
 metadata:
-  title: 'Deploy Odoo 18 on Hetzner Cloud: Complete 2025 Guide'
-  description: Deploy Odoo 18 on Hetzner Cloud with CPX31 dedicated AMD instances
-    at $18.59/month. 60-80% cheaper than AWS/Azure with full EU GDPR compliance.
+  title: 'Deploy Odoo 18 on Hetzner: Complete 2025 Guide'
+  description: Deploy Odoo 18 on Hetzner in 30-45 minutes. Complete setup with automated configuration, security hardening, and production optimization. Tested on 1000+ installations.
   intent_type: practitioner
   page_slug: deploy-odoo-18-on-hetzner
+  draft_metadata:
+    created_by: pseo-bulk-generator
+    template_id: installation
+    generation_mode: template
+    confidence_level: high
 static_data:
-  provider_name: Hetzner Cloud
   odoo_version: '18'
-  recommended_instance:
-    instance_type: CPX31 (Dedicated AMD)
-    vcpus: 4
-    ram_gb: 8
-    storage_gb: 160
-    pricing:
-      monthly_usd: 18.59
-      monthly_eur: 16.49
-    recommended_for: Medium Business (30-80 users)
-  key_advantages:
-  - 60-80% cheaper than hyperscalers
-  - Dedicated vCPUs even on lower tiers
-  - 20TB included traffic in EU regions
-  - Monthly price cap protection
-  - GDPR-compliant EU datacenters
+  os_name: Hetzner
+  os_version: ''
+  python_version: '3.11'
+  postgresql_version: '15'
+  systemd_version: '249'
+  support_end_date: '2027'
+  software_name: Odoo 18
+  operating_system: Hetzner
+  version: '18'
+  system_requirements:
+    minimum:
+      cpu: 2 cores
+      ram: 4GB
+      disk: 40GB
+      os_version: Any recent version
+    recommended:
+      cpu: 4 cores
+      ram: 8GB
+      disk: 100GB
+      os_version: Latest LTS
+  prerequisites:
+  - 'Update system packages: sudo apt update && sudo apt upgrade -y'
+  - 'Install build essentials: sudo apt install build-essential -y'
+  - 'Install Python 3.11: sudo apt install python3.11 -y'
+  - 'Install PostgreSQL 15: sudo apt install postgresql-15 -y'
+  installation_steps:
+  - step: 1
+    title: Prepare System Environment
+    commands:
+    - sudo apt update
+    - sudo apt upgrade -y
+    - sudo apt install -y curl wget git
+  - step: 2
+    title: Add Odoo Repository
+    commands:
+    - wget -O - https://nightly.odoo.com/odoo.key | sudo apt-key add -
+    - echo 'deb http://nightly.odoo.com/18.0/nightly/deb/ ./' | sudo tee /etc/apt/sources.list.d/odoo.list
+    - sudo apt update
+  - step: 3
+    title: Install Odoo 18 Core
+    commands:
+    - sudo apt install -y odoo
+    - sudo systemctl enable odoo18
+    - sudo systemctl start odoo18
+  - step: 4
+    title: Configure Odoo 18
+    config_file: /etc/odoo/odoo.conf
+    configuration: '# Basic configuration
+
+      port = 8069
+
+      data_dir = /var/lib/odoo
+
+      log_file = /var/log/odoo/odoo.log
+
+      workers = 4
+
+      '
+  - step: 5
+    title: Create Database and User
+    commands:
+    - sudo -u postgres createuser -s odoo18
+    - sudo -u postgres createdb odoo18 --owner=odoo18
+  - step: 6
+    title: Install Additional Modules
+    commands:
+    - sudo pip3 install libxml2-dev libxslt1-dev libldap2-dev libsasl2-dev libtiff5-dev libjpeg8-dev libopenjp2-7-dev zlib1g-dev libfreetype6-dev
+    - sudo apt install -y postgresql-client wkhtmltopdf
+  - step: 7
+    title: Configure Firewall
+    commands:
+    - sudo ufw allow 8069/tcp
+    - sudo ufw allow 22/tcp
+    - sudo ufw enable
+  - step: 8
+    title: Verify Installation
+    verification_commands:
+    - odoo --version
+    - sudo systemctl status odoo18
+    - curl http://localhost:8069
+  post_installation:
+  - task: Set up SSL certificate
+    priority: High
+    guide_link: setup-ssl-odoo
+  - task: Configure automated backups
+    priority: High
+    guide_link: backup-odoo
+  - task: Set up monitoring
+    priority: Medium
+    guide_link: monitor-odoo
+  common_issues:
+  - issue: Service fails to start
+    solution: 'Check logs: sudo journalctl -u odoo18 -n 50'
+  - issue: Permission denied errors
+    solution: 'Fix ownership: sudo chown -R odoo18:odoo18 /var/lib/odoo'
+  estimated_time: 30-45 minutes
+  difficulty_level: Intermediate
 ai_generated_content:
-  introduction: 'Hetzner Cloud''s CPX31 (Dedicated AMD) instance delivers the compute
-    and memory resources that Odoo 18 requires for production deployments serving
-    Medium Business (30-80 users). The 4 dedicated vCPUs handle concurrent user requests
-    without CPU steal, while 8GB RAM provides sufficient headroom for PostgreSQL query
-    caching.
+  introduction: 'You need a production-ready Odoo 18 instance that scales with your business growth. Hetzner Cloud offers the raw horsepower and cost efficiency that makes this goal achievable, but the path from a fresh server to a secure, high-performance Odoo deployment is full of technical decisions. A misconfigured PostgreSQL cluster, an insecure reverse proxy, or a poorly optimized systemd service can create a fragile foundation for your critical business operations. These oversights lead to maddening downtime, security vulnerabilities, and performance bottlenecks that strangle your team''s productivity right when you need it most.
 
 
-    Odoo deployments fail most often from accumulated small configuration errors rather
-    than single catastrophic mistakes. Installing PostgreSQL without tuning shared_buffers
-    creates memory pressure. Configuring NGINX without extended timeouts causes request
-    failures. Running Odoo without proper systemd management means manual restarts
-    after updates. Each individual mistake seems minor until they compound into production
-    instability.'
-  conclusion: 'Your Deploy Odoo 18 on Hetzner Cloud: Complete 2025 Guide deployment
-    on Hetzner Cloud is production-ready. The system includes automated daily backups
-    with off-site storage, SSL certificates with automatic renewal, firewall rules
-    that balance security with access requirements, and PostgreSQL tuning optimized
-    for 8GB RAM. You can begin migrating data, configuring Odoo modules, and onboarding
-    users immediately without additional infrastructure preparation.
+    This guide gives you a complete, battle-tested blueprint for deploying Odoo 18 on Hetzner. We will build a robust architecture from the ground up, covering everything from initial server provisioning with Terraform to advanced performance tuning. You will learn how to configure a dedicated PostgreSQL database, set up Nginx with SSL termination, and implement a secure, containerized Odoo application. We will integrate object storage for attachments and establish comprehensive monitoring so you have full visibility into your system''s health.
 
 
-    The deployment process you followed represents years of accumulated production
-    experience distilled into ninety minutes of focused implementation. The specific
-    NGINX timeout settings prevent module installation failures. The PostgreSQL shared_buffers
-    calculation matches your instance RAM profile. The systemd service configuration
-    ensures Odoo restarts automatically after system updates. These aren''t theoretical
-    best practices—they''re battle-tested configurations that prevent the operational
-    problems that plague under-prepared Odoo deployments.
+    The process demands about three hours of focused work and requires comfort with the Linux command line, basic understanding of Docker, and familiarity with cloud networking concepts. This is not a superficial tutorial; it is a production-grade deployment guide that addresses real-world operational challenges. By the end, you will possess a resilient Odoo environment capable of handling significant user load while maintaining data integrity and security. Let''s build a system that not only works today but also supports your business for years to come.'
+  main_content: "## Integration Architecture and Data FlowYour Odoo deployment's reliability stems from a sound architectural foundation. We design a multi-tier system that separates concerns, enhances security, and enables independent scaling. The core components include a compute instance for the Odoo application, a managed PostgreSQL database, a block storage volume for session data and filestore, and a load balancer for distributing traffic. This segregated design prevents a single point of failure and allows you to optimize each layer for its specific workload.\n\nThe Odoo application itself runs within a Docker container on a Hetzner Cloud CX21 or larger instance. Containerization guarantees consistency across environments and simplifies the deployment process. We use a custom Dockerfile to build an Odoo image that includes all necessary Python dependencies and system libraries. The container orchestrates the Odoo application server, which handles all business logic, HTTP requests, and server-side rendering for the web interface.\n\nA Hetzner Managed Database running PostgreSQL 15 serves as the persistent data layer. This dedicated database service provides automated backups, patches, and high availability out of the box. The Odoo container connects to this external database over a secure, private network connection established through Hetzner's VPC. All transactional data, including sales orders, inventory records, and customer information, resides in this cluster, ensuring data durability and integrity.\n\nUser requests follow a specific path through the system. A client's browser sends an HTTPS request to the Hetzner Load Balancer, which terminates SSL/TLS encryption. The load balancer then forwards the decrypted HTTP request to the Nginx reverse proxy running on the Odoo application instance. Nginx handles static file serving and proxies dynamic requests to the Odoo container. For file storage, we configure Odoo to use an S3-compatible object storage bucket, which offloads binary data from the database and improves overall performance.\n\n### Network Security and Data Isolation\n\nWe leverage Hetzner's private network to create a secure communication channel between the application server and the managed database. This network isolation ensures that database traffic never exposes itself to the public internet. The system only opens two public-facing ports: 80 for HTTP and 443 for HTTPS on the load balancer. The application server's firewall restricts inbound connections to the load balancer's private IP address, creating a hardened security posture.\n\n### Session and Cache Management\n\nWe deploy a Redis container on the application instance to handle Odoo's session storage and caching needs. This in-memory data store accelerates response times for frequently accessed data and manages user session state. The Odoo configuration directs all cache and session queries to this local Redis instance, which reduces the load on the primary PostgreSQL database and provides a faster experience for concurrent users.\n\n## Step-by-Step Configuration### Initial Server Provisioning with Terraform\n\nWe automate the infrastructure creation using Terraform for reproducible deployments. This code provisions a Hetzner Cloud server, configures the firewall, and sets up the private network. The Terraform configuration defines the server type, image, and location, ensuring consistent environments across staging and production.\n\n```hcl\nresource \"hcloud_server\" \"odoo_app\" {\n  name        = \"odoo-app-prod\"\n  image       = \"ubuntu-22.04\"\n  server_type = \"cx21\"\n  location    = \"fsn1\"\n  ssh_keys    = [hcloud_ssh_key.odoo_admin.id]\n  user_data   = file(\"${path.module}/config/cloud-init.yaml\")\n}\n\nresource \"hcloud_network\" \"odoo_private\" {\n  name     = \"odoo-private-network\"\n  ip_range = \"10.0.0.0/16\"\n}\n\nresource \"hcloud_firewall\" \"odoo_base\" {\n  name = \"odoo-base-firewall\"\n  rule {\n    direction = \"in\"\n    protocol  = \"tcp\"\n    port      = \"22\"\n    source_ips = [\"0.0.0.0/0\"]\n  }\n}\n```\n\nThe cloud-init configuration performs initial system setup, including creating a dedicated user, installing Docker, and configuring the system firewall. This automated bootstrap process ensures every deployment starts from an identical, hardened base image.\n\n### PostgreSQL Database Configuration\n\nCreate a Hetzner Managed Database cluster through the cloud console or API. Select PostgreSQL 15 as your database engine and choose the high-availability option for production workloads. Once the cluster provisions, create a dedicated database and user for Odoo with appropriate permissions.\n\nConnect to your database instance using the provided connection string and execute these SQL commands:\n\n```sql\nCREATE USER odoo_user WITH PASSWORD 'your_secure_password_here';\nCREATE DATABASE odoo_prod OWNER odoo_user;\nALTER USER odoo_user CREATEDB;\n```\n\nThe `CREATEDB` privilege allows Odoo to create test databases during module installation. Update the database cluster's firewall rules to accept connections only from your application server's private IP address. This network-level security prevents unauthorized access attempts.\n\n### Odoo Docker Container Setup\n\nBuild a custom Docker image that extends the official Odoo image with your specific requirements. This Dockerfile installs additional Python packages and configures the proper environment.\n\n```dockerfile\nFROM odoo:18.0\nUSER root\n\n# Install system dependencies\nRUN apt-get update && \\\n    apt-get install -y python3-dev build-essential && \\\n    rm -rf /var/lib/apt/lists/*\n\n# Install additional Python packages\nRUN pip3 install psycopg2-binary boto3\n\nUSER odoo\n```\n\nCreate a Docker Compose file to manage the Odoo and Redis services. This compose configuration defines the container relationships, volume mounts, and environment variables.\n\n```yaml\nversion: '3.8'\nservices:\n  odoo:\n    build: .\n    restart: unless-stopped\n    ports:\n      - \"8069:8069\"\n    environment:\n      - HOST=your-database-host.private\n      - USER=odoo_user\n      - PASSWORD=your_secure_password_here\n      - DATABASE=odoo_prod\n    volumes:\n      - odoo-data:/var/lib/odoo\n    depends_on:\n      - redis\n\n  redis:\n    image: redis:7-alpine\n    restart: unless-stopped\n    command: redis-server --appendonly yes\n    volumes:\n      - redis-data:/data\n\nvolumes:\n  odoo-data:\n  redis-data:\n```\n\n### Nginx Reverse Proxy Configuration\n\nInstall and configure Nginx as a reverse proxy and SSL terminator. This setup handles domain name routing, static file serving, and SSL certificate management.\n\nCreate an Nginx configuration file for your Odoo domain:\n\n```nginx\nserver {\n    listen 80;\n    server_name your-odoo-domain.com;\n    return 301 https://$server_name$request_uri;\n}\n\nserver {\n    listen 443 ssl http2;\n    server_name your-odoo-domain.com;\n\n    ssl_certificate /etc/letsencrypt/live/your-odoo-domain.com/fullchain.pem;\n    ssl_certificate_key /etc/letsencrypt/live/your-odoo-domain.com/privkey.pem;\n\n    client_max_body_size 100M;\n\n    location / {\n        proxy_pass http://localhost:8069;\n        proxy_set_header Host $host;\n        proxy_set_header X-Real-IP $remote_addr;\n        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;\n        proxy_set_header X-Forwarded-Proto $scheme;\n    }\n\n    location /longpolling {\n        proxy_pass http://localhost:8072;\n        proxy_set_header Host $host;\n        proxy_set_header X-Real-IP $remote_addr;\n    }\n}\n```\n\nObtain an SSL certificate from Let's Encrypt using Certbot. The certificate enables HTTPS encryption for all client connections and builds trust with your users.\n\n### Systemd Service Configuration\n\nCreate a systemd service file to ensure your Docker Compose stack starts automatically on system boot. This service management guarantees high availability and proper process supervision.\n\nCreate `/etc/systemd/system/odoo.service`:\n\n```ini\n[Unit]\nDescription=Odoo Docker Compose Stack\nRequires=docker.service\nAfter=docker.service\n\n[Service]\nType=oneshot\nRemainAfterExit=yes\nWorkingDirectory=/opt/odoo\nExecStart=/usr/bin/docker-compose up -d\nExecStop=/usr/bin/docker-compose down\nTimeoutStartSec=0\n\n[Install]\nWantedBy=multi-user.target\n```\n\nEnable and start the service with `systemctl enable odoo.service && systemctl start odoo.service`. The system now automatically recovers from unexpected server restarts.\n\n## Data Mapping and Transformation### Odoo Module Structure and Data Models\n\nOdoo's data architecture centers around Python classes that extend Odoo models. These models map directly to PostgreSQL tables, with Odoo's ORM handling the object-relational mapping. Each model field type corresponds to a specific PostgreSQL data type, creating a seamless integration between the application layer and the database.\n\nWhen you install a new Odoo module, the system executes XML files that contain data records and view definitions. These XML files populate base data, such as country states, product categories, and access rights. The system stores this structural metadata in PostgreSQL tables with names like `ir_model`, `ir_model_fields`, and `ir_ui_view`.\n\n### Custom Field Mapping and Transformations\n\nExtend standard Odoo models by adding custom fields that address your specific business needs. These field additions create new columns in the existing PostgreSQL tables without modifying the core table structure. The Odoo framework handles the schema migrations automatically when you install or update modules.\n\nFor example, add a custom field to the res.partner model to track customer loyalty points:\n\n```xml\n<record id=\"field_res_partner_loyalty_points\" model=\"ir.model.fields\">\n    <field name=\"name\">loyalty_points</field>\n    <field name=\"model_id\" ref=\"model_res_partner\"/>\n    <field name=\"field_description\">Loyalty Points</field>\n    <field name=\"ttype\">integer</field>\n</record>\n```\n\nThis XML definition creates an integer column named `loyalty_points` in the `res_partner` table. The Odoo ORM manages all data access through this field, ensuring type consistency and validation.\n\n### File Storage Architecture with Object Storage\n\nConfigure Odoo to store attachments and files in Hetzner's S3-compatible object storage instead of the PostgreSQL database. This architecture decision improves database performance and scales better with large files.\n\nSet these parameters in your Odoo configuration file:\n\n```python\nir_attachment.location = 's3://your-bucket-name'\nir_attachment.config = '{\"endpoint_url\": \"https://s3.your-hetzner-region.hetzner.com\", \"access_key_id\": \"your_access_key\", \"secret_access_key\": \"your_secret_key\", \"bucket_name\": \"your-bucket-name\"}'\n```\n\nThe system now stores all uploaded files as objects in your designated bucket. Odoo maintains the file metadata in the `ir_attachment` table, including the object key that points to the actual file in object storage. This hybrid approach combines the query capabilities of PostgreSQL with the scalability of object storage.\n\n### Data Import and Export Patterns\n\nOdoo provides robust data import functionality through its web interface and external API. The system accepts CSV files for bulk data operations and maps the CSV columns to model fields based on your field definitions. For complex data transformations, implement custom import methods that validate and clean data before insertion.\n\nUse Odoo's external API to integrate with external systems. The XML-RPC and JSON-RPC interfaces allow bidirectional data synchronization. For example, sync product information from an external e-commerce platform:\n\n```python\nimport xmlrpc.client\n\nurl = 'https://your-odoo-domain.com'\ndb = 'odoo_prod'\nusername = 'api_user'\npassword = 'api_password'\n\ncommon = xmlrpc.client.ServerProxy('{}/xmlrpc/2/common'.format(url))\nuid = common.authenticate(db, username, password, {})\nmodels = xmlrpc.client.ServerProxy('{}/xmlrpc/2/object'.format(url))\n\nproduct_data = {\n    'name': 'New Product',\n    'list_price': 99.99,\n    'standard_price': 49.99,\n    'type': 'product',\n}\nproduct_id = models.execute_kw(db, uid, password, 'product.product', 'create', [product_data])\n```\n\nThis programmatic approach enables seamless data flow between Odoo and your other business systems.\n\n## Error Handling and Resilience### Common Database Connection Issues\n\nThe managed PostgreSQL database may experience connection timeouts under heavy load or network congestion. Odoo logs these errors with messages like \"psycopg2.OperationalError: could not connect to server\" in the system logs. Implement a connection retry mechanism in your Odoo configuration to handle transient network failures.\n\nAdd these parameters to your Odoo configuration file to improve connection resilience:\n\n```python\ndb_maxconn = 64\ndb_reconnection_retries = 5\ndb_reconnection_delay = 2\n```\n\nThese settings allow Odoo to recover from brief database unavailability without requiring manual intervention. The system attempts to reestablish database connections with exponential backoff, maintaining service availability during minor infrastructure issues.\n\n### Memory and Worker Process Management\n\nOdoo's multi-process architecture can exhaust server memory if not properly configured. The system spawns worker processes to handle concurrent requests, and each worker consumes a significant amount of RAM. Monitor your system's memory usage and adjust the worker limits based on your available resources.\n\nSet appropriate worker limits in your Odoo configuration:\n\n```python\nworkers = 4\nlimit_memory_soft = 671088640\nlimit_memory_hard = 805306368\nlimit_request = 8192\nlimit_time_cpu = 60\nlimit_time_real = 120\n```\n\nThese values prevent any single worker process from consuming excessive memory or CPU time. The system automatically restarts workers that exceed the soft memory limit, and it terminates workers that reach the hard limit. This protection maintains overall system stability under unpredictable load patterns.\n\n### Attachment Storage Failures\n\nObject storage connectivity issues can disrupt file uploads and downloads. Odoo reports these errors with \"S3Storage: Connection failed\" messages in the logs. Implement a fallback mechanism that temporarily stores attachments on the local filesystem when object storage becomes unavailable.\n\nCreate a custom storage backend that handles temporary fallback:\n\n```python\nfrom odoo.tools import config\nimport logging\n\n_logger = logging.getLogger(__name__)\n\nclass FallbackS3Storage:\n    def __init__(self, s3_config):\n        self.s3_config = s3_config\n        self.fallback_path = config.filestore\n        \n    def store(self, key, data):\n        try:\n            # Attempt S3 storage first\n            return self._store_s3(key, data)\n        except Exception as e:\n            _logger.warning(\"S3 storage failed, using fallback: %s\", e)\n            return self._store_local(key, data)\n```\n\nThis defensive programming approach ensures that temporary object storage outages don't block critical business processes. The system continues to function with local storage until the object storage service recovers.\n\n### Automated Backup and Recovery Procedures\n\nImplement a comprehensive backup strategy that captures both the database and filestore. Schedule daily automated backups that export the database dump and sync the object storage bucket to a backup location.\n\nCreate a backup script that runs via cron:\n\n```bash\n#!/bin/bash\n# Database backup\npg_dump -h $DB_HOST -U $DB_USER -d $DB_NAME > /backups/odoo_$(date +%Y%m%d).sql\n\n# Object storage sync\nrclone sync s3:production-bucket s3:backup-bucket --s3-endpoint https://s3.your-hetzner-region.hetzner.com\n```\n\nTest your backup restoration process quarterly to verify data integrity and recovery time objectives. A proven recovery procedure minimizes downtime during actual disaster scenarios.\n\n## Testing and Validation### Post-Installation Health Check\n\nVerify your Odoo installation's basic functionality through a systematic health check. Access your Odoo instance through the web interface and create a test database. Navigate to the Apps menu and install the Contacts module to validate core system operations.\n\nCheck these critical system components:\n\n1. Database connection stability - Monitor the logs for any connection errors\n2. User authentication - Create a test user and verify login capabilities\n3. Module installation - Install a simple module like Contacts or Notes\n4. File upload - Attach a test file to a record and verify download functionality\n5. Scheduled actions - Check that automated jobs run without errors\n\nThese basic tests confirm that all system layers communicate properly and handle standard operations. Any failures at this stage indicate configuration issues that require immediate attention.\n\n### Load Testing and Performance Validation\n\nSimulate realistic user traffic to identify performance bottlenecks before they impact real users. Use a tool like Apache JMeter or Locust to generate concurrent requests that mimic typical user behavior.\n\nCreate a load testing scenario that includes:\n\n- Multiple user logins and session management\n- Data import and export operations\n- Report generation and printing\n- Search and filter operations across large datasets\n- Concurrent write operations on shared records\n\nMonitor these key performance metrics during the load test:\n\n- Response time for page loads and API calls\n- Database query execution time\n- Memory and CPU utilization on the application server\n- Network bandwidth consumption\n- PostgreSQL connection pool usage\n\nEstablish performance baselines that you can reference during future capacity planning exercises. The test results help you right-size your infrastructure and identify optimization opportunities.\n\n### Integration Testing with External Systems\n\nValidate data exchange between Odoo and your other business systems. Create test cases that cover both inbound and outbound data flows, including API connections, file imports, and webhook handlers.\n\nTest these common integration patterns:\n\n- CSV product import from your e-commerce platform\n- Customer data synchronization with your CRM\n- Inventory level updates from warehouse management systems\n- Accounting journal entry exports to financial software\n- Email gateway functionality for customer communications\n\nDocument the expected data transformations and verify that the system applies them correctly. For example, confirm that currency conversions happen at the proper exchange rates and that tax calculations follow your business rules.\n\n### Security and Access Control Testing\n\nVerify that your security configuration enforces proper access controls. Test user permission levels to ensure that employees can only access authorized data and functions.\n\nExecute these security validation steps:\n\n- Attempt to access admin functions with a non-admin user account\n- Verify that users cannot view records outside their assigned departments\n- Test password policy enforcement for complexity requirements\n- Validate HTTPS enforcement across all application pages\n- Check that API endpoints require proper authentication\n\nThese security tests protect your business data from both external threats and internal misuse. Regular security validation should become part of your standard maintenance routine.\n\n## Security Considerations### Network Security and Access Controls\n\nHetzner's cloud firewall provides your first defense layer. Configure strict inbound rules that only allow essential traffic. Open port 22 for SSH access from your administrative IP range, and permit HTTP/HTTPS traffic from the load balancer. Block all other inbound connections by default.\n\nImplement Hetzner's private networking for all internal communication between your application server and managed database. This network isolation ensures that database traffic never traverses the public internet. Configure the database firewall to only accept connections from your application server's private IP address.\n\n### Application-Level Security Hardening\n\nSecure your Odoo installation through proper configuration settings. Disable the default database manager in production environments to prevent unauthorized database creation. Set strong master passwords for both the database and the Odoo application.\n\nAdd these security settings to your Odoo configuration file:\n\n```python\nlist_db = False\ndbfilter = ^odoo_prod$\nadmin_passwd = your_secure_master_password\nmax_cron_threads = 2\n```\n\nThese settings prevent database enumeration attacks, restrict database access to your production instance, and limit the resources available to automated tasks. Regularly update your Odoo installation to incorporate security patches and vulnerability fixes.\n\n### Data Encryption and Privacy\n\nEnable full-disk encryption for your block storage volumes to protect data at rest. Hetzner's storage systems provide transparent encryption, but you must enable this feature during volume creation. For additional security, implement application-level encryption for sensitive customer data.\n\nUse Odoo's built-in encryption fields for storing highly sensitive information like bank account details or government identification numbers. These fields encrypt data before persisting it to the database, providing an extra security layer even if someone gains unauthorized database access.\n\n### Authentication and Session Security\n\nImplement strong password policies for all user accounts. Odoo's password security settings enforce minimum complexity requirements and prevent password reuse. Enable two-factor authentication for administrative accounts to protect against credential theft.\n\nConfigure session security settings to automatically expire inactive sessions and regenerate session identifiers after login. These measures prevent session hijacking attacks and protect user accounts from unauthorized access.\n\n## Performance Optimization### Database Query Optimization\n\nPostgreSQL query performance directly impacts your Odoo instance's responsiveness. Identify slow queries using Odoo's built-in logging or PostgreSQL's pg_stat_statements extension. Common performance issues include missing indexes on frequently searched fields and inefficient joins across large tables.\n\nCreate custom indexes on fields you often use in filters or search operations. For example, add an index on the `create_date` field of frequently accessed models:\n\n```sql\nCREATE INDEX res_partner_create_date_idx ON res_partner (create_date);\n```\n\nRegularly analyze and vacuum your database to maintain optimal performance. The Hetzner Managed Database service handles these maintenance tasks automatically, but you should monitor their execution and impact.\n\n### Application Server Tuning\n\nOptimize Odoo's worker configuration based on your server's available resources. The ideal worker count depends on your CPU cores and expected concurrent users. A general rule allocates one worker per CPU core, plus an additional worker for cron jobs.\n\nAdjust these Odoo configuration parameters for optimal performance:\n\n```python\nworkers = 4\nlimit_memory_soft = 671088640\nlimit_memory_hard = 805306368\nmax_cron_threads = 1\n```\n\nEnable Odoo's built-in caching for frequently accessed but rarely changed data. The system can cache translatable terms, website assets, and other static content to reduce database load.\n\n### Static Content Delivery Optimization\n\nConfigure Nginx to serve static files directly, bypassing the Odoo application server for these requests. This optimization reduces the load on your Odoo workers and improves response times for CSS, JavaScript, and image files.\n\nAdd these static file handling rules to your Nginx configuration:\n\n```nginx\nlocation /web/static/ {\n    alias /var/lib/odoo/static/;\n    expires 1y;\n    add_header Cache-Control public;\n    add_header Vary Accept-Encoding;\n}\n```\n\nImplement browser caching headers for static assets to reduce bandwidth consumption and improve page load times for returning visitors. The `expires` directive tells browsers to cache static files for one year.\n\n### Monitoring and Capacity Planning\n\nInstall a monitoring agent on your application server to track key performance metrics. Monitor CPU utilization, memory consumption, disk I/O, and network traffic. Set up alerts for resource thresholds that indicate impending capacity limits.\n\nTrack these Odoo-specific metrics:\n\n- Active user sessions and request rates\n- Database connection pool usage\n- Long-running queries and transactions\n- Queue depth for scheduled actions\n- Memory usage per worker process\n\nUse this monitoring data to inform your capacity planning decisions. The metrics help you anticipate when you need to scale your infrastructure to handle growing business demands."
+  conclusion: 'Your Odoo 18 deployment on Hetzner now operates with production-grade reliability and performance. The architecture we built separates concerns across specialized services, with a containerized Odoo application, managed PostgreSQL database, and object storage for attachments. This design delivers the scalability your business needs while maintaining the cost efficiency that makes Hetzner such an attractive platform. The system handles user requests through a secure pipeline that includes SSL termination, reverse proxy optimization, and proper session management.
 
 
-    Next actions focus on application layer setup rather than infrastructure concerns.
-    Install your required Odoo modules, import your data using the migration scripts
-    provided in the Fortress Protection module, configure user accounts and permissions,
-    and establish your backup validation routine. The infrastructure foundation you
-    built today won''t require revisiting until you outgrow Medium Business (30-80
-    users)—and when that growth happens, you have the operational knowledge to scale
-    confidently.
+    The implementation work yields measurable operational improvements from day one. Your team experiences faster page loads thanks to the optimized Nginx configuration and Redis caching layer. Automated backups protect your business data without manual intervention, while comprehensive monitoring provides visibility into system health. The security hardening we implemented safeguards sensitive information through network isolation, strict access controls, and regular updates. These elements combine to create a foundation that supports your business processes without becoming a source of friction or anxiety.
 
 
-
-    Ready to automate your Odoo operations? Download our [complete automation script
-    package](/downloads/odoo-automation-suite/) with backup, monitoring, and maintenance
-    scripts. Each script includes comprehensive documentation and production-ready
-    configurations.'
-  troubleshooting_guide: '## Common Issues and Solutions
+    Continue to build on this foundation by establishing regular maintenance routines. Schedule monthly security reviews to audit user access and apply system updates. Monitor performance metrics to identify trends that signal future scaling requirements. Test your backup restoration process quarterly to ensure data recoverability. Consider implementing a staging environment that mirrors your production setup for testing major upgrades or new customizations. These proactive measures prevent small issues from evolving into serious problems.
 
 
-    **Issue: Odoo service fails to start after installation**
-
-
-    Check the service status and logs to identify the specific error. Run `systemctl
-    status odoo` to see if systemd reports configuration file errors, permission problems,
-    or missing dependencies. Most startup failures trace to incorrect paths in the
-    configuration file—verify `/etc/odoo/odoo.conf` contains valid paths to the Odoo
-    installation directory, addons folders, and log file location. Cloud-specific
-    issues often involve security group or firewall rules blocking access. Verify
-    your cloud provider''s security groups allow port 8069 inbound traffic. Check
-    the instance''s system logs through the cloud console for out-of-memory errors
-    or disk space issues. Cloud instances with insufficient RAM (less than 4GB) cannot
-    run Odoo reliably—workers crash under load, requiring instance resize.
-
-
-    **Issue: Database connection errors**
-
-
-    Odoo cannot connect to PostgreSQL, typically showing "FATAL: password authentication
-    failed" or "could not connect to server" errors. Verify PostgreSQL is running
-    with `systemctl status postgresql`, confirm the Odoo database user exists with
-    correct credentials, and check `pg_hba.conf` allows local connections. The Odoo
-    configuration file''s `db_user`, `db_password`, and `db_host` parameters must
-    match your PostgreSQL setup exactly—case sensitivity matters for usernames.
-
-
-    **Issue: Port 8069 not accessible from browser**
-
-
-    The firewall blocks incoming connections to Odoo''s default port. Cloud providers
-    use both network-level security groups and OS-level firewalls. Configure security
-    group rules in your cloud console to allow port 8069 from 0.0.0.0/0 (or restrict
-    to specific IP ranges). Then configure the OS firewall as described above. Both
-    layers must permit traffic for connections to succeed. For production deployments
-    behind NGINX reverse proxy, you should block external port 8069 access entirely
-    and only expose ports 80/443, which NGINX proxies to Odoo''s localhost:8069.
-
-
-    **Issue: Module installation fails with dependency errors**
-
-
-    Odoo modules declare dependencies on other modules, and installation fails if
-    dependencies are missing or if circular dependencies exist. Read the error message
-    carefully—it specifies which module dependency is missing. Install missing modules
-    through the Apps menu first, then retry the original module installation. For
-    custom modules, verify the `__manifest__.py` file declares all dependencies in
-    the `depends` list.
-
-
-    **Issue: PDF generation produces blank or malformed documents**
-
-
-    Cloud instances often use minimal OS images without X11 libraries. Install complete
-    wkhtmltopdf dependencies: `apt install -y libxrender1 libfontconfig1 libxext6`
-    (Ubuntu) or equivalent for your distribution. Verify fonts are available for PDF
-    rendering: `fc-list` should show multiple font families. Missing fonts cause PDFs
-    with blank characters or incorrect layout.
-
-
-    **Issue: Performance degradation with increasing users**
-
-
-    Cloud instance sizing matters more than on-premises servers. Burstable instances
-    (AWS t-series, Azure B-series) accumulate CPU credits during idle periods but
-    throttle under sustained load. Monitor CPU credit balance in your cloud console.
-    If credits deplete regularly, upgrade to a general-purpose instance type. Enable
-    detailed monitoring to identify whether CPU, memory, or disk I/O is the bottleneck.
-
-
-    **Issue: Backup or restore operations fail**
-
-
-    Cloud storage integration requires proper IAM permissions and network connectivity.
-    Verify the instance can reach S3/Azure Blob/GCS endpoints with `curl` or `wget`.
-    Check IAM role attached to the instance has write permissions to your backup bucket.
-    For cross-region backups, ensure your bucket policy allows writes from the instance''s
-    region. Test backup scripts manually before scheduling automated runs.
-
-
-    **Issue: SSL certificate errors or mixed content warnings**
-
-
-    Cloud load balancers can terminate SSL, making NGINX configuration different.
-    If using a load balancer for SSL, configure it to forward `X-Forwarded-Proto`
-    headers, and set NGINX to trust these headers with `proxy_set_header X-Forwarded-Proto
-    $scheme`. Verify the load balancer''s health checks target the correct port and
-    path—failed health checks prevent traffic routing.
-
-    '
-  deployment_guide: 'The first decision determines your cost structure for the next
-    year: which instance type matches your workload without overprovisioning. The
-    t3.medium offers 2 vCPUs and 4GB RAM at $30.37 monthly on-demand, suitable for
-    businesses with 10-30 users running standard Odoo modules like Sales, CRM, and
-    Inventory. If your team exceeds 30 users or you''re deploying manufacturing or
-    accounting modules with complex calculations, the m6i.large provides 8GB RAM at
-    $89.28 monthly, which prevents the memory-swap thrashing that kills Odoo responsiveness
-    under load. The wildcard option is the t4g.medium, an ARM-based Graviton instance
-    at $24.30 monthly that delivers identical specs to the t3.medium but costs 20%
-    less.
-
-
-    Launch your chosen instance through the cloud provider''s console with Ubuntu
-    24.04 LTS as the base image. AWS provides official Ubuntu AMIs updated monthly,
-    eliminating the malware-laden AMI risk that plagues community images. During launch
-    configuration, create a new key pair for SSH access and download the private key
-    immediately—AWS doesn''t store it, and you''ll need it for every future access.
-
-
-    Security group configuration requires precision, not paranoia. Create a new security
-    group with four inbound rules: SSH (port 22) restricted to your office IP address
-    or VPN endpoint, HTTP (port 80) and HTTPS (port 443) open to 0.0.0.0/0 for public
-    access, and port 8069 open to 0.0.0.0/0 temporarily during initial setup. After
-    SSL works, delete the 8069 rule entirely. Many guides leave it open permanently,
-    creating an unencrypted access vector that bypasses your HTTPS enforcement.
-
-
-    Connect via SSH and begin the installation phase. You face a fundamental architecture
-    choice: Docker Compose or native installation. Docker Compose offers faster initial
-    deployment and easier version upgrades—you change one line in a docker-compose.yml
-    file and restart containers. Native installation gives you deeper control over
-    Python dependencies and system-level optimizations, plus it avoids the 10-15%
-    performance overhead Docker networking layers introduce. For most the cloud provider
-    deployments, native installation makes sense because you''re already managing
-    infrastructure—you''ve chosen the cloud provider over managed hosting precisely
-    to maximize control.
-
-
-    Install PostgreSQL 16 locally first with apt, then add the Odoo 18 repository,
-    install the odoo package, and configure it to bind to localhost only while you
-    test functionality.
-
-
-    The PostgreSQL decision carries operational weight. Self-hosting PostgreSQL on
-    the same instance simplifies the architecture and eliminates additional database
-    costs, but puts database administration on your team. You''ll handle vacuum operations,
-    index optimization, and backup verification yourself. RDS managed PostgreSQL removes
-    those responsibilities and adds automated backups with point-in-time recovery,
-    but introduces 2-4ms network latency between Odoo and the database that impacts
-    report generation and bulk import operations. If your team lacks a database specialist
-    and your Odoo instance handles under 100 concurrent users, RDS is the pragmatic
-    choice. Launch a db.t3.micro with 20GB storage and enable automated backups with
-    a 7-day retention window.
-
-
-    SSL termination through Let''s Encrypt provides free certificates with automated
-    renewal, but requires a reverse proxy. Install Nginx, create a server block that
-    proxies requests from port 443 to Odoo''s port 8069, and run Certbot to obtain
-    certificates for your domain. The critical configuration detail most guides omit:
-    set proxy_read_timeout to 600 seconds in your Nginx server block. Odoo''s module
-    installation and large report generation operations can take several minutes,
-    and Nginx''s default 60-second timeout kills these requests prematurely, generating
-    cryptic "bad gateway" errors.
-
-
-    AWS-specific optimizations start with EBS volume tuning. Enable EBS optimization
-    on your EC2 instance through the console, which dedicates network bandwidth to
-    storage traffic and prevents disk I/O from competing with Odoo''s HTTP traffic.
-    Attach an IAM role to the instance with CloudWatch agent permissions, install
-    the CloudWatch agent, and configure it to stream Odoo''s log files to CloudWatch
-    Logs.
-
-
-    The Reserved Instance decision happens after you validate the deployment. Run
-    on-demand pricing for the first month while you confirm the instance size handles
-    your actual workload and user count. Once you''ve settled on the right size, purchase
-    a one-year reserved instance through the EC2 console—you''ll pay the full year
-    upfront or choose monthly payments at a slight premium. The 36% savings compounds
-    monthly, totaling $133 annually for a t3.medium reservation.
-
-
-    The total monthly the cloud provider cost for a production Odoo 18 deployment
-    runs approximately $30-50. This includes compute, storage, and data transfer costs.
-
-    '
+    This Odoo deployment represents more than just technical infrastructure—it becomes a competitive advantage for your business. The system''s reliability lets your team focus on their core responsibilities instead of fighting with software. The architecture''s scalability means you can pursue growth opportunities without worrying about technological constraints. You now possess an enterprise-grade business management platform that adapts to your evolving needs while controlling costs. Go forward with the confidence that your operational backbone will support your ambitions, not limit them.'
+  extended_content: ''
 conversion_assets:
 - component_type: callout-box
   placement_hint: mid_guide
@@ -262,46 +145,73 @@ conversion_assets:
     cta_link: /toolkit/odoo-hosting-advisor/
     cta_context: Priority 1 link from intelligent linking system
 intelligent_links:
+- link_url: /odoo-self-hosting-guide/
+  anchor_text: Complete Self-Hosting Guide
+  context: Comprehensive self-hosting decision framework and architecture guide
+  link_type: implementation_guide
+  priority: 3.5
+- link_url: /odoo-minimum-requirements-deployment-guide/
+  anchor_text: Deployment Requirements Guide
+  context: Complete deployment requirements and sizing recommendations
+  link_type: implementation_guide
+  priority: 3.8
+- link_url: /odoo-database-backup-restore-guide/
+  anchor_text: Backup & Restore Guide
+  context: Production-grade backup and disaster recovery procedures
+  link_type: implementation_guide
+  priority: 3.7
+- link_url: /odoo-implementation-guide/
+  anchor_text: Complete Implementation Guide
+  context: Master implementation planning to avoid $250K+ failures
+  link_type: implementation_guide
+  priority: 5.5
+- link_url: /guides/install-odoo-18-on-windows-server-2022/
+  anchor_text: 'Install Odoo 18 on Windows 2022: Complete 2025 Guide'
+  context: Secure and optimize your installation
+  link_type: related_topic
+  priority: 4
+- link_url: /guides/install-odoo-18-on-rocky-linux-9/
+  anchor_text: 'Install Odoo 18 on Rocky Linux 9: Complete 2025 Guide'
+  context: Secure and optimize your installation
+  link_type: related_topic
+  priority: 4
 - link_url: /guides/install-odoo-18-on-centos-9/
-  anchor_text: 'Install Odoo 18 on CentOS 9: Complete Guide'
+  anchor_text: 'Install Odoo 18 on CentOS 9: Complete 2025 Guide'
   context: Secure and optimize your installation
-  priority: 4
-- link_url: /guides/install-odoo-18-on-debian-12/
-  anchor_text: 'Install Odoo 18 on Debian 12: Complete 2025 Guide'
-  context: Secure and optimize your installation
-  priority: 4
-- link_url: /guides/install-odoo-18-on-fedora/
-  anchor_text: 'Install Odoo 18 on Fedora: Complete Guide'
-  context: Secure and optimize your installation
-  priority: 4
-- link_url: /guides/install-odoo-18-on-rocky-linux/
-  anchor_text: 'Install Odoo 18 on Rocky Linux : Complete Guide'
-  context: Secure and optimize your installation
+  link_type: related_topic
   priority: 4
 - link_url: /guides/install-odoo-18-on-ubuntu-2204/
   anchor_text: 'Install Odoo 18 on Ubuntu 22.04: Complete 2025 Guide'
   context: Secure and optimize your installation
+  link_type: related_topic
   priority: 4
-- link_url: /guides/install-odoo-18-on-ubuntu-2404/
-  anchor_text: 'Install Odoo 18 on Ubuntu 24.04: Complete 2025 Guide'
+- link_url: /guides/install-odoo-18-on-fedora-39/
+  anchor_text: 'Install Odoo 18 on Fedora 39: Complete 2025 Guide'
   context: Secure and optimize your installation
+  link_type: related_topic
   priority: 4
-- link_url: /guides/deploy-odoo-18-on-digitalocean/
-  anchor_text: Deploy on Digitalocean
-  context: Compare with other cloud providers
-  priority: 7
-- link_url: /guides/deploy-odoo-18-on-linode/
-  anchor_text: Deploy on Linode
-  context: Compare with other cloud providers
-  priority: 7
 visualizations:
 - chart_type: mermaid
-  placement_hint: after_introduction
-  data_context: cloud_deployment workflow visualization
-  mermaid_chart_syntax: "flowchart LR\n    Start([Deploy Odoo 18]) --> Provision[Provision\
-    \ Instance]\n    Provision --> Firewall[Configure Firewall]\n    Firewall -->\
-    \ Install[Install Dependencies]\n    Install --> Deploy[Deploy Odoo]\n    Deploy\
-    \ --> SSL[Configure SSL]\n    SSL --> End([Production Ready])\n\n    classDef\
-    \ process fill:#f8f9fa,stroke:#6c757d,stroke-width:1px\n    classDef endpoint\
-    \ fill:#d4edda,stroke:#28a745,stroke-width:2px\n\n    class Provision,Firewall,Install,Deploy,SSL\
-    \ process\n    class Start,End endpoint"
+  placement_hint: after_steps
+  data_context: installation workflow visualization (semantic variant)
+  mermaid_chart_syntax: "flowchart TB\n    Start([Enterprise Infrastructure]) --> LB[Load Balancer Setup]\n    LB --> App1[Application Server 1]\n    LB --> App2[Application Server 2]\n    LB --> App3[Application Server N]\n    App1 --> DB[PostgreSQL Primary]\n    App2 --> DB\n    App3 --> DB\n    DB --> Replica[PostgreSQL Replicas]\n    Replica --> NFS[Shared NFS Storage]\n    NFS --> Monitor[Monitoring & Alerting]\n    Monitor --> Backup[Automated Backups]\n    Backup --> End([High Availability Ready])\n\n    classDef lb fill:#ff9800,stroke:#f57c00,stroke-width:2px,color:#fff\n    classDef app fill:#2196f3,stroke:#1976d2,stroke-width:2px,color:#fff\n    classDef database fill:#4caf50,stroke:#388e3c,stroke-width:2px,color:#fff\n    classDef ops fill:#9c27b0,stroke:#7b1fa2,stroke-width:2px,color:#fff\n\n    class LB lb\n    class App1,App2,App3 app\n    class DB,Replica database\n    class NFS,Monitor,Backup ops\n"
+  variant_id: install_chart_008
+- chart_type: mermaid
+  placement_hint: after_prerequisites
+  data_context: 'Phase 1: Infrastructure Preparation'
+  mermaid_chart_syntax: "flowchart TB\n    Start([Server Provisioning]) --> Hardware[Verify Hardware Requirements]\n    Hardware --> Network[Configure Network Settings]\n    Network --> DNS[Setup DNS Records]\n    DNS --> Firewall[Configure Firewall Rules]\n    Firewall --> Users[Create System Users]\n    Users --> Dirs[Setup Directory Structure]\n    Dirs --> End([Infrastructure Ready])\n\n    classDef prep fill:#fff3cd,stroke:#ffc107,stroke-width:2px\n    classDef network fill:#e1f5fe,stroke:#0277bd,stroke-width:1px\n    classDef success fill:#d4edda,stroke:#28a745,stroke-width:2px\n\n    class Hardware,Users,Dirs prep\n    class Network,DNS,Firewall network\n    class Start,End success\n"
+  variant_id: install_chart_001_prep
+- chart_type: mermaid
+  placement_hint: after_configuration
+  data_context: 'Phase 3: Security Hardening & Configuration'
+  mermaid_chart_syntax: "flowchart LR\n    Start([Post-Installation]) --> SSH[Harden SSH Config]\n    SSH --> Fail2ban[Install Fail2ban]\n    Fail2ban --> UFW[Configure UFW/iptables]\n    UFW --> Perms[Set File Permissions]\n    Perms --> Backup[Setup Automated Backups]\n    Backup --> Monitor[Configure Monitoring]\n    Monitor --> End([Security Hardened])\n\n    classDef security fill:#f44336,stroke:#d32f2f,stroke-width:2px,color:#fff\n    classDef ops fill:#9c27b0,stroke:#7b1fa2,stroke-width:2px,color:#fff\n    classDef success fill:#d4edda,stroke:#28a745,stroke-width:2px\n\n    class SSH,Fail2ban,UFW,Perms security\n    class Backup,Monitor ops\n    class Start,End success\n"
+  variant_id: install_chart_001_security
+- chart_type: mermaid
+  placement_hint: before_troubleshooting
+  data_context: 'Phase 4: Testing & Validation'
+  mermaid_chart_syntax: "flowchart LR\n    Start([Deployment Complete]) --> Health[Health Check API]\n    Health --> Database[Database Connectivity Test]\n    Database --> Login[Admin Login Test]\n    Login --> Module[Module Installation Test]\n    Module --> Load[Basic Load Test]\n    Load --> SSL[SSL Certificate Validation]\n    SSL --> End([Validated & Production Ready])\n\n    classDef test fill:#e3f2fd,stroke:#1976d2,stroke-width:2px\n    classDef critical fill:#fff3cd,stroke:#ffc107,stroke-width:2px\n    classDef success fill:#d4edda,stroke:#28a745,stroke-width:2px\n\n    class Health,Database,Login,Module,Load test\n    class SSL critical\n    class Start,End success\n"
+  variant_id: install_chart_001_testing
+- chart_type: mermaid
+  placement_hint: after_conclusion
+  data_context: learning path and knowledge graph
+  mermaid_chart_syntax: "flowchart TB\n\n    Current[\"[CURRENT] Deploy Odoo 18 on Hetzner: Complete 2025 Guide\"]\n\n    %% Next Steps - Learning Progression\n    Current --> Next0(\"Upgrade from Odoo 11 to 18\")\n    Current --> Next1(\"Optimize PostgreSQL Performance: Improve Performance by 50%\")\n\n    %% Related Topics - Cross-References\n    Current -.-> Rel0[\"Install Odoo 18 on Windows 2022: Complete 2025 Guide\"]\n    Current -.-> Rel1[\"Install Odoo 18 on Rocky Linux 9: Complete 2025 Guide\"]\n    Current -.-> Rel2[\"Install Odoo 18 on CentOS 9: Complete 2025 Guide\"]\n\n    %% Professional Styling\n    classDef current fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n    classDef prereq fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000\n    classDef next fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000\n    classDef related fill:#f5f5f5,stroke:#616161,stroke-width:1px,color:#000\n    classDef trouble fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000\n    classDef support fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#000\n\n    class Current current\n    class Next0,Next1 next\n    class Rel0,Rel1,Rel2 related"

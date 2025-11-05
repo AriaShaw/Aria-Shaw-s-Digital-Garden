@@ -1,0 +1,65 @@
+problem_statement: OAuth integrations break unexpectedly in production when tokens
+  expire, scopes change, or authorization flows fail. Debugging OAuth issues requires
+  manual API calls, base64 encoding, and complex HTTP request crafting. Without proper
+  testing, authentication failures only surface when users can't access integrated
+  systems.
+value_proposition: A free OAuth 2.0 validator that automates authorization flow
+  testing, token refresh validation, and scope verification - helping you catch authentication
+  issues before deployment without expensive API testing platforms.
+how_to_use:
+- step: Generate authorization URL
+  command: python3 oauth_validator.py --client-id YOUR_ID --client-secret YOUR_SECRET
+    --auth-url https://provider.com/oauth/authorize --token-url https://provider.com/oauth/token
+    --scope "read write"
+- step: Exchange authorization code for token
+  command: python3 oauth_validator.py --client-id YOUR_ID --client-secret YOUR_SECRET
+    --auth-url https://provider.com/oauth/authorize --token-url https://provider.com/oauth/token
+    --code AUTHORIZATION_CODE
+- step: Test token refresh
+  command: python3 oauth_validator.py --client-id YOUR_ID --client-secret YOUR_SECRET
+    --token-url https://provider.com/oauth/token --refresh-token YOUR_REFRESH_TOKEN
+- step: Validate access token against API
+  command: python3 oauth_validator.py --client-id YOUR_ID --client-secret YOUR_SECRET
+    --token-url https://provider.com/oauth/token --code AUTH_CODE --api-endpoint
+    https://api.provider.com/user
+how_it_works: This Python script implements the OAuth 2.0 authorization code flow.
+  It generates authorization URLs with proper parameters (client_id, redirect_uri,
+  scope, state), exchanges authorization codes for access/refresh tokens via POST
+  requests, validates token responses for required fields, tests refresh token functionality,
+  and validates access tokens by calling protected API endpoints with Bearer authentication.
+  Includes expiration checking with warnings for tokens expiring within 5 minutes.
+  No token storage or automatic refresh - designed for manual testing and debugging
+  OAuth integrations during development.
+real_world_use_cases:
+- scenario: Salesforce to Odoo CRM integration
+  outcome: Discovered OAuth scope mismatch before production (requested 'api' scope
+    but needed 'api refresh_token offline_access'). Testing revealed missing refresh_token
+    in response, preventing 24-hour token expiration failures that would have disrupted
+    lead synchronization.
+- scenario: Google Workspace integration for Odoo email
+  outcome: Identified token refresh endpoint returning 400 errors due to incorrect
+    grant_type parameter. Fixed before deployment, avoiding authentication failures
+    that would have prevented 500 users from sending emails through Odoo.
+troubleshooting_faq:
+- question: How do I handle OAuth providers with different token response formats?
+  answer: The script validates standard OAuth 2.0 token responses (access_token,
+    token_type, expires_in). Some providers add custom fields or use different field
+    names. Check the response JSON and modify the script accordingly. The Master
+    Pack includes provider-specific validators for 50+ OAuth providers with automatic
+    response parsing.
+- question: My authorization URL requires PKCE (Proof Key for Code Exchange). Is
+    that supported?
+  answer: This free script implements basic authorization code flow without PKCE.
+    For PKCE support, you need to generate code_verifier and code_challenge parameters.
+    The Master Pack includes PKCE validator with S256 and plain challenge methods
+    for enhanced security testing.
+- question: How can I test OAuth with localhost redirect URIs?
+  answer: The script defaults to http://localhost:8080/callback. Many providers require
+    HTTPS even for localhost. Consider using ngrok for HTTPS tunneling or configure
+    provider to allow HTTP localhost. The Master Pack includes built-in local callback
+    server that captures authorization codes automatically without manual copy-paste.
+- question: Can this tool detect insufficient OAuth scopes before API calls fail?
+  answer: The script validates scopes returned in token response against requested
+    scopes. However, scope enforcement happens at API level. To test scope permissions,
+    use --api-endpoint flag with various API calls. The Master Pack includes comprehensive
+    scope testing with 100+ pre-defined API endpoint tests per provider.

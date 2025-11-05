@@ -1,0 +1,504 @@
+# Installation Chart Variants
+# Semantic matching for installation workflow visualizations
+# 10 variants covering different installation scenarios
+
+variants:
+  - id: install_chart_001
+    semantic_tags:
+      - installation
+      - os_based
+      - postgresql
+      - bare_metal
+    context_requirements:
+      must_have: ["os_name", "odoo_version"]
+      optional: ["postgresql_version", "python_version"]
+    chart_complexity: medium
+    environment_type: production
+    deployment_scenario: bare_metal
+    chart_template: |
+      flowchart LR
+          Start([{{os_name}} Server]) --> Update[Update System Packages]
+          Update --> Postgres[Install PostgreSQL {{postgresql_version}}]
+          Postgres --> Python[Install Python {{python_version}}]
+          Python --> Deps[Install Dependencies]
+          Deps --> Odoo[Install Odoo {{odoo_version}}]
+          Odoo --> Config[Configure systemd Service]
+          Config --> Nginx[Setup Nginx Reverse Proxy]
+          Nginx --> SSL[Configure SSL/TLS]
+          SSL --> End([Production Ready])
+
+          classDef step fill:#f8f9fa,stroke:#6c757d,stroke-width:1px
+          classDef database fill:#d1ecf1,stroke:#17a2b8,stroke-width:2px
+          classDef milestone fill:#d4edda,stroke:#28a745,stroke-width:2px
+
+          class Update,Deps,Config,Nginx,SSL step
+          class Postgres,Python database
+          class Start,Odoo,End milestone
+    supplementary_charts:
+      - id: install_chart_001_prep
+        title: "Phase 1: Infrastructure Preparation"
+        placement_hint: "after_prerequisites"
+        chart_template: |
+          flowchart TB
+              Start([Server Provisioning]) --> Hardware[Verify Hardware Requirements]
+              Hardware --> Network[Configure Network Settings]
+              Network --> DNS[Setup DNS Records]
+              DNS --> Firewall[Configure Firewall Rules]
+              Firewall --> Users[Create System Users]
+              Users --> Dirs[Setup Directory Structure]
+              Dirs --> End([Infrastructure Ready])
+
+              classDef prep fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+              classDef network fill:#e1f5fe,stroke:#0277bd,stroke-width:1px
+              classDef success fill:#d4edda,stroke:#28a745,stroke-width:2px
+
+              class Hardware,Users,Dirs prep
+              class Network,DNS,Firewall network
+              class Start,End success
+
+      - id: install_chart_001_security
+        title: "Phase 3: Security Hardening & Configuration"
+        placement_hint: "after_configuration"
+        chart_template: |
+          flowchart LR
+              Start([Post-Installation]) --> SSH[Harden SSH Config]
+              SSH --> Fail2ban[Install Fail2ban]
+              Fail2ban --> UFW[Configure UFW/iptables]
+              UFW --> Perms[Set File Permissions]
+              Perms --> Backup[Setup Automated Backups]
+              Backup --> Monitor[Configure Monitoring]
+              Monitor --> End([Security Hardened])
+
+              classDef security fill:#f44336,stroke:#d32f2f,stroke-width:2px,color:#fff
+              classDef ops fill:#9c27b0,stroke:#7b1fa2,stroke-width:2px,color:#fff
+              classDef success fill:#d4edda,stroke:#28a745,stroke-width:2px
+
+              class SSH,Fail2ban,UFW,Perms security
+              class Backup,Monitor ops
+              class Start,End success
+
+      - id: install_chart_001_testing
+        title: "Phase 4: Testing & Validation"
+        placement_hint: "before_troubleshooting"
+        chart_template: |
+          flowchart LR
+              Start([Deployment Complete]) --> Health[Health Check API]
+              Health --> Database[Database Connectivity Test]
+              Database --> Login[Admin Login Test]
+              Login --> Module[Module Installation Test]
+              Module --> Load[Basic Load Test]
+              Load --> SSL[SSL Certificate Validation]
+              SSL --> End([Validated & Production Ready])
+
+              classDef test fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+              classDef critical fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+              classDef success fill:#d4edda,stroke:#28a745,stroke-width:2px
+
+              class Health,Database,Login,Module,Load test
+              class SSL critical
+              class Start,End success
+
+  - id: install_chart_002
+    semantic_tags:
+      - installation
+      - cloud_based
+      - aws
+      - managed_service
+    context_requirements:
+      must_have: ["cloud_provider", "odoo_version"]
+      optional: ["region", "instance_type"]
+    chart_complexity: simple
+    environment_type: production
+    deployment_scenario: cloud
+    chart_template: |
+      flowchart LR
+          Start([AWS Account]) --> VPC[Create VPC & Subnets]
+          VPC --> Security[Configure Security Groups]
+          Security --> RDS[Provision RDS PostgreSQL]
+          RDS --> EC2[Launch EC2 Instance]
+          EC2 --> Deploy[Deploy Odoo {{odoo_version}}]
+          Deploy --> ELB[Configure Load Balancer]
+          ELB --> Route53[Setup Route53 DNS]
+          Route53 --> End([Production Ready])
+
+          classDef aws fill:#ff9900,stroke:#cc7700,stroke-width:2px,color:#fff
+          classDef network fill:#e1f5fe,stroke:#0277bd,stroke-width:1px
+          classDef success fill:#d4edda,stroke:#28a745,stroke-width:2px
+
+          class RDS,EC2,ELB aws
+          class VPC,Security,Route53 network
+          class Start,Deploy,End success
+    supplementary_charts:
+      - id: install_chart_002_infra
+        title: "Phase 1: AWS Infrastructure Setup"
+        placement_hint: "after_prerequisites"
+        chart_template: |
+          flowchart TB
+              Start([AWS Account Setup]) --> IAM[Configure IAM Roles & Policies]
+              IAM --> KMS[Setup KMS Encryption Keys]
+              KMS --> VPC[Create Multi-AZ VPC]
+              VPC --> Subnets[Configure Public/Private Subnets]
+              Subnets --> NAT[Setup NAT Gateways]
+              NAT --> IGW[Configure Internet Gateway]
+              IGW --> End([Network Infrastructure Ready])
+
+              classDef aws fill:#ff9900,stroke:#cc7700,stroke-width:2px,color:#fff
+              classDef network fill:#e1f5fe,stroke:#0277bd,stroke-width:1px
+              classDef success fill:#d4edda,stroke:#28a745,stroke-width:2px
+
+              class IAM,KMS aws
+              class VPC,Subnets,NAT,IGW network
+              class Start,End success
+
+      - id: install_chart_002_storage
+        title: "Phase 2: Database & Storage Configuration"
+        placement_hint: "after_steps"
+        chart_template: |
+          flowchart LR
+              Start([RDS Setup]) --> Subnet[RDS Subnet Group]
+              Subnet --> Params[Parameter Groups]
+              Params --> Multi[Multi-AZ Deployment]
+              Multi --> Encrypt[Enable Encryption]
+              Encrypt --> Backup[Automated Backups]
+              Backup --> S3[S3 for Attachments]
+              S3 --> EBS[EBS Volume Optimization]
+              EBS --> End([Storage Ready])
+
+              classDef database fill:#4caf50,stroke:#388e3c,stroke-width:2px,color:#fff
+              classDef storage fill:#9c27b0,stroke:#7b1fa2,stroke-width:2px,color:#fff
+              classDef success fill:#d4edda,stroke:#28a745,stroke-width:2px
+
+              class Subnet,Params,Multi,Encrypt,Backup database
+              class S3,EBS storage
+              class Start,End success
+
+      - id: install_chart_002_ops
+        title: "Phase 4: Monitoring & Operations"
+        placement_hint: "after_configuration"
+        chart_template: |
+          flowchart TB
+              Start([Monitoring Setup]) --> CW[CloudWatch Dashboards]
+              CW --> Alarms[Configure Alarms]
+              Alarms --> Logs[CloudWatch Logs]
+              Logs --> SNS[SNS Notifications]
+              SNS --> Backup[Backup Strategy]
+              Backup --> DR[Disaster Recovery Plan]
+              DR --> Auto[Auto Scaling Groups]
+              Auto --> End([Operations Ready])
+
+              classDef monitor fill:#ff9800,stroke:#f57c00,stroke-width:2px,color:#fff
+              classDef ops fill:#2196f3,stroke:#1976d2,stroke-width:2px,color:#fff
+              classDef success fill:#d4edda,stroke:#28a745,stroke-width:2px
+
+              class CW,Alarms,Logs,SNS monitor
+              class Backup,DR,Auto ops
+              class Start,End success
+
+  - id: install_chart_003
+    semantic_tags:
+      - installation
+      - cloud_based
+      - azure
+      - managed_service
+    context_requirements:
+      must_have: ["cloud_provider", "odoo_version"]
+      optional: ["region"]
+    chart_complexity: simple
+    environment_type: production
+    deployment_scenario: cloud
+    chart_template: |
+      flowchart LR
+          Start([Azure Account]) --> RG[Create Resource Group]
+          RG --> VNet[Configure Virtual Network]
+          VNet --> PostgreSQL[Azure Database for PostgreSQL]
+          PostgreSQL --> VM[Create Virtual Machine]
+          VM --> Deploy[Deploy Odoo {{odoo_version}}]
+          Deploy --> AppGW[Application Gateway]
+          AppGW --> DNS[Azure DNS Zone]
+          DNS --> End([Production Ready])
+
+          classDef azure fill:#0078d4,stroke:#005a9e,stroke-width:2px,color:#fff
+          classDef network fill:#e1f5fe,stroke:#0277bd,stroke-width:1px
+          classDef success fill:#d4edda,stroke:#28a745,stroke-width:2px
+
+          class PostgreSQL,VM,AppGW azure
+          class RG,VNet,DNS network
+          class Start,Deploy,End success
+
+  - id: install_chart_004
+    semantic_tags:
+      - installation
+      - cloud_based
+      - google_cloud
+      - gcp
+      - managed_service
+    context_requirements:
+      must_have: ["cloud_provider", "odoo_version"]
+      optional: ["region"]
+    chart_complexity: simple
+    environment_type: production
+    deployment_scenario: cloud
+    chart_template: |
+      flowchart LR
+          Start([GCP Account]) --> Project[Create GCP Project]
+          Project --> VPC[Configure VPC Network]
+          VPC --> CloudSQL[Cloud SQL PostgreSQL]
+          CloudSQL --> Compute[Compute Engine Instance]
+          Compute --> Deploy[Deploy Odoo {{odoo_version}}]
+          Deploy --> LB[Cloud Load Balancing]
+          LB --> DNS[Cloud DNS]
+          DNS --> End([Production Ready])
+
+          classDef gcp fill:#4285f4,stroke:#1a73e8,stroke-width:2px,color:#fff
+          classDef network fill:#e1f5fe,stroke:#0277bd,stroke-width:1px
+          classDef success fill:#d4edda,stroke:#28a745,stroke-width:2px
+
+          class CloudSQL,Compute,LB gcp
+          class Project,VPC,DNS network
+          class Start,Deploy,End success
+
+  - id: install_chart_005
+    semantic_tags:
+      - installation
+      - container
+      - docker
+      - containerized
+    context_requirements:
+      must_have: ["container_type", "odoo_version"]
+      optional: ["docker_version"]
+    chart_complexity: simple
+    environment_type: development
+    deployment_scenario: container
+    chart_template: |
+      flowchart LR
+          Start([Docker Host]) --> Network[Create Docker Network]
+          Network --> Postgres[PostgreSQL Container]
+          Postgres --> Odoo[Odoo {{odoo_version}} Container]
+          Odoo --> Volume[Mount Data Volumes]
+          Volume --> Compose[Docker Compose Up]
+          Compose --> End([Development Ready])
+
+          classDef docker fill:#2496ed,stroke:#1a7dc4,stroke-width:2px,color:#fff
+          classDef storage fill:#fff3cd,stroke:#ffc107,stroke-width:1px
+          classDef success fill:#d4edda,stroke:#28a745,stroke-width:2px
+
+          class Postgres,Odoo,Compose docker
+          class Network,Volume storage
+          class Start,End success
+
+  - id: install_chart_006
+    semantic_tags:
+      - installation
+      - container
+      - kubernetes
+      - k8s
+      - orchestrated
+    context_requirements:
+      must_have: ["container_type", "odoo_version"]
+      optional: ["kubernetes_version"]
+    chart_complexity: complex
+    environment_type: production
+    deployment_scenario: container
+    chart_template: |
+      flowchart TB
+          Start([Kubernetes Cluster]) --> NS[Create Namespace]
+          NS --> Secrets[Configure Secrets]
+          Secrets --> PVC[Persistent Volume Claims]
+          PVC --> Postgres[PostgreSQL StatefulSet]
+          Postgres --> Odoo[Odoo {{odoo_version}} Deployment]
+          Odoo --> Service[ClusterIP Service]
+          Service --> Ingress[Ingress Controller]
+          Ingress --> HPA[Horizontal Pod Autoscaler]
+          HPA --> Monitor[Prometheus Monitoring]
+          Monitor --> End([Production Ready])
+
+          classDef k8s fill:#326ce5,stroke:#2350b5,stroke-width:2px,color:#fff
+          classDef storage fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+          classDef network fill:#e1f5fe,stroke:#0277bd,stroke-width:1px
+          classDef success fill:#d4edda,stroke:#28a745,stroke-width:2px
+
+          class Postgres,Odoo,HPA k8s
+          class PVC,Secrets storage
+          class Service,Ingress,Monitor network
+          class Start,NS,End success
+
+  - id: install_chart_007
+    semantic_tags:
+      - installation
+      - development
+      - localhost
+      - testing
+    context_requirements:
+      must_have: ["environment_type", "odoo_version"]
+      optional: ["os_name"]
+    chart_complexity: simple
+    environment_type: development
+    deployment_scenario: bare_metal
+    chart_template: |
+      flowchart LR
+          Start([Development Machine]) --> Python[Install Python {{python_version}}]
+          Python --> Venv[Create Virtual Environment]
+          Venv --> Postgres[Local PostgreSQL]
+          Postgres --> Clone[Clone Odoo {{odoo_version}}]
+          Clone --> Install[pip install -r requirements.txt]
+          Install --> Config[Configure odoo.conf]
+          Config --> Run[Run Odoo Development Server]
+          Run --> End([Ready for Development])
+
+          classDef dev fill:#f8f9fa,stroke:#6c757d,stroke-width:1px
+          classDef python fill:#3776ab,stroke:#2d5d87,stroke-width:2px,color:#fff
+          classDef success fill:#d4edda,stroke:#28a745,stroke-width:2px
+
+          class Venv,Clone,Install,Config,Run dev
+          class Python,Postgres python
+          class Start,End success
+    supplementary_charts:
+      - id: install_chart_007_devtools
+        title: "Phase 1: Development Tools Setup"
+        placement_hint: "after_prerequisites"
+        chart_template: |
+          flowchart TB
+              Start([Development Setup]) --> IDE[Install VS Code/PyCharm]
+              IDE --> Git[Configure Git]
+              Git --> Extensions[Install Extensions]
+              Extensions --> Debug[Setup Debugger]
+              Debug --> Linter[Configure Linters]
+              Linter --> Format[Setup Code Formatters]
+              Format --> End([Dev Tools Ready])
+
+              classDef tools fill:#9c27b0,stroke:#7b1fa2,stroke-width:2px,color:#fff
+              classDef config fill:#e3f2fd,stroke:#1976d2,stroke-width:1px
+              classDef success fill:#d4edda,stroke:#28a745,stroke-width:2px
+
+              class IDE,Git,Extensions tools
+              class Debug,Linter,Format config
+              class Start,End success
+
+      - id: install_chart_007_testing
+        title: "Phase 3: Testing & Quality Setup"
+        placement_hint: "after_steps"
+        chart_template: |
+          flowchart LR
+              Start([Quality Setup]) --> Unit[Setup Unit Tests]
+              Unit --> Coverage[Configure Coverage.py]
+              Coverage --> Pre[Pre-commit Hooks]
+              Pre --> CI[Local CI Pipeline]
+              CI --> Quality[Code Quality Tools]
+              Quality --> End([Testing Ready])
+
+              classDef test fill:#4caf50,stroke:#388e3c,stroke-width:2px,color:#fff
+              classDef quality fill:#ff9800,stroke:#f57c00,stroke-width:2px,color:#fff
+              classDef success fill:#d4edda,stroke:#28a745,stroke-width:2px
+
+              class Unit,Coverage,Pre test
+              class CI,Quality quality
+              class Start,End success
+
+  - id: install_chart_008
+    semantic_tags:
+      - installation
+      - production
+      - enterprise
+      - high_availability
+    context_requirements:
+      must_have: ["environment_type", "odoo_version"]
+      optional: ["server_count"]
+    chart_complexity: complex
+    environment_type: production
+    deployment_scenario: bare_metal
+    chart_template: |
+      flowchart TB
+          Start([Enterprise Infrastructure]) --> LB[Load Balancer Setup]
+          LB --> App1[Application Server 1]
+          LB --> App2[Application Server 2]
+          LB --> App3[Application Server N]
+          App1 --> DB[PostgreSQL Primary]
+          App2 --> DB
+          App3 --> DB
+          DB --> Replica[PostgreSQL Replicas]
+          Replica --> NFS[Shared NFS Storage]
+          NFS --> Monitor[Monitoring & Alerting]
+          Monitor --> Backup[Automated Backups]
+          Backup --> End([High Availability Ready])
+
+          classDef lb fill:#ff9800,stroke:#f57c00,stroke-width:2px,color:#fff
+          classDef app fill:#2196f3,stroke:#1976d2,stroke-width:2px,color:#fff
+          classDef database fill:#4caf50,stroke:#388e3c,stroke-width:2px,color:#fff
+          classDef ops fill:#9c27b0,stroke:#7b1fa2,stroke-width:2px,color:#fff
+
+          class LB lb
+          class App1,App2,App3 app
+          class DB,Replica database
+          class NFS,Monitor,Backup ops
+
+  - id: install_chart_009
+    semantic_tags:
+      - installation
+      - bare_metal
+      - dedicated
+      - single_server
+    context_requirements:
+      must_have: ["server_type", "odoo_version"]
+      optional: ["os_name"]
+    chart_complexity: medium
+    environment_type: production
+    deployment_scenario: bare_metal
+    chart_template: |
+      flowchart LR
+          Start([Dedicated Server]) --> Secure[Security Hardening]
+          Secure --> Firewall[Configure Firewall]
+          Firewall --> Postgres[Install PostgreSQL {{postgresql_version}}]
+          Postgres --> Odoo[Install Odoo {{odoo_version}}]
+          Odoo --> Nginx[Nginx Reverse Proxy]
+          Nginx --> SSL[Let's Encrypt SSL]
+          SSL --> Backup[Configure Backup]
+          Backup --> Monitor[Setup Monitoring]
+          Monitor --> End([Production Ready])
+
+          classDef security fill:#f44336,stroke:#d32f2f,stroke-width:2px,color:#fff
+          classDef app fill:#2196f3,stroke:#1976d2,stroke-width:2px,color:#fff
+          classDef ops fill:#9c27b0,stroke:#7b1fa2,stroke-width:2px,color:#fff
+          classDef success fill:#d4edda,stroke:#28a745,stroke-width:2px
+
+          class Secure,Firewall,SSL security
+          class Postgres,Odoo,Nginx app
+          class Backup,Monitor ops
+          class Start,End success
+
+  - id: install_chart_010
+    semantic_tags:
+      - installation
+      - multi_server
+      - ha
+      - high_availability
+      - scalable
+    context_requirements:
+      must_have: ["server_type", "odoo_version"]
+      optional: ["server_count"]
+    chart_complexity: complex
+    environment_type: production
+    deployment_scenario: bare_metal
+    chart_template: |
+      flowchart TB
+          Start([HA Infrastructure]) --> HAProxy[HAProxy Load Balancer]
+          HAProxy --> Web1[Web Server 1 - Odoo {{odoo_version}}]
+          HAProxy --> Web2[Web Server 2 - Odoo {{odoo_version}}]
+          Web1 --> Master[PostgreSQL Master]
+          Web2 --> Master
+          Master --> Standby[PostgreSQL Standby]
+          Standby --> Gluster[GlusterFS Storage]
+          Gluster --> Redis[Redis Session Store]
+          Redis --> Monitor[Prometheus + Grafana]
+          Monitor --> End([HA Production Ready])
+
+          classDef lb fill:#ff9800,stroke:#f57c00,stroke-width:2px,color:#fff
+          classDef web fill:#2196f3,stroke:#1976d2,stroke-width:2px,color:#fff
+          classDef db fill:#4caf50,stroke:#388e3c,stroke-width:2px,color:#fff
+          classDef storage fill:#9c27b0,stroke:#7b1fa2,stroke-width:2px,color:#fff
+          classDef success fill:#d4edda,stroke:#28a745,stroke-width:2px
+
+          class HAProxy lb
+          class Web1,Web2 web
+          class Master,Standby db
+          class Gluster,Redis,Monitor storage
+          class Start,End success

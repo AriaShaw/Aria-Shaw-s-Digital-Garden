@@ -1,0 +1,96 @@
+template_info:
+  template_id: development
+  description: Odoo development guide main content
+  version: '1.0'
+  variables_required:
+  - development_subject
+  - odoo_version
+template: "Developing {development_subject} for Odoo {odoo_version} requires understanding the framework's architectural patterns,\
+  \ ORM conventions, and view inheritance system before writing code that integrates cleanly with core modules and survives\
+  \ version upgrades without requiring complete rewrites.\n\nOdoo's development paradigm differs fundamentally from traditional\
+  \ web frameworks. Rather than building monolithic applications, you create modular addons that extend base functionality\
+  \ through inheritance and composition. This modular architecture enables selective feature activation but demands careful\
+  \ attention to module dependencies and load order—incorrect dependency specification causes cryptic import errors and runtime\
+  \ failures that waste hours of debugging.\n\n## Development Environment Setup\n\n{development_environment_setup}\n\nThe\
+  \ development environment requires specific component versions that match production deployment targets. Install Python\
+  \ {python_version}, PostgreSQL {postgresql_version}, and Node.js for asset compilation. Create isolated virtual environments\
+  \ for each Odoo version—mixing dependencies across versions generates package conflicts that break both environments.\n\n\
+  Clone Odoo's source repository and checkout the {odoo_version} branch. Install Python dependencies from requirements.txt,\
+  \ then install the Odoo package in development mode using `pip install -e .` enabling code changes without reinstallation.\n\
+  \nConfigure odoo.conf with development-friendly settings: `--dev=all` enables auto-reload on code changes, detailed error\
+  \ traces, and asset source maps. Set `--log-level=debug` for verbose logging and `--db-filter=dev_.*` to prevent accidentally\
+  \ modifying production databases during development sessions.\n\n## Module Structure and Manifest\n\n{module_structure_explanation}\n\
+  \nThe module manifest (__manifest__.py) declares dependencies, data files, and module metadata. Incorrect dependency specification\
+  \ creates subtle bugs—missing dependencies cause ImportError at runtime, circular dependencies prevent module loading entirely,\
+  \ and extra dependencies slow module installation unnecessarily.\n\n```python\n{{\n    'name': '{{module_name}}',\n    'version':\
+  \ '{{module_version}}',\n    'category': '{{module_category}}',\n    'depends': ['base', 'sale', 'stock'],  # Critical:\
+  \ list ALL dependencies\n    'data': [\n        'security/ir.model.access.csv',\n        'views/custom_views.xml',\n   \
+  \     'data/demo_data.xml',\n    ],\n    'installable': True,\n    'application': False,\n    'auto_install': False,\n}}\n\
+  ```\n\nData files load sequentially during module installation. Order matters critically—security definitions must load\
+  \ before views that reference secured models, views must exist before menu items that display them. Incorrect ordering causes\
+  \ installation failures requiring database restoration.\n\n## Model Development and ORM Usage\n\n{model_development_details}\n\
+  \nOdoo models inherit from `models.Model` or `models.TransientModel` depending on persistence requirements. Regular models\
+  \ store data permanently in PostgreSQL tables. Transient models exist temporarily in memory for wizards and temporary calculations—think\
+  \ of them as session storage that expires after user interactions complete.\n\nModel field definitions specify database\
+  \ column types, widget rendering, and validation rules. Field types (Char, Text, Integer, Float, Boolean, Date, Datetime,\
+  \ Selection, Many2one, One2many, Many2many) map to PostgreSQL column types with additional metadata for UI rendering.\n\n\
+  ```python\nclass CustomModel(models.Model):\n    _name = 'custom.model'\n    _description = 'Custom Model Description'\n\
+  \n    name = fields.Char(string='Name', required=True, index=True)\n    description = fields.Text(string='Description')\n\
+  \    state = fields.Selection([\n        ('draft', 'Draft'),\n        ('confirmed', 'Confirmed'),\n        ('done', 'Done'),\n\
+  \    ], default='draft', string='Status')\n    partner_id = fields.Many2one('res.partner', string='Customer')\n    line_ids\
+  \ = fields.One2many('custom.model.line', 'parent_id', string='Lines')\n```\n\nThe ORM provides abstraction over raw SQL\
+  \ but introduces performance implications when used incorrectly. The infamous N+1 query problem emerges when iterating records\
+  \ without prefetching related data—each loop iteration triggers separate database queries that could be consolidated through\
+  \ proper prefetch configuration.\n\n## View Development and Inheritance\n\n{view_development_details}\n\nOdoo views define\
+  \ UI rendering for models. Form views display individual records, tree views show lists, search views filter datasets, kanban\
+  \ views present cards, and pivot/graph views aggregate data visually. Each view type has specific XML structure and widget\
+  \ requirements.\n\nView inheritance enables modification of existing views without editing core files—critical for maintaining\
+  \ upgrade compatibility. Inheritance uses XPath expressions to locate elements, then applies modifications (adding fields,\
+  \ removing elements, changing attributes).\n\n```xml\n<record id=\"view_custom_form\" model=\"ir.ui.view\">\n    <field\
+  \ name=\"name\">custom.model.form</field>\n    <field name=\"model\">custom.model</field>\n    <field name=\"arch\" type=\"\
+  xml\">\n        <form string=\"Custom Model\">\n            <sheet>\n                <group>\n                    <field\
+  \ name=\"name\"/>\n                    <field name=\"description\"/>\n                    <field name=\"state\"/>\n    \
+  \            </group>\n                <notebook>\n                    <page string=\"Lines\">\n                       \
+  \ <field name=\"line_ids\">\n                            <tree editable=\"bottom\">\n                                <field\
+  \ name=\"product_id\"/>\n                                <field name=\"quantity\"/>\n                            </tree>\n\
+  \                        </field>\n                    </page>\n                </notebook>\n            </sheet>\n    \
+  \    </form>\n    </field>\n</record>\n```\n\nView inheritance for existing views requires precise XPath selection. Add\
+  \ fields after specific elements using `<field name=\"new_field\" position=\"after\"/>`. Replace elements entirely with\
+  \ `position=\"replace\"`. Hide fields through `invisible=\"1\"` attributes rather than removing them—removal breaks functionality\
+  \ in other modules that reference those fields.\n\n## Business Logic and Computed Fields\n\n{business_logic_implementation}\n\
+  \nBusiness logic implementation occurs in model methods decorated with framework-specific decorators. `@api.depends()` declares\
+  \ field dependencies for computed fields. `@api.constrains()` validates data before database commits. `@api.onchange()`\
+  \ updates form values dynamically as users type.\n\nComputed fields calculate values from other fields rather than storing\
+  \ data directly. Use computed fields for derived values that change when source data changes—don't store computed values\
+  \ redundantly creating data synchronization problems.\n\n```python\n@api.depends('line_ids.subtotal')\ndef _compute_total(self):\n\
+  \    for record in self:\n        record.total = sum(record.line_ids.mapped('subtotal'))\n\n@api.constrains('quantity')\n\
+  def _check_quantity(self):\n    for record in self:\n        if record.quantity <= 0:\n            raise ValidationError('Quantity\
+  \ must be positive')\n\n@api.onchange('partner_id')\ndef _onchange_partner(self):\n    if self.partner_id:\n        self.payment_term_id\
+  \ = self.partner_id.property_payment_term_id\n```\n\nThe decorator stack executes in specific order. `@api.depends` recalculates\
+  \ whenever dependencies change. `@api.constrains` validates before database write. `@api.onchange` updates UI immediately\
+  \ during data entry without database round-trips.\n\n## Security and Access Rights\n\n{security_implementation}\n\nSecurity\
+  \ operates through two layers: model-level access rights (ir.model.access) and record-level rules (ir.rule). Access rights\
+  \ control which groups can create, read, update, or delete records globally. Record rules filter datasets based on domain\
+  \ expressions—users only see records matching rule conditions.\n\n```csv\nid,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink\n\
+  access_custom_model_user,custom.model.user,model_custom_model,base.group_user,1,1,1,0\naccess_custom_model_manager,custom.model.manager,model_custom_model,base.group_system,1,1,1,1\n\
+  ```\n\nRecord rules use domain syntax to filter records. Restrict users to their own records with `[('user_id', '=', user.id)]`.\
+  \ Filter by company for multi-company setups with `[('company_id', 'in', company_ids)]`. Combine multiple conditions using\
+  \ boolean operators.\n\nSecurity holes emerge from incomplete coverage. Grant access rights for ALL models your module creates.\
+  \ Define record rules for scenarios requiring data isolation. Test security thoroughly—login as non-admin users and verify\
+  \ they cannot access restricted records.\n\n## Testing and Quality Assurance\n\n{testing_guidelines}\n\nOdoo provides unit\
+  \ testing framework based on Python's unittest. Tests run against temporary databases created and destroyed per test class—modifications\
+  \ don't affect development data.\n\n```python\nfrom odoo.tests import TransactionCase\n\nclass TestCustomModel(TransactionCase):\n\
+  \    def setUp(self):\n        super().setUp()\n        self.model = self.env['custom.model']\n        \n    def test_create_record(self):\n\
+  \        record = self.model.create({{'name': 'Test'}})\n        self.assertTrue(record.exists())\n        self.assertEqual(record.state,\
+  \ 'draft')\n```\n\nTest critical workflows end-to-end: create records, transition states, compute totals, generate reports.\
+  \ Don't just test happy paths—verify error handling for invalid data, missing required fields, and constraint violations.\n\
+  \nRun tests locally before committing code: `odoo-bin -c odoo.conf -d test_db --test-enable --stop-after-init`. Fix failing\
+  \ tests immediately—don't commit broken tests intending to fix later. Broken tests compound into massive cleanup efforts\
+  \ that block development for days.\n\n## Deployment and Version Control\n\n{deployment_best_practices}\n\nUse git for version\
+  \ control with branches matching Odoo versions: master for Odoo 18, 17.0 for Odoo 17. Tag releases with semantic versioning:\
+  \ v1.0.0 for initial release, v1.1.0 for feature additions, v1.0.1 for bug fixes.\n\nDeploy custom modules by copying to\
+  \ Odoo's addons path or using `--addons-path` configuration. Restart Odoo service after file changes in production. Update\
+  \ module through Odoo UI (Apps > Upgrade) to apply database schema changes and reload views.\n\nMaintain separate development,\
+  \ staging, and production environments. Test in development, validate in staging with production data clones, then deploy\
+  \ to production during maintenance windows. Never develop directly in production—production bugs affect real business operations\
+  \ and angry users.\n"

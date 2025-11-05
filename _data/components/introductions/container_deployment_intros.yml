@@ -1,0 +1,95 @@
+# Container Deployment Introduction Variants
+# For Docker/Kubernetes Odoo deployment pages
+
+variants:
+  - id: intro_container_001
+    semantic_tags:
+      - container_deployment
+      - docker
+      - development_workflow
+      - environment_parity
+    context_requirements:
+      must_have: []
+      optional: ["container_type", "odoo_version", "docker_version"]
+    tone: pragmatic
+    length: medium
+    text: |
+      Containerized Odoo deployments using Docker solve the environment inconsistency problems that plague traditional installations—where modules function perfectly in development environments running Ubuntu 22.04 with PostgreSQL 14 but fail mysteriously in production environments using different OS versions, library dependencies, or database configurations. Container images package Odoo application code, Python dependencies, system libraries, and configuration files into reproducible artifacts that execute identically across developer workstations, staging servers, and production infrastructure. This deployment consistency eliminates the "works on my machine" syndrome that wastes hours debugging environment-specific failures.
+
+      Docker-based deployments transform Odoo infrastructure from manually configured servers requiring careful documentation and replication procedures into declarative infrastructure-as-code that developers commit to version control alongside application customizations. The docker-compose.yml configuration defining your Odoo deployment—specifying PostgreSQL version, Python base image, volume mounts, network configuration, environment variables—becomes executable documentation that any team member can deploy with identical results. When new developers join your team, they clone the repository and run docker-compose up rather than following twenty-page installation guides that inevitably contain outdated steps or undocumented manual configurations.
+
+      This container deployment guide focuses on practical Docker usage for Odoo development and small-scale production deployments serving ten to fifty concurrent users. You'll learn docker-compose configurations optimized for development workflows with hot code reloading and debugger attachment, understand volume mounting strategies that persist database and filestore data across container restarts, implement secrets management for database credentials and API keys, and configure networking for multi-container deployments isolating Odoo, PostgreSQL, and optional services like Redis or NGINX proxy servers. Container orchestration platforms like Kubernetes receive separate coverage—this guide assumes you want simple Docker deployment without complex orchestration layer overhead.
+
+  - id: intro_container_002
+    semantic_tags:
+      - container_deployment
+      - kubernetes
+      - production_scale
+      - orchestration
+    context_requirements:
+      must_have: []
+      optional: ["container_orchestrator", "cluster_size", "odoo_version"]
+    tone: technical
+    length: long
+    text: |
+      Kubernetes orchestration for Odoo deployments provides production-grade infrastructure automation that Docker Compose cannot deliver—automatic container restart on failures, horizontal pod autoscaling during traffic spikes, zero-downtime rolling updates, declarative configuration management, and built-in service discovery eliminating manual load balancer configuration. These capabilities justify Kubernetes complexity for organizations running multiple Odoo instances across development, staging, and production environments, serving one hundred-plus concurrent users, or operating in regulated industries requiring documented change management and disaster recovery procedures.
+
+      Kubernetes manages Odoo infrastructure through declarative resource definitions that specify desired state rather than imperative deployment scripts requiring sequential execution. Your Deployment manifest declares "run three Odoo application pods with 2GB memory limits using odoo:17.0 container image"—Kubernetes continuously monitors actual cluster state and automatically corrects divergence from declared configuration. If application pods crash from out-of-memory errors, Kubernetes restarts them automatically. If nodes fail from hardware problems, Kubernetes reschedules affected pods to healthy nodes. If you update the Deployment to request five pods instead of three, Kubernetes provisions additional capacity without manual intervention. This self-healing infrastructure reduces operational burden compared to traditional architectures where administrators manually respond to every infrastructure incident.
+
+      StatefulSet resources manage PostgreSQL database deployments requiring stable network identities, persistent storage, and ordered startup/shutdown procedures that Kubernetes Deployment resources cannot guarantee. PostgreSQL requires consistent data directory persistence across pod restarts—losing database state forces complete disaster recovery from backups rather than simple service restart. StatefulSets provide stable pod hostnames enabling PostgreSQL replication configuration, PersistentVolumeClaim templates ensuring each database replica provisions dedicated storage, and ordered scaling guaranteeing primary database starts before replicas attempt streaming replication connection. This specialized resource type handles stateful workload complexity that generic container orchestration cannot address.
+
+      This Kubernetes deployment guide assumes intermediate container orchestration knowledge—you understand basic Kubernetes concepts like pods, services, and deployments but need Odoo-specific configuration guidance. You'll learn how to package Odoo custom modules into container images, configure ConfigMaps and Secrets for environment-specific configuration, implement Ingress resources routing external traffic to Odoo services, establish HorizontalPodAutoscaler policies scaling application pods based on CPU utilization, and deploy PostgreSQL using StatefulSets with streaming replication for high availability. The configurations provided represent production-tested patterns validated across managed Kubernetes services including EKS, GKE, and AKS rather than theoretical examples requiring extensive modification.
+
+  - id: intro_container_003
+    semantic_tags:
+      - container_deployment
+      - devops
+      - ci_cd
+      - automation
+    context_requirements:
+      must_have: []
+      optional: ["ci_platform", "deployment_frequency"]
+    tone: operational
+    length: medium
+    text: |
+      Container-based Odoo deployments enable DevOps automation workflows that reduce deployment risk, accelerate release velocity, and improve operational reliability compared to manual deployment procedures requiring SSH access and sequential command execution. Continuous integration pipelines automatically build container images from git commits, run automated test suites validating module functionality, perform security scanning detecting vulnerable dependencies, and push validated images to container registries—transforming deployment preparation from manual weekend procedures requiring operational heroics into automated workflows completing within minutes of code commits.
+
+      GitOps deployment patterns treat infrastructure configuration as version-controlled code subject to pull request review, automated validation, and audit trails documenting every configuration change. Your container deployment manifests defining Odoo deployment parameters—resource limits, replica counts, database connection strings, module configurations—reside in git repositories alongside application code. Deployment automation watches these repositories and automatically applies configuration changes when commits merge to production branches. This approach eliminates manual deployment commands that create undocumented infrastructure state, provides rollback capabilities reverting problematic deployments through git revert operations, and enables disaster recovery scenarios where complete infrastructure reconstruction executes by applying version-controlled configuration to fresh container orchestration platforms.
+
+      This container deployment guide integrates CI/CD tooling recommendations throughout configuration examples rather than treating automation as an afterthought added post-deployment. You'll discover how to structure Dockerfiles enabling efficient layer caching that accelerates image rebuilds, implement multi-stage builds separating build-time dependencies from runtime container images reducing attack surface, configure GitHub Actions or GitLab CI pipelines automating image builds and test execution, and establish deployment workflows promoting validated container images from development through staging to production environments. The automation patterns documented here reflect production practices from organizations shipping Odoo updates multiple times weekly rather than theoretical best practices divorced from operational reality.
+
+  - id: intro_container_004
+    semantic_tags:
+      - container_deployment
+      - security
+      - isolation
+      - least_privilege
+    context_requirements:
+      must_have: []
+      optional: ["security_requirements", "compliance_framework"]
+    tone: security_focused
+    length: medium
+    text: |
+      Container deployments provide security isolation layers that traditional Odoo installations cannot achieve—process namespace isolation preventing container breakout attacks from affecting host systems, read-only root filesystems blocking malware persistence attempts, Linux capability dropping removing unnecessary privileges from Odoo processes, and network policy enforcement restricting container-to-container communication to explicitly permitted paths. These security controls transform Odoo from applications running with excessive privileges on shared servers into restricted processes operating within defense-in-depth security boundaries.
+
+      Docker and Kubernetes security configurations implement least-privilege principles reducing attack surface when vulnerabilities compromise Odoo application code. Containers should execute as non-root users—if attackers exploit Odoo application vulnerabilities gaining code execution, non-root process restrictions limit damage by preventing system-level privilege escalation. Read-only root filesystems force attackers to write malicious files into ephemeral volumes that disappear on container restart rather than persistent directories enabling long-term system compromise. Network policies implementing microsegmentation ensure PostgreSQL databases only accept connections from Odoo application containers rather than exposing database ports to entire cluster networks. AppArmor or SELinux profiles further restrict filesystem access, network socket creation, and system call usage beyond default container isolation boundaries.
+
+      This container deployment guide emphasizes security configuration best practices throughout rather than relegating security to optional hardening appendices. Every Dockerfile implements non-root user execution, every docker-compose configuration mounts read-only volumes where feasible, every Kubernetes manifest specifies SecurityContext restrictions, and every deployment pattern assumes eventual security compromise requiring defense-in-depth protections. You'll learn how to implement secrets management using Docker secrets or Kubernetes sealed secrets rather than environment variables exposing credentials in process listings, configure TLS encryption for PostgreSQL connections preventing credential interception, scan container images for vulnerabilities using tools like Trivy, and establish update procedures applying security patches to base images and dependencies without service disruption.
+
+  - id: intro_container_005
+    semantic_tags:
+      - container_deployment
+      - portability
+      - cloud_agnostic
+      - vendor_independence
+    context_requirements:
+      must_have: []
+      optional: ["cloud_provider", "migration_scenario"]
+    tone: strategic
+    length: medium
+    text: |
+      Containerized Odoo deployments provide infrastructure portability that vendor-locked cloud architectures cannot match—applications packaged as container images execute identically across AWS ECS, Google Cloud Run, Azure Container Instances, or self-hosted Kubernetes clusters without application code changes or deployment procedure modifications. This vendor independence provides strategic flexibility as cloud economics shift, prevents migration lock-in where switching providers requires application architecture rebuilds, and enables hybrid deployments distributing workloads across multiple cloud providers based on regional pricing advantages or compliance requirements.
+
+      Traditional cloud deployments accumulate vendor-specific dependencies that create migration barriers preventing infrastructure optimization. Applications using AWS-specific services like RDS parameter groups, Lambda functions, or DynamoDB databases require significant re-architecture for Azure or Google Cloud migration. Load balancer configurations, auto-scaling policies, monitoring dashboards, and deployment automation accumulate provider-specific implementations that resist portability. Container-based architectures using Kubernetes abstractions over cloud-specific services—Ingress resources instead of provider load balancers, HorizontalPodAutoscaler instead of cloud auto-scaling services, Prometheus monitoring instead of CloudWatch—maintain deployment consistency across infrastructure providers enabling low-friction migration when business requirements change.
+
+      This container deployment guide prioritizes cloud-agnostic patterns over provider-specific optimizations, accepting minor convenience sacrifices for strategic portability gains. Configuration examples use standard Kubernetes resources with optional annotations explaining provider-specific enhancements available when vendor lock-in concerns don't apply. You'll understand which architectural decisions create hard cloud dependencies versus which choices preserve migration flexibility, learn how to evaluate trade-offs between managed services convenience and multi-cloud portability, and implement deployment patterns supporting production operations across diverse infrastructure environments without maintaining separate architecture variants. The vendor independence these patterns provide delivers compounding value over multi-year operational periods as cloud pricing models evolve and business requirements demand infrastructure agility.

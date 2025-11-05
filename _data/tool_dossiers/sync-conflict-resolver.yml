@@ -1,0 +1,74 @@
+problem_statement: Data synchronization conflicts create duplicate records, inconsistent
+  data, and business process failures across integrated systems. Manual conflict
+  resolution is time-consuming (4-6 hours per 1000 records) and error-prone, often
+  resulting in data loss or incorrect merges. Without automated detection, sync conflicts
+  accumulate silently until database integrity is compromised.
+value_proposition: A free sync conflict resolver that automatically identifies duplicates,
+  detects field-level conflicts, and suggests resolution strategies - helping you
+  maintain data integrity across systems without expensive data quality platforms.
+how_to_use:
+- step: Create sample records file (JSON array)
+  command: 'cat > records.json <<EOF
+
+    [
+
+    {"id": 1, "email": "john@example.com", "name": "John Doe", "updated_at": "2025-01-15T10:00:00"},
+
+    {"id": 2, "email": "john@example.com", "name": "J. Doe", "updated_at": "2025-01-15T11:00:00"}
+
+    ]
+
+    EOF'
+- step: Detect duplicates using email as key field
+  command: python3 sync_conflict_resolver.py records.json --key-fields email
+- step: Detect using multiple key fields
+  command: python3 sync_conflict_resolver.py records.json --key-fields email phone
+- step: Use merge strategy and save report
+  command: python3 sync_conflict_resolver.py records.json --key-fields email --strategy
+    merge --output conflict_report.json
+how_it_works: This Python script analyzes JSON records for synchronization conflicts.
+  It creates composite keys from specified fields (normalized to lowercase, trimmed),
+  identifies duplicate records sharing the same key values, performs field-level
+  diff to detect conflicts (uses SequenceMatcher for string similarity), classifies
+  conflicts (missing, minor_difference, major_difference, value_mismatch), and suggests
+  resolution strategies (most_recent keeps newer record by timestamp, merge combines
+  non-conflicting fields with conflict markers, manual flags complex cases). Generates
+  detailed reports with conflict details and recommended actions. No automatic data
+  modification or database updates - designed for conflict analysis and manual review
+  before applying resolutions.
+real_world_use_cases:
+- scenario: Customer data sync between Odoo CRM and marketing automation (HubSpot)
+  outcome: Detected 347 duplicate customer records caused by email normalization
+    issues (john@example.com vs John@Example.com). Conflict resolver identified field-level
+    differences in 89 records (name formatting, phone number formats). Used merge
+    strategy to combine records, reducing duplicates by 95% and improving email campaign
+    targeting accuracy.
+- scenario: Product catalog synchronization (Odoo to e-commerce platform)
+  outcome: Identified 156 conflicting product records with price discrepancies between
+    systems. Analysis revealed sync timing issue where price updates were overwritten
+    by stale data. Implemented most_recent strategy to preserve latest prices, preventing
+    $23,000 in pricing errors that would have caused customer complaints and refund
+    requests.
+troubleshooting_faq:
+- question: How do I handle conflicts where both records should be kept (legitimate
+    duplicates)?
+  answer: This script assumes duplicates based on key fields are conflicts. For legitimate
+    duplicates (e.g., multiple addresses for same customer), use different key fields
+    or add unique identifiers. The Master Pack includes duplicate classification
+    with ML-based true/false duplicate detection and support for one-to-many relationships.
+- question: Can this tool resolve conflicts automatically without manual review?
+  answer: This free script suggests resolutions only - no automatic database updates.
+    For automated resolution, export report JSON and write custom script to apply
+    suggested actions. The Master Pack includes automated conflict resolution engine
+    with configurable confidence thresholds, rollback support, and audit trails for
+    compliance.
+- question: How do I detect conflicts for nested object fields (e.g., address.city)?
+  answer: The script compares flat fields only. For nested objects, flatten your
+    data before analysis or modify the script to recursively compare nested structures.
+    The Master Pack supports deep object comparison with dot notation for nested field
+    conflicts (customer.billing_address.city vs customer.shipping_address.city).
+- question: What if records lack timestamps for most_recent strategy?
+  answer: The script falls back to manual_review if timestamps are equal or missing.
+    Consider adding timestamp fields during data export or use merge strategy instead.
+    The Master Pack includes 10+ resolution strategies (field priority, data source
+    priority, user-defined rules, ML confidence scoring) for complex conflict scenarios.

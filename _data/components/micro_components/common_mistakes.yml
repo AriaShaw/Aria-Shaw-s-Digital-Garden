@@ -1,0 +1,124 @@
+# Common Mistakes Micro Components
+# Frequent errors practitioners make and how to avoid them
+# Used to inject preventive guidance throughout content
+
+variants:
+  - id: mistake_001
+    category: installation
+    semantic_tags:
+      - installation
+      - permissions
+      - troubleshooting
+    severity: high
+    content: |
+      **Common Mistake**: Running Odoo as the root user eliminates permission issues temporarily but creates catastrophic security vulnerabilities. If attackers compromise the Odoo process, they gain root access to your entire system. Always create a dedicated 'odoo' system user with restricted permissions—accept the complexity of proper permission management over catastrophic risk.
+
+  - id: mistake_002
+    category: database
+    semantic_tags:
+      - database
+      - performance
+      - configuration
+    severity: medium
+    content: |
+      **Common Mistake**: Accepting PostgreSQL's default configuration without tuning wastes 70-80% of potential database performance. Administrators install PostgreSQL, verify it runs, and move forward without adjusting `shared_buffers`, `effective_cache_size`, or `work_mem`. Spend 15 minutes tuning these parameters based on system RAM—the performance gains persist for years.
+
+  - id: mistake_003
+    category: backup
+    semantic_tags:
+      - backup
+      - disaster_recovery
+      - testing
+    severity: critical
+    content: |
+      **Common Mistake**: Automating backups without testing restoration procedures creates false confidence. Backup scripts run successfully daily, administrators assume protection, then discover during actual disaster recovery that backups were incomplete, corrupted, or missing critical filestore attachments. Test full restoration quarterly at minimum.
+
+  - id: mistake_004
+    category: ssl
+    semantic_tags:
+      - ssl
+      - mixed_content
+      - browser_warnings
+    severity: medium
+    content: |
+      **Common Mistake**: Enabling HTTPS while leaving internal links hardcoded to HTTP creates mixed content warnings that break functionality. Users access `https://yourdomain.com` but Odoo renders assets from `http://yourdomain.com`, triggering browser security blocks. Set `proxy_mode = True` in odoo.conf and configure `web.base.url` to HTTPS to prevent this.
+
+  - id: mistake_005
+    category: migration
+    semantic_tags:
+      - migration
+      - data_integrity
+      - cutover
+    severity: high
+    content: |
+      **Common Mistake**: Attempting migration cutover on Monday morning maximizes business impact if issues emerge. Schedule go-live for Friday evening or weekend when you have 48 hours to address problems before normal business operations resume. Monday-morning cutovers that encounter issues disrupt the entire week.
+
+  - id: mistake_006
+    category: upgrade
+    semantic_tags:
+      - upgrade
+      - custom_modules
+      - compatibility
+    severity: high
+    content: |
+      **Common Mistake**: Upgrading Odoo's major version without checking custom module compatibility breaks production immediately. Custom modules written for Odoo 14 don't automatically work in Odoo 15 due to API changes and deprecated features. Test upgrades in staging with full production data clones before touching production systems.
+
+  - id: mistake_007
+    category: security
+    semantic_tags:
+      - security
+      - firewall
+      - access_control
+    severity: critical
+    content: |
+      **Common Mistake**: Opening port 8069 to `0.0.0.0/0` during initial setup, then forgetting to restrict access after NGINX configuration completes. This leaves Odoo's unencrypted administrative interface accessible globally, bypassing all reverse proxy security features. Document firewall rule changes and implement review checklists.
+
+  - id: mistake_008
+    category: performance
+    semantic_tags:
+      - performance
+      - workers
+      - configuration
+    severity: medium
+    content: |
+      **Common Mistake**: Running Odoo with single-worker configuration in production limits concurrency to one request at a time. When one user generates a large report (taking 30 seconds), all other users wait. Configure `workers = (CPU_cores × 2) + 1` to enable parallel request processing and prevent user-facing slowdowns.
+
+  - id: mistake_009
+    category: monitoring
+    semantic_tags:
+      - monitoring
+      - disk_space
+      - proactive
+    severity: high
+    content: |
+      **Common Mistake**: Ignoring disk space monitoring until the system runs out of space during month-end processing, causing database corruption and transaction failures. Odoo's filestore grows continuously with uploaded attachments and generated reports. Configure alerts at 20% free space to enable planned cleanup before emergencies.
+
+  - id: mistake_010
+    category: user_management
+    semantic_tags:
+      - user_management
+      - access_rights
+      - security
+    severity: medium
+    content: |
+      **Common Mistake**: Granting all employees "Settings" access for convenience eliminates security boundaries between operational users and system administrators. Users accidentally modify company-wide configurations, install untested modules, or access financial data beyond their role requirements. Follow principle of least privilege—grant only required permissions per role.
+
+  - id: mistake_011
+    category: integration
+    semantic_tags:
+      - integration
+      - api
+      - error_handling
+    severity: medium
+    content: |
+      **Common Mistake**: Building API integrations without error handling and retry logic assumes perfect network connectivity and Odoo availability. Transient failures (network blips, Odoo restarts) cause integration failures that require manual intervention. Implement exponential backoff retries with maximum attempt limits to handle temporary disruptions automatically.
+
+  - id: mistake_012
+    category: development
+    semantic_tags:
+      - development
+      - git
+      - version_control
+    severity: high
+    content: |
+      **Common Mistake**: Making configuration changes directly in production without version control creates impossible-to-reverse scenarios when changes break functionality. Use git repositories for custom modules and configuration files, commit changes with descriptive messages, and deploy through tested staging environments before production.

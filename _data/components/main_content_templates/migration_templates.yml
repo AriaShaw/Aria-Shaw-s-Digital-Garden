@@ -1,0 +1,616 @@
+template_info:
+  template_id: migration
+  description: Data migration and version upgrade guide main content
+  version: '1.0'
+templates:
+  data_migration:
+    description: Migration from external systems to Odoo
+    variables_required:
+    - source_system
+    - odoo_version
+    template: 'Migrating from {source_system} to Odoo {odoo_version} requires production infrastructure ready before you begin
+      data extraction and transformation activities. Attempting to export data, build import scripts, and configure the target
+      system simultaneously guarantees timeline delays and increases the risk of errors that corrupt production data or require
+      complete restarts.
+
+
+      The migration follows a structured four-phase workflow that balances speed with risk mitigation. Phase one focuses on
+      dependency mapping and data extraction. Phase two establishes the Odoo environment with equivalent functionality. Phase
+      three handles data transformation and import validation. Phase four manages cutover procedures and parallel running
+      verification.
+
+
+      ## Phase 1: Preparation and Data Extraction (Week 1-2)
+
+
+      {source_specific_export_procedures}
+
+
+      Document every {source_system} feature your team currently uses because each one represents a capability you''ll need
+      to replicate or replace in Odoo. {source_specific_feature_mapping}
+
+
+      Export your complete dataset including master data (customers, products, vendors) and transactional history (sales orders,
+      invoices, payments). Most migrations import 2-3 years of historical transactions for reporting continuity—older data
+      can remain archived in {source_system} for reference without loading into Odoo''s active database.
+
+
+      ## Phase 2: Odoo Environment Setup (Week 2-3)
+
+
+      Deploy Odoo {odoo_version} on production-grade infrastructure before attempting any data imports. The deployment guide
+      earlier in this document establishes the technical foundation—PostgreSQL database, application server, backup systems,
+      monitoring tools. Complete the entire deployment and verify system stability before proceeding to data import activities.
+
+
+      Install the Odoo modules that match your {source_system} functionality:
+
+
+      {module_mapping}
+
+
+      Configure each module''s settings to match your business processes. Payment terms, tax rates, fiscal year definitions,
+      currency handling, warehouse locations—these configurations must exist before importing transactional data that references
+      them. Missing configurations cause import failures with cryptic error messages about missing foreign key relationships.
+
+
+      ## Phase 3: Data Transformation and Import (Week 3-6)
+
+
+      {source_system}-specific data structures don''t directly map to Odoo''s data model. {specific_mapping_challenges}
+
+
+      The transformation process converts {source_system} exports into Odoo-compatible CSV files or XML-RPC API calls. Start
+      with master data in this specific order:
+
+
+      1. **Chart of Accounts and Tax Definitions**: Financial configuration must exist before importing transactions that
+      reference account codes and tax rates. Export {source_system}''s chart of accounts, map to Odoo''s account.account structure,
+      and import via CSV through Accounting module.
+
+
+      2. **Customers and Vendors (Partners)**: {source_system}''s customer and vendor records become res.partner entries in
+      Odoo. Map contact information, billing/shipping addresses, payment terms, and credit limits. Handle {source_specific_partner_challenges}
+
+
+      3. **Products and Services**: Export product catalog from {source_system} with SKUs, descriptions, pricing, and cost
+      data. Map to Odoo''s product.product and product.template models, handling {source_specific_product_challenges}
+
+
+      4. **Transactional History**: Import sales orders, invoices, and payments chronologically starting from your cutoff
+      date (typically 2-3 years prior). {source_specific_transaction_notes}
+
+
+      Test imports extensively in a staging environment. Create a full copy of your production Odoo instance, import a small
+      data subset (10-20 records per type), and verify all relationships and calculations work correctly. Fix mapping errors
+      in your transformation scripts, then import progressively larger datasets until you''ve validated the complete process.
+
+
+      ## Phase 4: Cutover and Parallel Running (Week 6-8)
+
+
+      The migration cutover requires careful timing to minimize business disruption. Schedule go-live for a weekend or slow
+      business period when you can afford several hours of downtime for final data synchronization and validation.
+
+
+      Execute the cutover in this sequence:
+
+
+      1. **Final {source_system} backup**: Perform a complete backup of {source_system} immediately before starting cutover
+      procedures. This backup serves as your rollback point if critical issues emerge.
+
+
+      2. **Delta synchronization**: Import all {source_system} transactions created since your last test import. Your transformation
+      scripts should handle incremental imports, updating existing records and creating new ones without duplication.
+
+
+      3. **Data validation checks**: Run comprehensive validation queries comparing {source_system} totals to Odoo totals.
+      Customer count, product count, outstanding invoice balances, accounts receivable aging—these must match exactly. Discrepancies
+      indicate import errors that require immediate correction.
+
+
+      4. **User training and access provisioning**: Create Odoo user accounts for all staff members with appropriate security
+      groups and access rights. Conduct brief training sessions covering navigation, transaction entry, and report generation
+      for their specific roles.
+
+
+      5. **Parallel running period**: Operate both {source_system} and Odoo simultaneously for 1-2 weeks. Enter new transactions
+      in Odoo while maintaining {source_system} read-only access for reference. This parallel period builds confidence and
+      identifies gaps in Odoo configuration or training.
+
+
+      6. **{source_system} decommissioning**: After successful parallel running validates Odoo handles all business operations
+      correctly, decommission {source_system}. Cancel any subscriptions, export final reports for archival, and establish
+      read-only access for historical data queries.
+
+
+      ## Common Migration Pitfalls and Solutions
+
+
+      {source_specific_challenges}
+
+
+      **Underestimating data cleanup effort**: {source_system} accumulates years of inconsistent data entry—duplicate customer
+      records, products with incorrect categories, transactions with missing information. Plan to spend 30-40% of migration
+      time cleaning source data before import. Bad data imported into Odoo multiplies cleanup effort tenfold.
+
+
+      **Inadequate testing of edge cases**: Your transformation scripts handle common scenarios correctly but fail on edge
+      cases like products without SKUs, customers with only shipping addresses (no billing), or voided invoices. Test your
+      import process with the full dataset, not samples, to expose these issues before go-live.
+
+
+      **Insufficient user training**: Power users with years of {source_system} experience struggle with Odoo''s different
+      workflows and terminology. Budget for comprehensive training and provide job aids documenting common tasks in Odoo terms.
+      Plan for productivity dips during the first 2-4 weeks post-migration.
+
+
+      **Missing validation procedures**: Without systematic validation, you discover missing data or incorrect mappings weeks
+      after go-live when reconstruction becomes impossible. Create validation checklists comparing {source_system} reports
+      to Odoo equivalents: customer aging reports, inventory valuation, profit & loss statements.
+
+      '
+    variable_mappings:
+      source_specific_content:
+        Excel:
+          export_procedures: Excel-based business operations typically involve multiple spreadsheets—one for customers, another
+            for products, separate files for invoices, inventory tracking, and expense records. Create a master inventory
+            of all business-critical Excel files currently in use, documenting who maintains each file, update frequency,
+            and dependencies between files. Excel's flexibility means every business develops unique structures, so generic
+            migration tools won't work—you'll need custom transformation scripts.
+          feature_mapping: Excel formulas that calculate taxes, discounts, or inventory valuations become Odoo's built-in
+            computation rules. Excel dropdown lists for product selection become Odoo's many2one relationships with product
+            catalog. Conditional formatting highlighting overdue invoices becomes Odoo's automated payment follow-up workflows.
+            Most Excel functionality translates to configuration rather than customization in Odoo.
+          module_mapping: '- Sales module replaces quote and sales order spreadsheets
+
+            - Inventory module handles stock tracking and valuation
+
+            - Accounting module manages chart of accounts, invoices, and payments
+
+            - CRM module organizes customer communications and opportunity tracking
+
+            - Project module replaces project tracking and time logging spreadsheets'
+          mapping_challenges: Excel's free-form structure allows data inconsistencies that Odoo's relational database rejects.
+            Customer names with slight variations ("ABC Corp", "ABC Corporation", "ABC Corp.") become three separate res.partner
+            records unless you implement deduplication logic. Product codes in various formats (numeric, alphanumeric, with/without
+            dashes) require normalization before import.
+          partner_challenges: Excel's single-line customer records become structured partner records with separate billing
+            and shipping addresses. Extract and parse address fields, normalize phone number formats, and handle multiple
+            contact persons who share a customer record.
+          product_challenges: Excel product lists often lack formal SKUs or use SKUs inconsistently. Assign unique internal
+            references to every product before import. Handle unit of measure variations ("box", "case", "ea", "each") by
+            mapping to Odoo's standardized UOM system.
+          transaction_notes: Excel invoice spreadsheets typically lack true transaction IDs—you'll need to generate unique
+            identifiers for historical records. Date formats vary across spreadsheets (MM/DD/YYYY, DD-MM-YYYY, text dates)—normalize
+            all dates to YYYY-MM-DD before import. Handle merged cells, hidden columns, and formatted values that don't import
+            correctly through pandas or openpyxl.
+          challenges: '**Challenge**: Excel files containing years of ad-hoc additions lack consistent structure.
+
+            **Solution**: Don''t attempt automated import of every historical record. Import recent master data (customers,
+            products from last year) and last 12 months of transactions. Archive older Excel files for reference.
+
+
+            **Challenge**: Excel formulas that calculate complex pricing or commission structures.
+
+            **Solution**: Recreate formula logic using Odoo''s pricelist rules, commission calculation fields, or custom Python
+            code in Odoo modules. Document Excel formulas thoroughly before migration.'
+        QuickBooks:
+          export_procedures: QuickBooks Desktop and QuickBooks Online use different export procedures. Desktop versions export
+            data through built-in utilities (Company > Export > Lists to IIF Files) or third-party tools like Transaction
+            Pro Exporter. QuickBooks Online provides CSV export through Reports interface—run each report type (Customer List,
+            Product/Service List, Sales by Customer, etc.) and export to CSV. For comprehensive exports, QuickBooks API access
+            through applications like SaaSant Transactions or Able2Extract provides more complete data extraction.
+          feature_mapping: QuickBooks's job costing becomes Odoo's Project module with analytic accounts. QuickBooks classes
+            for department/location tracking map to Odoo's analytic tags or dimensions. QuickBooks memorized transactions
+            become Odoo's recurring entries. QuickBooks price levels translate to Odoo's pricelist system with customer-specific
+            or quantity-based pricing.
+          module_mapping: '- Accounting module replaces QuickBooks''s financial core (chart of accounts, journal entries,
+            reconciliation)
+
+            - Sales module handles quotes, sales orders, and invoicing
+
+            - Purchase module manages vendor bills and purchase orders
+
+            - Inventory module tracks stock movements and valuations
+
+            - Project module provides job costing and time tracking'
+          mapping_challenges: QuickBooks's "Items" serve multiple purposes (products, services, discounts, subtotals) that
+            map to different Odoo objects. Physical products become product.product entries, services remain services, discount
+            items become sale.order.line with negative amounts. QuickBooks sub-customers (jobs under main customer) require
+            parent-child partner relationships in Odoo.
+          partner_challenges: QuickBooks stores multiple "Ship To" addresses per customer as separate address records. Map
+            these to contact child records under the main res.partner entry in Odoo, using contact type "Delivery Address".
+            Handle QuickBooks terms (Net 30, Due on Receipt) by mapping to Odoo's payment.term model.
+          product_challenges: QuickBooks Items include inventory parts, non-inventory parts, and service items. Map inventory
+            parts to stockable products in Odoo, non-inventory to consumable products, and services to service type products.
+            QuickBooks's two-sided items (both income and expense accounts) require careful mapping to Odoo's product fiscal
+            properties.
+          transaction_notes: Export QuickBooks transactions chronologically to maintain proper historical sequence. Sales
+            Orders become sale.order records, Invoices map to account.move (type 'out_invoice'), Bills to account.move (type
+            'in_invoice'). QuickBooks's "Receive Payment" transactions create account.payment entries in Odoo. Handle partially
+            paid invoices by creating payment records that allocate amounts across multiple invoices.
+          challenges: '**Challenge**: QuickBooks''s complex chart of accounts with nested subaccounts.
+
+            **Solution**: Flatten or simplify account structure during migration. QuickBooks allows unlimited nesting; Odoo
+            handles one level of parent-child relationships naturally. Deeply nested accounts require rethinking your account
+            organization.
+
+
+            **Challenge**: QuickBooks Online''s API rate limits during large data exports.
+
+            **Solution**: Export data in batches over several hours or days rather than attempting single bulk export. Use
+            incremental sync tools that track last export timestamp and only pull new/modified records.'
+        Shopify:
+          export_procedures: 'Shopify''s Export functionality appears in multiple locations: Products > Export (CSV), Customers
+            > Export (CSV), Orders > Export (CSV). Each export type provides different field sets—products include variants
+            and metafields, customer exports contain marketing consent flags, order exports show fulfillment status and shipping
+            details. For complete data extraction including historical order transactions and inventory adjustments, use Shopify''s
+            Admin API or third-party export tools like Matrixify or Shopify Exporter.'
+          feature_mapping: Shopify collections become Odoo product categories and website publication rules. Shopify product
+            variants (size, color) map to Odoo product attributes and variant generation. Shopify discount codes translate
+            to Odoo's coupon program module. Shopify's fulfillment locations become Odoo warehouses or stock locations. Shopify
+            metafields (custom data fields) require Odoo Studio to create equivalent custom fields on product or partner models.
+          module_mapping: '- Sales module handles order processing and invoicing
+
+            - Inventory module manages stock levels and multi-warehouse operations
+
+            - Website + E-commerce modules provide storefront functionality
+
+            - Shopify Connector module enables real-time order sync (hybrid approach)
+
+            - Point of Sale module supports in-store retail operations'
+          mapping_challenges: Shopify's product variant system creates separate SKU for each size/color combination. Odoo
+            uses template/variant architecture where one product template generates multiple product variants through attribute
+            combinations. Rebuild Shopify's variant structure by creating product attributes (Size, Color), defining attribute
+            values (S/M/L, Red/Blue), and generating variants automatically. Shopify product collections can overlap (one
+            product in multiple collections) while Odoo categories traditionally have single parent—use website publication
+            rules or product tags for flexible categorization.
+          partner_challenges: Shopify customers include one default address plus multiple shipping addresses from order history.
+            Import default address as main partner address, create separate child contact records for frequently used shipping
+            addresses. Shopify's customer tags become partner tags in Odoo for segmentation and marketing campaigns.
+          product_challenges: 'Shopify stores product images on Shopify''s CDN with URLs like cdn.shopify.com/s/files/...
+            These URLs remain accessible after migration but depend on your Shopify store staying active. Best practice: download
+            all product images during export, upload to Odoo''s filestore, and update product image fields. Handle Shopify
+            metafields by creating custom fields through Odoo Studio—common metafields like shipping_weight, material, or
+            care_instructions need manual field creation before import.'
+          transaction_notes: Shopify orders include both paid and unpaid statuses. Import paid orders as confirmed sale.order
+            records with associated invoices and payments. Unpaid or pending orders import as quotations in draft state. Shopify's
+            order fulfillment status maps to Odoo's delivery order state (waiting, partially available, done). Historical
+            orders older than 2 years can import as invoices only (skip sale.order creation) for cleaner data and faster imports.
+          challenges: '**Challenge**: Shopify apps that add custom functionality (subscriptions, product bundles,
+            reviews).
+
+            **Solution**: Evaluate Odoo equivalents for each Shopify app. Recurring orders become Odoo subscription module,
+            product bundles use Bills of Materials, reviews use website product reviews. Some apps have no direct Odoo equivalent—assess
+            business impact before migration.
+
+
+            **Challenge**: Maintaining Shopify storefront while using Odoo for backend operations (hybrid approach).
+
+            **Solution**: Install Shopify Connector module for real-time order sync. Configure webhook-based synchronization
+            so Shopify orders create Odoo sale orders automatically. Inventory updates in Odoo sync back to Shopify to prevent
+            overselling. This hybrid approach lets you keep Shopify''s established SEO and marketing while using Odoo''s superior
+            inventory and accounting.'
+        NetSuite:
+          export_procedures: NetSuite's data export capabilities vary by edition and user permissions. Standard approach uses
+            CSV Search with 5,000 row export limit per search—large datasets require multiple searches with date range filters
+            to overcome the limit. SuiteAnalytics Workbooks provide more flexible exports with custom joins across modules
+            but still face row limits. For enterprise-scale exports, NetSuite's RESTlet API or SuiteTalk SOAP API enable programmatic
+            data extraction without row limits. Third-party ETL tools like Dell Boomi, Celigo, or custom Python scripts using
+            NetSuite SDK provide most control for complex, high-volume exports.
+          feature_mapping: NetSuite's SuiteScript customizations (Client Scripts, User Event Scripts, Scheduled Scripts) must
+            convert to Odoo's Python server actions, automated actions, or custom modules. NetSuite workflows become Odoo's
+            automated action chains and approval routing. NetSuite's saved searches translate to Odoo's filtered views and
+            custom reports. NetSuite's subsidiary structure maps to Odoo Enterprise's multi-company architecture with consolidated
+            reporting.
+          module_mapping: '- Accounting module provides GL, AP/AR, bank reconciliation
+
+            - Sales module handles quotes, orders, and invoicing
+
+            - Purchase module manages procurement and vendor bills
+
+            - Inventory module with multi-location support
+
+            - Manufacturing module (MRP) for bill of materials and work orders
+
+            - Consolidation module for multi-company reporting (Enterprise only)'
+          mapping_challenges: NetSuite's sophisticated subsidiary/multi-company structure requires Odoo Enterprise for equivalent
+            functionality. NetSuite subsidiaries become separate res.company records in Odoo with inter-company transactions
+            and consolidated financial reporting. NetSuite's custom fields and records require Odoo Studio to recreate custom
+            fields and models. NetSuite's item record structure (inventory item, non-inventory item, service item, assembly
+            item) maps to Odoo product types (stockable, consumable, service) with Bills of Materials for assembly items.
+          partner_challenges: NetSuite's customer and vendor records with subsidiary assignments require mapping to Odoo's
+            partner model with company_id field set appropriately. NetSuite contact records (separate from customer records)
+            become contact-type partner records as children of main partner record. Handle NetSuite's category and class dimensions
+            by mapping to Odoo analytic tags or creating custom partner fields.
+          product_challenges: NetSuite Items with multiple pricing levels map to Odoo pricelists with customer or quantity-based
+            rules. NetSuite's matrix items (single item with multiple size/color options) require Odoo product variant structure.
+            NetSuite's assembly items with BOM structure become Odoo BoMs (product.bom) with component product.bom.line records.
+            Handle NetSuite's item fulfillment locations by mapping to Odoo stock locations within warehouses.
+          transaction_notes: NetSuite's transaction hierarchy (Sales Order > Item Fulfillment > Invoice > Payment) maps to
+            Odoo's sale.order > stock.picking > account.move > account.payment workflow. Export NetSuite transactions maintaining
+            parent-child relationships—reference NetSuite's internal IDs or transaction numbers to link related Odoo records
+            during import. Handle NetSuite's journal entries with multiple subsidiaries by creating inter-company entries
+            in Odoo or consolidating at import time.
+          challenges: '**Challenge**: NetSuite SuiteScript business logic embedded in 50+ custom scripts.
+
+            **Solution**: Audit all SuiteScripts to identify business rules versus UI enhancements. Business rules (pricing
+            calculations, approval workflows, integration logic) must recreate in Odoo Python code. UI enhancements often
+            have Odoo equivalents through view customization. Budget significant development time for complex script conversion.
+
+
+            **Challenge**: NetSuite OneWorld multi-subsidiary setup with inter-company transactions.
+
+            **Solution**: Requires Odoo Enterprise edition for multi-company features. Configure res.company records for each
+            subsidiary, set up inter-company transaction rules, and configure consolidation charts of accounts. NetSuite''s
+            complex subsidiary accounting requires careful mapping to Odoo''s inter-company system.'
+  version_upgrade:
+    description: Upgrade from old Odoo version to new version
+    variables_required:
+    - from_version
+    - to_version
+    - odoo_version
+    template: 'Upgrading Odoo from version {from_version} to {to_version} requires careful planning and staging environment
+      testing before touching production systems. Odoo version upgrades involve database schema changes, module API modifications,
+      and potential breaking changes in custom code that demand thorough validation before go-live.
+
+
+      The upgrade path from {from_version} to {to_version} {upgrade_path_complexity} Database migration scripts transform
+      your existing {from_version} data structures into {to_version} format, but custom modules, third-party apps, and configuration
+      customizations require manual review and adaptation.
+
+
+      ## Pre-Upgrade Assessment and Planning
+
+
+      Begin with comprehensive inventory of your current Odoo installation. Document all installed modules including custom
+      developments and third-party apps from Odoo Apps Store. List any custom fields added through Odoo Studio, server actions,
+      automated actions, and custom reports. This inventory identifies upgrade blockers—modules incompatible with {to_version}
+      or customizations requiring code changes.
+
+
+      Test the upgrade in a staging environment that mirrors production infrastructure. Clone your production database, create
+      a separate server instance running Odoo {to_version}, and execute the upgrade process there first. Never upgrade production
+      directly—even Odoo''s official upgrade service occasionally encounters edge cases that require troubleshooting.
+
+
+      {version_specific_breaking_changes}
+
+
+      ## Upgrade Execution Methods
+
+
+      ### Method 1: Odoo Official Upgrade Service (Recommended for Standard Installations)
+
+
+      Odoo provides a web-based upgrade service at upgrade.odoo.com that handles database migration automatically. Upload
+      your database backup (without filestore for faster upload), select target version {to_version}, and wait for processing.
+      The service returns a migrated database typically within hours for small databases, potentially days for multi-GB databases
+      with heavy customization.
+
+
+      Advantages: Handles complex data migrations, tested against thousands of real-world databases, includes Odoo''s upgrade
+      scripts for all standard modules. Limitations: Custom modules don''t migrate automatically, requires internet connection
+      for upload/download, large databases face long processing times.
+
+
+      ### Method 2: OpenUpgrade Open-Source Alternative
+
+
+      OpenUpgrade project provides community-maintained upgrade scripts for migrating between Odoo versions. Clone the OpenUpgrade
+      repository, checkout the {to_version} branch, install dependencies, and run migration against your database copy. OpenUpgrade
+      follows Odoo''s upgrade patterns but adds migrations for community modules not covered by official service.
+
+
+      Advantages: Free for all Odoo editions including Community, handles popular community modules, provides visibility into
+      migration process. Limitations: Requires technical expertise, may lag behind Odoo official releases, limited support
+      for custom modules.
+
+
+      ### Method 3: Manual Module-by-Module Upgrade
+
+
+      For heavily customized installations, manual upgrade provides maximum control. Install Odoo {to_version} in fresh environment,
+      install modules one by one testing each, and migrate data through custom scripts using XML-RPC API or CSV import/export.
+      This approach suits situations where custom code significantly deviates from standard Odoo.
+
+
+      ## Post-Upgrade Validation and Testing
+
+
+      After upgrade completion, systematic validation ensures business operations continue correctly:
+
+
+      **Data Integrity Checks**: Run SQL queries comparing record counts before and after upgrade. Customer count, product
+      count, open sales orders, invoice balances—these must match exactly. Discrepancies indicate migration errors requiring
+      immediate investigation.
+
+
+      **Business Process Testing**: Execute end-to-end workflows for critical operations: create sales order → deliver products
+      → generate invoice → record payment. Test procurement workflows, manufacturing orders if using MRP, and financial period
+      closing procedures. Upgraded systems sometimes exhibit subtle bugs that only appear during specific workflow combinations.
+
+
+      **Custom Module Verification**: Custom modules require code review for API changes between versions. {version_specific_api_changes}
+      Test all custom functionality thoroughly—scheduled actions, automated actions, custom reports, API integrations with
+      external systems.
+
+
+      **User Acceptance Testing**: Involve power users from each department to validate their workflows function correctly.
+      Accounting staff test month-end closing, inventory managers verify stock adjustments, sales team confirms quotation
+      generation. Fresh perspective often catches issues technical testing misses.
+
+
+      ## Rollback Planning and Go-Live Strategy
+
+
+      Maintain ability to roll back to {from_version} if critical issues emerge post-upgrade. Keep the original production
+      server untouched while running upgraded system in parallel. Configure parallel system with different domain name or
+      port, allowing side-by-side comparison and gradual user migration.
+
+
+      Schedule upgrade cutover during slow business period—weekend or holiday when transaction volume drops and you afford
+      several hours maintenance window. Communicate upgrade schedule to all users days in advance, providing fallback procedures
+      if urgent access needed during maintenance.
+
+
+      Execute go-live with cutover checklist:
+
+
+      1. Perform final production backup immediately before migration start
+
+      2. Enable maintenance mode blocking user access during upgrade
+
+      3. Execute upgrade procedure (official service, OpenUpgrade, or manual)
+
+      4. Run automated validation queries checking data integrity
+
+      5. Test critical business processes manually
+
+      6. Enable user access and monitor for issues
+
+      7. Maintain {from_version} system in read-only mode for 1 week as safety net
+
+
+      ## Version-Specific Considerations for {to_version}
+
+
+      {version_specific_new_features}
+
+
+      {version_specific_deprecated_features}
+
+
+      The upgrade from {from_version} to {to_version} typically takes 4-8 weeks from initial assessment through production
+      cutover for standard installations, potentially 12-16 weeks for complex customized systems. Allocate sufficient time
+      for testing—rushing upgrades causes production issues that damage business operations and user confidence.
+
+      '
+    variable_mappings:
+      upgrade_path_content:
+        17_to_18:
+          complexity: represents a major version jump with significant framework changes. Odoo 18 introduces new UI patterns,
+            modified ORM methods, and restructured standard modules.
+        16_to_18:
+          complexity: skips version 17, requiring careful attention to cumulative changes across two major versions. Consider
+            upgrading 16→17→18 sequentially rather than jumping directly, especially with heavy customization.
+        15_to_18:
+          complexity: spans three major versions (15→16→17→18), accumulating significant technical debt and breaking changes. This upgrade path requires sequential migration through intermediate versions for any installation with custom modules or third-party apps. Direct jumping increases failure risk exponentially.
+        14_to_18:
+          complexity: covers four major version releases with cumulative framework evolution across Python 3.8 to 3.11, PostgreSQL 12 to 15, and fundamental ORM restructuring. Expect 12-20 weeks for heavily customized installations. Budget for complete custom module rewrites rather than incremental patches.
+        13_to_18:
+          complexity: represents five years of Odoo evolution with deprecated features removed, core modules restructured, and accounting frameworks completely redesigned. Professional upgrade services strongly recommended for production systems. Plan for 16-24 weeks including comprehensive testing and user retraining.
+        12_to_18:
+          complexity: crosses six major versions with fundamental architecture changes including web framework replacements, database schema evolution, and accounting standard updates. Most organizations find rebuilding on Odoo 18 with fresh data migration more cost-effective than attempting direct upgrade of this magnitude.
+        11_to_18:
+          complexity: spans seven major releases representing complete platform transformation. Direct upgrade technically unsupported by most tools. Recommended approach treats this as fresh implementation with historical data import rather than true upgrade. Allocate 20-30 weeks for complete reimplementation and migration.
+      version_specific_content:
+        17_to_18:
+          breaking_changes: '**Breaking Changes in Odoo 18:**
+
+
+            - **ORM API changes**: Some model methods changed signatures or behavior. Custom code using `write()`, `create()`,
+            or compute methods requires review.
+
+            - **JavaScript framework**: Website and backend JavaScript underwent refactoring. Custom JS widgets need updates
+            for new framework.
+
+            - **View inheritance**: Some standard views restructured their XML, potentially breaking view xpath-based customizations.
+
+            - **Removed modules**: Check if any installed modules were deprecated between v17 and v18 (consult release notes).'
+          api_changes: Common API changes between 17 and 18 include modified compute method decorators, changed field properties
+            (like `tracking` behavior), and adjusted security rule evaluation. Review all Python files in custom modules for
+            deprecation warnings.
+          new_features: Odoo 18 introduces enhanced reporting capabilities, improved mobile responsiveness, and optimized
+            database query patterns. After upgrading, explore new features like improved kanban views, enhanced search filters,
+            and updated accounting features that may replace custom developments.
+          deprecated_features: Review Odoo 18 release notes for deprecated features. Any custom code relying on deprecated
+            functions needs refactoring to use recommended replacements before support ends in future versions.
+        16_to_18:
+          breaking_changes: '**Cumulative Breaking Changes (v16→v17→v18):**
+
+
+            - **Two versions of ORM evolution**: API methods changed multiple times across versions. Custom code requires
+            careful review.
+
+            - **Major UI overhaul**: Both v17 and v18 introduced UI changes. Custom views may need complete redesign rather
+            than simple xpath updates.
+
+            - **Module restructuring**: Some standard modules split or merged between versions. Module dependencies need updating.'
+          api_changes: Jumping two versions multiplies API compatibility issues. Budget extra time for custom module adaptation—methods
+            deprecated in v17 may be removed entirely in v18.
+          new_features: Odoo 18 includes three years of feature additions versus your v16 installation. Explore new modules
+            and functionality that may replace custom developments, reducing maintenance burden.
+          deprecated_features: Features deprecated in v16 may be removed in v18. Review deprecation warnings from v16 installation
+            before starting upgrade—addressing these first simplifies migration.
+        15_to_18:
+          breaking_changes: '**Major Breaking Changes (v15→v16→v17→v18):**
+
+
+            - **Three generations of ORM changes**: compute methods, onchange decorators, and field attributes evolved significantly. Custom code requires comprehensive audit.
+
+            - **Accounting module overhaul**: Chart of accounts structure, tax computation, and reconciliation workflows changed across multiple versions.
+
+            - **Website builder redesign**: Website and eCommerce modules underwent complete architectural changes. Custom themes require rebuilding.
+
+            - **Python version jump**: From Python 3.8 to 3.11 with deprecated syntax removal. Legacy code may fail to execute.'
+          api_changes: Custom modules face triple API compatibility burden. Plan for 40-60 hours of developer time per custom module for adaptation, testing, and debugging. Third-party modules from v15 likely incompatible without updates.
+          new_features: Four years of Odoo development bring substantial new capabilities including improved studio customization, enhanced reporting, modern web interface, and performance optimizations that may eliminate need for many custom solutions.
+          deprecated_features: Multiple deprecation cycles mean v15 workarounds and customizations may rely on completely removed APIs. Systematic code review essential before attempting upgrade.
+        14_to_18:
+          breaking_changes: '**Critical Breaking Changes (v14→v15→v16→v17→v18):**
+
+
+            - **Database schema evolution**: Core table structures modified across versions. Direct SQL queries in custom code will fail.
+
+            - **Complete JavaScript framework replacement**: Backend JS moved from legacy framework to modern OWL. All custom widgets require complete rewrite.
+
+            - **Accounting standards updates**: IFRS and tax compliance rules updated. Historical financial data may need adjustment.
+
+            - **Removed standard modules**: Several v14 standard modules deprecated and removed. Functionality migrated to different modules or third-party apps.'
+          api_changes: Four version jumps create API compatibility nightmare. Expect 60-100 hours per custom module for complete refactoring. Many customizations cheaper to rebuild from scratch using v18 best practices.
+          new_features: Five years of innovation includes AI-powered features, mobile-optimized interfaces, advanced automation workflows, and integrated business intelligence—potentially eliminating entire categories of custom development.
+          deprecated_features: Systematic removal of v14-era APIs means upgrade scripts must handle missing functions gracefully. Create compatibility layer or refactor all custom code before migration.
+        13_to_18:
+          breaking_changes: '**Fundamental Breaking Changes (v13→v14→v15→v16→v17→v18):**
+
+
+            - **Complete platform modernization**: From legacy architecture to modern cloud-native design. Infrastructure assumptions changed fundamentally.
+
+            - **Security model overhaul**: Access rights, record rules, and field-level security completely restructured across versions.
+
+            - **Workflow system deprecation**: Old workflow engine removed, replaced by automated actions. All workflows require conversion.
+
+            - **Multi-company architecture changes**: Company-specific data handling and record access patterns evolved significantly.'
+          api_changes: Five version gap creates insurmountable API compatibility issues for direct upgrade. Professional assessment required to determine if upgrade possible or if fresh implementation more practical.
+          new_features: Six years of development represent generational platform improvement. Modern v18 capabilities often provide better solutions than v13-era customizations, justifying fresh implementation approach.
+          deprecated_features: Massive API surface area deprecated and removed. Custom code audit likely reveals 60-80% of customizations rely on removed functionality requiring complete redesign.
+        12_to_18:
+          breaking_changes: '**Complete Platform Transformation (v12→v13→v14→v15→v16→v17→v18):**
+
+
+            - **Fundamental architecture changes**: From monolithic to modular design, web framework replacement, database abstraction layer evolution.
+
+            - **Complete UI redesign**: Interface completely rebuilt multiple times. No UI customizations survive migration.
+
+            - **Core module restructuring**: Standard modules split, merged, and reorganized. Module dependencies unrecognizable.
+
+            - **Payment processing changes**: Payment provider integrations completely redesigned for PCI compliance.'
+          api_changes: Six version gap exceeds practical upgrade limits. OpenUpgrade project may not support this path. Professional services universally recommend fresh implementation over direct upgrade attempt.
+          new_features: Seven years of development effectively creates different product. Treat as migration to new platform rather than upgrade of existing system.
+          deprecated_features: Attempting to catalog deprecated features impractical—assume all v12 customizations incompatible. Budget for complete custom development rebuild.
+        11_to_18:
+          breaking_changes: '**Complete Platform Replacement (v11→v12→v13→v14→v15→v16→v17→v18):**
+
+
+            - **Technology stack replacement**: Python 2.7 to 3.11, PostgreSQL 9.x to 15, fundamental library replacements throughout.
+
+            - **Data model evolution**: Core database schemas evolved beyond compatibility. Historical data requires complex transformation.
+
+            - **Complete codebase rewrite**: Framework internals bear little resemblance to v11 architecture.
+
+            - **Licensing and edition changes**: Community/Enterprise split evolved. Module availability and licensing models changed.'
+          api_changes: Seven version gap represents complete platform change. Direct upgrade technically impossible—no tooling supports this path. This is data migration project, not upgrade project.
+          new_features: Eight years of development delivers completely different product with unrecognizable feature set. Evaluate v18 as new platform selection rather than continuation of v11 system.
+          deprecated_features: Everything deprecated. Treat as greenfield implementation. Salvage business data only, rebuild all customizations using modern v18 patterns and best practices.

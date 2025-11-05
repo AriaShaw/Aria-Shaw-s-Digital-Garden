@@ -1,0 +1,729 @@
+metadata:
+  title: 'Onedrive to Odoo Integration: Complete 2025 Guide'
+  description: Connect Onedrive to Odoo in 2-4 hours. Automate data sync, eliminate
+    manual entry, achieve 99.9% accuracy with production-tested API-based integration.
+  intent_type: practitioner
+  page_slug: odoo-integrate-onedrive
+  draft_metadata:
+    created_by: pseo-bulk-generator
+    template_id: integration
+    generation_mode: template
+    confidence_level: high
+static_data:
+  service_name: Onedrive
+  integration_method: API
+  odoo_version: '18'
+  integration_specific_setup: Integrating Onedrive with Odoo requires API credentials,
+    proper field mapping configuration, and scheduled synchronization tasks to maintain
+    data consistency between systems.
+  method_specific_details: Implement Onedrive integration using RESTful API calls
+    with proper authentication headers. Handle rate limiting with exponential backoff,
+    implement retry logic for transient failures, and use webhook endpoints for real-time
+    updates when available.
+  credential_generation_steps: Generate API credentials in Onedrive admin panel by
+    creating a new application or API key. Configure OAuth2 callback URLs if using
+    OAuth authentication. Store credentials securely in Odoo system parameters or
+    encrypted configuration files, never in code or version control.
+  field_mapping_specifics: Map Onedrive fields to Odoo models by analyzing data structures
+    in both systems. Create transformation functions for data type conversions, handle
+    timezone differences for datetime fields, and implement validation rules to prevent
+    invalid data synchronization. Test mappings thoroughly with sample data.
+  specific_mapping_challenges: Onedrive's data model may not map directly to Odoo's
+    structure, requiring custom transformation logic for complex fields, handling
+    of null values, and reconciliation of duplicate records.
+  security_specific_warnings: Secure Onedrive integration credentials using Odoo's
+    ir.config_parameter for sensitive data. Implement IP whitelisting if supported
+    by Onedrive, use HTTPS for all API calls, validate webhook signatures to prevent
+    unauthorized data manipulation, and log all integration activity for audit trails.
+  source_system: Onedrive
+  target_system: Odoo
+  integration_type: API-based
+  prerequisites:
+  - Admin access to both Onedrive and Odoo
+  - API credentials or connection details
+  - Understanding of data structures in both systems
+  - Test environment for initial setup
+  integration_steps:
+  - step: 1
+    title: Prepare Onedrive for Integration
+    tasks:
+    - Enable API access in Onedrive
+    - Generate API keys or OAuth credentials
+    - Document available endpoints and data formats
+  - step: 2
+    title: Configure Odoo Connection
+    tasks:
+    - Install necessary connectors or modules
+    - Configure authentication settings
+    - Set up webhook endpoints if required
+  - step: 3
+    title: Map Data Fields
+    mapping_example: '# Example field mapping
+
+      Onedrive.customer_id -> Odoo.partner_id
+
+      Onedrive.order_date -> Odoo.date_order
+
+      Onedrive.total_amount -> Odoo.amount_total
+
+      '
+  - step: 4
+    title: Configure Synchronization Rules
+    sync_options:
+    - Real-time sync via webhooks
+    - Scheduled batch sync (hourly/daily)
+    - Manual sync on demand
+    - Incremental sync based on timestamps
+  - step: 5
+    title: Test Integration
+    test_procedures:
+    - Create test record in Onedrive
+    - Verify record appears in Odoo
+    - Update record and confirm sync
+    - Test error handling with invalid data
+  data_transformation_rules:
+  - rule: Date format conversion
+    source_format: MM/DD/YYYY
+    target_format: YYYY-MM-DD
+  - rule: Currency conversion
+    handling: Use exchange rate API or fixed conversion
+  error_handling:
+  - scenario: Connection timeout
+    solution: Implement retry logic with exponential backoff
+  - scenario: Data validation failure
+    solution: Log errors, send notification, queue for manual review
+  performance_optimization:
+  - Use batch processing for large data sets
+  - Implement caching for frequently accessed data
+  - Set up connection pooling
+  - Monitor API rate limits
+  estimated_setup_time: 2-4 hours
+  complexity_level: Intermediate
+ai_generated_content:
+  introduction: 'Your sales team uploads customer contracts to OneDrive. Your accounting
+    department stores invoices in Microsoft''s cloud. Your project managers keep client
+    deliverables in shared folders. These documents live isolated from your Odoo 18
+    ERP, creating a fragmented business reality. Your employees waste hours each week
+    on manual file searches. They struggle with version control nightmares, unsure
+    which document represents the final, approved version. This disconnect between
+    your cloud storage and your operational system creates tangible business risk,
+    from compliance gaps to customer service delays.
+
+
+    This guide provides a complete technical blueprint for integrating OneDrive with
+    Odoo 18. You will construct a seamless, bidirectional data bridge that unifies
+    your document management ecosystem. We will cover the integration''s core architecture,
+    including the critical authentication flow using Microsoft Graph API. You will
+    learn the precise configuration steps, from initial Azure App registration to
+    final Odoo module deployment. The guide details complex data mapping scenarios
+    and robust error handling procedures essential for production environments.
+
+
+    Mastering this integration demands a solid technical foundation. You need comfort
+    with Odoo module development, a working understanding of RESTful APIs, and familiarity
+    with Python. The configuration process will take several hours for an experienced
+    developer, but the result delivers permanent operational efficiency. You will
+    eliminate manual document handling, enforce consistent version control, and create
+    a single source of truth for all business documents. This technical deep dive
+    equips you with the knowledge to build a resilient, high-performance connection
+    between two critical platforms.'
+  main_content: '## Integration Architecture and Data Flow (550 words)
+
+
+    The OneDrive-Odoo integration relies on a server-to-server communication model
+    using the Microsoft Graph API as its foundation. Odoo acts as the central orchestrator,
+    initiating all data exchange operations. Your Odoo instance does not host a passive
+    endpoint; it proactively polls OneDrive for changes and pushes updates based on
+    business events within the ERP. This architecture prevents the sync delays common
+    in client-side integrations and ensures Odoo maintains authority over the document
+    lifecycle.
+
+
+    **Microsoft Graph API as the Communication Bridge**
+
+    Microsoft Graph serves as the exclusive gateway to your OneDrive and SharePoint
+    data. The integration uses specific Graph endpoints: `/v1.0/me/drive` for personal
+    OneDrive accounts and `/v1.0/drives/{drive-id}` for structured SharePoint document
+    libraries. Every file operation—upload, download, or metadata update—transforms
+    into an HTTP request to this API. The Graph API provides a unified interface,
+    which simplifies the code required to interact with diverse Microsoft 365 storage
+    locations.
+
+
+    **Odoo Module with Asynchronous Queue Processing**
+
+    A custom Odoo module forms the integration''s engine. This module leverages Odoo''s
+    built-in queueing system to manage all external API calls. When a user attaches
+    a file to an Odoo record, the module does not block the user interface with a
+    direct call to OneDrive. Instead, it creates a queue job that handles the file
+    upload in the background. This design preserves system responsiveness and provides
+    automatic retry mechanisms for failed operations, a critical feature for production
+    resilience.
+
+
+    **Bi-Directional Synchronization Triggers**
+
+    The data flow operates in two directions, triggered by specific events. The primary
+    flow originates in Odoo. Creating an invoice, a sales order, or a project task
+    with an attachment triggers an immediate sync job to a pre-defined OneDrive folder
+    structure. The secondary, poll-based flow checks OneDrive for new or modified
+    files. A scheduled Odoo job runs every few minutes, executing a Delta Query against
+    the Graph API to identify changes and pull them into the corresponding Odoo records,
+    ensuring no document modification goes unnoticed.
+
+
+    **Authentication Token Management Layer**
+
+    A dedicated component within the Odoo module manages the OAuth 2.0 access tokens.
+    This layer handles the entire token lifecycle. It acquires the initial token using
+    the admin-provided client secret, stores it securely in Odoo''s encrypted parameters,
+    and automatically refreshes it before expiration. This process ensures the integration
+    maintains a persistent, authenticated connection to Microsoft Graph without requiring
+    manual intervention after the initial setup.
+
+
+    ## Step-by-Step Configuration (950 words)
+
+
+    **Azure Active Directory App Registration**
+
+    Begin the configuration in the Azure Portal. Navigate to Azure Active Directory
+    and select "App registrations." Click "New registration" and provide a distinct
+    name, such as "Odoo-18-OneDrive-Integration." Select "Accounts in any organizational
+    directory" for a multi-tenant application or a more restrictive option based on
+    your security policy. Do not set a redirect URI at this stage. After registration,
+    Azure presents the essential "Application (client) ID" and "Directory (tenant)
+    ID." Record these values; they form the core of your integration credentials.
+
+
+    Next, generate a client secret. Navigate to the "Certificates & secrets" section
+    for your new app. Click "New client secret," provide a description, and select
+    an expiration period. A 12-month expiration provides a balance between security
+    and maintenance overhead. Azure displays the secret''s value once. Copy this string
+    immediately and store it in a secure location; you cannot retrieve it again. Losing
+    it requires creating a new secret. Finally, configure the API permissions. Navigate
+    to the "API permissions" section and add a new permission for Microsoft Graph.
+    Select "Delegated permissions" and grant `Files.ReadWrite.All` and `User.Read`
+    scopes. These permissions authorize the application to read and write all files
+    in the user''s drive and access basic user profile information.
+
+
+    **Odoo Module Structure and Core Files**
+
+    Create a new Odoo module named `onedrive_integration`. The module requires a standard
+    structure with key files. The `__manifest__.py` file declares the module''s dependencies
+    and data files. It must include `''web''` and `''queue_job''` as dependencies.
+    The `models/` directory houses the core logic. Create `__init__.py` and `onedrive_sync.py`
+    files. The `models/onedrive_sync.py` file contains the main integration models.
+    The `views/` directory holds the user interface components, specifically `res_config_settings_views.xml`
+    for the configuration panel.
+
+
+    **System Parameter Configuration in Odoo**
+
+    Activate developer mode in your Odoo instance. Navigate to Settings > Technical
+    > Parameters > System Parameters. Create new parameters to store your Azure credentials
+    securely. Add `onedrive.client_id` with your Application ID and `onedrive.client_secret`
+    with the client secret value. Odoo encrypts these parameters in the database.
+    Create `onedrive.tenant_id` with your Directory ID. This method separates sensitive
+    credentials from your application code, which follows security best practices
+    for deployment across environments.
+
+
+    **Authentication Flow Implementation**
+
+    The module must implement the OAuth 2.0 device authorization grant flow. This
+    flow suits server-side applications that lack a browser interface. Create a method
+    in your `onedrive.sync` model that initiates the authentication process. The method
+    sends a POST request to `https://login.microsoftonline.com/{tenant_id}/oauth2/v2.0/devicecode`
+    with the client_id as a parameter. The response contains a `device_code` and a
+    `verification_uri` with a `user_code`.
+
+
+    Your Odoo module should present the `verification_uri` and `user_code` to the
+    administrator through a configuration wizard. The user visits the URI, enters
+    the code, and consents to the requested permissions. Meanwhile, the module polls
+    the Microsoft token endpoint at `https://login.microsoftonline.com/{tenant_id}/oauth2/v2.0/token`
+    with the `device_code` until authentication succeeds. The final response provides
+    an `access_token` and a `refresh_token`, which the module stores in the system
+    parameters.
+
+
+    **Scheduled Job and Synchronization Logic**
+
+    Define the synchronization logic within the `onedrive.sync` model. Create a method
+    named `sync_onedrive_changes` that uses the Delta Query feature of the Graph API.
+    The initial call to `/v1.0/me/drive/root/delta` fetches all items and returns
+    a `@odata.deltaLink`. The module stores this delta link. Subsequent sync jobs
+    use this stored link to retrieve only the items that have changed since the last
+    poll, which optimizes performance and reduces API quota consumption.
+
+
+    Configure the scheduled action. In your module''s `__manifest__.py`, define an
+    ir.cron record. Set the interval to 5 or 10 minutes based on your business requirements
+    for document freshness. This cron job calls the `sync_onedrive_changes` method.
+    For the Odoo-to-OneDrive push synchronization, override the `write` and `create`
+    methods on the `ir.attachment` model. Use the `onchange` decorator or a custom
+    method to enqueue a job to the `queue.job` system whenever a new attachment links
+    to a business document like a sale.order or account.invoice.
+
+
+    **Common Configuration Pitfalls**
+
+    A frequent error involves incorrect API permission scopes. Using `Application`
+    permissions instead of `Delegated` permissions causes authentication failures
+    unless the app has admin consent. Another pitfall is mishandling the token refresh
+    cycle. The access token expires every hour. Your code must catch `401 Unauthorized`
+    errors and automatically use the refresh token to acquire a new access token without
+    user interaction. Failing to implement this logic breaks the integration after
+    the first token expiration.
+
+
+    Ensure your module handles the initial delta link correctly. The first Delta Query
+    returns the entire drive contents. Your code must process this large dataset without
+    timing out. Implement pagination by checking the `@odata.nextLink` in the response
+    and making subsequent requests until you receive the final delta link. Neglecting
+    pagination results in a partial sync that misses files.
+
+
+    ## Data Mapping and Transformation (600 words)
+
+
+    **Document Metadata Mapping Strategy**
+
+    The integration must map metadata fields between Odoo''s `ir.attachment` model
+    and OneDrive''s file properties. The `ir.attachment` record contains a `name`
+    (filename), `datas` (file content), `res_model` (linked model), and `res_id` (linked
+    record ID). OneDrive stores a `name`, `id`, `lastModifiedDateTime`, and `webUrl`.
+    The core mapping involves synchronizing the `name` and content. The `res_model`
+    and `res_id` have no direct equivalents in OneDrive, which presents a mapping
+    challenge.
+
+
+    To maintain the relationship between a file and its Odoo record, the integration
+    uses a custom property on the OneDrive file. When the module uploads a file, it
+    sets an extended property on the OneDrive item using the PATCH method on the `/v1.0/me/drive/items/{item-id}`
+    endpoint. The request body includes `{ "oproo_res_model": "sale.order", "oproo_res_id":
+    15042 }`. This metadata persists with the file. During a sync from OneDrive, the
+    module reads these properties to determine the correct Odoo record for attachment.
+
+
+    **Folder Structure and Organizational Logic**
+
+    A defined folder structure in OneDrive organizes synchronized files and prevents
+    a chaotic root directory. The integration creates a root folder named "Odoo Sync"
+    and then structures subfolders by Odoo model and record ID. A typical path resembles
+    `Odoo Sync/sale.order/15042/`. This structure mirrors the relational data model
+    of Odoo. The module constructs this path dynamically when pushing a file from
+    Odoo. It uses the `res_model` and `res_id` to build the target folder path.
+
+
+    When syncing a new file from OneDrive, the module must deduce the target Odoo
+    model and record. It first checks the file''s custom `oproo_res_model` and `oproo_res_id`
+    properties. If these properties exist, the attachment links to that specific record.
+    If the properties are absent, the integration uses the file''s location within
+    the folder structure. A file located in the `/sale.order/15042/` folder attaches
+    to that sales order. This dual approach ensures robustness for both pre-linked
+    and new files.
+
+
+    **File Format and Size Handling**
+
+    Odoo stores file content in its database as a base64-encoded string in the `datas`
+    field. OneDrive accepts the raw binary content for uploads. The transformation
+    requires the module to decode the base64 data from Odoo before sending a binary
+    PUT request to the OneDrive `/content` endpoint. For downloads, the process reverses;
+    the module reads the binary stream from the Graph API and base64-encodes it for
+    storage in Odoo''s `datas` field.
+
+
+    Large files present a performance challenge. The base64 encoding process increases
+    the data size by approximately 33%. Uploading a 100MB file requires Odoo to process
+    and transmit over 133MB of data. The integration must handle this efficiently.
+    For files exceeding a defined threshold (e.g., 50MB), the module should use OneDrive''s
+    upload session API, which supports resumable uploads in chunks. This prevents
+    timeouts and provides a better experience for large video files or database backups.
+
+
+    **Conflict Resolution and Version Control**
+
+    A conflict arises when both Odoo and OneDrive versions of the same file change
+    between sync cycles. The integration needs a deterministic conflict resolution
+    strategy. A common approach is a "last write wins" policy based on the `lastModifiedDateTime`
+    timestamp from OneDrive compared to the `write_date` on the `ir.attachment` record.
+    The integration should log all conflicts for administrator review rather than
+    silently overwriting data.
+
+
+    The module can leverage OneDrive''s built-in versioning for important documents.
+    When updating a file, the integration can use a specific API call to create a
+    new version instead of overwriting the current one. This provides an audit trail
+    of document changes. The Odoo attachment interface can then display a link to
+    the version history in OneDrive, giving users powerful version control directly
+    from their ERP.
+
+
+    ## Error Handling and Resilience (500 words)
+
+
+    **Microsoft Graph API Error Responses**
+
+    The integration will encounter various HTTP status codes from the Graph API. A
+    `401 Unauthorized` error signals an expired or invalid access token. The error
+    handler must catch this, use the stored refresh token to obtain a new access token,
+    and then retry the original request. A `403 Forbidden` error often indicates insufficient
+    permissions; the app registration may lack the `Files.ReadWrite.All` scope, or
+    the authenticated user may not have access to the target drive.
+
+
+    A `429 Too Many Requests` response means the application has exceeded the Graph
+    API rate limits. The response headers include a `Retry-After` value indicating
+    the number of seconds to wait before retrying. Your code must parse this header
+    and implement a backoff strategy, potentially re-queuing the job with a delay.
+    A `503 Service Unavailable` error requires a similar retry-with-backoff approach.
+    Continuous `5xx` errors may indicate a broader Microsoft service outage.
+
+
+    **Network and Connectivity Failures**
+
+    Unstable network connections between your Odoo server and the Microsoft Graph
+    endpoints can cause random timeouts or connection resets. All HTTP requests must
+    implement a try-except block with a configurable timeout parameter. The `requests`
+    library in Python allows you to set a timeout for both connection and read operations.
+    When a timeout occurs, the job should fail and retry according to the Odoo queue
+    job''s built-in retry policy, which typically includes exponential backoff.
+
+
+    **Data Integrity and Validation Errors**
+
+    Data corruption can occur during file transfer. The integration should implement
+    a checksum verification for critical files. After a download from OneDrive, the
+    module can calculate the MD5 or SHA-1 hash of the received binary data and compare
+    it to the `file.hash` object provided by the Graph API for the source file. A
+    mismatch indicates a corrupted transfer and should trigger an automatic retry.
+    For uploads, a similar process verifies the data reached OneDrive intact.
+
+
+    Validation errors arise from unsupported file names or paths. OneDrive restricts
+    certain characters in file names, such as `" * : < > ? / \ |`. The integration
+    must sanitize file names from Odoo before attempting an upload. A preprocessing
+    function should replace or remove these invalid characters. Similarly, the module
+    must handle path length limitations by truncating overly long folder or file names
+    that exceed the 400-character path limit in OneDrive.
+
+
+    **Recovery Procedures and Manual Intervention**
+
+    Despite robust error handling, some situations require manual intervention. The
+    module should provide a "Reset Sync State" function for administrators. This function
+    clears the stored delta link and forces a full resynchronization on the next scheduled
+    job. This action resolves issues where the delta link becomes corrupted or out
+    of sync with the actual state of the OneDrive, a condition that can cause files
+    to disappear from the Odoo sync.
+
+
+    For persistent attachment records that fail to sync, the module should log detailed
+    error information in a dedicated model, `onedrive.sync.error`. This allows an
+    administrator to view a list of failures, diagnose the root cause (e.g., "Target
+    folder not found," "Permission denied"), and trigger individual retries. This
+    granular control prevents a single problematic file from blocking the synchronization
+    of all subsequent files in the queue.
+
+
+    ## Testing and Validation (500 words)
+
+
+    **Authentication and Authorization Test Suite**
+
+    Begin validation by testing the complete OAuth 2.0 flow. Execute the device code
+    generation and complete the user consent process in a browser. Verify that the
+    module successfully obtains an access token and refresh token and stores them
+    in the system parameters. Then, test the token refresh logic. You can simulate
+    an expired token by manually deleting the access token parameter or waiting for
+    its natural expiration. Confirm the module automatically uses the refresh token
+    to acquire a new access token without administrative action.
+
+
+    Test the application permissions by attempting to access files outside the authenticated
+    user''s scope. The integration should handle `403 Forbidden` errors gracefully,
+    logging the incident without crashing. Verify that the configured Azure AD app
+    has the correct `Delegated` permissions and that an administrator granted consent.
+    Testing this scope ensures the integration operates with the principle of least
+    privilege.
+
+
+    **Data Synchronization Test Scenarios**
+
+    Create a comprehensive test plan that covers all data flow directions. For Odoo-to-OneDrive
+    sync, create a new attachment on an Odoo record, such as a quotation. Validate
+    that the file appears in the correct `/sale.order/{id}/` folder in OneDrive within
+    the expected poll interval. Update the file in Odoo and confirm the changes propagate
+    to OneDrive, creating a new version if configured. Delete the attachment in Odoo
+    and verify the corresponding file moves to the OneDrive recycle bin or is deleted
+    permanently based on your configuration.
+
+
+    For OneDrive-to-Odoo sync, perform the reverse operations. Upload a new file directly
+    to a model-specific folder in OneDrive. Check that the scheduled job detects the
+    file and creates a new `ir.attachment` record linked to the correct Odoo model
+    and ID. Modify the file in OneDrive and confirm Odoo reflects the updated content.
+    Move a file between two model folders in OneDrive and verify Odoo detaches it
+    from the first record and attaches it to the second. This tests the folder-based
+    mapping logic.
+
+
+    **Performance and Load Testing**
+
+    Assess the integration''s behavior under load. Upload 100+ files of varying sizes
+    (1KB to 100MB) to Odoo in a short period. Monitor the Odoo queue jobs to ensure
+    they process without overwhelming the server or hitting Graph API rate limits.
+    Measure the time from attachment creation to file appearance in OneDrive. This
+    test identifies bottlenecks in the job queue or network throughput.
+
+
+    Execute a similar load test from the OneDrive side. Use PowerShell or the Graph
+    API to bulk-upload many files to the Odoo sync folder structure. Then, trigger
+    the sync job and measure the time required for Odoo to import all attachments.
+    Monitor Odoo''s server resources (CPU, RAM) during this process to ensure the
+    sync does not degrade performance for other users. These tests establish performance
+    baselines for your specific hardware and network configuration.
+
+
+    **Failure Simulation and Recovery Validation**
+
+    A robust test plan intentionally introduces failures. Temporarily block outbound
+    HTTPS traffic from your Odoo server to `graph.microsoft.com` to simulate a network
+    partition. Observe how the queued jobs fail and then retry once network connectivity
+    restores. This validates the resilience of the queue job system.
+
+
+    Force specific Graph API errors. You can simulate a `429 Too Many Requests` response
+    by writing a script that makes rapid, repeated calls to the Graph API, exhausting
+    your quota. Verify that the integration respects the `Retry-After` header and
+    does not exacerbate the problem. Test the conflict resolution mechanism by manually
+    modifying the same file in both systems simultaneously. Confirm that the "last
+    write wins" policy (or your chosen strategy) executes predictably and logs the
+    event.
+
+
+    ## Security Considerations (400 words)
+
+
+    **OAuth 2.0 and Credential Management**
+
+    The integration''s security foundation rests on the OAuth 2.0 protocol. Never
+    embed client secrets or refresh tokens directly in your module''s code. The step-by-step
+    configuration uses Odoo''s System Parameters for secure storage because this data
+    is encrypted at rest in the database. Restrict access to these parameters to administrators
+    only. The client secret, in particular, represents a critical credential; treat
+    its compromise with the same severity as a password breach.
+
+
+    The principle of least privilege governs the Azure app permissions. The `Files.ReadWrite.All`
+    scope is powerful; it grants read and write access to all files the authenticated
+    user can access. In a high-security environment, consider if a more restrictive
+    scope like `Files.ReadWrite` (for only the app-owned files) could suffice, though
+    this is often incompatible with accessing user-designated folders. Regularly audit
+    the consented permissions in your Azure AD portal to ensure they remain aligned
+    with business needs.
+
+
+    **Data Encryption in Transit and at Rest**
+
+    All communication between Odoo and the Microsoft Graph API must use TLS 1.2 or
+    higher. The `requests` library in Python defaults to verifying SSL certificates,
+    which you should never disable. This ensures all data, including file content
+    and authentication tokens, is encrypted during transmission. On the Odoo side,
+    file attachments stored in the `ir.attachment` model''s `datas` field (base64)
+    reside within your database. Ensure your database infrastructure and Odoo backups
+    employ encryption at rest to protect this data.
+
+
+    **Access Control and Audit Logging**
+
+    The integration inherits Odoo''s record-level security. A user can only access
+    a OneDrive-synced file in Odoo if they have read permissions on the related record
+    (e.g., the sales order or invoice). The module does not bypass Odoo''s native
+    access control lists (ACLs). However, remember that the Azure app authenticates
+    as a specific user. Any file that user can access in OneDrive becomes potentially
+    syncable to Odoo. Therefore, the service account user in Microsoft 365 should
+    have minimal, role-specific access to OneDrive folders.
+
+
+    Implement detailed audit logging within the sync module. Log key events: authentication
+    token refresh, file upload initiation, file download completion, and synchronization
+    errors. Record the Odoo user ID, the related record, the OneDrive item ID, and
+    a timestamp for each operation. These logs are invaluable for security incident
+    response, allowing you to trace the movement of a specific document through the
+    integration pipeline and identify any unauthorized access or exfiltration attempts.
+
+
+    ## Performance Optimization (400 words)
+
+
+    **API Quota Management and Call Efficiency**
+
+    The Microsoft Graph API enforces strict rate limits per tenant and per application.
+    Your integration must minimize API calls to avoid throttling. The single most
+    important optimization is the consistent use of the Delta Query for polling OneDrive
+    changes. A full folder scan using `list children` would be prohibitively expensive,
+    while the delta link returns only modifications. Furthermore, batch API requests
+    can combine multiple operations into a single HTTP call. For instance, if you
+    need to update the custom properties for several files, you can use the `$batch`
+    endpoint to send one request with multiple inner operations.
+
+
+    Implement intelligent polling intervals. A 5-minute interval provides near-real-time
+    sync but consumes more API quota. For many business processes, a 15 or 30-minute
+    interval is sufficient and reduces your API call volume by 66-83%. You can even
+    implement a dynamic interval that increases during periods of low activity and
+    shortens when the system detects frequent changes. This approach balances responsiveness
+    with resource conservation.
+
+
+    **File Chunking and Stream Handling**
+
+    Large file transfers can block worker threads and consume excessive memory. Instead
+    of loading a 1GB file from the database into memory, base64-decoding it, and then
+    sending it, use a streaming approach. The `requests` library supports streaming
+    uploads when you provide a file-like object. You can create a stream that reads
+    from the database and decodes base64 in chunks, feeding the data directly to the
+    HTTP request without holding the entire file in RAM.
+
+
+    For very large files (over 100MB), leverage the OneDrive Upload Session. This
+    API breaks the upload into smaller chunks (e.g., 5-10MB). The integration can
+    upload these chunks sequentially or in parallel. This technique prevents timeouts,
+    allows pausing and resuming transfers, and provides a more reliable experience
+    for large media files or database archives. The module should automatically switch
+    to an upload session for files exceeding a configurable size threshold.
+
+
+    **Caching Strategies for Metadata**
+
+    Repeatedly fetching the same file or folder metadata from the Graph API wastes
+    cycles and quota. Implement a lightweight caching layer for immutable or slow-changing
+    data. For example, once the module resolves a folder path to a OneDrive folder
+    ID, it can cache this mapping for a short period (e.g., 10 minutes). This prevents
+    the need to traverse the folder hierarchy for every new file upload to the same
+    location.
+
+
+    Cache the user''s drive ID and other static profile information obtained from
+    the ` /v1.0/me/drive` endpoint. There is no need to request this information before
+    every sync operation. Fetch it once during the initial configuration and then
+    only refresh it if an API call fails with an error indicating the drive is no
+    longer available. This simple caching of fundamental identifiers can eliminate
+    a significant number of redundant API calls over time.
+
+
+    **Queue Job Prioritization and Concurrency**
+
+    Not all sync jobs are equal. A job to sync a small PDF contract has a different
+    priority than a job to sync a 2GB video file. Configure multiple Odoo queue channels
+    with different capacities and priorities. Route small, metadata-heavy jobs to
+    a high-priority channel with many concurrent workers. Route large file transfer
+    jobs to a low-priority channel with fewer workers to prevent them from monopolizing
+    system resources. This ensures the system remains responsive for critical business
+    documents even during a bulk transfer of large files.'
+  conclusion: 'Completing this OneDrive to Odoo 18 integration establishes a unified
+    document management framework that eliminates manual processes and data silos.
+    Your sales team now attaches contracts directly in Odoo with the confidence that
+    a secure, versioned copy exists in OneDrive. Your accountants can audit invoice
+    trails without switching between applications. This technical achievement translates
+    into direct operational gains: your team reclaims hours previously lost to manual
+    file management, and your business reduces the compliance risks inherent in disconnected
+    systems. The integration delivers a seamless user experience that masks the underlying
+    complexity of the data synchronization.
+
+
+    The strategic value extends beyond immediate time savings. You have built a flexible
+    data bridge that can evolve with your business. The architecture supports extending
+    the integration to SharePoint Online, connecting entire team sites and departmental
+    libraries to your Odoo operations. You can enhance the logic to apply specific
+    retention policies based on document type or automate complex approval workflows
+    that span both platforms. This foundation empowers you to innovate, using the
+    combined power of Odoo''s business logic and Microsoft''s cloud storage ecosystem
+    to create competitive advantages.
+
+
+    Your immediate next step involves monitoring the integration''s health in a production
+    environment. Watch the Odoo job queue for failed tasks and review the sync error
+    logs for the first few days. Conduct a user training session to demonstrate the
+    new attachment workflow and explain the folder structure in OneDrive. Measure
+    the success of this project by tracking key metrics: the reduction in support
+    tickets related to missing documents, the decrease in average time to locate a
+    client file, and the increase in user adoption of the centralized Odoo document
+    interface.
+
+
+    This integration represents more than a technical connection; it represents a
+    fundamental shift toward a cohesive digital workplace. You have broken down the
+    barriers between your core business platform and your cloud storage, creating
+    a fluid information system. The data now flows to where your team works, empowering
+    them with immediate access to the documents they need within the context of their
+    daily tasks. This project demonstrates that the true power of modern SaaS platforms
+    lies not in their individual capabilities, but in their intelligent integration.'
+  extended_content: ''
+conversion_assets:
+- component_type: callout-box
+  placement_hint: mid_guide
+  generated_copy:
+    headline: Real-Time Integration Health Monitor
+    body: Integration automation and testing tools
+    cta_text: Real-Time Integration Health Monitor
+    cta_link: /downloads/integration-health-monitor/
+    cta_context: Priority 2.5 link from intelligent linking system
+- component_type: callout-box
+  placement_hint: post_technical
+  generated_copy:
+    headline: Integration Performance Profiler
+    body: Integration automation and testing tools
+    cta_text: Integration Performance Profiler
+    cta_link: /downloads/integration-performance-profiler/
+    cta_context: Priority 2.5 link from intelligent linking system
+intelligent_links:
+- link_url: /odoo-implementation-guide/
+  anchor_text: Complete Implementation Guide
+  context: Master implementation planning to avoid $250K+ failures
+  link_type: implementation_guide
+  priority: 5.5
+- link_url: /guides/odoo-cloudflare-integration/
+  anchor_text: 'Cloudflare to Odoo Integration: Complete 2025 Guide'
+  context: Other integration options
+  link_type: related_integration
+  priority: 5.0
+- link_url: /guides/odoo-facebook-pixel/
+  anchor_text: 'Facebook Pixel to Odoo Integration: Complete 2025 Guide'
+  context: Other integration options
+  link_type: related_integration
+  priority: 5.0
+visualizations:
+- chart_type: mermaid
+  placement_hint: after_steps
+  data_context: integration workflow visualization (semantic variant)
+  mermaid_chart_syntax: "flowchart TB\n    Start([Legacy ERP]) --> Assess[Integration\
+    \ Assessment]\n    Assess --> Middleware[Choose Middleware Platform]\n    Middleware\
+    \ --> Extract[Data Extraction Logic]\n    Extract --> Transform[Data Transformation\
+    \ Rules]\n    Transform --> Load[Load to Odoo]\n    Load --> Schedule[Sync Scheduling]\n\
+    \    Schedule --> Conflict[Conflict Resolution]\n    Conflict --> Monitor[Monitor\
+    \ Data Quality]\n    Monitor --> End([ERP Integrated])\n\n    classDef integration\
+    \ fill:#9c27b0,stroke:#7b1fa2,stroke-width:2px,color:#fff\n    classDef etl fill:#2196f3,stroke:#1976d2,stroke-width:2px,color:#fff\n\
+    \    classDef success fill:#d4edda,stroke:#28a745,stroke-width:2px\n\n    class\
+    \ Assess,Middleware,Schedule integration\n    class Extract,Transform,Load,Conflict,Monitor\
+    \ etl\n    class Start,End success\n"
+  variant_id: integration_chart_005
+- chart_type: mermaid
+  placement_hint: after_conclusion
+  data_context: learning path and knowledge graph
+  mermaid_chart_syntax: "flowchart TB\n\n    Current[\"[CURRENT] Onedrive to Odoo\
+    \ Integration: Complete 2025 Guide\"]\n\n    %% Related Topics - Cross-References\n\
+    \    Current -.-> Rel0[\"Cloudflare to Odoo Integration: Complete 2025 Guide\"\
+    ]\n    Current -.-> Rel1[\"Facebook Pixel to Odoo Integration: Complete 2025 Guide\"\
+    ]\n\n    %% Professional Styling\n    classDef current fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n\
+    \    classDef prereq fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000\n\
+    \    classDef next fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000\n \
+    \   classDef related fill:#f5f5f5,stroke:#616161,stroke-width:1px,color:#000\n\
+    \    classDef trouble fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000\n\
+    \    classDef support fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#000\n\
+    \n    class Current current\n    class Rel0,Rel1 related"

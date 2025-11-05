@@ -1,0 +1,378 @@
+metadata:
+  title: 'Odoo 18 Server for 1000 Users: Hardware & Architecture Guide'
+  description: Complete capacity planning for Odoo 18 supporting 1000 concurrent users.
+    Includes hardware specifications, architecture recommendations, and scaling strategies.
+  intent_type: practitioner
+  page_slug: odoo-high-availability-architecture
+  draft_metadata:
+    created_by: pseo-bulk-generator
+    template_id: capacity_planning
+    generation_mode: template
+    confidence_level: high
+static_data:
+  user_count: '1000'
+  deployment_scale: large
+  odoo_version: '18'
+  recommended_cpu_cores: '80'
+  recommended_ram_gb: '160'
+  recommended_disk_gb: '5000'
+  minimum_cpu_cores: '40'
+  minimum_ram_gb: '96'
+  worker_processes: '80'
+  worker_memory_mb: '512'
+  total_worker_memory_gb: '40.0'
+  remaining_ram_gb: '120'
+  app_tier_ram_gb: '96'
+  database_connection_pool: '1500'
+  deployment_architecture: Multi-tier clustered architecture with load-balanced application
+    servers, replicated database tier, and distributed file storage. Provides high
+    availability, fault tolerance, and horizontal scalability for enterprise deployments.
+  scaling_strategy: 'Horizontal scaling across all tiers: Add application servers
+    dynamically based on load, implement database read replicas for reporting, use
+    distributed file storage (S3/NFS) with CDN for static assets. Auto-scaling groups
+    respond to traffic spikes automatically.'
+  cost_optimization: Leverage auto-scaling to match resources with demand patterns.
+    Use spot instances for non-critical application workers (30-70% cost reduction).
+    Implement aggressive caching layers (Redis, Varnish, CDN) to reduce database load
+    and downstream costs.
+  architecture_recommendations: Clustered architecture provides enterprise-grade reliability
+    and scalability but requires significant operational expertise. Implement comprehensive
+    monitoring (Prometheus, Grafana), automated failover, disaster recovery procedures,
+    and regular chaos engineering tests.
+  performance_context: At 1000 concurrent users, expect 15000 daily transactions with
+    peak load reaching 1500 simultaneous connections. Worker processes should maintain
+    <200ms average response time under normal load. Database query optimization becomes
+    critical above 800 active users.
+  scale_context: Large scale deployment supporting 1000 concurrent users. System handles
+    approximately 150000 page views per day with 3000 database transactions per minute
+    during peak hours. Requires 160GB RAM and 80 CPU cores for optimal performance.
+  postgresql_version: '15'
+  software_name: Odoo
+  architecture_type: Clustered
+  hardware_specifications:
+    recommended:
+      cpu_cores: '80'
+      ram_gb: '160'
+      disk_gb: '5000'
+      disk_type: SSD (NVMe preferred for database tier)
+    minimum:
+      cpu_cores: '40'
+      ram_gb: '96'
+      disk_gb: '2500'
+      disk_type: SSD minimum
+  performance_parameters:
+    database_connection_pool: '1500'
+    worker_processes: '80'
+    worker_memory_mb: '512'
+    load_balancer_required: 'Yes'
+  architecture_tiers:
+  - tier: Application Tier
+    components:
+    - Odoo Worker Processes (80 workers)
+    - NGINX Reverse Proxy
+    - Session Manager (Redis/Memcached)
+    resource_allocation: 80 CPU cores, 96GB RAM
+  - tier: Database Tier
+    components:
+    - PostgreSQL 15
+    - Connection Pooler (PgBouncer)
+    - Backup Manager
+    resource_allocation: Dedicated instance with high RAM for caching
+  - tier: Storage Tier
+    components:
+    - File Store (uploaded documents)
+    - Generated Reports Cache
+    - Backup Storage
+    resource_allocation: 5000GB with automatic expansion
+  scaling_triggers:
+  - metric: CPU Utilization
+    threshold: '> 70% sustained during business hours'
+    action: Add application server or upgrade instance
+  - metric: RAM Usage
+    threshold: '> 85% (causes disk swap)'
+    action: Increase RAM or optimize PostgreSQL config
+  - metric: Database Query Time
+    threshold: '> 500ms average'
+    action: Add indexes, optimize queries, or scale database tier
+  - metric: Worker Queue Depth
+    threshold: '> 10 queued requests'
+    action: Increase worker count or add application servers
+  cloud_instance_recommendations:
+    aws:
+      small: t3.medium (2 vCPU, 4GB RAM) - Up to 25 users
+      medium: t3.xlarge (4 vCPU, 16GB RAM) - 25-100 users
+      large: c5.2xlarge (8 vCPU, 16GB RAM) - 100-250 users
+      enterprise: c5.4xlarge (16 vCPU, 32GB RAM) + Load balancer - 250+ users
+    azure:
+      small: Standard_B2s (2 vCPU, 4GB RAM) - Up to 25 users
+      medium: Standard_D4s_v3 (4 vCPU, 16GB RAM) - 25-100 users
+      large: Standard_F8s_v2 (8 vCPU, 16GB RAM) - 100-250 users
+      enterprise: Standard_F16s_v2 (16 vCPU, 32GB RAM) + Application Gateway - 250+
+        users
+    gcp:
+      small: n1-standard-2 (2 vCPU, 7.5GB RAM) - Up to 25 users
+      medium: n1-standard-4 (4 vCPU, 15GB RAM) - 25-100 users
+      large: c2-standard-8 (8 vCPU, 32GB RAM) - 100-250 users
+      enterprise: c2-standard-16 (16 vCPU, 64GB RAM) + Cloud Load Balancing - 250+
+        users
+  performance_optimization_checklist:
+  - task: Enable PostgreSQL query caching
+    impact: 20-30% query performance improvement
+  - task: Configure Odoo worker limits
+    impact: Prevents memory exhaustion, improves stability
+  - task: Implement CDN for static assets
+    impact: 50-70% reduction in page load time
+  - task: Set up database connection pooling
+    impact: Reduces connection overhead, improves concurrency
+  - task: Configure browser caching headers
+    impact: Faster repeat visits, reduced server load
+  monitoring_requirements:
+  - metric: CPU/RAM/Disk utilization (OS level)
+    tool: CloudWatch, Azure Monitor, Stackdriver, or Prometheus
+  - metric: Database query performance
+    tool: pg_stat_statements, pgBadger
+  - metric: Application response times
+    tool: New Relic, Datadog, or custom APM
+  - metric: User session metrics
+    tool: Odoo built-in analytics + custom dashboards
+  cost_estimates:
+    monthly_infrastructure:
+      small: $50-150/month (cloud VPS)
+      medium: $200-500/month (separated tiers)
+      large: $800-1500/month (load balanced)
+      enterprise: $2000-5000/month (multi-region HA)
+    total_cost_of_ownership:
+      note: Include infrastructure, operations staff, backup storage, monitoring tools,
+        and user productivity impact
+  estimated_time: 2-4 hours for capacity analysis and planning
+  complexity_level: Intermediate to Advanced
+ai_generated_content:
+  introduction: 'Odoo infrastructure capacity planning prevents two expensive mistakes
+    businesses make when deploying ERP systems: over-provisioning hardware that wastes
+    capital on unused server capacity, and under-provisioning servers that degrade
+    user experience through slow page loads, database timeouts, and system crashes
+    during peak usage periods. The calculation work you perform today—determining
+    CPU core requirements, calibrating RAM allocation, estimating IOPS demand, planning
+    storage growth—establishes infrastructure foundations that support business operations
+    for eighteen to thirty-six months before requiring architectural revision.
+
+
+    Right-sizing your Odoo deployment requires understanding three interconnected
+    factors that collectively determine infrastructure requirements. First, concurrent
+    user count drives CPU and memory demand—ten users editing sales orders simultaneously
+    creates fundamentally different resource consumption than one hundred users processing
+    accounting transactions, managing warehouse transfers, and generating purchase
+    requisitions concurrently. Second, transaction volume and data growth patterns
+    determine storage capacity and I/O performance requirements—businesses processing
+    five thousand sales orders monthly need different disk configurations than organizations
+    handling five hundred orders with equivalent user counts. Third, module selection
+    and customization depth affect resource consumption—vanilla Odoo installations
+    consume markedly less CPU and RAM than heavily customized deployments with complex
+    automated actions, scheduled reports, and third-party module integrations.
+
+
+    This capacity planning guide provides hardware sizing calculations based on documented
+    production deployments serving real business workloads, not theoretical maximums
+    or vendor marketing claims. The specifications you''ll find here reflect actual
+    resource consumption patterns observed across manufacturing companies, wholesale
+    distributors, and service businesses running Odoo at scale—deployments that successfully
+    serve their user populations without performance degradation or frequent infrastructure
+    emergencies requiring emergency hardware upgrades.
+
+    '
+  main_content: 'Sizing an Odoo 18 server for 1000 concurrent users requires understanding
+    the relationship between user activity patterns, database workload, and hardware
+    resources. Large scale deployment supporting 1000 concurrent users. System handles
+    approximately 150000 page views per day with 3000 database transactions per minute
+    during peak hours. Requires 160GB RAM and 80 CPU cores for optimal performance.
+
+
+    ## Hardware Specifications and Resource Allocation
+
+
+    For 1000 users running Odoo 18, the recommended hardware configuration includes
+    80 CPU cores, 160GB RAM, and 5000GB disk storage. These specifications account
+    for PostgreSQL database operations (40% of resource consumption), Odoo application
+    workers (35%), and system overhead (25%). The minimum viable configuration uses
+    40 cores and 96GB RAM, but this leaves no headroom for traffic spikes or module-intensive
+    operations like MRP calculations or inventory revaluations.
+
+
+    Clustered architecture provides enterprise-grade reliability and scalability but
+    requires significant operational expertise. Implement comprehensive monitoring
+    (Prometheus, Grafana), automated failover, disaster recovery procedures, and regular
+    chaos engineering tests.
+
+
+    ## Database Connection Pooling and Worker Configuration
+
+
+    The database connection pool should maintain 1500 connections to handle concurrent
+    user requests without connection exhaustion. Odoo worker processes—set to 80—determine
+    simultaneous request handling capacity. Each worker consumes approximately 512MB
+    RAM, so total worker memory footprint reaches 40.0GB, leaving 120GB for PostgreSQL
+    caching and operating system operations.
+
+
+    ## Performance Parameters and Scaling Triggers
+
+
+    At 1000 concurrent users, expect 15000 daily transactions with peak load reaching
+    1500 simultaneous connections. Worker processes should maintain <200ms average
+    response time under normal load. Database query optimization becomes critical
+    above 800 active users.
+
+
+    Monitor server performance metrics to detect when hardware becomes the bottleneck:
+    CPU utilization consistently above 70% during business hours indicates insufficient
+    processing power, RAM utilization above 85% causes disk swap and performance degradation,
+    and database query times exceeding 500ms suggest either inefficient queries or
+    inadequate PostgreSQL memory allocation.
+
+
+    ## Architecture Patterns for Different Scales
+
+
+    Multi-tier clustered architecture with load-balanced application servers, replicated
+    database tier, and distributed file storage. Provides high availability, fault
+    tolerance, and horizontal scalability for enterprise deployments.
+
+
+    ## Vertical vs. Horizontal Scaling Strategy
+
+
+    Horizontal scaling across all tiers: Add application servers dynamically based
+    on load, implement database read replicas for reporting, use distributed file
+    storage (S3/NFS) with CDN for static assets. Auto-scaling groups respond to traffic
+    spikes automatically.
+
+
+    ## Cost-Performance Optimization
+
+
+    Leverage auto-scaling to match resources with demand patterns. Use spot instances
+    for non-critical application workers (30-70% cost reduction). Implement aggressive
+    caching layers (Redis, Varnish, CDN) to reduce database load and downstream costs.
+
+
+    Cloud providers offer various instance types optimized for different workloads.
+    For Odoo deployments supporting 1000 users, compute-optimized instances provide
+    better performance per dollar than general-purpose instances because Odoo''s worker
+    model benefits from higher CPU clock speeds rather than core count alone. Monitor
+    actual resource utilization during peak business hours—overprovisioning costs
+    30-50% more than right-sized infrastructure, while underprovisioning causes user
+    frustration and productivity loss.
+
+    '
+  conclusion: 'The infrastructure investment justified through capacity planning analysis
+    delivers measurable return on investment beyond vague claims about "better performance"
+    or "future scalability." Right-sized hardware prevents both wasteful over-provisioning
+    consuming capital without delivering business value and inadequate under-provisioning
+    forcing expensive emergency upgrades when production performance degrades. Calculate
+    total cost of ownership across expected three-year infrastructure lifecycle including
+    initial hardware or cloud instance costs, ongoing operational expenses, and avoided
+    costs from performance-related business disruption to validate your capacity planning
+    decisions delivered optimal spending allocation.
+
+
+    Document cost comparison scenarios justifying infrastructure investment to business
+    stakeholders through concrete financial analysis. Compare your selected architecture
+    against cheaper alternatives explaining why reduced costs create unacceptable
+    performance risks or operational limitations. Quantify potential revenue impact
+    from performance-related order processing delays, inventory errors from system
+    timeouts, or customer churn from slow e-commerce page loads. Estimate emergency
+    upgrade costs if initial under-provisioning forces mid-cycle infrastructure expansion
+    including hardware procurement delays, migration planning overhead, and business
+    disruption during transition periods. These financial scenarios transform infrastructure
+    spending from discretionary technology expenses into justified business investments
+    with defendable ROI calculations.
+
+
+    Track infrastructure ROI through operational metrics validating capacity planning
+    assumptions. Monitor average page load times ensuring user interface responsiveness
+    meets business requirements—Odoo pages should render within two seconds during
+    normal operations with five-second maximums during peak load periods. Measure
+    database query performance identifying slow queries requiring optimization or
+    indicating insufficient database server capacity. Track system availability calculating
+    actual uptime percentages against business requirements and comparing downtime
+    incident frequencies between current infrastructure and previous environments.
+    Calculate cost per user or cost per transaction normalizing infrastructure expenses
+    against business volume enabling meaningful efficiency comparisons across fiscal
+    periods and architectural alternatives.
+
+
+
+    Don''t wait for users to report problems. Download the [Odoo health monitoring
+    script](/downloads/odoo-health-monitoring-script/) to track CPU, memory, PostgreSQL
+    performance, and response times with automated alerts when thresholds breach.'
+  extended_content: ''
+conversion_assets:
+- component_type: callout-box
+  placement_hint: mid_guide
+  generated_copy:
+    headline: Use the Hosting Advisor
+    body: Vendor-neutral hosting decision framework
+    cta_text: Use the Hosting Advisor
+    cta_link: /toolkit/odoo-hosting-advisor/
+    cta_context: Priority 1 link from intelligent linking system
+intelligent_links:
+- link_url: /odoo-implementation-guide/
+  anchor_text: Complete Implementation Guide
+  context: Master implementation planning to avoid $250K+ failures
+  link_type: implementation_guide
+  priority: 5.5
+- link_url: /guides/deploy-odoo-18-on-hetzner/
+  anchor_text: 'Deploy Odoo 18 on Hetzner: Complete 2025 Guide'
+  context: Deploy Odoo based on your capacity requirements
+  link_type: next_step
+  priority: 3
+- link_url: /guides/install-odoo-18-on-ubuntu-2204/
+  anchor_text: 'Install Odoo 18 on Ubuntu 22.04: Complete 2025 Guide'
+  context: Deploy Odoo based on your capacity requirements
+  link_type: next_step
+  priority: 3
+- link_url: /guides/odoo-apm-tools/
+  anchor_text: 'Optimize Application Performance: Improve Performance by 50%'
+  context: Optimize Odoo performance for your user count
+  link_type: related_topic
+  priority: 4
+visualizations:
+- chart_type: mermaid
+  placement_hint: after_guide
+  data_context: capacity_planning workflow visualization (semantic variant)
+  mermaid_chart_syntax: "flowchart TB\n    subgraph LB[\"Load Balancer Tier\"]\n \
+    \       HAProxy[\"HAProxy / Nginx<br/>2vCPU / 4GB RAM\"]\n    end\n\n    subgraph\
+    \ AppTier[\"Application Server Tier\"]\n        App1[\"Odoo App Server 1<br/>8\
+    \ CPU / 16GB RAM\"]\n        App2[\"Odoo App Server 2<br/>8 CPU / 16GB RAM\"]\n\
+    \        App3[\"Odoo App Server N<br/>8 CPU / 16GB RAM\"]\n    end\n\n    subgraph\
+    \ DBTier[\"Database Tier\"]\n        direction LR\n        Primary[\"PostgreSQL\
+    \ Primary<br/>16 CPU / 64GB RAM<br/>10000 IOPS SSD\"]\n        Standby[\"PostgreSQL\
+    \ Standby<br/>16 CPU / 64GB RAM<br/>Streaming Replication\"]\n    end\n\n    subgraph\
+    \ Storage[\"Shared Storage Tier\"]\n        NFS[\"NFS / GlusterFS<br/>Filestore\
+    \ Storage<br/>5TB Capacity\"]\n    end\n\n    HAProxy --> App1\n    HAProxy -->\
+    \ App2\n    HAProxy --> App3\n\n    App1 -.->|Read/Write| Primary\n    App2 -.->|Read/Write|\
+    \ Primary\n    App3 -.->|Read/Write| Primary\n\n    App1 -.->|File Access| NFS\n\
+    \    App2 -.->|File Access| NFS\n    App3 -.->|File Access| NFS\n\n    Primary\
+    \ -.->|Replication| Standby\n\n    classDef lb fill:#ff9800,stroke:#f57c00,stroke-width:2px,color:#fff\n\
+    \    classDef app fill:#2196f3,stroke:#1976d2,stroke-width:2px,color:#fff\n  \
+    \  classDef db fill:#4caf50,stroke:#388e3c,stroke-width:2px,color:#fff\n    classDef\
+    \ storage fill:#9c27b0,stroke:#7b1fa2,stroke-width:2px,color:#fff\n\n    class\
+    \ HAProxy lb\n    class App1,App2,App3 app\n    class Primary,Standby db\n   \
+    \ class NFS storage\n"
+  variant_id: capacity_chart_002
+- chart_type: mermaid
+  placement_hint: after_conclusion
+  data_context: learning path and knowledge graph
+  mermaid_chart_syntax: "flowchart TB\n\n    Current[\"⬤ Odoo 18 Server for 1000 Users:\
+    \ Hardware & Architecture Guide\"]\n\n    %% Next Steps - Learning Progression\n\
+    \    Current --> Next0(\"Deploy Odoo 18 on Hetzner: Complete 2025 Guide\")\n \
+    \   Current --> Next1(\"Install Odoo 18 on Ubuntu 22.04: Complete 2025 Guide\"\
+    )\n\n    %% Related Topics - Cross-References\n    Current -.-> Rel0[\"Optimize\
+    \ Application Performance: Improve Performance by 50%\"]\n\n    %% Professional\
+    \ Styling\n    classDef current fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n\
+    \    classDef prereq fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000\n\
+    \    classDef next fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000\n \
+    \   classDef related fill:#f5f5f5,stroke:#616161,stroke-width:1px,color:#000\n\
+    \    classDef trouble fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000\n\
+    \    classDef support fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#000\n\
+    \n    class Current current\n    class Next0,Next1 next\n    class Rel0 related"

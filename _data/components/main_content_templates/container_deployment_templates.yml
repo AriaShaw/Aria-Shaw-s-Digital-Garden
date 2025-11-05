@@ -1,0 +1,96 @@
+# ============================================================================
+# CONTAINER DEPLOYMENT GUIDE MAIN CONTENT TEMPLATE
+# ============================================================================
+# Description: Generate container deployment guide main content for Docker/Kubernetes
+# Template ID: container_deployment
+# Version: 1.0
+# ============================================================================
+
+template_info:
+  template_id: container_deployment
+  description: "Docker/Kubernetes Odoo deployment guide main content"
+  version: "1.0"
+  variables_required:
+    - odoo_version
+    - deployment_type
+    - orchestration_tool
+
+# Main template content
+template: |
+  Deploying Odoo {odoo_version} using {deployment_type} containers provides reproducible, portable infrastructure that eliminates "it works on my machine" deployment failures. {container_benefits}
+
+  ## Container Architecture and Image Selection
+
+  The containerized deployment uses official Odoo Docker images from Docker Hub, which include pre-configured Python {python_version}, PostgreSQL client libraries, and common dependencies. The base image odoo:{odoo_version} provides a minimal Odoo installation, while separate PostgreSQL containers handle database operations with proper volume persistence.
+
+  {orchestration_context}
+
+  ## Deployment Configuration
+
+  The {orchestration_tool} configuration defines service relationships, networking, and volume management. The Odoo container connects to PostgreSQL through an isolated Docker network, preventing external database access. Persistent volumes store Odoo's filestore (uploaded documents, generated PDFs) and custom addons separately from the container filesystem, ensuring data survives container restarts and updates.
+
+  ## Volume Management and Data Persistence
+
+  Three persistent volumes handle different data types: {volume_data} stores user-uploaded files and generated reports, {volume_addons} holds custom modules, and {volume_config} contains configuration files. This separation allows you to update Odoo versions by replacing the application container while preserving business data and customizations.
+
+  ## Networking and Port Mapping
+
+  The container exposes Odoo on port {container_port}, which you map to the host's port 8069. PostgreSQL runs on port {database_port} within the isolated container network, accessible only to Odoo containers—not to external networks. This network isolation provides defense-in-depth security, preventing direct database attacks from compromised applications or network scanners.
+
+  ## Production Deployment Considerations
+
+  Production deployments require additional components beyond basic container orchestration. Add NGINX as a reverse proxy for SSL termination, configure automated backups of database volumes, and implement health checks that restart failed containers automatically. Resource limits prevent runaway processes from consuming all host memory, while CPU quotas ensure fair resource allocation across multiple containers.
+
+  {deployment_patterns}
+
+  ## Container Updates and Rollbacks
+
+  Updating Odoo becomes a controlled process: pull the new image, stop old containers, start new containers with the same volume mounts. If the update breaks functionality, rollback by reverting to the previous image version—the data volumes remain unchanged, so you return to the working state in seconds. This zero-downtime update capability transforms Odoo maintenance from risky weekend operations to routine weekday procedures.
+
+# Variable mappings (lookup tables)
+variable_mappings:
+  container_benefits:
+    docker: |
+      Docker containerization packages Odoo with all dependencies into a single portable image, eliminating version conflicts between Python libraries, system packages, and PostgreSQL client tools. You develop on macOS, test on Ubuntu, deploy to CentOS—the container runs identically everywhere because it carries its entire runtime environment.
+
+    kubernetes: |
+      Kubernetes orchestration manages container lifecycle automatically—when containers crash, Kubernetes restarts them. When traffic spikes, it scales horizontally by launching additional pods. When servers fail, it reschedules workloads to healthy nodes. This self-healing infrastructure reduces the operational burden of managing Odoo at scale.
+
+    default: |
+      Container deployment provides isolation, reproducibility, and simplified updates compared to traditional OS installations. The containerized approach packages Odoo with all dependencies, eliminating version conflicts and deployment inconsistencies across development, staging, and production environments.
+
+  orchestration_context:
+    docker-compose: |
+      Docker Compose manages multi-container deployments through a single YAML configuration file. Define Odoo, PostgreSQL, and NGINX services with their networking relationships, volume mounts, and environment variables—then deploy the entire stack with one command: docker-compose up -d.
+
+    helm: |
+      Helm charts package Kubernetes deployments into versioned releases with configurable parameters. The Odoo Helm chart defines pod specifications, service endpoints, persistent volume claims, and ingress rules—you customize deployment by overriding default values.yaml settings, then deploy with helm install.
+
+    kubectl: |
+      Kubectl applies Kubernetes manifests that declare desired infrastructure state—deployments, services, persistent volumes, and config maps. You describe what you want (3 Odoo pods, 1 PostgreSQL pod, LoadBalancer service), and Kubernetes reconciles current state to match your declarations.
+
+    docker: |
+      Docker run commands launch containers with specified images, volume mounts, port mappings, and environment variables. For production deployments, combine individual docker run commands into shell scripts or use Docker Compose to manage multi-container coordination.
+
+    default: |
+      The orchestration tool manages container lifecycle, networking, and volume persistence. Production deployments typically use declarative configuration files that define all components and their relationships, enabling version-controlled infrastructure and reproducible deployments.
+
+  deployment_patterns:
+    docker: |
+      Standard Docker deployments use docker-compose.yml files with separate development, staging, and production configurations. Development stacks expose debug ports and mount source code for live reloading, while production stacks run optimized images with health checks and resource limits. Docker Swarm provides basic clustering for high availability, though Kubernetes offers more advanced orchestration capabilities.
+
+    kubernetes: |
+      Kubernetes deployments follow best practices with separate namespaces for dev, staging, and production environments. ReplicaSets ensure high availability by maintaining multiple Odoo pods across cluster nodes, while HorizontalPodAutoscaler scales based on CPU or custom metrics. Ingress controllers handle SSL termination and route traffic to service endpoints.
+
+    default: |
+      Container orchestration patterns include development stacks with debug capabilities, staging environments that mirror production configuration, and production deployments with health checks, resource limits, and horizontal scaling capabilities.
+
+# Computed variables (evaluated by ExpressionEvaluator in template_renderer.py)
+computed_variables:
+  python_version:
+    expression: "int(odoo_version) >= 17 ? '3.11' : '3.10'"
+    description: "Python version based on Odoo version"
+
+  postgresql_version:
+    expression: "int(odoo_version) >= 17 ? '15' : '14'"
+    description: "PostgreSQL version based on Odoo version"
