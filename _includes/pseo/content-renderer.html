@@ -77,6 +77,33 @@
   {% assign guide_content = data.ai_generated_content.step_by_step_guide | default: data.ai_generated_content.deployment_guide | default: data.ai_generated_content.installation_guide | default: data.ai_generated_content.migration_guide | default: data.ai_generated_content.upgrade_guide | default: data.ai_generated_content.configuration_overview | default: data.ai_generated_content.development_overview | default: data.ai_generated_content.implementation_guide | default: data.ai_generated_content.integration_overview | default: data.ai_generated_content.performance_analysis | default: data.ai_generated_content.security_architecture | default: data.ai_generated_content.main_content %}
 
   {% if guide_content and guide_content != "" %}
+
+  <!-- PHASE 6: Replace chart placeholders in main_content with actual chart HTML -->
+  <!-- This is the tactical fix for Installation/Migration pages where charts were piling at the end -->
+  {% assign processed_content = guide_content %}
+  {% for viz in data.visualizations %}
+    {% if viz.variant_id and viz.mermaid_chart_syntax and viz.mermaid_chart_syntax != "" %}
+      {% comment %} Build chart HTML with improved styling {% endcomment %}
+      {% capture chart_html %}
+<div class="chart-container" style="margin: 3rem 0; padding: 2rem; background: linear-gradient(135deg, #f6f8fa 0%, #ffffff 100%); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+  {% if viz.data_context and viz.data_context != "" %}
+  <h3 style="margin-top: 0; margin-bottom: 1.5rem; color: #24292f; font-size: 1.25rem; font-weight: 600; border-bottom: 2px solid #d0d7de; padding-bottom: 0.5rem;">{{ viz.data_context }}</h3>
+  {% endif %}
+  <div class="mermaid" style="text-align: center; background: white; padding: 1.5rem; border-radius: 6px;">
+{{ viz.mermaid_chart_syntax }}
+  </div>
+</div>
+      {% endcapture %}
+
+      {% comment %} Replace placeholder with chart HTML {% endcomment %}
+      {% assign placeholder = "<!-- CHART:" | append: viz.variant_id | append: " | " | append: viz.data_context | append: " -->" %}
+      {% assign processed_content = processed_content | replace: placeholder, chart_html %}
+
+      {% comment %} Also try without data_context in case format varies {% endcomment %}
+      {% assign simple_placeholder = "<!-- CHART:" | append: viz.variant_id | append: " -->" %}
+      {% assign processed_content = processed_content | replace: simple_placeholder, chart_html %}
+    {% endif %}
+  {% endfor %}
   <div class="implementation-guide">
     <h2>
       {% if data.ai_generated_content.migration_guide and data.ai_generated_content.migration_guide != "" %}
@@ -93,14 +120,16 @@
         Implementation Guide
       {% endif %}
     </h2>
-    {{ guide_content | markdownify }}
+    {{ processed_content | markdownify }}
   </div>
   {% endif %}
 
   <!-- Visualizations: After Prerequisites (Phase 1 preparation charts) -->
+  <!-- PHASE 6: Charts now injected via placeholders in main_content -->
+  <!-- This section kept for backward compatibility with charts without variant_id -->
   {% if data.visualizations %}
     {% for viz in data.visualizations %}
-      {% if viz.placement_hint == "after_prerequisites" %}
+      {% if viz.placement_hint == "after_prerequisites" and viz.variant_id == nil %}
         {% if viz.mermaid_chart_syntax and viz.mermaid_chart_syntax != "" %}
         <div class="mermaid" style="text-align: center; margin: 2rem 0;">
 {{ viz.mermaid_chart_syntax }}
@@ -150,9 +179,10 @@
   {% endfor %}
 
   <!-- Visualizations: After Steps / After Configuration -->
+  <!-- PHASE 6: Charts now injected via placeholders - skip charts with variant_id -->
   {% if data.visualizations %}
     {% for viz in data.visualizations %}
-      {% if viz.placement_hint == "after_steps" or viz.placement_hint == "after_guide" or viz.placement_hint == "after_architecture" or viz.placement_hint == "after_diagnostic_steps" or viz.placement_hint == "after_configuration" %}
+      {% if (viz.placement_hint == "after_steps" or viz.placement_hint == "after_guide" or viz.placement_hint == "after_architecture" or viz.placement_hint == "after_diagnostic_steps" or viz.placement_hint == "after_configuration") and viz.variant_id == nil %}
         {% if viz.mermaid_chart_syntax and viz.mermaid_chart_syntax != "" %}
         <div class="mermaid" style="text-align: center; margin: 2rem 0;">
 {{ viz.mermaid_chart_syntax }}
@@ -206,9 +236,10 @@
   </div>
 
   <!-- Visualizations: After Specs / After Server Specs Discussion -->
+  <!-- PHASE 6: Charts now injected via placeholders - skip charts with variant_id -->
   {% if data.visualizations %}
     {% for viz in data.visualizations %}
-      {% if viz.placement_hint == "after_specs" or viz.placement_hint == "after_server_specs" or viz.placement_hint == "after_server_specs_discussion" %}
+      {% if (viz.placement_hint == "after_specs" or viz.placement_hint == "after_server_specs" or viz.placement_hint == "after_server_specs_discussion") and viz.variant_id == nil %}
         {% if viz.mermaid_chart_syntax and viz.mermaid_chart_syntax != "" %}
         <div class="mermaid" style="text-align: center; max-height: 600px; overflow: auto; background: #f6f8fa; padding: 1rem; border-radius: 6px; margin: 2rem 0;">
 {{ viz.mermaid_chart_syntax }}
@@ -277,9 +308,10 @@
 
 
   <!-- Visualizations: After Common Mistakes / Before Troubleshooting -->
+  <!-- PHASE 6: Charts now injected via placeholders - skip charts with variant_id -->
   {% if data.visualizations %}
     {% for viz in data.visualizations %}
-      {% if viz.placement_hint == "after_common_mistakes" or viz.placement_hint == "before_troubleshooting" %}
+      {% if (viz.placement_hint == "after_common_mistakes" or viz.placement_hint == "before_troubleshooting") and viz.variant_id == nil %}
         {% if viz.mermaid_chart_syntax and viz.mermaid_chart_syntax != "" %}
         <div class="mermaid" style="text-align: center; max-height: 600px; overflow: auto; background: #f6f8fa; padding: 1rem; border-radius: 6px; margin: 2rem 0;">
 {{ viz.mermaid_chart_syntax }}
@@ -309,9 +341,10 @@
   {% endfor %}
 
   <!-- Visualizations: After Troubleshooting / Mid Content / Other -->
+  <!-- PHASE 6: Charts now injected via placeholders - skip charts with variant_id -->
   {% if data.visualizations %}
     {% for viz in data.visualizations %}
-      {% if viz.placement_hint == "after_troubleshooting" or viz.placement_hint == "mid_content" or viz.placement_hint == "after_cost_analysis_section" or viz.placement_hint == "after_server_specs_discussion" %}
+      {% if (viz.placement_hint == "after_troubleshooting" or viz.placement_hint == "mid_content" or viz.placement_hint == "after_cost_analysis_section" or viz.placement_hint == "after_server_specs_discussion") and viz.variant_id == nil %}
         {% if viz.mermaid_chart_syntax and viz.mermaid_chart_syntax != "" %}
         <div class="mermaid" style="text-align: center; max-height: 600px; overflow: auto; background: #f6f8fa; padding: 1rem; border-radius: 6px; margin: 2rem 0;">
 {{ viz.mermaid_chart_syntax }}
@@ -367,9 +400,10 @@
 
 
 <!-- Visualizations: Catch-all for any remaining placement hints (before conclusion) -->
+<!-- PHASE 6: Only render charts without variant_id (backward compatibility) -->
 {% if data.visualizations %}
   {% for viz in data.visualizations %}
-    {% unless viz.placement_hint == "after_introduction" or viz.placement_hint == "after_prerequisites" or viz.placement_hint == "after_steps" or viz.placement_hint == "after_guide" or viz.placement_hint == "after_configuration" or viz.placement_hint == "after_specs" or viz.placement_hint == "after_server_specs" or viz.placement_hint == "after_server_specs_discussion" or viz.placement_hint == "after_common_mistakes" or viz.placement_hint == "before_troubleshooting" or viz.placement_hint == "after_troubleshooting" or viz.placement_hint == "mid_content" or viz.placement_hint == "after_cost_analysis_section" or viz.placement_hint == "after_architecture" or viz.placement_hint == "after_diagnostic_steps" or viz.placement_hint == "after_conclusion" %}
+    {% unless viz.placement_hint == "after_introduction" or viz.placement_hint == "after_prerequisites" or viz.placement_hint == "after_steps" or viz.placement_hint == "after_guide" or viz.placement_hint == "after_configuration" or viz.placement_hint == "after_specs" or viz.placement_hint == "after_server_specs" or viz.placement_hint == "after_server_specs_discussion" or viz.placement_hint == "after_common_mistakes" or viz.placement_hint == "before_troubleshooting" or viz.placement_hint == "after_troubleshooting" or viz.placement_hint == "mid_content" or viz.placement_hint == "after_cost_analysis_section" or viz.placement_hint == "after_architecture" or viz.placement_hint == "after_diagnostic_steps" or viz.placement_hint == "after_conclusion" or viz.variant_id %}
       {% if viz.mermaid_chart_syntax and viz.mermaid_chart_syntax != "" %}
       <div class="mermaid" style="text-align: center; max-height: 600px; overflow: auto; background: #f6f8fa; padding: 1rem; border-radius: 6px; margin: 2rem 0;">
 {{ viz.mermaid_chart_syntax }}
