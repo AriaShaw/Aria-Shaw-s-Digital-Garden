@@ -32,36 +32,64 @@
     <!-- Preconnect to CDN for faster resource loading -->
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 
-    <!-- Mermaid.js for visualizations - lazy loaded -->
-    <script type="module">
-      // Lazy load Mermaid only when diagrams are near viewport
-      const mermaidContainers = document.querySelectorAll('.mermaid');
-      if (mermaidContainers.length > 0) {
-        const loadMermaid = async () => {
-          const mermaid = await import('https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs');
-          mermaid.default.initialize({ startOnLoad: true, theme: 'neutral' });
-        };
-
-        // Load immediately if first diagram is in viewport, otherwise wait
-        const firstDiagram = mermaidContainers[0];
-        const rect = firstDiagram.getBoundingClientRect();
-        const isInViewport = rect.top < window.innerHeight && rect.bottom > 0;
-
-        if (isInViewport) {
-          loadMermaid();
-        } else {
-          // Load when user scrolls near diagrams
-          const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-              if (entry.isIntersecting) {
-                loadMermaid();
-                observer.disconnect();
-              }
-            });
-          }, { rootMargin: '200px' });
-          observer.observe(firstDiagram);
-        }
+    <!-- Hide unrendered Mermaid diagrams to prevent code flash -->
+    <style>
+      .mermaid:not(.mermaid-rendered) {
+        visibility: hidden;
+        min-height: 200px; /* Prevent layout shift */
       }
+    </style>
+
+    <!-- Mermaid.js for visualizations - lazy loaded after DOM ready -->
+    <script type="module">
+      // Wait for DOM to be fully loaded
+      document.addEventListener('DOMContentLoaded', () => {
+        // Lazy load Mermaid only when diagrams are near viewport
+        const mermaidContainers = document.querySelectorAll('.mermaid');
+        if (mermaidContainers.length > 0) {
+          let mermaidLoaded = false;
+
+          const loadMermaid = async () => {
+            if (mermaidLoaded) return;
+            mermaidLoaded = true;
+
+            const mermaid = await import('https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs');
+            mermaid.default.initialize({
+              startOnLoad: true,
+              theme: 'neutral',
+              securityLevel: 'loose'
+            });
+
+            // Mark diagrams as rendered and make visible
+            setTimeout(() => {
+              mermaidContainers.forEach(container => {
+                container.classList.add('mermaid-rendered');
+                container.style.visibility = 'visible';
+              });
+            }, 100);
+          };
+
+          // Load immediately if first diagram is in viewport, otherwise wait
+          const firstDiagram = mermaidContainers[0];
+          const rect = firstDiagram.getBoundingClientRect();
+          const isInViewport = rect.top < window.innerHeight && rect.bottom > 0;
+
+          if (isInViewport) {
+            loadMermaid();
+          } else {
+            // Load when user scrolls near diagrams
+            const observer = new IntersectionObserver((entries) => {
+              entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                  loadMermaid();
+                  observer.disconnect();
+                }
+              });
+            }, { rootMargin: '200px' });
+            observer.observe(firstDiagram);
+          }
+        }
+      });
     </script>
 
     <!--[if lt IE 9]>
