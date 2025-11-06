@@ -77,7 +77,7 @@ ai_generated_content:
     \ ensures real-time data exchange without constant polling. Odoo acts as the system\
     \ of record for contact data, while Sendinblue serves as the outbound marketing\
     \ execution engine. The entire flow depends on a secure, bidirectional API communication\
-    \ channel.\n\n**Core Synchronization Components**\n\nYour integration relies on\
+    \ channel.\n\n### Core Synchronization Components\n\nYour integration relies on\
     \ three primary components. The Odoo module, typically a custom-developed or configured\
     \ connector, handles internal event triggers. The Sendinblue API receives contact\
     \ data and triggers email campaigns. A webhook endpoint, hosted within your Odoo\
@@ -94,14 +94,14 @@ ai_generated_content:
     \ an event. It sends a POST request with event details to your Odoo webhook URL.\
     \ The Odoo webhook controller parses this JSON payload and updates the corresponding\
     \ partner record. This process enriches Odoo contact profiles with vital marketing\
-    \ engagement metrics.\n\n**Data Flow Patterns and Timing**\n\nThe architecture\
+    \ engagement metrics.\n\n### Data Flow Patterns and Timing\n\nThe architecture\
     \ supports both real-time and batch processing. Critical events like new lead\
     \ creation or unsubscriptions process immediately for operational integrity. Large\
     \ historical data imports or list synchronizations may run as scheduled batch\
     \ jobs to prevent API rate limiting. You must implement a retry mechanism for\
     \ failed API calls, storing payloads in a queue for subsequent processing. This\
-    \ hybrid approach balances performance with reliability.\n\n## Step-by-Step Configuration**Prerequisites\
-    \ and Environment Setup**\n\nBegin by gathering your API credentials. Log into\
+    \ hybrid approach balances performance with reliability.\n\n## Step-by-Step Configuration\n\n### Prerequisites\
+    \ and Environment Setup\n\nBegin by gathering your API credentials. Log into\
     \ your Sendinblue account, navigate to the SMTP & API section, and generate a\
     \ new v3 API key. Grant this key full permissions for contacts, transactional\
     \ emails, and webhooks. In your Odoo 18 instance, ensure you have developer mode\
@@ -111,8 +111,8 @@ ai_generated_content:
     \ package. Install it using pip: `pip install sib-api-v3-sdk`. Verify your Odoo\
     \ server can make outbound HTTPS requests. Check your firewall rules and ensure\
     \ no network policies block communication with `api.sendinblue.com` on port 443.\
-    \ This preparation prevents common connectivity issues.\n\n**Creating the Odoo\
-    \ Custom Module**\n\nStart by creating a new Odoo module structure. Create a module\
+    \ This preparation prevents common connectivity issues.\n\n### Creating the Odoo\
+    \ Custom Module\n\nStart by creating a new Odoo module structure. Create a module\
     \ named `sendinblue_connector` with the essential files: `__init__.py`, `__manifest__.py`,\
     \ `models/models.py`, and `controllers/controllers.py`. Define your module metadata\
     \ in the manifest file. Specify a descriptive name, version, and dependencies\
@@ -121,8 +121,8 @@ ai_generated_content:
     \    'summary': 'Integrate Odoo 18 with Sendinblue',\n    'depends': ['base',\
     \ 'contacts', 'mail'],\n    'data': [\n        'security/ir.model.access.csv',\n\
     \        'views/res_config_settings_views.xml',\n        'views/res_partner_views.xml',\n\
-    \    ],\n    'installable': True,\n    'application': True,\n}\n```\n\n**Implementing\
-    \ Configuration Settings**\n\nCreate a configuration model to store API credentials\
+    \    ],\n    'installable': True,\n    'application': True,\n}\n```\n\n### Implementing\
+    \ Configuration Settings\n\nCreate a configuration model to store API credentials\
     \ securely. Extend the `res.config.settings` model to add fields for your Sendinblue\
     \ API key and webhook secret. Store the API key in an `ir.config_parameter` for\
     \ secure retrieval. Never hardcode credentials in your model logic.\n\n```\nfrom\
@@ -154,8 +154,8 @@ ai_generated_content:
     \       update_enabled=True\n        )\n\n        try:\n            contacts_api.create_contact(create_contact)\n\
     \            _logger.info(\"Synced contact %s to Sendinblue\", email)\n      \
     \      return True\n        except ApiException as e:\n            _logger.error(\"\
-    Sendinblue API exception: %s\", e)\n            return False\n```\n\n**Configuring\
-    \ Odoo Webhooks**\n\nCreate a webhook controller in Odoo to receive Sendinblue\
+    Sendinblue API exception: %s\", e)\n            return False\n```\n\n### Configuring\
+    \ Odoo Webhooks\n\nCreate a webhook controller in Odoo to receive Sendinblue\
     \ events. This controller must validate the webhook signature to prevent spoofing.\
     \ Implement endpoints for different event types like email opens, clicks, and\
     \ unsubscribes.\n\n```\nfrom odoo import http\nfrom odoo.exceptions import ValidationError\n\
@@ -177,13 +177,13 @@ ai_generated_content:
     \ webhook signature using HMAC.\"\"\"\n        computed_signature = hmac.new(\n\
     \            secret.encode('utf-8'),\n            msg=payload,\n            digestmod=hashlib.sha256\n\
     \        ).hexdigest()\n        return hmac.compare_digest(computed_signature,\
-    \ signature)\n```\n\n**Setting Up Sendinblue Webhooks**\n\nAfter deploying your\
+    \ signature)\n```\n\n### Setting Up Sendinblue Webhooks\n\nAfter deploying your\
     \ Odoo webhook controller, configure Sendinblue to send events. Use the Sendinblue\
     \ API or dashboard to create a new webhook. Point the webhook URL to your Odoo\
     \ instance's public endpoint, typically `https://your-odoo-domain.com/sendinblue/webhook`.\
     \ Select the specific events you want to receive: hard bounce, soft bounce, unsubscribed,\
     \ opened, and clicked. Sendinblue will now push engagement data to your Odoo system.\n\
-    \n**Initial Contact Synchronization**\n\nDevelop a batch synchronization method\
+    \n### Initial Contact Synchronization\n\nDevelop a batch synchronization method\
     \ to transfer existing Odoo contacts to Sendinblue. This script processes partners\
     \ in chunks to respect API rate limits. Filter partners to exclude those without\
     \ email addresses or those who opt out of marketing.\n\n```\ndef sync_existing_contacts(self,\
@@ -197,15 +197,15 @@ ai_generated_content:
     \   'SMS': partner.mobile or '',\n                'COMPANY': partner.company_id.name\
     \ or '',\n            }\n            self.create_contact(partner.email, attributes)\n\
     \        _logger.info(\"Synced batch %s-%s\", offset, offset + batch_size)\n```\n\
-    \n## Data Mapping and Transformation**Core Contact Field Mapping**\n\nThe contact\
+    \n## Data Mapping and Transformation\n\n### Core Contact Field Mapping\n\nThe contact\
     \ synchronization requires precise field mapping between Odoo partners and Sendinblue\
     \ contact attributes. Map Odoo's `res.partner` fields to Sendinblue's predefined\
     \ and custom attributes. This alignment ensures data consistency across both platforms.\n\
     \nStandard mappings include Odoo's `name` field to Sendinblue's `NAME` attribute.\
     \ Split the name into `FIRSTNAME` and `LASTNAME` for better personalization. Map\
     \ Odoo's `phone` to Sendinblue's `SMS` attribute for SMS marketing. Use `company_id.name`\
-    \ for the `COMPANY` attribute to track organizational affiliation.\n\n**Handling\
-    \ Custom Attributes**\n\nSendinblue supports custom attributes for specialized\
+    \ for the `COMPANY` attribute to track organizational affiliation.\n\n### Handling\
+    \ Custom Attributes\n\nSendinblue supports custom attributes for specialized\
     \ data points. Create these attributes in your Sendinblue account before synchronization.\
     \ Map Odoo's `category_id` to a custom `TAGS` attribute in Sendinblue. Transform\
     \ the many2many relationship into a comma-separated string for Sendinblue compatibility.\n\
@@ -229,7 +229,7 @@ ai_generated_content:
     \ Odoo's address fields into Sendinblue's format. Map `street` to `ADDRESS_1`,\
     \ `street2` to `ADDRESS_2`, and `city` to `CITY`. Use `state_id.name` for `STATE`\
     \ and `zip` for `POSTAL_CODE`. This structured data enables geographic targeting\
-    \ in your Sendinblue campaigns.\n\n**Subscription Status Synchronization**\n\n\
+    \ in your Sendinblue campaigns.\n\n### Subscription Status Synchronization\n\n\
     Maintain consistent subscription status across both systems. Map Odoo's `opt_out`\
     \ field to Sendinblue's unsubscription lists. When a partner opts out in Odoo,\
     \ add them to Sendinblue's global exclusion list. Synchronize unsubscription events\
@@ -237,7 +237,7 @@ ai_generated_content:
     \ double opt-in processes where applicable. When a contact confirms subscription\
     \ in Sendinblue, create a new partner in Odoo with `opt_out` set to False. This\
     \ bidirectional sync ensures compliance with email marketing regulations across\
-    \ all touchpoints.\n\n**Dealing with Data Model Inconsistencies**\n\nOdoo's relational\
+    \ all touchpoints.\n\n### Dealing with Data Model Inconsistencies\n\nOdoo's relational\
     \ data model conflicts with Sendinblue's flat contact structure. Flatten Odoo's\
     \ many-to-one relationships like company hierarchy into simple text fields. Handle\
     \ cases where multiple Odoo partners share the same email address, a common scenario\
@@ -245,7 +245,7 @@ ai_generated_content:
     \ data. Prioritize Odoo as the master record for contact information, but respect\
     \ Sendinblue for marketing engagement data. Create merge rules for situations\
     \ where both systems contain conflicting information for the same contact.\n\n\
-    ## Error Handling and Resilience**Common API Integration Errors**\n\nSendinblue\
+    ## Error Handling and Resilience\n\n### Common API Integration Errors\n\nSendinblue\
     \ API interactions generate specific HTTP status codes that require structured\
     \ handling. A `401 Unauthorized` error indicates an invalid or expired API key.\
     \ A `400 Bad Request` typically means malformed contact data or invalid attribute\
@@ -253,7 +253,7 @@ ai_generated_content:
     \nHandle `404 Not Found` errors when updating non-existent contacts. Process `402\
     \ Payment Required` responses that indicate exceeded plan limits. Log the exact\
     \ error message and context for each failed API call to facilitate debugging and\
-    \ monitoring.\n\n**Implementing Retry Mechanisms**\n\nDesign a robust retry system\
+    \ monitoring.\n\n### Implementing Retry Mechanisms\n\nDesign a robust retry system\
     \ for transient API failures. Use exponential backoff for subsequent retry attempts.\
     \ Start with a two-second delay for the first retry, then double the delay for\
     \ each additional attempt. Cap the maximum retry delay at five minutes to prevent\
@@ -266,21 +266,21 @@ ai_generated_content:
     \ codes\n            _logger.warning(\"Retrying Sendinblue API call after failure:\
     \ %s\", e)\n            raise  # Re-raise to trigger retry\n        else:\n  \
     \          _logger.error(\"Non-retryable Sendinblue API error: %s\", e)\n    \
-    \        return False\n```\n\n**Webhook Failure Scenarios**\n\nWebhook endpoints\
+    \        return False\n```\n\n### Webhook Failure Scenarios\n\nWebhook endpoints\
     \ face multiple failure modes. Network timeouts can interrupt data transmission\
     \ from Sendinblue to Odoo. Payload validation failures occur with malformed JSON\
     \ or missing required fields. Signature verification failures indicate potential\
     \ security threats.\n\nImplement a dead letter queue for webhook events that fail\
     \ repeated processing. Store these events in an Odoo model for manual review and\
     \ reprocessing. This approach prevents data loss while maintaining system stability\
-    \ during extended outages.\n\n**Data Validation and Sanitization**\n\nValidate\
+    \ during extended outages.\n\n### Data Validation and Sanitization\n\nValidate\
     \ all data before transmission to Sendinblue. Verify email format using RFC-compliant\
     \ validation. Sanitize text fields to remove special characters that might break\
     \ the API. Check string length limits for Sendinblue attribute fields to prevent\
     \ truncation.\n\nValidate webhook payloads for required fields and data types.\
     \ Verify that the `event` field contains a recognized event type. Ensure the `email`\
     \ field exists and passes basic format validation before processing the webhook\
-    \ event.\n\n**Monitoring and Alerting**\n\nEstablish comprehensive monitoring\
+    \ event.\n\n### Monitoring and Alerting\n\nEstablish comprehensive monitoring\
     \ for integration health. Track key metrics like API success rates, webhook processing\
     \ times, and queue lengths. Set up alerts for sustained API failure rates above\
     \ five percent. Monitor for webhook response times exceeding thirty seconds, which\
@@ -288,7 +288,7 @@ ai_generated_content:
     \ synchronization status in real-time. Display the number of pending synchronizations,\
     \ recent failures, and system throughput. These monitoring capabilities provide\
     \ operational visibility and enable proactive issue resolution.\n\n## Testing\
-    \ and Validation**Development Environment Testing**\n\nBegin testing in a isolated\
+    \ and Validation### Development Environment Testing\n\nBegin testing in a isolated\
     \ development environment that mirrors your production setup. Create test Odoo\
     \ partners with varied data scenarios: partners with missing email addresses,\
     \ partners with international phone numbers, partners with special characters\
@@ -297,7 +297,7 @@ ai_generated_content:
     \ and back. Create a partner in Odoo, trigger synchronization, then verify the\
     \ contact appears in Sendinblue with correct attribute mapping. Then, simulate\
     \ a webhook event from Sendinblue and confirm the Odoo partner record updates\
-    \ appropriately.\n\n**API Integration Test Suite**\n\nDevelop a comprehensive\
+    \ appropriately.\n\n### API Integration Test Suite\n\nDevelop a comprehensive\
     \ test suite that validates all API interactions. Test successful contact creation\
     \ with complete data. Test contact updates with partial data to ensure proper\
     \ merge behavior. Test error conditions like duplicate email addresses, invalid\
@@ -324,15 +324,15 @@ ai_generated_content:
     \ fields.\n\nTest webhook security by sending requests with invalid signatures.\
     \ Confirm your endpoint rejects these requests with appropriate error responses.\
     \ Test payload tampering by modifying field values in valid signed requests to\
-    \ ensure signature verification detects the changes.\n\n**Performance and Load\
-    \ Testing**\n\nAssess integration performance under realistic load conditions.\
+    \ ensure signature verification detects the changes.\n\n### Performance and Load\
+    \ Testing\n\nAssess integration performance under realistic load conditions.\
     \ Simulate synchronizing ten thousand contacts to identify bottlenecks. Measure\
     \ API response times during peak load and verify they remain within acceptable\
     \ limits. Test webhook processing capacity by sending high volumes of concurrent\
     \ events.\n\nMonitor Odoo server resources during synchronization jobs. Check\
     \ for memory leaks, excessive CPU usage, or database connection exhaustion. Identify\
     \ the optimal batch size for contact synchronization that maximizes throughput\
-    \ without triggering rate limits.\n\n**User Acceptance Testing**\n\nEngage business\
+    \ without triggering rate limits.\n\n### User Acceptance Testing\n\nEngage business\
     \ users in the validation process. Have marketing team members verify that synchronized\
     \ contacts appear correctly in Sendinblue lists. Confirm that engagement data\
     \ from Sendinblue populates the expected fields in Odoo. Validate that automated\
@@ -340,7 +340,7 @@ ai_generated_content:
     \ mirror real business processes. Test a complete customer journey from lead creation\
     \ in Odoo, through email campaign engagement in Sendinblue, to sales follow-up\
     \ in Odoo based on that engagement. Verify data consistency at each stage of the\
-    \ process.\n\n## Security Considerations**API Key Management**\n\nTreat your Sendinblue\
+    \ process.\n\n## Security Considerations\n\n### API Key Management\n\nTreat your Sendinblue\
     \ API key as a sensitive credential deserving protection. Never commit API keys\
     \ to version control or store them in plaintext within the database. Use Odoo's\
     \ `ir.config_parameter` system with appropriate security flags to encrypt the\
@@ -361,14 +361,14 @@ ai_generated_content:
     \nHonor customer consent preferences across both platforms. Synchronize opt-out\
     \ requests immediately between Odoo and Sendinblue. Implement processes for handling\
     \ right-to-erasure requests that remove customer data from both systems in a coordinated\
-    \ manner.\n\n**Network Security Measures**\n\nEncrypt all data in transit between\
+    \ manner.\n\n### Network Security Measures\n\nEncrypt all data in transit between\
     \ Odoo and Sendinblue. Enforce TLS 1.2 or higher for all API communications. Verify\
     \ SSL certificates to prevent man-in-the-middle attacks. Configure firewalls to\
     \ allow outbound connections only to official Sendinblue API endpoints.\n\nIspute\
     \ integration components within your network architecture. Place webhook endpoints\
     \ in a DMZ-like network segment with restricted internal access. Implement network-level\
     \ rate limiting to prevent denial-of-service attacks on your webhook infrastructure.\n\
-    \n**Access Control and Audit**\n\nApply principle of least privilege to integration\
+    \n### Access Control and Audit\n\nApply principle of least privilege to integration\
     \ components. Restrict Odoo user permissions so only authorized personnel can\
     \ configure the Sendinblue integration. Log all synchronization activities and\
     \ administrative changes for audit purposes.\n\nMonitor for anomalous activities\
@@ -389,7 +389,7 @@ ai_generated_content:
     \        for partner in partners:\n            self.create_contact_with_retry(partner.email,\
     \ self._prepare_contact_attributes(partner))\n        \n        # Respect rate\
     \ limits with delay between batches\n        if i + batch_size < len(partner_ids):\n\
-    \            time.sleep(delay)\n```\n\n**Database Query Optimization**\n\nInefficient\
+    \            time.sleep(delay)\n```\n\n### Database Query Optimization\n\nInefficient\
     \ database queries during synchronization create significant performance bottlenecks.\
     \ Optimize partner queries by selecting only necessary fields instead of fetching\
     \ entire records. Use prefetching for related records like company data to avoid\
@@ -397,21 +397,21 @@ ai_generated_content:
     \ like `email`, `active`, and `create_date`. These indexes accelerate the partner\
     \ lookups during both outbound synchronization and webhook processing. Monitor\
     \ query performance using Odoo's built-in query logging during load testing.\n\
-    \n**Caching Strategies**\n\nImplement strategic caching to reduce redundant API\
+    \n### Caching Strategies\n\nImplement strategic caching to reduce redundant API\
     \ calls and database queries. Cache Sendinblue list IDs to avoid repeated API\
     \ calls for list management. Cache transformation rules and field mappings to\
     \ eliminate redundant computation during contact processing.\n\nUse Odoo's ORM\
     \ cache effectively by structuring code to leverage built-in caching. Avoid clearing\
     \ the cache during synchronization operations unless absolutely necessary. This\
     \ approach maintains performance across multiple synchronization batches.\n\n\
-    **Background Job Processing**\n\nMove synchronization tasks to background jobs\
+    ### Background Job Processing\n\nMove synchronization tasks to background jobs\
     \ to prevent blocking user interactions. Use Odoo's queue job system to process\
     \ contact updates asynchronously. This approach decouples the synchronization\
     \ workload from the main application threads, maintaining system responsiveness.\n\
     \nPrioritize job queues based on business importance. Process real-time events\
     \ like new lead creation in high-priority queues. Handle bulk historical synchronizations\
-    \ in lower-priority queues that can tolerate longer processing times.\n\n**Monitoring\
-    \ and Capacity Planning**\n\nImplement comprehensive performance monitoring to\
+    \ in lower-priority queues that can tolerate longer processing times.\n\n### Monitoring\
+    \ and Capacity Planning\n\nImplement comprehensive performance monitoring to\
     \ identify optimization opportunities. Track metrics like synchronization throughput,\
     \ API response times, and queue lengths. Set up alerts for performance degradation\
     \ so you can address issues before they impact users.\n\nUse monitoring data for\

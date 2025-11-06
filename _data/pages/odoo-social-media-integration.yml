@@ -70,7 +70,7 @@ ai_generated_content:
     \ model where Odoo acts as the central data processor. This architecture ensures\
     \ scalability and maintains data integrity across the entire system. You must\
     \ design for the high-volume, real-time nature of social media data streams.\n\
-    \n**Core Integration Components**\n\nThe system comprises three primary layers.\
+    \n### Core Integration Components\n\nThe system comprises three primary layers.\
     \ The API Connector Layer manages authentication and communication with each social\
     \ platform, such as Facebook Graph API or Twitter API v2. The Data Transformation\
     \ Layer converts platform-specific JSON payloads into standardized Python objects\
@@ -82,20 +82,20 @@ ai_generated_content:
     \ intervals. This method works for comments, direct messages, and new posts. The\
     \ push pattern relies on webhooks for real-time notifications, which is essential\
     \ for instant customer service responses. You implement webhooks for platforms\
-    \ like Instagram that support them for direct message events.\n\n**Odoo Module\
-    \ Integration Points**\n\nSocial data feeds multiple Odoo modules for different\
+    \ like Instagram that support them for direct message events.\n\n### Odoo Module\
+    \ Integration Points\n\nSocial data feeds multiple Odoo modules for different\
     \ business functions. The CRM module receives new leads from social interactions,\
     \ complete with their conversation history. The Helpdesk system creates tickets\
     \ from customer complaints or support requests made on social platforms. The Marketing\
     \ app tracks campaign performance and user engagement metrics. This multi-point\
     \ integration ensures social data activates your entire business operations.\n\
-    \n**Architecture Diagram Description**\n\nImagine a horizontal data flow. On the\
+    \n### Architecture Diagram Description\n\nImagine a horizontal data flow. On the\
     \ left, social platform APIs connect through authenticated gateway modules. An\
     \ arrow points to a central transformation engine that normalizes data into a\
     \ common schema. This engine feeds into Odoo's ORM, which then branches vertically\
     \ to update records in CRM, Sales, and Helpdesk modules. A feedback loop from\
     \ Odoo back to the social platforms handles automated responses and posting, completing\
-    \ the cycle.\n\n## Step-by-Step Configuration**Initial Odoo Module Setup**\n\n\
+    \ the cycle.\n\n## Step-by-Step Configuration### Initial Odoo Module Setup\n\n\
     Begin by creating a new custom module for your social media integration. Define\
     \ the module manifest file with dependencies on Odoo's `social`, `crm`, and `helpdesk`\
     \ modules. This ensures access to the necessary models and business logic. Create\
@@ -109,8 +109,8 @@ ai_generated_content:
     \        ('linkedin', 'LinkedIn')\n    ], string='Platform', required=True)\n\
     \    api_key = fields.Char(string='API Key')\n    api_secret = fields.Char(string='API\
     \ Secret')\n    access_token = fields.Char(string='Access Token')\n    is_active\
-    \ = fields.Boolean(string='Active', default=True)\n```\n\n**Platform-Specific\
-    \ Authentication**\n\nEach social platform requires a distinct OAuth 2.0 flow\
+    \ = fields.Boolean(string='Active', default=True)\n```\n\n### Platform-Specific\
+    \ Authentication\n\nEach social platform requires a distinct OAuth 2.0 flow\
     \ implementation. For Facebook, you register an app in the Facebook Developer\
     \ portal to obtain your App ID and App Secret. Configure the OAuth redirect URI\
     \ to point to your Odoo instance's authentication callback endpoint. Implement\
@@ -129,7 +129,7 @@ ai_generated_content:
     \            if response.status_code == 200:\n                token_data = response.json()\n\
     \                config.write({'access_token': token_data['access_token']})\n\
     \                return request.redirect('/web#action=social_media_config_action')\n\
-    ```\n\n**API Endpoint Configuration**\n\nDefine the specific API endpoints for\
+    ```\n\n### API Endpoint Configuration\n\nDefine the specific API endpoints for\
     \ each platform within your configuration model. For Twitter, use the v2 endpoints\
     \ for fetching tweets and user information. For Instagram Basic Display API, configure\
     \ the endpoints for retrieving media and comments. Store these endpoints as fields\
@@ -141,7 +141,7 @@ ai_generated_content:
     \            'comments': '/{post_id}/comments'\n        },\n        'twitter':\
     \ {\n            'base_url': 'https://api.twitter.com/2',\n            'tweets':\
     \ '/tweets',\n            'users': '/users',\n            'dm_events': '/dm_events'\n\
-    \        }\n    })\n```\n\n**Scheduled Action Configuration**\n\nConfigure Odoo's\
+    \        }\n    })\n```\n\n### Scheduled Action Configuration\n\nConfigure Odoo's\
     \ scheduled actions to pull data from social platforms at defined intervals. Create\
     \ separate actions for different data types to manage API rate limits. Set a 5-minute\
     \ interval for high-priority data like direct messages and a 30-minute interval\
@@ -152,8 +152,8 @@ ai_generated_content:
     \ name=\"state\">code</field>\n    <field name=\"code\">model.fetch_social_messages()</field>\n\
     \    <field name=\"interval_number\">5</field>\n    <field name=\"interval_type\"\
     >minutes</field>\n    <field name=\"numbercall\">-1</field>\n    <field name=\"\
-    doall\" eval=\"False\"/>\n</record>\n```\n\n**Webhook Configuration for Real-time\
-    \ Data**\n\nFor platforms that support webhooks, implement endpoint controllers\
+    doall\" eval=\"False\"/>\n</record>\n```\n\n### Webhook Configuration for Real-time\
+    \ Data\n\nFor platforms that support webhooks, implement endpoint controllers\
     \ in Odoo to receive real-time notifications. Create a verified endpoint that\
     \ handles the initial challenge request during webhook registration. Implement\
     \ the logic to process incoming webhook payloads and create background jobs for\
@@ -168,19 +168,19 @@ ai_generated_content:
     \                return int(hub_challenge)\n            return 'Verification failed'\n\
     \        \n        else:\n            # Process webhook payload\n            data\
     \ = json.loads(http.request.httprequest.data)\n            http.request.env['social.media.config'].process_webhook_data.delay(data)\n\
-    \            return 'OK'\n```\n\n**Common Configuration Pitfalls**\n\nAvoid hardcoding\
+    \            return 'OK'\n```\n\n### Common Configuration Pitfalls\n\nAvoid hardcoding\
     \ API endpoints and rate limits in your module code. Instead, store these as configuration\
     \ parameters that users can adjust. Never log full API responses or access tokens\
     \ in your production environment. Ensure your webhook endpoints can handle verification\
     \ requests and process payloads asynchronously to prevent timeouts. Test your\
     \ OAuth flows on a secure HTTPS connection, as most platforms block HTTP callbacks.\n\
-    \n## Data Mapping and Transformation**Social Platform Data Models**\n\nEach social\
+    \n## Data Mapping and Transformation### Social Platform Data Models\n\nEach social\
     \ platform employs a distinct data structure that requires careful mapping to\
     \ Odoo models. Facebook's conversation object contains participants, messages,\
     \ and timestamps. Instagram's media object includes captions, comments, and engagement\
     \ metrics. Twitter's tweet object has text, entities, and public metrics. You\
     \ must analyze each platform's API response to identify the relevant fields for\
-    \ your business processes.\n\n**Core Field Mapping Strategy**\n\nCreate a mapping\
+    \ your business processes.\n\n### Core Field Mapping Strategy\n\nCreate a mapping\
     \ table that defines how each social platform field corresponds to Odoo model\
     \ fields. Map the social media user ID to Odoo's partner system, using external\
     \ references to maintain the relationship. Transform social message content into\
@@ -203,7 +203,7 @@ ai_generated_content:
     \            return existing_partner\n        \n        return self.env['res.partner'].create({\n\
     \            'name': social_user.get('name', 'Unknown Social User'),\n       \
     \     'social_external_id': social_user['id'],\n            'social_platform':\
-    \ 'facebook'\n        })\n```\n\n**Data Transformation Logic**\n\nImplement transformation\
+    \ 'facebook'\n        })\n```\n\n### Data Transformation Logic\n\nImplement transformation\
     \ functions to handle platform-specific data formats. Convert Facebook's ISO 8601\
     \ timestamp to Odoo's datetime format. Extract hashtags and mentions from Twitter\
     \ tweets to populate Odoo's tagging system. Parse Instagram media URLs and download\
@@ -214,20 +214,20 @@ ai_generated_content:
     \ data. Twitter's rate limits demand careful request scheduling and response caching.\
     \ Instagram's media restrictions require fallback handling when content becomes\
     \ unavailable. LinkedIn's professional context needs filtering to separate business\
-    \ content from personal updates.\n\n**Edge Cases and Data Integrity**\n\nPlan\
+    \ content from personal updates.\n\n### Edge Cases and Data Integrity\n\nPlan\
     \ for edge cases like deleted social media posts, suspended accounts, and platform\
     \ API changes. Implement checks to handle missing data gracefully without breaking\
     \ your integration. Use checksums or hashes to detect duplicate messages and prevent\
     \ data redundancy. Create fallback mappings for when expected fields missing from\
     \ API responses. Log transformation failures for manual review rather than losing\
-    \ data entirely.\n\n## Error Handling and Resilience**Common Social Media API\
-    \ Errors**\n\nSocial platform APIs return specific error codes that your integration\
+    \ data entirely.\n\n## Error Handling and Resilience### Common Social Media API\
+    \ Errors\n\nSocial platform APIs return specific error codes that your integration\
     \ must handle. Rate limit errors (HTTP 429) occur when you exceed request quotas.\
     \ Authentication errors (HTTP 401) happen when access tokens expire or become\
     \ invalid. Permission errors (HTTP 403) indicate scope changes or app review requirements.\
     \ Data validation errors (HTTP 400) signal issues with your request parameters.\
-    \ Server errors (HTTP 5xx) represent temporary platform issues.\n\n**Authentication\
-    \ Error Recovery**\n\nImplement automatic token refresh for OAuth-based platforms.\
+    \ Server errors (HTTP 5xx) represent temporary platform issues.\n\n### Authentication\
+    \ Error Recovery\n\nImplement automatic token refresh for OAuth-based platforms.\
     \ When your requests receive 401 responses, trigger the token refresh flow using\
     \ the stored refresh token. If refresh fails, escalate to manual reauthentication\
     \ by notifying administrators. Store token expiration times and proactively refresh\
@@ -250,17 +250,17 @@ ai_generated_content:
     \ = requests.get(refresh_url, params=params)\n        if response.status_code\
     \ == 200:\n            token_data = response.json()\n            config.write({'access_token':\
     \ token_data['access_token']})\n            return True\n        return False\n\
-    ```\n\n**Rate Limit Management**\n\nImplement intelligent retry mechanisms for\
+    ```\n\n### Rate Limit Management\n\nImplement intelligent retry mechanisms for\
     \ rate limit errors. Use exponential backoff strategies that increase wait times\
     \ between retries. Track rate limit headers from API responses to anticipate limits\
     \ before hitting them. Distribute requests across your rate limit window to maintain\
     \ consistent data flow. Cache frequent requests to minimize API calls for identical\
-    \ data.\n\n**Data Validation and Sanitization**\n\nValidate all incoming data\
+    \ data.\n\n### Data Validation and Sanitization\n\nValidate all incoming data\
     \ from social platforms before processing. Check for required fields and data\
     \ types to prevent transformation errors. Sanitize user-generated content to prevent\
     \ injection attacks when displaying in Odoo. Implement size limits for media downloads\
     \ to prevent storage exhaustion. Use transaction rollbacks to maintain data consistency\
-    \ when processing fails mid-operation.\n\n**Monitoring and Alerting**\n\nCreate\
+    \ when processing fails mid-operation.\n\n### Monitoring and Alerting\n\nCreate\
     \ a comprehensive monitoring system that tracks integration health. Log all API\
     \ errors with context for debugging. Set up alerts for consecutive failures that\
     \ indicate systemic issues. Monitor data freshness to detect when sync processes\
@@ -272,13 +272,13 @@ ai_generated_content:
     \ data. Use platform-specific developer sandboxes where available, such as Facebook's\
     \ Graph API Explorer. Configure test versions of your integration modules with\
     \ sandbox API credentials. Isolate test data from production to prevent accidental\
-    \ customer impact.\n\n**Platform-Specific Test Scenarios**\n\nDesign test cases\
+    \ customer impact.\n\n### Platform-Specific Test Scenarios\n\nDesign test cases\
     \ that cover each social platform's unique characteristics. For Facebook, test\
     \ page post retrieval, comment sync, and private message handling. For Twitter,\
     \ verify tweet streaming, direct message processing, and hashtag extraction. For\
     \ Instagram, validate media download, story engagement tracking, and comment moderation.\
     \ For LinkedIn, test company page updates and professional content sharing.\n\n\
-    **Data Synchronization Validation**\n\nCreate validation checklists to verify\
+    ### Data Synchronization Validation\n\nCreate validation checklists to verify\
     \ data moves correctly through each integration layer. Confirm that social media\
     \ messages create proper helpdesk tickets with correct priorities. Verify that\
     \ social engagements generate accurate lead records in CRM. Check that campaign\
@@ -295,7 +295,7 @@ ai_generated_content:
     \ creation\n        ticket = self.env['helpdesk.ticket'].browse(ticket_id)\n \
     \       self.assertEqual(ticket.name, \"Facebook Message: test_mid_123\")\n  \
     \      self.assertEqual(ticket.partner_id.name, \"Test User\")\n        self.assertEqual(ticket.channel,\
-    \ \"social_facebook\")\n```\n\n**Performance Benchmarking**\n\nEstablish performance\
+    \ \"social_facebook\")\n```\n\n### Performance Benchmarking\n\nEstablish performance\
     \ benchmarks for your integration components. Measure API response times for each\
     \ social platform during peak usage. Test data transformation speed with large\
     \ datasets to identify bottlenecks. Verify that scheduled actions complete within\
@@ -305,19 +305,19 @@ ai_generated_content:
     \ API permissions to test authentication failure recovery. Exceed rate limits\
     \ to validate backoff and retry mechanisms. Send malformed webhook payloads to\
     \ ensure proper error logging. Simulate network outages to confirm data loss prevention\
-    \ measures. Test with incomplete data to verify graceful degradation.\n\n**User\
-    \ Acceptance Testing**\n\nInvolve business users in the validation process before\
+    \ measures. Test with incomplete data to verify graceful degradation.\n\n### User\
+    \ Acceptance Testing\n\nInvolve business users in the validation process before\
     \ going live. Create test scripts that cover real-world use cases from different\
     \ departments. Have marketing teams verify campaign tracking accuracy. Have support\
     \ teams test social message routing and response workflows. Have sales teams validate\
     \ lead scoring and qualification from social signals. Collect feedback and refine\
-    \ the integration based on user experience.\n\n## Security Considerations**API\
-    \ Credential Management**\n\nStore all social media API credentials in Odoo's\
+    \ the integration based on user experience.\n\n## Security Considerations### API\
+    \ Credential Management\n\nStore all social media API credentials in Odoo's\
     \ secure parameter system with appropriate access controls. Never hardcode keys\
     \ or secrets in your module code. Use Odoo's encrypted fields for sensitive data\
     \ like API secrets and access tokens. Implement credential rotation policies that\
     \ force regular updates of access tokens. Restrict credential access to authorized\
-    \ administrators only.\n\n**OAuth Security Implementation**\n\nImplement the OAuth\
+    \ administrators only.\n\n### OAuth Security Implementation\n\nImplement the OAuth\
     \ 2.0 security specification for all platform authentications. Use state parameters\
     \ in OAuth flows to prevent CSRF attacks. Validate redirect URIs to prevent open\
     \ redirection vulnerabilities. Store refresh tokens securely and implement proper\
@@ -332,14 +332,14 @@ ai_generated_content:
     \ verification for incoming webhook payloads using platform-provided secrets.\
     \ Validate the source IP addresses of webhook requests against platform IP ranges.\
     \ Use unique verification tokens for each webhook configuration. Implement rate\
-    \ limiting on webhook endpoints to prevent denial-of-service attacks.\n\n**Access\
-    \ Control Integration**\n\nLeverage Odoo's built-in access control system to manage\
+    \ limiting on webhook endpoints to prevent denial-of-service attacks.\n\n### Access\
+    \ Control Integration\n\nLeverage Odoo's built-in access control system to manage\
     \ social data visibility. Create security groups that define who can view social\
     \ media data, configure integrations, or respond to social messages. Implement\
     \ record rules that restrict social data access based on department or team membership.\
     \ Audit access logs to detect unauthorized access attempts. Integrate with Odoo's\
-    \ multi-company structure if applicable.\n\n## Performance Optimization**API Call\
-    \ Optimization**\n\nSocial media APIs impose strict rate limits that demand efficient\
+    \ multi-company structure if applicable.\n\n## Performance Optimization### API Call\
+    \ Optimization\n\nSocial media APIs impose strict rate limits that demand efficient\
     \ calling patterns. Implement request batching to combine multiple API calls into\
     \ single requests where supported. Use field selectors to retrieve only necessary\
     \ data fields, reducing payload sizes. Leverage webhooks for real-time data instead\
@@ -350,7 +350,7 @@ ai_generated_content:
     \ Use partial indexes for active records to improve query performance on large\
     \ datasets. Partition social media data tables by date to maintain query performance\
     \ as data grows. Implement database connection pooling to handle concurrent data\
-    \ processing.\n\n**Background Processing Strategy**\n\nMove data processing tasks\
+    \ processing.\n\n### Background Processing Strategy\n\nMove data processing tasks\
     \ to background jobs to maintain system responsiveness. Use Odoo's queue job system\
     \ to handle message processing, media download, and data transformation. Prioritize\
     \ jobs based on business criticality, processing direct messages before post comments.\
@@ -360,8 +360,8 @@ ai_generated_content:
     \ Use in-memory caching for frequently accessed configuration data and API rate\
     \ limit status. Cache social user profiles to avoid repeated API calls for the\
     \ same users. Implement HTTP caching for profile pictures and media thumbnails.\
-    \ Set appropriate cache expiration times based on data volatility.\n\n**Monitoring\
-    \ and Scaling**\n\nImplement comprehensive monitoring to identify performance\
+    \ Set appropriate cache expiration times based on data volatility.\n\n### Monitoring\
+    \ and Scaling\n\nImplement comprehensive monitoring to identify performance\
     \ issues before they impact users. Track API response times, error rates, and\
     \ quota usage for each social platform. Monitor Odoo server resources during data\
     \ synchronization peaks. Set up alerts for performance degradation or approaching\
