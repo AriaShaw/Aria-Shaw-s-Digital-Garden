@@ -1,7 +1,7 @@
 ---
 layout: home
 title: Complete Guides Library
-description: Definitive playbooks for every stage of your Odoo journey—from strategic planning to daily operations. 142 battle-tested guides covering deployment, integration, migration, security, and operations.
+description: 142 battle-tested Odoo guides covering deployment, integration, migration, security, and operations. Complete playbooks from planning to production.
 breadcrumb_title: Guides
 permalink: /guides/
 ---
