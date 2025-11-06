@@ -34,60 +34,70 @@
 
     <!-- Hide unrendered Mermaid diagrams to prevent code flash -->
     <style>
-      .mermaid:not(.mermaid-rendered) {
-        visibility: hidden;
-        min-height: 200px; /* Prevent layout shift */
+      .mermaid {
+        opacity: 0;
+        min-height: 200px;
+        transition: opacity 0.3s ease-in;
+      }
+      .mermaid.mermaid-rendered {
+        opacity: 1;
       }
     </style>
 
-    <!-- Mermaid.js for visualizations - lazy loaded after DOM ready -->
+    <!-- Mermaid.js for visualizations - lazy loaded with IntersectionObserver -->
     <script type="module">
-      // Wait for DOM to be fully loaded
       document.addEventListener('DOMContentLoaded', () => {
-        // Lazy load Mermaid only when diagrams are near viewport
         const mermaidContainers = document.querySelectorAll('.mermaid');
-        if (mermaidContainers.length > 0) {
-          let mermaidLoaded = false;
+        if (mermaidContainers.length === 0) return;
 
-          const loadMermaid = async () => {
-            if (mermaidLoaded) return;
-            mermaidLoaded = true;
+        let mermaidLoaded = false;
 
-            const mermaid = await import('https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs');
+        const loadAndRenderMermaid = async () => {
+          if (mermaidLoaded) return;
+          mermaidLoaded = true;
+
+          try {
+            const mermaid = await import('https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs');
+
             mermaid.default.initialize({
-              startOnLoad: true,
+              startOnLoad: false,
               theme: 'neutral',
-              securityLevel: 'loose'
+              securityLevel: 'loose',
+              fontFamily: 'system-ui, -apple-system, sans-serif'
             });
 
-            // Mark diagrams as rendered and make visible
-            setTimeout(() => {
-              mermaidContainers.forEach(container => {
-                container.classList.add('mermaid-rendered');
-                container.style.visibility = 'visible';
-              });
-            }, 100);
-          };
+            await mermaid.default.run({
+              querySelector: '.mermaid'
+            });
 
-          // Load immediately if first diagram is in viewport, otherwise wait
-          const firstDiagram = mermaidContainers[0];
-          const rect = firstDiagram.getBoundingClientRect();
-          const isInViewport = rect.top < window.innerHeight && rect.bottom > 0;
-
-          if (isInViewport) {
-            loadMermaid();
-          } else {
-            // Load when user scrolls near diagrams
-            const observer = new IntersectionObserver((entries) => {
-              entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                  loadMermaid();
-                  observer.disconnect();
-                }
-              });
-            }, { rootMargin: '200px' });
-            observer.observe(firstDiagram);
+            mermaidContainers.forEach(container => {
+              container.classList.add('mermaid-rendered');
+            });
+          } catch (error) {
+            console.error('Mermaid rendering failed:', error);
+            mermaidContainers.forEach(container => {
+              container.style.opacity = '1';
+              container.innerHTML = '<p style="color: #666; font-style: italic;">Diagram rendering failed. Please refresh the page.</p>';
+            });
           }
+        };
+
+        const firstDiagram = mermaidContainers[0];
+        const rect = firstDiagram.getBoundingClientRect();
+        const isInViewport = rect.top < window.innerHeight && rect.bottom > 0;
+
+        if (isInViewport) {
+          loadAndRenderMermaid();
+        } else {
+          const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+              if (entry.isIntersecting) {
+                loadAndRenderMermaid();
+                observer.disconnect();
+              }
+            });
+          }, { rootMargin: '200px' });
+          observer.observe(firstDiagram);
         }
       });
     </script>
