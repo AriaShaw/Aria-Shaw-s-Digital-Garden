@@ -80,7 +80,10 @@ ai_generated_content:
     lifecycle.
 
 
-    ### Microsoft Graph API as the Communication Bridge\n\nMicrosoft Graph serves as the exclusive gateway to your OneDrive and SharePoint
+    ### Microsoft Graph API as the Communication Bridge
+
+
+    Microsoft Graph serves as the exclusive gateway to your OneDrive and SharePoint
     data. The integration uses specific Graph endpoints: `/v1.0/me/drive` for personal
     OneDrive accounts and `/v1.0/drives/{drive-id}` for structured SharePoint document
     libraries. Every file operation—upload, download, or metadata update—transforms
@@ -89,7 +92,10 @@ ai_generated_content:
     locations.
 
 
-    ### Odoo Module with Asynchronous Queue Processing\n\nA custom Odoo module forms the integration''s engine. This module leverages Odoo''s
+    ### Odoo Module with Asynchronous Queue Processing
+
+
+    A custom Odoo module forms the integration''s engine. This module leverages Odoo''s
     built-in queueing system to manage all external API calls. When a user attaches
     a file to an Odoo record, the module does not block the user interface with a
     direct call to OneDrive. Instead, it creates a queue job that handles the file
@@ -98,7 +104,10 @@ ai_generated_content:
     resilience.
 
 
-    ### Bi-Directional Synchronization Triggers\n\nThe data flow operates in two directions, triggered by specific events. The primary
+    ### Bi-Directional Synchronization Triggers
+
+
+    The data flow operates in two directions, triggered by specific events. The primary
     flow originates in Odoo. Creating an invoice, a sales order, or a project task
     with an attachment triggers an immediate sync job to a pre-defined OneDrive folder
     structure. The secondary, poll-based flow checks OneDrive for new or modified
@@ -107,7 +116,10 @@ ai_generated_content:
     ensuring no document modification goes unnoticed.
 
 
-    ### Authentication Token Management Layer\n\nA dedicated component within the Odoo module manages the OAuth 2.0 access tokens.
+    ### Authentication Token Management Layer
+
+
+    A dedicated component within the Odoo module manages the OAuth 2.0 access tokens.
     This layer handles the entire token lifecycle. It acquires the initial token using
     the admin-provided client secret, stores it securely in Odoo''s encrypted parameters,
     and automatically refreshes it before expiration. This process ensures the integration
@@ -118,7 +130,10 @@ ai_generated_content:
     ## Step-by-Step Configuration
 
 
-    ### Azure Active Directory App Registration\n\nBegin the configuration in the Azure Portal. Navigate to Azure Active Directory
+    ### Azure Active Directory App Registration
+
+
+    Begin the configuration in the Azure Portal. Navigate to Azure Active Directory
     and select "App registrations." Click "New registration" and provide a distinct
     name, such as "Odoo-18-OneDrive-Integration." Select "Accounts in any organizational
     directory" for a multi-tenant application or a more restrictive option based on
@@ -139,7 +154,10 @@ ai_generated_content:
     in the user''s drive and access basic user profile information.
 
 
-    ### Odoo Module Structure and Core Files\n\nCreate a new Odoo module named `onedrive_integration`. The module requires a standard
+    ### Odoo Module Structure and Core Files
+
+
+    Create a new Odoo module named `onedrive_integration`. The module requires a standard
     structure with key files. The `__manifest__.py` file declares the module''s dependencies
     and data files. It must include `''web''` and `''queue_job''` as dependencies.
     The `models/` directory houses the core logic. Create `__init__.py` and `onedrive_sync.py`
@@ -148,7 +166,10 @@ ai_generated_content:
     for the configuration panel.
 
 
-    ### System Parameter Configuration in Odoo\n\nActivate developer mode in your Odoo instance. Navigate to Settings > Technical
+    ### System Parameter Configuration in Odoo
+
+
+    Activate developer mode in your Odoo instance. Navigate to Settings > Technical
     > Parameters > System Parameters. Create new parameters to store your Azure credentials
     securely. Add `onedrive.client_id` with your Application ID and `onedrive.client_secret`
     with the client secret value. Odoo encrypts these parameters in the database.
@@ -157,7 +178,10 @@ ai_generated_content:
     for deployment across environments.
 
 
-    ### Authentication Flow Implementation\n\nThe module must implement the OAuth 2.0 device authorization grant flow. This
+    ### Authentication Flow Implementation
+
+
+    The module must implement the OAuth 2.0 device authorization grant flow. This
     flow suits server-side applications that lack a browser interface. Create a method
     in your `onedrive.sync` model that initiates the authentication process. The method
     sends a POST request to `https://login.microsoftonline.com/{tenant_id}/oauth2/v2.0/devicecode`
@@ -174,7 +198,10 @@ ai_generated_content:
     parameters.
 
 
-    ### Scheduled Job and Synchronization Logic\n\nDefine the synchronization logic within the `onedrive.sync` model. Create a method
+    ### Scheduled Job and Synchronization Logic
+
+
+    Define the synchronization logic within the `onedrive.sync` model. Create a method
     named `sync_onedrive_changes` that uses the Delta Query feature of the Graph API.
     The initial call to `/v1.0/me/drive/root/delta` fetches all items and returns
     a `@odata.deltaLink`. The module stores this delta link. Subsequent sync jobs
@@ -191,7 +218,10 @@ ai_generated_content:
     to a business document like a sale.order or account.invoice.
 
 
-    ### Common Configuration Pitfalls\n\nA frequent error involves incorrect API permission scopes. Using `Application`
+    ### Common Configuration Pitfalls
+
+
+    A frequent error involves incorrect API permission scopes. Using `Application`
     permissions instead of `Delegated` permissions causes authentication failures
     unless the app has admin consent. Another pitfall is mishandling the token refresh
     cycle. The access token expires every hour. Your code must catch `401 Unauthorized`
@@ -210,7 +240,10 @@ ai_generated_content:
     ## Data Mapping and Transformation
 
 
-    ### Document Metadata Mapping Strategy\n\nThe integration must map metadata fields between Odoo''s `ir.attachment` model
+    ### Document Metadata Mapping Strategy
+
+
+    The integration must map metadata fields between Odoo''s `ir.attachment` model
     and OneDrive''s file properties. The `ir.attachment` record contains a `name`
     (filename), `datas` (file content), `res_model` (linked model), and `res_id` (linked
     record ID). OneDrive stores a `name`, `id`, `lastModifiedDateTime`, and `webUrl`.
@@ -227,7 +260,10 @@ ai_generated_content:
     module reads these properties to determine the correct Odoo record for attachment.
 
 
-    ### Folder Structure and Organizational Logic\n\nA defined folder structure in OneDrive organizes synchronized files and prevents
+    ### Folder Structure and Organizational Logic
+
+
+    A defined folder structure in OneDrive organizes synchronized files and prevents
     a chaotic root directory. The integration creates a root folder named "Odoo Sync"
     and then structures subfolders by Odoo model and record ID. A typical path resembles
     `Odoo Sync/sale.order/15042/`. This structure mirrors the relational data model
@@ -244,7 +280,10 @@ ai_generated_content:
     and new files.
 
 
-    ### File Format and Size Handling\n\nOdoo stores file content in its database as a base64-encoded string in the `datas`
+    ### File Format and Size Handling
+
+
+    Odoo stores file content in its database as a base64-encoded string in the `datas`
     field. OneDrive accepts the raw binary content for uploads. The transformation
     requires the module to decode the base64 data from Odoo before sending a binary
     PUT request to the OneDrive `/content` endpoint. For downloads, the process reverses;
@@ -260,7 +299,10 @@ ai_generated_content:
     timeouts and provides a better experience for large video files or database backups.
 
 
-    ### Conflict Resolution and Version Control\n\nA conflict arises when both Odoo and OneDrive versions of the same file change
+    ### Conflict Resolution and Version Control
+
+
+    A conflict arises when both Odoo and OneDrive versions of the same file change
     between sync cycles. The integration needs a deterministic conflict resolution
     strategy. A common approach is a "last write wins" policy based on the `lastModifiedDateTime`
     timestamp from OneDrive compared to the `write_date` on the `ir.attachment` record.
@@ -279,7 +321,10 @@ ai_generated_content:
     ## Error Handling and Resilience
 
 
-    ### Microsoft Graph API Error Responses\n\nThe integration will encounter various HTTP status codes from the Graph API. A
+    ### Microsoft Graph API Error Responses
+
+
+    The integration will encounter various HTTP status codes from the Graph API. A
     `401 Unauthorized` error signals an expired or invalid access token. The error
     handler must catch this, use the stored refresh token to obtain a new access token,
     and then retry the original request. A `403 Forbidden` error often indicates insufficient
@@ -295,7 +340,10 @@ ai_generated_content:
     Continuous `5xx` errors may indicate a broader Microsoft service outage.
 
 
-    ### Network and Connectivity Failures\n\nUnstable network connections between your Odoo server and the Microsoft Graph
+    ### Network and Connectivity Failures
+
+
+    Unstable network connections between your Odoo server and the Microsoft Graph
     endpoints can cause random timeouts or connection resets. All HTTP requests must
     implement a try-except block with a configurable timeout parameter. The `requests`
     library in Python allows you to set a timeout for both connection and read operations.
@@ -303,7 +351,10 @@ ai_generated_content:
     job''s built-in retry policy, which typically includes exponential backoff.
 
 
-    ### Data Integrity and Validation Errors\n\nData corruption can occur during file transfer. The integration should implement
+    ### Data Integrity and Validation Errors
+
+
+    Data corruption can occur during file transfer. The integration should implement
     a checksum verification for critical files. After a download from OneDrive, the
     module can calculate the MD5 or SHA-1 hash of the received binary data and compare
     it to the `file.hash` object provided by the Graph API for the source file. A
@@ -319,7 +370,10 @@ ai_generated_content:
     that exceed the 400-character path limit in OneDrive.
 
 
-    ### Recovery Procedures and Manual Intervention\n\nDespite robust error handling, some situations require manual intervention. The
+    ### Recovery Procedures and Manual Intervention
+
+
+    Despite robust error handling, some situations require manual intervention. The
     module should provide a "Reset Sync State" function for administrators. This function
     clears the stored delta link and forces a full resynchronization on the next scheduled
     job. This action resolves issues where the delta link becomes corrupted or out
@@ -338,7 +392,10 @@ ai_generated_content:
     ## Testing and Validation
 
 
-    ### Authentication and Authorization Test Suite\n\nBegin validation by testing the complete OAuth 2.0 flow. Execute the device code
+    ### Authentication and Authorization Test Suite
+
+
+    Begin validation by testing the complete OAuth 2.0 flow. Execute the device code
     generation and complete the user consent process in a browser. Verify that the
     module successfully obtains an access token and refresh token and stores them
     in the system parameters. Then, test the token refresh logic. You can simulate
@@ -355,7 +412,10 @@ ai_generated_content:
     privilege.
 
 
-    ### Data Synchronization Test Scenarios\n\nCreate a comprehensive test plan that covers all data flow directions. For Odoo-to-OneDrive
+    ### Data Synchronization Test Scenarios
+
+
+    Create a comprehensive test plan that covers all data flow directions. For Odoo-to-OneDrive
     sync, create a new attachment on an Odoo record, such as a quotation. Validate
     that the file appears in the correct `/sale.order/{id}/` folder in OneDrive within
     the expected poll interval. Update the file in Odoo and confirm the changes propagate
@@ -373,7 +433,10 @@ ai_generated_content:
     mapping logic.
 
 
-    ### Performance and Load Testing\n\nAssess the integration''s behavior under load. Upload 100+ files of varying sizes
+    ### Performance and Load Testing
+
+
+    Assess the integration''s behavior under load. Upload 100+ files of varying sizes
     (1KB to 100MB) to Odoo in a short period. Monitor the Odoo queue jobs to ensure
     they process without overwhelming the server or hitting Graph API rate limits.
     Measure the time from attachment creation to file appearance in OneDrive. This
@@ -388,7 +451,10 @@ ai_generated_content:
     baselines for your specific hardware and network configuration.
 
 
-    ### Failure Simulation and Recovery Validation\n\nA robust test plan intentionally introduces failures. Temporarily block outbound
+    ### Failure Simulation and Recovery Validation
+
+
+    A robust test plan intentionally introduces failures. Temporarily block outbound
     HTTPS traffic from your Odoo server to `graph.microsoft.com` to simulate a network
     partition. Observe how the queued jobs fail and then retry once network connectivity
     restores. This validates the resilience of the queue job system.
@@ -406,7 +472,10 @@ ai_generated_content:
     ## Security Considerations
 
 
-    ### OAuth 2.0 and Credential Management\n\nThe integration''s security foundation rests on the OAuth 2.0 protocol. Never
+    ### OAuth 2.0 and Credential Management
+
+
+    The integration''s security foundation rests on the OAuth 2.0 protocol. Never
     embed client secrets or refresh tokens directly in your module''s code. The step-by-step
     configuration uses Odoo''s System Parameters for secure storage because this data
     is encrypted at rest in the database. Restrict access to these parameters to administrators
@@ -423,7 +492,10 @@ ai_generated_content:
     with business needs.
 
 
-    ### Data Encryption in Transit and at Rest\n\nAll communication between Odoo and the Microsoft Graph API must use TLS 1.2 or
+    ### Data Encryption in Transit and at Rest
+
+
+    All communication between Odoo and the Microsoft Graph API must use TLS 1.2 or
     higher. The `requests` library in Python defaults to verifying SSL certificates,
     which you should never disable. This ensures all data, including file content
     and authentication tokens, is encrypted during transmission. On the Odoo side,
@@ -432,7 +504,10 @@ ai_generated_content:
     employ encryption at rest to protect this data.
 
 
-    ### Access Control and Audit Logging\n\nThe integration inherits Odoo''s record-level security. A user can only access
+    ### Access Control and Audit Logging
+
+
+    The integration inherits Odoo''s record-level security. A user can only access
     a OneDrive-synced file in Odoo if they have read permissions on the related record
     (e.g., the sales order or invoice). The module does not bypass Odoo''s native
     access control lists (ACLs). However, remember that the Azure app authenticates
@@ -452,7 +527,10 @@ ai_generated_content:
     ## Performance Optimization
 
 
-    ### API Quota Management and Call Efficiency\n\nThe Microsoft Graph API enforces strict rate limits per tenant and per application.
+    ### API Quota Management and Call Efficiency
+
+
+    The Microsoft Graph API enforces strict rate limits per tenant and per application.
     Your integration must minimize API calls to avoid throttling. The single most
     important optimization is the consistent use of the Delta Query for polling OneDrive
     changes. A full folder scan using `list children` would be prohibitively expensive,
@@ -470,7 +548,10 @@ ai_generated_content:
     with resource conservation.
 
 
-    ### File Chunking and Stream Handling\n\nLarge file transfers can block worker threads and consume excessive memory. Instead
+    ### File Chunking and Stream Handling
+
+
+    Large file transfers can block worker threads and consume excessive memory. Instead
     of loading a 1GB file from the database into memory, base64-decoding it, and then
     sending it, use a streaming approach. The `requests` library supports streaming
     uploads when you provide a file-like object. You can create a stream that reads
@@ -486,7 +567,10 @@ ai_generated_content:
     to an upload session for files exceeding a configurable size threshold.
 
 
-    ### Caching Strategies for Metadata\n\nRepeatedly fetching the same file or folder metadata from the Graph API wastes
+    ### Caching Strategies for Metadata
+
+
+    Repeatedly fetching the same file or folder metadata from the Graph API wastes
     cycles and quota. Implement a lightweight caching layer for immutable or slow-changing
     data. For example, once the module resolves a folder path to a OneDrive folder
     ID, it can cache this mapping for a short period (e.g., 10 minutes). This prevents
@@ -502,7 +586,10 @@ ai_generated_content:
     a significant number of redundant API calls over time.
 
 
-    ### Queue Job Prioritization and Concurrency\n\nNot all sync jobs are equal. A job to sync a small PDF contract has a different
+    ### Queue Job Prioritization and Concurrency
+
+
+    Not all sync jobs are equal. A job to sync a small PDF contract has a different
     priority than a job to sync a 2GB video file. Configure multiple Odoo queue channels
     with different capacities and priorities. Route small, metadata-heavy jobs to
     a high-priority channel with many concurrent workers. Route large file transfer
