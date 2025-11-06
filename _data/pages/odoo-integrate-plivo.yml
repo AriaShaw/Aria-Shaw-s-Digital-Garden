@@ -65,35 +65,35 @@ ai_generated_content:
     synchronizes contact data, and enables click-to-call functionality directly from
     your Odoo interface. This integration transforms Odoo from a backend management
     system into a proactive customer engagement platform.'
-  main_content: "## Integration Architecture and Data Flow\n\n### Plivo-Odoo\
-    \ Communication Model\n\nThe Plivo-Odoo integration operates on a bidirectional\
-    \ webhook architecture that maintains real-time synchronization between communication\
-    \ events and business data. Odoo acts as the central command center, initiating\
-    \ outbound communications through Plivo's REST API and receiving inbound interactions\
-    \ via webhook endpoints exposed by your Odoo instance. This model creates a continuous\
-    \ feedback loop where communication data enriches Odoo records, and Odoo customer\
-    \ data personalizes Plivo interactions.\n\nPlivo handles the telephony infrastructure\
-    \ and SMS delivery, while Odoo manages business logic and data persistence. When\
-    \ a customer calls your Plivo number, Plivo immediately sends an HTTP POST request\
-    \ to your configured Odoo webhook URL. This request contains the caller's number,\
-    \ call unique identifier, and timestamp data. Your Odoo system processes this\
-    \ webhook, identifies the customer based on phone number matching, and creates\
-    \ a call log record linked to the appropriate contact or lead.\n\n### Data Flow\
-    \ Patterns for Different Communication Types\n\nOutbound calls from Odoo follow\
-    \ a different data flow pattern. When a user clicks a phone number in Odoo, your\
-    \ custom module captures this event and makes an API call to Plivo's /v1/Account/MAUTH_ID/Call/\
-    \ endpoint. Plivo then initiates the call to both parties and bridges the connection.\
-    \ Throughout the call lifecycle, Plivo sends multiple webhooks to Odoo - call\
-    \ initiated, answered, completed - each updating the call record with current\
-    \ status and duration.\n\nSMS messaging operates with similar webhook patterns\
-    \ but different data structures. Outbound SMS messages originate from Odoo through\
-    \ Plivo's Message API, while inbound messages trigger webhooks that Odoo processes\
-    \ to create or update message threads in the chatter. The system attaches these\
-    \ threads to specific records like sales orders, support tickets, or partner forms,\
-    \ maintaining full context for all customer communications.\n\n### Webhook Endpoint\
-    \ Design\n\nYour Odoo webhook endpoints require careful design to handle Plivo's\
-    \ expected payload formats and respond with appropriate HTTP status codes. The\
-    \ /plivo/inbound/call endpoint processes incoming call notifications, while /plivo/inbound/message\
+  main_content: "## Integration Architecture and Data Flow\n\n### Plivo-Odoo Communication\
+    \ Model\n\nThe Plivo-Odoo integration operates on a bidirectional webhook architecture\
+    \ that maintains real-time synchronization between communication events and business\
+    \ data. Odoo acts as the central command center, initiating outbound communications\
+    \ through Plivo's REST API and receiving inbound interactions via webhook endpoints\
+    \ exposed by your Odoo instance. This model creates a continuous feedback loop\
+    \ where communication data enriches Odoo records, and Odoo customer data personalizes\
+    \ Plivo interactions.\n\nPlivo handles the telephony infrastructure and SMS delivery,\
+    \ while Odoo manages business logic and data persistence. When a customer calls\
+    \ your Plivo number, Plivo immediately sends an HTTP POST request to your configured\
+    \ Odoo webhook URL. This request contains the caller's number, call unique identifier,\
+    \ and timestamp data. Your Odoo system processes this webhook, identifies the\
+    \ customer based on phone number matching, and creates a call log record linked\
+    \ to the appropriate contact or lead.\n\n### Data Flow Patterns for Different\
+    \ Communication Types\n\nOutbound calls from Odoo follow a different data flow\
+    \ pattern. When a user clicks a phone number in Odoo, your custom module captures\
+    \ this event and makes an API call to Plivo's /v1/Account/MAUTH_ID/Call/ endpoint.\
+    \ Plivo then initiates the call to both parties and bridges the connection. Throughout\
+    \ the call lifecycle, Plivo sends multiple webhooks to Odoo - call initiated,\
+    \ answered, completed - each updating the call record with current status and\
+    \ duration.\n\nSMS messaging operates with similar webhook patterns but different\
+    \ data structures. Outbound SMS messages originate from Odoo through Plivo's Message\
+    \ API, while inbound messages trigger webhooks that Odoo processes to create or\
+    \ update message threads in the chatter. The system attaches these threads to\
+    \ specific records like sales orders, support tickets, or partner forms, maintaining\
+    \ full context for all customer communications.\n\n### Webhook Endpoint Design\n\
+    \nYour Odoo webhook endpoints require careful design to handle Plivo's expected\
+    \ payload formats and respond with appropriate HTTP status codes. The /plivo/inbound/call\
+    \ endpoint processes incoming call notifications, while /plivo/inbound/message\
     \ handles SMS delivery reports and inbound messages. Each endpoint must validate\
     \ requests using Plivo's signature verification to prevent spoofing, then process\
     \ the data asynchronously to maintain system responsiveness under high communication\
@@ -192,162 +192,161 @@ ai_generated_content:
     \ tags or geographic regions. Create configuration models that allow administrators\
     \ to define custom field transformations without code modifications. This approach\
     \ maintains flexibility while preserving data consistency across different communication\
-    \ scenarios and business units.\n\n## Error Handling and Resilience\n\
-    \n### Common Plivo API Errors\n\nThe Plivo API returns specific HTTP status codes\
-    \ that indicate different error conditions. 400 errors signify bad requests, often\
-    \ from invalid phone numbers or incorrect parameter formats. 401 errors indicate\
-    \ authentication failures, typically from expired or invalid auth tokens. 429\
-    \ errors represent rate limiting, which occurs when you exceed Plivo's API call\
-    \ thresholds.\n\nImplement comprehensive error handling for each API response\
-    \ type. Create a decorator that wraps all Plivo API calls and transforms HTTP\
-    \ errors into meaningful Odoo exceptions. Log detailed error context including\
-    \ timestamps, user context, and request parameters to facilitate debugging without\
-    \ exposing sensitive authentication data in log files.\n\n### Webhook Delivery\
-    \ Failures\n\nWebhook delivery failures represent another common error scenario.\
-    \ Plivo attempts webhook delivery multiple times with exponential backoff, but\
-    \ persistent failures cause lost communication data. Implement idempotent webhook\
-    \ handlers that can process duplicate deliveries without creating redundant records.\
-    \ Use Plivo's unique identifiers for calls and messages to detect and skip already\
-    \ processed events.\n\nCreate a dead letter queue mechanism for webhooks that\
-    \ fail processing after multiple attempts. Instead of discarding failed webhooks,\
-    \ store them in a separate model for manual review and reprocessing. This approach\
-    \ preserves communication data even when temporary system issues prevent normal\
-    \ processing, maintaining data completeness.\n\n### Network Resilience Strategies\n\
-    \nNetwork instability between your Odoo instance and Plivo's API requires resilience\
-    \ strategies. Implement retry mechanisms with jitter for all outgoing API calls.\
-    \ Use exponential backoff algorithms that increase wait times between retries,\
-    \ preventing cascade failures during Plivo service interruptions. Set reasonable\
-    \ timeout values that balance user experience with system resource consumption.\n\
-    \nFor critical communications, implement a fallback queue system that stores outgoing\
-    \ messages and calls when Plivo's API becomes unavailable. Create a cron job that\
-    \ periodically attempts to send queued items, ensuring eventual delivery even\
-    \ during extended service disruptions. Monitor queue depth and age to alert administrators\
-    \ when backlogs indicate serious integration issues.\n\n### Debugging and Monitoring\n\
-    \nBuild comprehensive monitoring that tracks integration health. Create dashboards\
-    \ that display key metrics like API success rates, webhook processing times, and\
-    \ communication volumes. Implement alert rules that trigger when error rates exceed\
-    \ thresholds or when no communications flow for unexpected periods.\n\nDevelop\
-    \ debugging utilities that reconstruct communication flows from scattered log\
-    \ data. Create a diagnostic view in Odoo that shows the complete lifecycle of\
-    \ specific calls or messages, including all API interactions and webhook processing\
-    \ steps. This visibility accelerates troubleshooting when users report communication\
-    \ issues or missing records.\n\n## Testing and Validation\n\n### Test\
-    \ Environment Configuration\n\nEstablish a dedicated testing environment that\
-    \ mirrors your production setup. Create a separate Plivo account for testing purposes,\
-    \ using Plivo's sandbox numbers that simulate call and SMS behavior without incurring\
-    \ charges. Configure test webhook endpoints that point to your staging Odoo instance,\
-    \ ensuring production data remains isolated during testing.\n\nPrepare test data\
-    \ that covers various scenarios including international numbers, different time\
-    \ zones, and special characters in SMS content. Create partner records with phone\
-    \ numbers from different countries to validate international dialing capabilities.\
-    \ Develop test cases that simulate edge conditions like network timeouts, invalid\
-    \ numbers, and concurrent communication attempts.\n\n### Unit Test Implementation\n\
-    \nDevelop comprehensive unit tests that validate individual integration components.\
-    \ Test phone number normalization with inputs from various countries and formats.\
-    \ Verify webhook signature validation with both valid and tampered signatures.\
-    \ Create mock Plivo API responses that simulate success and error conditions,\
-    \ ensuring your error handling functions as expected.\n\nImplement integration\
-    \ tests that validate the complete data flow from Odoo to Plivo and back. Use\
-    \ tools like Odoo's HttpCase to simulate webhook requests and verify the resulting\
-    \ database records. Test concurrent webhook processing to identify race conditions\
-    \ or database locking issues that might emerge under production load.\n\n### End-to-End\
-    \ Validation Scenarios\n\nExecute end-to-end validation scenarios that replicate\
-    \ real-world usage patterns. Perform complete test cycles for inbound calls, outbound\
-    \ calls, inbound SMS, and outbound SMS. Verify that call logs appear in the correct\
-    \ partner records with accurate duration and timing information. Confirm that\
-    \ SMS messages thread properly within Odoo's chatter and maintain conversation\
-    \ history.\n\nValidate integration behavior under load by simulating peak usage\
-    \ patterns. Use performance testing tools to send multiple simultaneous webhooks\
-    \ to your Odoo instance, measuring processing throughput and identifying resource\
-    \ bottlenecks. Monitor system resources during these tests to ensure the integration\
-    \ maintains stability without impacting other Odoo functions.\n\n### User Acceptance\
-    \ Testing\n\nConduct user acceptance testing with actual business teams before\
-    \ deployment. Train test users on the new communication features and observe how\
-    \ they incorporate them into daily workflows. Gather feedback on interface design,\
-    \ data presentation, and overall usability. Identify any gaps between technical\
-    \ implementation and business process requirements.\n\nCreate validation checklists\
-    \ that ensure all functional requirements meet acceptance criteria. Verify that\
-    \ security requirements like authentication and data encryption function correctly.\
-    \ Confirm that performance benchmarks for call log display and search operations\
-    \ meet user expectations. Document any issues discovered during testing and track\
-    \ them through resolution before production deployment.\n\n## Security Considerations\
-    \\n\n### Authentication Security\n\nPlivo integration introduces new\
-    \ authentication vectors that require careful security management. Store Plivo\
-    \ auth tokens using Odoo's encrypted configuration parameters rather than database\
-    \ fields. Implement token rotation procedures that periodically update credentials,\
-    \ limiting exposure if tokens become compromised. Never log authentication tokens\
-    \ or include them in error messages that users might view.\n\nImplement multi-layered\
-    \ authentication for administrative functions within your integration module.\
-    \ Require both Odoo administrator privileges and separate integration-specific\
-    \ credentials for accessing sensitive configuration screens. This defense-in-depth\
-    \ approach prevents privilege escalation attacks from compromising your Plivo\
-    \ account.\n\n### Webhook Security\n\nWebhook endpoints represent potential attack\
-    \ surfaces since they accept external requests. Implement Plivo signature verification\
-    \ on all webhook handlers to ensure only legitimate Plivo requests process. Reject\
-    \ requests with invalid signatures immediately without further processing. Configure\
-    \ webhook endpoints with CSRF protection disabled since they require public accessibility\
-    \ for Plivo delivery.\n\nLimit the data exposure in webhook responses. Plivo expects\
-    \ specific XML responses for call control instructions, but these responses should\
-    \ contain minimal sensitive information. Avoid including database identifiers,\
-    \ internal system details, or customer personal data in webhook responses that\
-    \ traverse external networks.\n\n### Data Protection and Privacy\n\nCommunication\
-    \ data often contains sensitive customer information requiring protection. Implement\
-    \ data encryption for call recordings and message content stored within Odoo.\
-    \ Use Odoo's built-in encryption capabilities or database-level encryption features\
-    \ to protect data at rest. Establish data retention policies that automatically\
-    \ purge old communication records after specified periods, complying with privacy\
-    \ regulations.\n\nApply access controls that restrict communication data based\
-    \ on user roles. Sales team members should access communication history for their\
-    \ accounts but not entire organizational datasets. Implement record rules that\
-    \ enforce data segmentation between business units, departments, or teams based\
-    \ on your organizational security model.\n\n### API Security Hardening\n\nHarden\
-    \ your API integration against common security threats. Implement request validation\
-    \ that sanitizes all inputs from both Odoo interfaces and Plivo webhooks. Use\
-    \ parameterized queries when storing communication data to prevent SQL injection\
-    \ attacks. Employ Odoo's built-in cross-site scripting protections when rendering\
-    \ communication data in user interfaces.\n\nMonitor API usage patterns for anomalous\
-    \ behavior that might indicate security breaches. Create alerts for unusual patterns\
-    \ like sudden spikes in international calls or SMS messages to premium numbers.\
-    \ Implement spending limits in your Plivo account to prevent financial loss from\
-    \ compromised credentials or system abuse.\n\n## Performance Optimization (400\
-    \ words)\n\n### Database Optimization Strategies\n\nCommunication data accumulates\
-    \ rapidly, demanding careful database management. Implement database indexing\
-    \ strategies that optimize common query patterns without degrading write performance.\
-    \ Create partial indexes on call log status fields where you frequently query\
-    \ for specific states like \"completed\" or \"failed\". Use Odoo's computed fields\
-    \ and store parameters judiciously to balance performance with storage costs.\n\
-    \nConsider table partitioning for the call log model in high-volume environments.\
-    \ Partitioning by date ranges improves query performance for time-based reports\
-    \ and simplifies archival of old data. Implement this at the PostgreSQL level\
-    \ since Odoo's ORM doesn't natively support partitioning, but ensure your integration\
-    \ code remains compatible with the partitioned structure.\n\n### Caching Implementation\n\
-    \nImplement strategic caching to reduce API calls and database queries. Cache\
-    \ Plivo's account details like remaining balance and number information instead\
-    \ of fetching them repeatedly. Use Odoo's cache tools with appropriate expiration\
-    \ times that balance data freshness with performance gains. Cache frequently accessed\
-    \ communication statistics on partner records to avoid expensive aggregations\
-    \ during interface rendering.\n\nDevelop application-level caching for phone number\
-    \ normalization results. Normalization involves computationally expensive parsing\
-    \ and validation, so caching transformed numbers provides significant performance\
-    \ benefits. Implement cache invalidation triggers that clear normalized values\
-    \ when source phone numbers update, maintaining data consistency.\n\n### Asynchronous\
-    \ Processing\n\nImplement asynchronous processing for non-critical operations\
-    \ to maintain system responsiveness. Use Odoo's queue system to defer tasks like\
-    \ communication analytics, sentiment analysis, or bulk message operations. Process\
-    \ webhook payloads asynchronously to prevent Plivo retries when your system experiences\
-    \ temporary load spikes.\n\nDesign long-running operations like bulk SMS campaigns\
-    \ as background jobs with progress tracking. This approach prevents browser timeouts\
-    \ and provides users with feedback on operation status. Implement job prioritization\
-    \ that processes time-sensitive operations like call initiation before batch operations\
-    \ like report generation.\n\n### API Call Optimization\n\nOptimize API usage to\
-    \ minimize latency and reduce Plivo costs. Batch outgoing SMS messages where possible\
-    \ instead of sending individual API requests. Plivo's bulk messaging endpoints\
-    \ support sending multiple messages in a single API call, reducing network overhead\
-    \ and improving throughput.\n\nImplement connection pooling for HTTP requests\
-    \ to Plivo's API. Reusing connections avoids the overhead of establishing new\
-    \ TLS sessions for each request. Configure appropriate timeout values that balance\
-    \ user experience with resource utilization, preventing hung requests from consuming\
-    \ application workers indefinitely."
+    \ scenarios and business units.\n\n## Error Handling and Resilience\n\n### Common\
+    \ Plivo API Errors\n\nThe Plivo API returns specific HTTP status codes that indicate\
+    \ different error conditions. 400 errors signify bad requests, often from invalid\
+    \ phone numbers or incorrect parameter formats. 401 errors indicate authentication\
+    \ failures, typically from expired or invalid auth tokens. 429 errors represent\
+    \ rate limiting, which occurs when you exceed Plivo's API call thresholds.\n\n\
+    Implement comprehensive error handling for each API response type. Create a decorator\
+    \ that wraps all Plivo API calls and transforms HTTP errors into meaningful Odoo\
+    \ exceptions. Log detailed error context including timestamps, user context, and\
+    \ request parameters to facilitate debugging without exposing sensitive authentication\
+    \ data in log files.\n\n### Webhook Delivery Failures\n\nWebhook delivery failures\
+    \ represent another common error scenario. Plivo attempts webhook delivery multiple\
+    \ times with exponential backoff, but persistent failures cause lost communication\
+    \ data. Implement idempotent webhook handlers that can process duplicate deliveries\
+    \ without creating redundant records. Use Plivo's unique identifiers for calls\
+    \ and messages to detect and skip already processed events.\n\nCreate a dead letter\
+    \ queue mechanism for webhooks that fail processing after multiple attempts. Instead\
+    \ of discarding failed webhooks, store them in a separate model for manual review\
+    \ and reprocessing. This approach preserves communication data even when temporary\
+    \ system issues prevent normal processing, maintaining data completeness.\n\n\
+    ### Network Resilience Strategies\n\nNetwork instability between your Odoo instance\
+    \ and Plivo's API requires resilience strategies. Implement retry mechanisms with\
+    \ jitter for all outgoing API calls. Use exponential backoff algorithms that increase\
+    \ wait times between retries, preventing cascade failures during Plivo service\
+    \ interruptions. Set reasonable timeout values that balance user experience with\
+    \ system resource consumption.\n\nFor critical communications, implement a fallback\
+    \ queue system that stores outgoing messages and calls when Plivo's API becomes\
+    \ unavailable. Create a cron job that periodically attempts to send queued items,\
+    \ ensuring eventual delivery even during extended service disruptions. Monitor\
+    \ queue depth and age to alert administrators when backlogs indicate serious integration\
+    \ issues.\n\n### Debugging and Monitoring\n\nBuild comprehensive monitoring that\
+    \ tracks integration health. Create dashboards that display key metrics like API\
+    \ success rates, webhook processing times, and communication volumes. Implement\
+    \ alert rules that trigger when error rates exceed thresholds or when no communications\
+    \ flow for unexpected periods.\n\nDevelop debugging utilities that reconstruct\
+    \ communication flows from scattered log data. Create a diagnostic view in Odoo\
+    \ that shows the complete lifecycle of specific calls or messages, including all\
+    \ API interactions and webhook processing steps. This visibility accelerates troubleshooting\
+    \ when users report communication issues or missing records.\n\n## Testing and\
+    \ Validation\n\n### Test Environment Configuration\n\nEstablish a dedicated testing\
+    \ environment that mirrors your production setup. Create a separate Plivo account\
+    \ for testing purposes, using Plivo's sandbox numbers that simulate call and SMS\
+    \ behavior without incurring charges. Configure test webhook endpoints that point\
+    \ to your staging Odoo instance, ensuring production data remains isolated during\
+    \ testing.\n\nPrepare test data that covers various scenarios including international\
+    \ numbers, different time zones, and special characters in SMS content. Create\
+    \ partner records with phone numbers from different countries to validate international\
+    \ dialing capabilities. Develop test cases that simulate edge conditions like\
+    \ network timeouts, invalid numbers, and concurrent communication attempts.\n\n\
+    ### Unit Test Implementation\n\nDevelop comprehensive unit tests that validate\
+    \ individual integration components. Test phone number normalization with inputs\
+    \ from various countries and formats. Verify webhook signature validation with\
+    \ both valid and tampered signatures. Create mock Plivo API responses that simulate\
+    \ success and error conditions, ensuring your error handling functions as expected.\n\
+    \nImplement integration tests that validate the complete data flow from Odoo to\
+    \ Plivo and back. Use tools like Odoo's HttpCase to simulate webhook requests\
+    \ and verify the resulting database records. Test concurrent webhook processing\
+    \ to identify race conditions or database locking issues that might emerge under\
+    \ production load.\n\n### End-to-End Validation Scenarios\n\nExecute end-to-end\
+    \ validation scenarios that replicate real-world usage patterns. Perform complete\
+    \ test cycles for inbound calls, outbound calls, inbound SMS, and outbound SMS.\
+    \ Verify that call logs appear in the correct partner records with accurate duration\
+    \ and timing information. Confirm that SMS messages thread properly within Odoo's\
+    \ chatter and maintain conversation history.\n\nValidate integration behavior\
+    \ under load by simulating peak usage patterns. Use performance testing tools\
+    \ to send multiple simultaneous webhooks to your Odoo instance, measuring processing\
+    \ throughput and identifying resource bottlenecks. Monitor system resources during\
+    \ these tests to ensure the integration maintains stability without impacting\
+    \ other Odoo functions.\n\n### User Acceptance Testing\n\nConduct user acceptance\
+    \ testing with actual business teams before deployment. Train test users on the\
+    \ new communication features and observe how they incorporate them into daily\
+    \ workflows. Gather feedback on interface design, data presentation, and overall\
+    \ usability. Identify any gaps between technical implementation and business process\
+    \ requirements.\n\nCreate validation checklists that ensure all functional requirements\
+    \ meet acceptance criteria. Verify that security requirements like authentication\
+    \ and data encryption function correctly. Confirm that performance benchmarks\
+    \ for call log display and search operations meet user expectations. Document\
+    \ any issues discovered during testing and track them through resolution before\
+    \ production deployment.\n\n## Security Considerations\\n\n### Authentication\
+    \ Security\n\nPlivo integration introduces new authentication vectors that require\
+    \ careful security management. Store Plivo auth tokens using Odoo's encrypted\
+    \ configuration parameters rather than database fields. Implement token rotation\
+    \ procedures that periodically update credentials, limiting exposure if tokens\
+    \ become compromised. Never log authentication tokens or include them in error\
+    \ messages that users might view.\n\nImplement multi-layered authentication for\
+    \ administrative functions within your integration module. Require both Odoo administrator\
+    \ privileges and separate integration-specific credentials for accessing sensitive\
+    \ configuration screens. This defense-in-depth approach prevents privilege escalation\
+    \ attacks from compromising your Plivo account.\n\n### Webhook Security\n\nWebhook\
+    \ endpoints represent potential attack surfaces since they accept external requests.\
+    \ Implement Plivo signature verification on all webhook handlers to ensure only\
+    \ legitimate Plivo requests process. Reject requests with invalid signatures immediately\
+    \ without further processing. Configure webhook endpoints with CSRF protection\
+    \ disabled since they require public accessibility for Plivo delivery.\n\nLimit\
+    \ the data exposure in webhook responses. Plivo expects specific XML responses\
+    \ for call control instructions, but these responses should contain minimal sensitive\
+    \ information. Avoid including database identifiers, internal system details,\
+    \ or customer personal data in webhook responses that traverse external networks.\n\
+    \n### Data Protection and Privacy\n\nCommunication data often contains sensitive\
+    \ customer information requiring protection. Implement data encryption for call\
+    \ recordings and message content stored within Odoo. Use Odoo's built-in encryption\
+    \ capabilities or database-level encryption features to protect data at rest.\
+    \ Establish data retention policies that automatically purge old communication\
+    \ records after specified periods, complying with privacy regulations.\n\nApply\
+    \ access controls that restrict communication data based on user roles. Sales\
+    \ team members should access communication history for their accounts but not\
+    \ entire organizational datasets. Implement record rules that enforce data segmentation\
+    \ between business units, departments, or teams based on your organizational security\
+    \ model.\n\n### API Security Hardening\n\nHarden your API integration against\
+    \ common security threats. Implement request validation that sanitizes all inputs\
+    \ from both Odoo interfaces and Plivo webhooks. Use parameterized queries when\
+    \ storing communication data to prevent SQL injection attacks. Employ Odoo's built-in\
+    \ cross-site scripting protections when rendering communication data in user interfaces.\n\
+    \nMonitor API usage patterns for anomalous behavior that might indicate security\
+    \ breaches. Create alerts for unusual patterns like sudden spikes in international\
+    \ calls or SMS messages to premium numbers. Implement spending limits in your\
+    \ Plivo account to prevent financial loss from compromised credentials or system\
+    \ abuse.\n\n## Performance Optimization (400 words)\n\n### Database Optimization\
+    \ Strategies\n\nCommunication data accumulates rapidly, demanding careful database\
+    \ management. Implement database indexing strategies that optimize common query\
+    \ patterns without degrading write performance. Create partial indexes on call\
+    \ log status fields where you frequently query for specific states like \"completed\"\
+    \ or \"failed\". Use Odoo's computed fields and store parameters judiciously to\
+    \ balance performance with storage costs.\n\nConsider table partitioning for the\
+    \ call log model in high-volume environments. Partitioning by date ranges improves\
+    \ query performance for time-based reports and simplifies archival of old data.\
+    \ Implement this at the PostgreSQL level since Odoo's ORM doesn't natively support\
+    \ partitioning, but ensure your integration code remains compatible with the partitioned\
+    \ structure.\n\n### Caching Implementation\n\nImplement strategic caching to reduce\
+    \ API calls and database queries. Cache Plivo's account details like remaining\
+    \ balance and number information instead of fetching them repeatedly. Use Odoo's\
+    \ cache tools with appropriate expiration times that balance data freshness with\
+    \ performance gains. Cache frequently accessed communication statistics on partner\
+    \ records to avoid expensive aggregations during interface rendering.\n\nDevelop\
+    \ application-level caching for phone number normalization results. Normalization\
+    \ involves computationally expensive parsing and validation, so caching transformed\
+    \ numbers provides significant performance benefits. Implement cache invalidation\
+    \ triggers that clear normalized values when source phone numbers update, maintaining\
+    \ data consistency.\n\n### Asynchronous Processing\n\nImplement asynchronous processing\
+    \ for non-critical operations to maintain system responsiveness. Use Odoo's queue\
+    \ system to defer tasks like communication analytics, sentiment analysis, or bulk\
+    \ message operations. Process webhook payloads asynchronously to prevent Plivo\
+    \ retries when your system experiences temporary load spikes.\n\nDesign long-running\
+    \ operations like bulk SMS campaigns as background jobs with progress tracking.\
+    \ This approach prevents browser timeouts and provides users with feedback on\
+    \ operation status. Implement job prioritization that processes time-sensitive\
+    \ operations like call initiation before batch operations like report generation.\n\
+    \n### API Call Optimization\n\nOptimize API usage to minimize latency and reduce\
+    \ Plivo costs. Batch outgoing SMS messages where possible instead of sending individual\
+    \ API requests. Plivo's bulk messaging endpoints support sending multiple messages\
+    \ in a single API call, reducing network overhead and improving throughput.\n\n\
+    Implement connection pooling for HTTP requests to Plivo's API. Reusing connections\
+    \ avoids the overhead of establishing new TLS sessions for each request. Configure\
+    \ appropriate timeout values that balance user experience with resource utilization,\
+    \ preventing hung requests from consuming application workers indefinitely."
   conclusion: 'Your Plivo-Odoo integration now functions as a cohesive communication
     engine that bridges telephony capabilities with business process automation. The
     technical implementation you completed transforms separate systems into a unified
@@ -437,13 +436,14 @@ visualizations:
   placement_hint: after_conclusion
   data_context: learning path and knowledge graph
   mermaid_chart_syntax: "flowchart TB\n\n    Current[\"[CURRENT] Plivo to Odoo Integration:\
-    \ Complete 2025 Guide\"]\n\n    %% Related Topics - Cross-References\n    Current\
-    \ -.-> Rel0[\"Cloudflare to Odoo Integration: Complete 2025 Guide\"]\n    Current\
-    \ -.-> Rel1[\"Facebook Pixel to Odoo Integration: Complete 2025 Guide\"]\n\n \
-    \   %% Professional Styling\n    classDef current fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n\
+    \ Complete 2025 Guide\"]\n\n    %% Next Steps - Learning Progression\n    Current\
+    \ --> Next0(\"Complete Implementation Guide\")\n\n    %% Related Topics - Cross-References\n\
+    \    Current -.-> Rel0[\"Cloudflare to Odoo Integration: Complete 2025 Guide\"\
+    ]\n    Current -.-> Rel1[\"Facebook Pixel to Odoo Integration: Complete 2025 Guide\"\
+    ]\n\n    %% Professional Styling\n    classDef current fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n\
     \    classDef prereq fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000\n\
     \    classDef next fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000\n \
     \   classDef related fill:#f5f5f5,stroke:#616161,stroke-width:1px,color:#000\n\
     \    classDef trouble fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000\n\
     \    classDef support fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#000\n\
-    \n    class Current current\n    class Rel0,Rel1 related"
+    \n    class Current current\n    class Next0 next\n    class Rel0,Rel1 related"

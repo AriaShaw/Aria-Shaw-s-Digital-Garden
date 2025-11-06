@@ -70,10 +70,10 @@ ai_generated_content:
     understanding of Odoo module development and Python. The implementation requires
     several days of focused work, but the result delivers a fully automated, enterprise-grade
     commerce engine.'
-  main_content: "## Integration Architecture and Data Flow\n\nA robust\
-    \ integration between Google Shopping and Odoo 18 requires a clear, event-driven\
-    \ architecture. The system must handle bidirectional data flow, reacting to changes\
-    \ in both platforms. You will build this on top of Odoo's built-in Connector framework,\
+  main_content: "## Integration Architecture and Data Flow\n\nA robust integration\
+    \ between Google Shopping and Odoo 18 requires a clear, event-driven architecture.\
+    \ The system must handle bidirectional data flow, reacting to changes in both\
+    \ platforms. You will build this on top of Odoo's built-in Connector framework,\
     \ which provides the foundational queues and jobs for managing synchronous and\
     \ asynchronous tasks. The core components include a custom Odoo module, the Google\
     \ Shopping Content API, and a dedicated synchronization engine. Your design must\
@@ -101,36 +101,35 @@ ai_generated_content:
     \ handles job retries for transient failures, but your code must manage hard failures,\
     \ such as data validation errors from Google, by logging them for administrative\
     \ review. This event-driven, queue-based pattern decouples the systems, preventing\
-    \ a slowdown in one platform from crippling the other.\n\n## Step-by-Step Configuration\
-    \\n\nBegin by creating a new Odoo module to host your integration\
-    \ logic. Define the module's manifest file with dependencies on the `connector`,\
-    \ `sale`, and `stock` Odoo applications. Your module needs new models for storing\
-    \ Google Merchant account configurations and a model to extend the standard Odoo\
-    \ product template with Google-specific fields. Create a `google_merchant_account`\
-    \ model that stores credentials like `merchant_id`, `auth_token`, and the `pubsub_topic`\
-    \ name. This model serves as the central configuration point for connecting to\
-    \ each of your Merchant Center accounts.\n\n**Configure Google Cloud Project and\
-    \ API Access**\nNavigate to the Google Cloud Console and create a new project\
-    \ or select an existing one. Enable the \"Shopping Content API\" for this project.\
-    \ Under \"APIs & Services > Credentials,\" create a new OAuth 2.0 Client ID. Configure\
-    \ the OAuth consent screen and set the application type to \"Web application.\"\
-    \ You must add your Odoo server's URL to the authorized redirect URIs, typically\
-    \ `https://your-odoo-server.com/auth_oauth/signin`. Save the generated `client_id`\
-    \ and `client_secret`; you will need them for the Odoo configuration. Finally,\
-    \ create a Service Account and download its JSON key file for server-to-server\
-    \ authentication, which is more secure for background sync jobs.\n\n**Implement\
-    \ OAuth 2.0 Authentication in Odoo**\nOdoo's `auth_oauth` module provides the\
-    \ foundation for OAuth flows. Extend it to support Google. Add a record to the\
-    \ `ir.config_parameter` model storing the client ID and secret. You must create\
-    \ a controller that handles the OAuth callback. This controller exchanges the\
-    \ authorization code for an access token and refresh token, which it then saves\
-    \ securely in the `google_merchant_account` record.\n\n```python\nfrom odoo import\
-    \ http\nfrom odoo.adds.auth_oauth.models.ir_http import OAuthLogin\n\nclass GoogleOAuthController(http.Controller):\n\
-    \    @http.route('/google_shopping/auth/callback', type='http', auth='public')\n\
-    \    def google_oauth_callback(self, **kw):\n        code = kw.get('code')\n \
-    \       # Use the code to get tokens from Google\n        access_token, refresh_token\
-    \ = self._get_google_tokens(code)\n        # Store tokens in the configured account\
-    \ record\n        account = http.request.env['google.merchant.account'].search([],\
+    \ a slowdown in one platform from crippling the other.\n\n## Step-by-Step Configuration\\\
+    n\nBegin by creating a new Odoo module to host your integration logic. Define\
+    \ the module's manifest file with dependencies on the `connector`, `sale`, and\
+    \ `stock` Odoo applications. Your module needs new models for storing Google Merchant\
+    \ account configurations and a model to extend the standard Odoo product template\
+    \ with Google-specific fields. Create a `google_merchant_account` model that stores\
+    \ credentials like `merchant_id`, `auth_token`, and the `pubsub_topic` name. This\
+    \ model serves as the central configuration point for connecting to each of your\
+    \ Merchant Center accounts.\n\n**Configure Google Cloud Project and API Access**\n\
+    Navigate to the Google Cloud Console and create a new project or select an existing\
+    \ one. Enable the \"Shopping Content API\" for this project. Under \"APIs & Services\
+    \ > Credentials,\" create a new OAuth 2.0 Client ID. Configure the OAuth consent\
+    \ screen and set the application type to \"Web application.\" You must add your\
+    \ Odoo server's URL to the authorized redirect URIs, typically `https://your-odoo-server.com/auth_oauth/signin`.\
+    \ Save the generated `client_id` and `client_secret`; you will need them for the\
+    \ Odoo configuration. Finally, create a Service Account and download its JSON\
+    \ key file for server-to-server authentication, which is more secure for background\
+    \ sync jobs.\n\n**Implement OAuth 2.0 Authentication in Odoo**\nOdoo's `auth_oauth`\
+    \ module provides the foundation for OAuth flows. Extend it to support Google.\
+    \ Add a record to the `ir.config_parameter` model storing the client ID and secret.\
+    \ You must create a controller that handles the OAuth callback. This controller\
+    \ exchanges the authorization code for an access token and refresh token, which\
+    \ it then saves securely in the `google_merchant_account` record.\n\n```python\n\
+    from odoo import http\nfrom odoo.adds.auth_oauth.models.ir_http import OAuthLogin\n\
+    \nclass GoogleOAuthController(http.Controller):\n    @http.route('/google_shopping/auth/callback',\
+    \ type='http', auth='public')\n    def google_oauth_callback(self, **kw):\n  \
+    \      code = kw.get('code')\n        # Use the code to get tokens from Google\n\
+    \        access_token, refresh_token = self._get_google_tokens(code)\n       \
+    \ # Store tokens in the configured account record\n        account = http.request.env['google.merchant.account'].search([],\
     \ limit=1)\n        account.write({\n            'access_token': access_token,\n\
     \            'refresh_token': refresh_token,\n        })\n        return \"Authentication\
     \ Successful. You can close this window.\"\n```\n\n**Set Up Product Sync Infrastructure**\n\
@@ -167,11 +166,11 @@ ai_generated_content:
     \ implement a robust token refresh mechanism will cause your syncs to fail silently\
     \ once the initial access token expires. Your code must check for token expiration\
     \ before each API call and automatically use the refresh token to obtain a new\
-    \ access token.\n\n## Data Mapping and Transformation\n\nThe core\
-    \ challenge of this integration lies in translating Odoo's internal product data\
-    \ structure into the precise schema demanded by the Google Shopping Content API.\
-    \ Odoo's `product.product` and `product.template` models contain your source data,\
-    \ but Google's `product` resource has over fifty required and optional attributes.\
+    \ access token.\n\n## Data Mapping and Transformation\n\nThe core challenge of\
+    \ this integration lies in translating Odoo's internal product data structure\
+    \ into the precise schema demanded by the Google Shopping Content API. Odoo's\
+    \ `product.product` and `product.template` models contain your source data, but\
+    \ Google's `product` resource has over fifty required and optional attributes.\
     \ You must construct a meticulous mapping strategy that covers every field, from\
     \ basic identifiers to complex tax and shipping information.\n\n**Core Identifier\
     \ and Title Mapping**\nThe `offerId` field in Google must map to a unique, stable\
@@ -207,34 +206,34 @@ ai_generated_content:
     \ field for the sync. Complex products require mapping for `shippingWeight` and\
     \ `shippingLength` from Odoo's `product_dimension` fields, converting the units\
     \ to the standard required by Google (e.g., weight in pounds).\n\n## Error Handling\
-    \ and Resilience\n\nThe integration will encounter errors. Your design\
-    \ must anticipate common failure modes and handle them gracefully without manual\
-    \ intervention. Categorize errors into transient network issues, data validation\
-    \ errors from Google, and authentication failures. The Odoo Connector framework\
-    \ provides a built-in retry mechanism for jobs, which you should configure for\
-    \ transient errors like `5xx` HTTP status codes from Google or temporary network\
-    \ timeouts.\n\n**Common Google API Error Codes**\nThe Google Content API returns\
-    \ specific error codes that dictate your response. A `401 Unauthorized` error\
-    \ signals an expired or invalid access token. Your error handler must catch this,\
-    \ automatically use the refresh token to obtain new credentials, and retry the\
-    \ job. A `429 Too Many Requests` error indicates rate limiting. Your code must\
-    \ catch this, parse the `Retry-After` header, and re-queue the job with the appropriate\
-    \ delay. For `400 Bad Request` errors, the API response body contains a detailed\
-    \ reason, such as `invalidValue` for a field or `missingAttribute`.\n\n**Implementing\
-    \ a Dead Letter Queue**\nNot all errors can resolve with a retry. Data validation\
-    \ errors, like an invalid GPC code or a missing required field, will persist until\
-    \ you fix the underlying data in Odoo. For these, implement a dead letter queue.\
-    \ When a job fails permanently, log the error message, the product ID, and the\
-    \ failed operation to a dedicated `google.sync.error` model. This creates a clear\
-    \ dashboard for administrators to see and rectify data problems without sifting\
-    \ through server logs.\n\n**Idempotency and Duplicate Prevention**\nThe Google\
-    \ APIs are idempotent when you provide a unique `idempotencyKey` with your requests.\
-    \ Generate this key for every insert or update operation. A good pattern combines\
-    \ the Odoo product ID, the timestamp of the last update, and the operation type.\
-    \ This ensures that if a network failure causes your code to retry a request,\
-    \ Google will recognize the duplicate and ignore it instead of creating two product\
-    \ entries.\n\n```python\ndef _generate_idempotency_key(self, record, operation):\n\
-    \    timestamp = record.write_date or record.create_date\n    return f\"{record.id}_{timestamp.timestamp()}_{operation}\"\
+    \ and Resilience\n\nThe integration will encounter errors. Your design must anticipate\
+    \ common failure modes and handle them gracefully without manual intervention.\
+    \ Categorize errors into transient network issues, data validation errors from\
+    \ Google, and authentication failures. The Odoo Connector framework provides a\
+    \ built-in retry mechanism for jobs, which you should configure for transient\
+    \ errors like `5xx` HTTP status codes from Google or temporary network timeouts.\n\
+    \n**Common Google API Error Codes**\nThe Google Content API returns specific error\
+    \ codes that dictate your response. A `401 Unauthorized` error signals an expired\
+    \ or invalid access token. Your error handler must catch this, automatically use\
+    \ the refresh token to obtain new credentials, and retry the job. A `429 Too Many\
+    \ Requests` error indicates rate limiting. Your code must catch this, parse the\
+    \ `Retry-After` header, and re-queue the job with the appropriate delay. For `400\
+    \ Bad Request` errors, the API response body contains a detailed reason, such\
+    \ as `invalidValue` for a field or `missingAttribute`.\n\n**Implementing a Dead\
+    \ Letter Queue**\nNot all errors can resolve with a retry. Data validation errors,\
+    \ like an invalid GPC code or a missing required field, will persist until you\
+    \ fix the underlying data in Odoo. For these, implement a dead letter queue. When\
+    \ a job fails permanently, log the error message, the product ID, and the failed\
+    \ operation to a dedicated `google.sync.error` model. This creates a clear dashboard\
+    \ for administrators to see and rectify data problems without sifting through\
+    \ server logs.\n\n**Idempotency and Duplicate Prevention**\nThe Google APIs are\
+    \ idempotent when you provide a unique `idempotencyKey` with your requests. Generate\
+    \ this key for every insert or update operation. A good pattern combines the Odoo\
+    \ product ID, the timestamp of the last update, and the operation type. This ensures\
+    \ that if a network failure causes your code to retry a request, Google will recognize\
+    \ the duplicate and ignore it instead of creating two product entries.\n\n```python\n\
+    def _generate_idempotency_key(self, record, operation):\n    timestamp = record.write_date\
+    \ or record.create_date\n    return f\"{record.id}_{timestamp.timestamp()}_{operation}\"\
     \n\ndef _call_google_api(self, endpoint, data, operation):\n    idempotency_key\
     \ = self._generate_idempotency_key(data['record'], operation)\n    headers = {\n\
     \        'Content-Type': 'application/json',\n        'Idempotency-Key': idempotency_key\n\
@@ -245,19 +244,19 @@ ai_generated_content:
     \ in the Google order data or a product in the order that does not exist in Odoo.\
     \ Your code must handle these partial failures, perhaps by creating a draft order\
     \ that flags the missing information for manual completion.\n\n## Testing and\
-    \ Validation\n\nBefore deploying the integration to production, you\
-    \ must execute a rigorous testing protocol. Start with unit tests for your data\
-    \ mapping functions. Create test methods that feed known Odoo product records\
-    \ into your mappers and assert that the output matches the expected Google product\
-    \ JSON structure. Mock the Google API calls to test the synchronization logic\
-    \ without needing a live internet connection.\n\n**End-to-End Testing with a Sandbox**\n\
-    Google provides a Merchant Center sandbox environment for development and testing.\
-    \ Create a sandbox account and configure your Odoo test instance to connect to\
-    \ it. Execute a full product sync for a small subset of your catalog. Verify that\
-    \ the products appear in the sandbox Merchant Center dashboard with the correct\
-    \ titles, prices, and images. Then, simulate a test order through the Google Sandbox\
-    \ Orders API. Monitor your Odoo instance to confirm the sale order creates automatically\
-    \ with the correct line items and customer details.\n\n**Data Validation Checklist**\n\
+    \ Validation\n\nBefore deploying the integration to production, you must execute\
+    \ a rigorous testing protocol. Start with unit tests for your data mapping functions.\
+    \ Create test methods that feed known Odoo product records into your mappers and\
+    \ assert that the output matches the expected Google product JSON structure. Mock\
+    \ the Google API calls to test the synchronization logic without needing a live\
+    \ internet connection.\n\n**End-to-End Testing with a Sandbox**\nGoogle provides\
+    \ a Merchant Center sandbox environment for development and testing. Create a\
+    \ sandbox account and configure your Odoo test instance to connect to it. Execute\
+    \ a full product sync for a small subset of your catalog. Verify that the products\
+    \ appear in the sandbox Merchant Center dashboard with the correct titles, prices,\
+    \ and images. Then, simulate a test order through the Google Sandbox Orders API.\
+    \ Monitor your Odoo instance to confirm the sale order creates automatically with\
+    \ the correct line items and customer details.\n\n**Data Validation Checklist**\n\
     Create a pre-flight checklist to run before the first full product sync. This\
     \ checklist should verify that all required fields in Odoo have valid data for\
     \ the Google mapping. Key validations include: every product has a `default_code`\
@@ -280,11 +279,11 @@ ai_generated_content:
     \ interface. Verify that the entire process—from receiving the notification to\
     \ creating the confirmed sale order—completes without error. Test edge cases,\
     \ such as an order for a product that has since been deactivated in Odoo.\n\n\
-    ## Security Considerations\n\nThis integration handles sensitive business\
-    \ data, including product catalogs, pricing, and customer orders. You must secure\
-    \ every data transfer and storage point. All communication with Google APIs must\
-    \ use HTTPS with TLS 1.2 or higher. Never use HTTP for any endpoint, especially\
-    \ the webhook that receives order notifications.\n\n**OAuth 2.0 and Token Management**\n\
+    ## Security Considerations\n\nThis integration handles sensitive business data,\
+    \ including product catalogs, pricing, and customer orders. You must secure every\
+    \ data transfer and storage point. All communication with Google APIs must use\
+    \ HTTPS with TLS 1.2 or higher. Never use HTTP for any endpoint, especially the\
+    \ webhook that receives order notifications.\n\n**OAuth 2.0 and Token Management**\n\
     Store the OAuth `client_secret` and `refresh_token` in Odoo with the highest security.\
     \ Use Odoo's `ir.config_parameter` model with its built-in encryption for sensitive\
     \ fields. Never log these tokens to log files or display them in the user interface.\
@@ -308,19 +307,19 @@ ai_generated_content:
     \ logs and error reports relevant to their operational purview. The service account\
     \ you use for server-to-server authentication should have the principle of least\
     \ privilege, granted only the \"Content Manager\" role in Google Merchant Center,\
-    \ not owner-level permissions.\n\n## Performance Optimization\n\n\
-    A poorly optimized integration can consume excessive server resources and slow\
-    \ down your entire Odoo instance. The primary bottleneck is usually the volume\
-    \ of API calls to Google, followed by database read/write operations in Odoo during\
-    \ the mapping process. Identify and mitigate these bottlenecks with a combination\
-    \ of batching, caching, and efficient querying.\n\n**API Call Batching and Quotas**\n\
-    The Google Shopping Content API supports batch operations. Instead of sending\
-    \ one HTTP request per product, you can bundle up to 1000 product operations in\
-    \ a single batch request. This reduces network overhead and speeds up the sync\
-    \ process dramatically. Implement a batch scheduler in your connector jobs that\
-    \ groups pending product updates into batches of the maximum allowed size. Monitor\
-    \ your API usage against Google's quota limits to avoid being throttled. Spread\
-    \ large sync operations over time to stay within the per-minute quota.\n\n**Efficient\
+    \ not owner-level permissions.\n\n## Performance Optimization\n\nA poorly optimized\
+    \ integration can consume excessive server resources and slow down your entire\
+    \ Odoo instance. The primary bottleneck is usually the volume of API calls to\
+    \ Google, followed by database read/write operations in Odoo during the mapping\
+    \ process. Identify and mitigate these bottlenecks with a combination of batching,\
+    \ caching, and efficient querying.\n\n**API Call Batching and Quotas**\nThe Google\
+    \ Shopping Content API supports batch operations. Instead of sending one HTTP\
+    \ request per product, you can bundle up to 1000 product operations in a single\
+    \ batch request. This reduces network overhead and speeds up the sync process\
+    \ dramatically. Implement a batch scheduler in your connector jobs that groups\
+    \ pending product updates into batches of the maximum allowed size. Monitor your\
+    \ API usage against Google's quota limits to avoid being throttled. Spread large\
+    \ sync operations over time to stay within the per-minute quota.\n\n**Efficient\
     \ Odoo ORM Querying**\nA common performance anti-pattern in Odoo is searching\
     \ and reading records in a loop. When your mapper processes a batch of products,\
     \ pre-fetch all the necessary related data in a single query. Use `read_group`\
@@ -433,13 +432,14 @@ visualizations:
   placement_hint: after_conclusion
   data_context: learning path and knowledge graph
   mermaid_chart_syntax: "flowchart TB\n\n    Current[\"[CURRENT] Google Shopping to\
-    \ Odoo Integration: Complete 2025 Guide\"]\n\n    %% Related Topics - Cross-References\n\
-    \    Current -.-> Rel0[\"Cloudflare to Odoo Integration: Complete 2025 Guide\"\
-    ]\n    Current -.-> Rel1[\"Facebook Pixel to Odoo Integration: Complete 2025 Guide\"\
-    ]\n\n    %% Professional Styling\n    classDef current fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n\
-    \    classDef prereq fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000\n\
-    \    classDef next fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000\n \
-    \   classDef related fill:#f5f5f5,stroke:#616161,stroke-width:1px,color:#000\n\
+    \ Odoo Integration: Complete 2025 Guide\"]\n\n    %% Next Steps - Learning Progression\n\
+    \    Current --> Next0(\"Complete Implementation Guide\")\n\n    %% Related Topics\
+    \ - Cross-References\n    Current -.-> Rel0[\"Cloudflare to Odoo Integration:\
+    \ Complete 2025 Guide\"]\n    Current -.-> Rel1[\"Facebook Pixel to Odoo Integration:\
+    \ Complete 2025 Guide\"]\n\n    %% Professional Styling\n    classDef current\
+    \ fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n    classDef prereq\
+    \ fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000\n    classDef next fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000\n\
+    \    classDef related fill:#f5f5f5,stroke:#616161,stroke-width:1px,color:#000\n\
     \    classDef trouble fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000\n\
     \    classDef support fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#000\n\
-    \n    class Current current\n    class Rel0,Rel1 related"
+    \n    class Current current\n    class Next0 next\n    class Rel0,Rel1 related"

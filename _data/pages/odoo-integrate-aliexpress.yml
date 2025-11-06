@@ -75,28 +75,28 @@ ai_generated_content:
     AliExpress-specific challenges like combination products, supplier lead times,
     and cross-border shipping data. Follow this guide to build a production-ready
     integration that scales with your business growth.'
-  main_content: "## Integration Architecture and Data Flow\n\n### Core\
-    \ Integration Components\n\nThe AliExpress-Odoo integration employs a distributed\
-    \ architecture with three main components. Odoo 18 serves as the central hub,\
-    \ managing master data and business logic. The AliExpress Open Platform provides\
-    \ the sales channel API endpoints. A custom integration module acts as the middleware\
-    \ layer, handling transformation and synchronization logic. This separation ensures\
-    \ that API changes on either platform don't break the entire system.\n\nYour integration\
-    \ module uses Odoo's external API framework as its foundation. This framework\
-    \ provides the authentication mechanism and data model hooks. The module extends\
-    \ Odoo's standard sales order and product models with AliExpress-specific fields.\
-    \ These custom fields store original AliExpress identifiers, supplier details,\
-    \ and combination product data. The architecture maintains referential integrity\
-    \ between systems without altering core Odoo functionality.\n\n### Data Flow Patterns\n\
-    \nOrder data flows from AliExpress to Odoo through a pull-based mechanism. The\
-    \ integration module polls AliExpress orders every 15 minutes using their Open\
-    \ Platform API. This interval balances freshness with API rate limit considerations.\
-    \ The system processes new orders immediately and updates existing orders with\
-    \ status changes. Each order sync triggers a series of validation checks before\
-    \ creation in Odoo.\n\nProduct and inventory synchronization operates bidirectionally.\
-    \ Stock level updates push from Odoo to AliExpress whenever inventory counts change.\
-    \ Product information flows primarily from AliExpress to Odoo during initial setup.\
-    \ The system maps AliExpress combination products to Odoo's product variant structure.\
+  main_content: "## Integration Architecture and Data Flow\n\n### Core Integration\
+    \ Components\n\nThe AliExpress-Odoo integration employs a distributed architecture\
+    \ with three main components. Odoo 18 serves as the central hub, managing master\
+    \ data and business logic. The AliExpress Open Platform provides the sales channel\
+    \ API endpoints. A custom integration module acts as the middleware layer, handling\
+    \ transformation and synchronization logic. This separation ensures that API changes\
+    \ on either platform don't break the entire system.\n\nYour integration module\
+    \ uses Odoo's external API framework as its foundation. This framework provides\
+    \ the authentication mechanism and data model hooks. The module extends Odoo's\
+    \ standard sales order and product models with AliExpress-specific fields. These\
+    \ custom fields store original AliExpress identifiers, supplier details, and combination\
+    \ product data. The architecture maintains referential integrity between systems\
+    \ without altering core Odoo functionality.\n\n### Data Flow Patterns\n\nOrder\
+    \ data flows from AliExpress to Odoo through a pull-based mechanism. The integration\
+    \ module polls AliExpress orders every 15 minutes using their Open Platform API.\
+    \ This interval balances freshness with API rate limit considerations. The system\
+    \ processes new orders immediately and updates existing orders with status changes.\
+    \ Each order sync triggers a series of validation checks before creation in Odoo.\n\
+    \nProduct and inventory synchronization operates bidirectionally. Stock level\
+    \ updates push from Odoo to AliExpress whenever inventory counts change. Product\
+    \ information flows primarily from AliExpress to Odoo during initial setup. The\
+    \ system maps AliExpress combination products to Odoo's product variant structure.\
     \ This mapping preserves attribute relationships while adapting to Odoo's data\
     \ model.\n\n### Webhook Configuration\n\nAliExpress webhooks provide real-time\
     \ notifications for order events. Your integration module registers webhook endpoints\
@@ -107,23 +107,23 @@ ai_generated_content:
     \ retry mechanism for failed webhook deliveries. Failed requests enter a queue\
     \ with exponential backoff. The system logs each delivery attempt with full payload\
     \ details for debugging. This approach maintains data consistency even during\
-    \ temporary network issues or system maintenance windows.\n\n## Step-by-Step Configuration\
-    \\n\n### AliExpress Open Platform Setup\n\nBegin with developer account\
-    \ registration on the AliExpress Open Platform. Navigate to their developer portal\
-    \ and create a new application. Select \"Server-side API integration\" as your\
-    \ application type. Provide your Odoo instance details in the callback URL field.\
-    \ The platform requires business verification before granting production API access.\n\
-    \nNote your App Key and App Secret immediately after creation. These credentials\
-    \ authenticate all API calls between your systems. Store them securely in Odoo's\
-    \ parameter table rather than hardcoding in your module. The Open Platform imposes\
-    \ strict rate limits based on your application tier. Understand these limits before\
-    \ designing your synchronization intervals.\n\nConfigure API permissions for your\
-    \ application. Enable orders:read for order synchronization. Activate products:read\
-    \ for product information retrieval. Select logistics:read for shipping status\
-    \ updates. Each permission scope requires separate approval from AliExpress. The\
-    \ review process typically takes 2-3 business days.\n\n### Odoo Module Development\n\
-    \nCreate a new Odoo module using their standard scaffold command. Define your\
-    \ module dependencies in the __manifest__.py file. Your module must declare dependencies\
+    \ temporary network issues or system maintenance windows.\n\n## Step-by-Step Configuration\\\
+    n\n### AliExpress Open Platform Setup\n\nBegin with developer account registration\
+    \ on the AliExpress Open Platform. Navigate to their developer portal and create\
+    \ a new application. Select \"Server-side API integration\" as your application\
+    \ type. Provide your Odoo instance details in the callback URL field. The platform\
+    \ requires business verification before granting production API access.\n\nNote\
+    \ your App Key and App Secret immediately after creation. These credentials authenticate\
+    \ all API calls between your systems. Store them securely in Odoo's parameter\
+    \ table rather than hardcoding in your module. The Open Platform imposes strict\
+    \ rate limits based on your application tier. Understand these limits before designing\
+    \ your synchronization intervals.\n\nConfigure API permissions for your application.\
+    \ Enable orders:read for order synchronization. Activate products:read for product\
+    \ information retrieval. Select logistics:read for shipping status updates. Each\
+    \ permission scope requires separate approval from AliExpress. The review process\
+    \ typically takes 2-3 business days.\n\n### Odoo Module Development\n\nCreate\
+    \ a new Odoo module using their standard scaffold command. Define your module\
+    \ dependencies in the __manifest__.py file. Your module must declare dependencies\
     \ on the sale, stock, and product modules. Create models for AliExpress store\
     \ configuration and synchronization logs. These models track integration status\
     \ and facilitate troubleshooting.\n\nImplement the core AliExpress client class\
@@ -176,99 +176,98 @@ ai_generated_content:
     \ ngrok or similar tunneling services to expose your local Odoo instance. Verify\
     \ that your endpoints handle duplicate events idempotently. Implement security\
     \ checks to reject malformed or suspicious requests. Log all webhook activities\
-    \ for audit purposes and troubleshooting.\n\n## Data Mapping and Transformation\
-    \\n\n### Order Data Structure\n\nAliExpress orders arrive with a nested\
-    \ JSON structure containing buyer information, product details, and logistics\
-    \ data. Your integration must flatten this structure into Odoo's relational model.\
-    \ Map the AliExpress order number to Odoo's origin field. Extract the buyer's\
-    \ name and shipping address into Odoo's partner records. Preserve the original\
-    \ AliExpress order ID in a custom field for reference.\n\nTransform AliExpress\
-    \ combination orders into Odoo sale order lines. Each combination item becomes\
-    \ a separate order line with specific product attributes. Map AliExpress SKU codes\
-    \ to Odoo product defaults. Handle currency conversion between USD and your Odoo\
-    \ company currency. Calculate taxes based on the shipping destination and your\
-    \ business rules.\n\n### Product Information Mapping\n\nAliExpress products present\
-    \ challenges with their combination-based variation system. Map AliExpress main\
-    \ products to Odoo product templates. Transform each combination into a Odoo product\
-    \ variant. Extract combination attributes like color, size, and style into Odoo's\
-    \ attribute-value system. Preserve the original AliExpress product and combination\
-    \ IDs for inventory synchronization.\n\nManage product image import from AliExpress\
-    \ multiple image URLs. Download and store images in Odoo's attachment system.\
-    \ Set the first image as the main product image. Handle character encoding issues\
-    \ in product descriptions and titles. Convert HTML descriptions to plain text\
-    \ for Odoo's product notes field. Preserve essential formatting while removing\
-    \ incompatible HTML tags.\n\n### Inventory Synchronization Logic\n\nInventory\
-    \ synchronization requires careful conflict resolution between systems. Odoo typically\
-    \ serves as the inventory master, but you must respect AliExpress stock levels\
-    \ during initial setup. Implement a stock reservation mechanism for pending orders.\
-    \ Calculate available quantities by considering both committed and on-hand stock.\n\
-    \nTransform Odoo's warehouse-specific inventory into AliExpress's global stock\
-    \ model. Aggregate stock across multiple warehouses if you fulfill from multiple\
-    \ locations. Apply safety stock buffers to prevent overselling. Handle stock update\
-    \ failures with automatic retry logic. Log all inventory changes for reconciliation\
-    \ purposes.\n\n### Customer Data Handling\n\nAliExpress provides limited customer\
-    \ information due to privacy restrictions. Create Odoo partners using the available\
-    \ shipping address data. Use the buyer's AliExpress username as the partner name\
-    \ if real name isn't available. Map shipping addresses to Odoo's partner address\
-    \ model. Detect duplicate customers based on shipping address patterns.\n\nMaintain\
-    \ customer reference in sales orders without creating duplicate partner records.\
-    \ Implement a customer matching algorithm that considers name, address, and phone\
-    \ number. Create new partners only when no reasonable match exists. Preserve customer\
-    \ communication preferences from AliExpress if available.\n\n## Error Handling\
-    \ and Resilience\n\n### Common API Errors\n\nThe AliExpress API returns\
-    \ specific error codes your integration must handle. \"isv.invalid-parameter\"\
-    \ errors indicate missing or malformed request parameters. \"isv.invalid-permission\"\
-    \ errors occur when your app lacks necessary scopes. \"isv.api-quota-limit\" errors\
-    \ signal rate limit violations. \"isv.need-retry\" errors suggest temporary system\
-    \ issues.\n\nImplement automatic retry logic for transient errors. Use exponential\
-    \ backoff for rate limit responses. Queue failed requests for later processing\
-    \ when encountering system errors. Log all API errors with full context for debugging.\
-    \ Alert administrators when error rates exceed defined thresholds.\n\n### Data\
-    \ Validation Failures\n\nData validation errors occur when AliExpress data doesn't\
-    \ match Odoo's expectations. Missing required fields like product SKUs or customer\
-    \ addresses cause import failures. Invalid data formats such as malformed dates\
-    \ or currency values trigger validation errors. Reference integrity issues happen\
-    \ when related records don't exist in Odoo.\n\nImplement comprehensive data cleansing\
-    \ before import. Apply default values for missing required fields. Transform data\
-    \ formats to match Odoo's requirements. Create missing related records automatically\
-    \ when possible. Flag records that require manual intervention for complex issues.\n\
-    \n### Connection and Timeout Handling\n\nNetwork issues between your Odoo instance\
-    \ and AliExpress API can cause synchronization failures. Implement robust connection\
-    \ timeout settings. Use short timeouts for initial connection attempts. Set longer\
-    \ timeouts for data transfer phases. Implement circuit breaker patterns to prevent\
-    \ cascade failures during API outages.\n\nHandle DNS resolution failures with\
-    \ fallback name servers. Manage SSL certificate verification issues with proper\
-    \ error messages. Implement connection pooling to reduce overhead for frequent\
-    \ API calls. Monitor connection success rates and alert on degradation.\n\n###\
-    \ Recovery Procedures\n\nDevelop specific recovery procedures for different failure\
-    \ scenarios. For partial order sync failures, implement gap detection and backfill\
-    \ mechanisms. For inventory sync issues, create reconciliation reports that highlight\
-    \ discrepancies. For product mapping problems, provide remapping tools to fix\
-    \ broken relationships.\n\nMaintain synchronization checkpoints to resume from\
-    \ known good states. Implement data repair utilities for common corruption scenarios.\
-    \ Create manual override capabilities for emergency situations. Document recovery\
-    \ procedures with step-by-step instructions for operations team.\n\n## Testing\
-    \ and Validation\n\n### Integration Test Scenarios\n\nCreate comprehensive\
-    \ test scenarios that cover all integration points. Test order import with various\
-    \ AliExpress order types including combination products and single items. Validate\
-    \ inventory synchronization with stock increases, decreases, and out-of-stock\
-    \ scenarios. Verify product import with different attribute combinations and image\
-    \ sets.\n\nTest error conditions deliberately. Simulate API rate limits and verify\
-    \ backoff behavior. Trigger network timeouts to confirm graceful degradation.\
-    \ Introduce malformed data to validate error handling. Test concurrent operations\
-    \ to identify race conditions and locking issues.\n\n### Data Validation Procedures\n\
-    \nImplement multi-stage data validation throughout the synchronization process.\
-    \ Validate incoming AliExpress data against their API schema. Apply business rule\
-    \ validation before creating Odoo records. Verify record creation success by comparing\
-    \ counts and checking for errors. Validate data completeness by spot-checking\
-    \ field values.\n\nDevelop validation reports that highlight discrepancies between\
-    \ systems. Compare order totals between AliExpress and Odoo for accuracy. Verify\
-    \ inventory levels match after synchronization cycles. Check product attribute\
-    \ preservation across the integration pipeline.\n\n### Performance Testing\n\n\
-    Establish performance benchmarks for critical integration operations. Measure\
-    \ order import throughput in orders per minute. Time inventory synchronization\
-    \ for typical product catalogs. Assess product import performance with various\
-    \ image quantities. Monitor system resource usage during peak synchronization\
+    \ for audit purposes and troubleshooting.\n\n## Data Mapping and Transformation\\\
+    n\n### Order Data Structure\n\nAliExpress orders arrive with a nested JSON structure\
+    \ containing buyer information, product details, and logistics data. Your integration\
+    \ must flatten this structure into Odoo's relational model. Map the AliExpress\
+    \ order number to Odoo's origin field. Extract the buyer's name and shipping address\
+    \ into Odoo's partner records. Preserve the original AliExpress order ID in a\
+    \ custom field for reference.\n\nTransform AliExpress combination orders into\
+    \ Odoo sale order lines. Each combination item becomes a separate order line with\
+    \ specific product attributes. Map AliExpress SKU codes to Odoo product defaults.\
+    \ Handle currency conversion between USD and your Odoo company currency. Calculate\
+    \ taxes based on the shipping destination and your business rules.\n\n### Product\
+    \ Information Mapping\n\nAliExpress products present challenges with their combination-based\
+    \ variation system. Map AliExpress main products to Odoo product templates. Transform\
+    \ each combination into a Odoo product variant. Extract combination attributes\
+    \ like color, size, and style into Odoo's attribute-value system. Preserve the\
+    \ original AliExpress product and combination IDs for inventory synchronization.\n\
+    \nManage product image import from AliExpress multiple image URLs. Download and\
+    \ store images in Odoo's attachment system. Set the first image as the main product\
+    \ image. Handle character encoding issues in product descriptions and titles.\
+    \ Convert HTML descriptions to plain text for Odoo's product notes field. Preserve\
+    \ essential formatting while removing incompatible HTML tags.\n\n### Inventory\
+    \ Synchronization Logic\n\nInventory synchronization requires careful conflict\
+    \ resolution between systems. Odoo typically serves as the inventory master, but\
+    \ you must respect AliExpress stock levels during initial setup. Implement a stock\
+    \ reservation mechanism for pending orders. Calculate available quantities by\
+    \ considering both committed and on-hand stock.\n\nTransform Odoo's warehouse-specific\
+    \ inventory into AliExpress's global stock model. Aggregate stock across multiple\
+    \ warehouses if you fulfill from multiple locations. Apply safety stock buffers\
+    \ to prevent overselling. Handle stock update failures with automatic retry logic.\
+    \ Log all inventory changes for reconciliation purposes.\n\n### Customer Data\
+    \ Handling\n\nAliExpress provides limited customer information due to privacy\
+    \ restrictions. Create Odoo partners using the available shipping address data.\
+    \ Use the buyer's AliExpress username as the partner name if real name isn't available.\
+    \ Map shipping addresses to Odoo's partner address model. Detect duplicate customers\
+    \ based on shipping address patterns.\n\nMaintain customer reference in sales\
+    \ orders without creating duplicate partner records. Implement a customer matching\
+    \ algorithm that considers name, address, and phone number. Create new partners\
+    \ only when no reasonable match exists. Preserve customer communication preferences\
+    \ from AliExpress if available.\n\n## Error Handling and Resilience\n\n### Common\
+    \ API Errors\n\nThe AliExpress API returns specific error codes your integration\
+    \ must handle. \"isv.invalid-parameter\" errors indicate missing or malformed\
+    \ request parameters. \"isv.invalid-permission\" errors occur when your app lacks\
+    \ necessary scopes. \"isv.api-quota-limit\" errors signal rate limit violations.\
+    \ \"isv.need-retry\" errors suggest temporary system issues.\n\nImplement automatic\
+    \ retry logic for transient errors. Use exponential backoff for rate limit responses.\
+    \ Queue failed requests for later processing when encountering system errors.\
+    \ Log all API errors with full context for debugging. Alert administrators when\
+    \ error rates exceed defined thresholds.\n\n### Data Validation Failures\n\nData\
+    \ validation errors occur when AliExpress data doesn't match Odoo's expectations.\
+    \ Missing required fields like product SKUs or customer addresses cause import\
+    \ failures. Invalid data formats such as malformed dates or currency values trigger\
+    \ validation errors. Reference integrity issues happen when related records don't\
+    \ exist in Odoo.\n\nImplement comprehensive data cleansing before import. Apply\
+    \ default values for missing required fields. Transform data formats to match\
+    \ Odoo's requirements. Create missing related records automatically when possible.\
+    \ Flag records that require manual intervention for complex issues.\n\n### Connection\
+    \ and Timeout Handling\n\nNetwork issues between your Odoo instance and AliExpress\
+    \ API can cause synchronization failures. Implement robust connection timeout\
+    \ settings. Use short timeouts for initial connection attempts. Set longer timeouts\
+    \ for data transfer phases. Implement circuit breaker patterns to prevent cascade\
+    \ failures during API outages.\n\nHandle DNS resolution failures with fallback\
+    \ name servers. Manage SSL certificate verification issues with proper error messages.\
+    \ Implement connection pooling to reduce overhead for frequent API calls. Monitor\
+    \ connection success rates and alert on degradation.\n\n### Recovery Procedures\n\
+    \nDevelop specific recovery procedures for different failure scenarios. For partial\
+    \ order sync failures, implement gap detection and backfill mechanisms. For inventory\
+    \ sync issues, create reconciliation reports that highlight discrepancies. For\
+    \ product mapping problems, provide remapping tools to fix broken relationships.\n\
+    \nMaintain synchronization checkpoints to resume from known good states. Implement\
+    \ data repair utilities for common corruption scenarios. Create manual override\
+    \ capabilities for emergency situations. Document recovery procedures with step-by-step\
+    \ instructions for operations team.\n\n## Testing and Validation\n\n### Integration\
+    \ Test Scenarios\n\nCreate comprehensive test scenarios that cover all integration\
+    \ points. Test order import with various AliExpress order types including combination\
+    \ products and single items. Validate inventory synchronization with stock increases,\
+    \ decreases, and out-of-stock scenarios. Verify product import with different\
+    \ attribute combinations and image sets.\n\nTest error conditions deliberately.\
+    \ Simulate API rate limits and verify backoff behavior. Trigger network timeouts\
+    \ to confirm graceful degradation. Introduce malformed data to validate error\
+    \ handling. Test concurrent operations to identify race conditions and locking\
+    \ issues.\n\n### Data Validation Procedures\n\nImplement multi-stage data validation\
+    \ throughout the synchronization process. Validate incoming AliExpress data against\
+    \ their API schema. Apply business rule validation before creating Odoo records.\
+    \ Verify record creation success by comparing counts and checking for errors.\
+    \ Validate data completeness by spot-checking field values.\n\nDevelop validation\
+    \ reports that highlight discrepancies between systems. Compare order totals between\
+    \ AliExpress and Odoo for accuracy. Verify inventory levels match after synchronization\
+    \ cycles. Check product attribute preservation across the integration pipeline.\n\
+    \n### Performance Testing\n\nEstablish performance benchmarks for critical integration\
+    \ operations. Measure order import throughput in orders per minute. Time inventory\
+    \ synchronization for typical product catalogs. Assess product import performance\
+    \ with various image quantities. Monitor system resource usage during peak synchronization\
     \ periods.\n\nTest scalability with increasing data volumes. Verify performance\
     \ remains consistent as order history grows. Ensure product catalog size doesn't\
     \ degrade synchronization speed. Confirm memory usage remains stable during extended\
@@ -279,59 +278,58 @@ ai_generated_content:
     \ maintains data integrity.\n\nInvolve actual users from different departments\
     \ in testing. Gather feedback from sales, warehouse, and customer service teams.\
     \ Incorporate their real-world scenarios into your test plans. Validate that the\
-    \ integration solves their specific pain points.\n\n## Security Considerations\
-    \\n\n### Authentication Security\n\nImplement secure credential management\
-    \ for AliExpress API access. Store App Key and App Secret in Odoo's parameter\
-    \ table with appropriate access controls. Use Odoo's built-in encryption for sensitive\
-    \ authentication data. Rotate API credentials periodically according to your security\
-    \ policy.\n\nSecure OAuth token storage and refresh mechanisms. Implement proper\
-    \ token expiration handling. Use secure HTTP headers for all API communications.\
-    \ Validate SSL certificates for all external connections. Implement certificate\
-    \ pinning if the AliExpress API supports it.\n\n### Data Protection\n\nProtect\
-    \ customer data during transmission and storage. Use TLS 1.2 or higher for all\
-    \ API communications. Encrypt sensitive data at rest in Odoo's database. Implement\
-    \ access controls that limit data exposure to authorized users. Log data access\
-    \ for security monitoring.\n\nApply data minimization principles to imported information.\
-    \ Only store necessary AliExpress data in Odoo. Implement data retention policies\
-    \ for synchronization logs. Secure backup data with the same protection as live\
-    \ information.\n\n### API Security\n\nImplement robust input validation for all\
-    \ incoming webhook requests. Verify webhook signatures to prevent spoofing. Validate\
-    \ all API responses before processing. Implement rate limiting on your webhook\
-    \ endpoints to prevent abuse. Use non-guessable webhook URLs with sufficient entropy.\n\
-    \nMonitor API usage for suspicious patterns. Alert on unexpected increases in\
-    \ API call volumes. Implement anomaly detection for order import patterns. Log\
-    \ security events for later analysis and incident response.\n\n### Compliance\
-    \ Requirements\n\nEnsure your integration complies with relevant data protection\
-    \ regulations. Map data flows to identify compliance obligations. Implement necessary\
-    \ consent mechanisms for customer data. Provide data export and deletion capabilities\
-    \ for compliance requests.\n\nDocument your security controls for audit purposes.\
-    \ Maintain records of security testing and vulnerability assessments. Establish\
-    \ incident response procedures for data breaches. Regularly review and update\
-    \ security measures.\n\n## Performance Optimization\n\n### API Call\
-    \ Optimization\n\nReduce AliExpress API calls through intelligent batching and\
-    \ caching. Batch order queries to fetch multiple orders in single requests. Cache\
-    \ product information to avoid repeated lookups. Implement request coalescing\
-    \ to eliminate duplicate API calls. Use field selectors to retrieve only necessary\
-    \ data.\n\nOptimize synchronization timing based on business patterns. Schedule\
-    \ order imports during off-peak hours on AliExpress. Stagger inventory updates\
-    \ to avoid rate limit violations. Implement incremental synchronization to process\
-    \ only changed records. Use webhooks to eliminate unnecessary polling.\n\n###\
-    \ Database Performance\n\nOptimize Odoo database performance for integration workloads.\
-    \ Add indexes on AliExpress reference fields to speed up lookups. Implement database\
-    \ partitioning for large synchronization log tables. Use partial indexes for frequently\
-    \ queried status fields. Monitor query performance and optimize slow operations.\n\
-    \nTune Odoo's ORM configuration for bulk operations. Use prefetch patterns to\
-    \ reduce database round trips. Implement bulk create and update operations for\
-    \ better performance. Avoid N+1 query problems in synchronization code. Use read-only\
-    \ queries when possible to reduce locking.\n\n### Memory Management\n\nImplement\
-    \ efficient memory usage patterns in synchronization jobs. Process large datasets\
-    \ in manageable chunks. Use generator expressions instead of lists for large result\
-    \ sets. Implement streaming processing for large product catalogs. Clear object\
-    \ caches between processing batches to prevent memory bloat.\n\nMonitor memory\
-    \ usage during synchronization operations. Implement memory limits for background\
-    \ jobs. Use efficient data structures for in-memory processing. Profile memory\
-    \ usage to identify and fix leaks.\n\n### Monitoring and Metrics\n\nImplement\
-    \ comprehensive monitoring for integration performance. Track synchronization\
+    \ integration solves their specific pain points.\n\n## Security Considerations\\\
+    n\n### Authentication Security\n\nImplement secure credential management for AliExpress\
+    \ API access. Store App Key and App Secret in Odoo's parameter table with appropriate\
+    \ access controls. Use Odoo's built-in encryption for sensitive authentication\
+    \ data. Rotate API credentials periodically according to your security policy.\n\
+    \nSecure OAuth token storage and refresh mechanisms. Implement proper token expiration\
+    \ handling. Use secure HTTP headers for all API communications. Validate SSL certificates\
+    \ for all external connections. Implement certificate pinning if the AliExpress\
+    \ API supports it.\n\n### Data Protection\n\nProtect customer data during transmission\
+    \ and storage. Use TLS 1.2 or higher for all API communications. Encrypt sensitive\
+    \ data at rest in Odoo's database. Implement access controls that limit data exposure\
+    \ to authorized users. Log data access for security monitoring.\n\nApply data\
+    \ minimization principles to imported information. Only store necessary AliExpress\
+    \ data in Odoo. Implement data retention policies for synchronization logs. Secure\
+    \ backup data with the same protection as live information.\n\n### API Security\n\
+    \nImplement robust input validation for all incoming webhook requests. Verify\
+    \ webhook signatures to prevent spoofing. Validate all API responses before processing.\
+    \ Implement rate limiting on your webhook endpoints to prevent abuse. Use non-guessable\
+    \ webhook URLs with sufficient entropy.\n\nMonitor API usage for suspicious patterns.\
+    \ Alert on unexpected increases in API call volumes. Implement anomaly detection\
+    \ for order import patterns. Log security events for later analysis and incident\
+    \ response.\n\n### Compliance Requirements\n\nEnsure your integration complies\
+    \ with relevant data protection regulations. Map data flows to identify compliance\
+    \ obligations. Implement necessary consent mechanisms for customer data. Provide\
+    \ data export and deletion capabilities for compliance requests.\n\nDocument your\
+    \ security controls for audit purposes. Maintain records of security testing and\
+    \ vulnerability assessments. Establish incident response procedures for data breaches.\
+    \ Regularly review and update security measures.\n\n## Performance Optimization\n\
+    \n### API Call Optimization\n\nReduce AliExpress API calls through intelligent\
+    \ batching and caching. Batch order queries to fetch multiple orders in single\
+    \ requests. Cache product information to avoid repeated lookups. Implement request\
+    \ coalescing to eliminate duplicate API calls. Use field selectors to retrieve\
+    \ only necessary data.\n\nOptimize synchronization timing based on business patterns.\
+    \ Schedule order imports during off-peak hours on AliExpress. Stagger inventory\
+    \ updates to avoid rate limit violations. Implement incremental synchronization\
+    \ to process only changed records. Use webhooks to eliminate unnecessary polling.\n\
+    \n### Database Performance\n\nOptimize Odoo database performance for integration\
+    \ workloads. Add indexes on AliExpress reference fields to speed up lookups. Implement\
+    \ database partitioning for large synchronization log tables. Use partial indexes\
+    \ for frequently queried status fields. Monitor query performance and optimize\
+    \ slow operations.\n\nTune Odoo's ORM configuration for bulk operations. Use prefetch\
+    \ patterns to reduce database round trips. Implement bulk create and update operations\
+    \ for better performance. Avoid N+1 query problems in synchronization code. Use\
+    \ read-only queries when possible to reduce locking.\n\n### Memory Management\n\
+    \nImplement efficient memory usage patterns in synchronization jobs. Process large\
+    \ datasets in manageable chunks. Use generator expressions instead of lists for\
+    \ large result sets. Implement streaming processing for large product catalogs.\
+    \ Clear object caches between processing batches to prevent memory bloat.\n\n\
+    Monitor memory usage during synchronization operations. Implement memory limits\
+    \ for background jobs. Use efficient data structures for in-memory processing.\
+    \ Profile memory usage to identify and fix leaks.\n\n### Monitoring and Metrics\n\
+    \nImplement comprehensive monitoring for integration performance. Track synchronization\
     \ duration, success rates, and data volumes. Monitor API response times and error\
     \ rates. Alert on performance degradation or increasing error rates. Establish\
     \ performance baselines and track deviations.\n\nCreate dashboards that visualize\
@@ -428,13 +426,14 @@ visualizations:
   placement_hint: after_conclusion
   data_context: learning path and knowledge graph
   mermaid_chart_syntax: "flowchart TB\n\n    Current[\"[CURRENT] Aliexpress to Odoo\
-    \ Integration: Complete 2025 Guide\"]\n\n    %% Related Topics - Cross-References\n\
-    \    Current -.-> Rel0[\"Cloudflare to Odoo Integration: Complete 2025 Guide\"\
-    ]\n    Current -.-> Rel1[\"Facebook Pixel to Odoo Integration: Complete 2025 Guide\"\
-    ]\n\n    %% Professional Styling\n    classDef current fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n\
-    \    classDef prereq fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000\n\
-    \    classDef next fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000\n \
-    \   classDef related fill:#f5f5f5,stroke:#616161,stroke-width:1px,color:#000\n\
+    \ Integration: Complete 2025 Guide\"]\n\n    %% Next Steps - Learning Progression\n\
+    \    Current --> Next0(\"Complete Implementation Guide\")\n\n    %% Related Topics\
+    \ - Cross-References\n    Current -.-> Rel0[\"Cloudflare to Odoo Integration:\
+    \ Complete 2025 Guide\"]\n    Current -.-> Rel1[\"Facebook Pixel to Odoo Integration:\
+    \ Complete 2025 Guide\"]\n\n    %% Professional Styling\n    classDef current\
+    \ fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n    classDef prereq\
+    \ fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000\n    classDef next fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000\n\
+    \    classDef related fill:#f5f5f5,stroke:#616161,stroke-width:1px,color:#000\n\
     \    classDef trouble fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000\n\
     \    classDef support fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#000\n\
-    \n    class Current current\n    class Rel0,Rel1 related"
+    \n    class Current current\n    class Next0 next\n    class Rel0,Rel1 related"

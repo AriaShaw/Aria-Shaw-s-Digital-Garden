@@ -69,22 +69,22 @@ ai_generated_content:
     customizations. The investment returns exponential gains in operational efficiency,
     data accuracy, and customer satisfaction. Let''s transform your shipping operations
     from a constant headache into a competitive advantage.'
-  main_content: "## Integration Architecture and Data Flow\n\nThe FedEx-Odoo\
-    \ 18 integration employs a bidirectional synchronization pattern that maintains\
-    \ data consistency across both systems. Odoo acts as the system of record for\
-    \ order information, customer data, and inventory levels, while FedEx manages\
-    \ the physical shipment lifecycle and tracking events. The integration connects\
-    \ these domains through a series of API gateways and data transformation layers\
-    \ that translate business objects between each system's proprietary formats. This\
-    \ architecture ensures real-time shipping capabilities within Odoo while maintaining\
-    \ FedEx's stringent security and compliance requirements for shipment processing.\n\
-    \n### Core Integration Components\nThe integration relies on three primary components:\
-    \ the FedEx Web Services API, Odoo's delivery carrier framework, and a custom\
-    \ integration module that bridges these systems. FedEx provides SOAP-based web\
-    \ services for shipping operations, tracking, and rating, while Odoo 18 implements\
-    \ a modern REST API for internal data access. The custom integration module, typically\
-    \ built as an Odoo addon, contains the translation logic, authentication handlers,\
-    \ and error management routines. This module intercepts Odoo's delivery operations\
+  main_content: "## Integration Architecture and Data Flow\n\nThe FedEx-Odoo 18 integration\
+    \ employs a bidirectional synchronization pattern that maintains data consistency\
+    \ across both systems. Odoo acts as the system of record for order information,\
+    \ customer data, and inventory levels, while FedEx manages the physical shipment\
+    \ lifecycle and tracking events. The integration connects these domains through\
+    \ a series of API gateways and data transformation layers that translate business\
+    \ objects between each system's proprietary formats. This architecture ensures\
+    \ real-time shipping capabilities within Odoo while maintaining FedEx's stringent\
+    \ security and compliance requirements for shipment processing.\n\n### Core Integration\
+    \ Components\nThe integration relies on three primary components: the FedEx Web\
+    \ Services API, Odoo's delivery carrier framework, and a custom integration module\
+    \ that bridges these systems. FedEx provides SOAP-based web services for shipping\
+    \ operations, tracking, and rating, while Odoo 18 implements a modern REST API\
+    \ for internal data access. The custom integration module, typically built as\
+    \ an Odoo addon, contains the translation logic, authentication handlers, and\
+    \ error management routines. This module intercepts Odoo's delivery operations\
     \ and redirects them to FedEx services while maintaining local database records\
     \ for offline access and audit purposes.\n\n### Data Flow Patterns\nShipment creation\
     \ initiates when a user confirms a sales order in Odoo and requests a shipping\
@@ -113,60 +113,59 @@ ai_generated_content:
     \ preserving detailed tracking information for customer service purposes. State\
     \ transitions trigger automated actions in Odoo, such as inventory updates upon\
     \ delivery confirmation or invoice generation for shipped orders.\n\n## Step-by-Step\
-    \ Configuration\n\n### FedEx Developer Account Setup\nBegin by registering\
-    \ for a FedEx Web Services account at the FedEx Developer Portal. Select the \"\
-    Production\" environment for live operations or \"Sandbox\" for testing. FedEx\
-    \ requires business verification before granting production access, which typically\
-    \ takes 2-3 business days. Upon approval, navigate to the \"Key Management\" section\
-    \ to generate your API credentials: meter number, account number, authentication\
-    \ key, and secret password. Store these values securely—you'll need them for Odoo\
-    \ configuration. The FedEx sandbox provides test credentials that mimic production\
-    \ behavior without actual shipping charges, essential for development and integration\
-    \ testing.\n\n### Odoo Delivery Carrier Configuration\nAccess Odoo 18's delivery\
-    \ carrier configuration through Inventory → Configuration → Delivery Carriers.\
-    \ Click \"Create\" and select \"FedEx\" from the provider dropdown. The system\
-    \ displays connection fields for your FedEx credentials. Enter the authentication\
-    \ key, password, account number, and meter number obtained from the FedEx developer\
-    \ portal. Select the appropriate FedEx environment—Production for live operations\
-    \ or Test for development. Configure default package dimensions and weight that\
-    \ apply when orders lack specific packaging information. These defaults prevent\
-    \ API errors during label generation for orders with missing packaging data.\n\
-    \n### Service Level Mapping\nMap FedEx service levels to Odoo delivery methods\
-    \ that align with your business requirements. Create delivery methods in Odoo\
-    \ for each FedEx service you offer, such as FedEx Ground, FedEx 2Day, or FedEx\
-    \ International Priority. For each method, specify the corresponding FedEx service\
-    \ code—\"FEDEX_GROUND\" for ground service, \"FEDEX_2_DAY\" for two-day delivery.\
-    \ Configure pricing rules that determine shipping costs based on order weight,\
-    \ value, or destination. The integration supports both fixed pricing and dynamic\
-    \ rate shopping where Odoo requests real-time rates from FedEx during checkout.\
-    \ Dynamic pricing requires additional configuration for product dimensions and\
-    \ packaging types.\n\n### Authentication Implementation\nThe integration uses\
-    \ WS-Security authentication for FedEx SOAP API calls. Implement the authentication\
-    \ header in your Odoo module using Python's suds-jurko or zeep SOAP clients. The\
-    \ code generates a security header containing your Web Services Authentication\
-    \ key, password, and other required elements. Here's a minimal implementation:\n\
-    \n```python\nfrom zeep import Client\nfrom zeep.wsse.username import UsernameToken\n\
-    \nfedex_client = Client('https://ws.fedex.com/web-services/ship?WSDL',\n     \
-    \                wsse=UsernameToken('YOUR_KEY', 'YOUR_PASSWORD'))\n```\n\nThis\
-    \ authentication pattern applies to all FedEx web services, including Ship, Track,\
-    \ and Rate. Handle authentication failures by implementing retry logic with exponential\
-    \ backoff, as FedEx APIs may experience temporary availability issues during maintenance\
-    \ windows.\n\n### Shipping Label Configuration\nConfigure label generation parameters\
-    \ that determine the format and content of FedEx shipping labels. Specify label\
-    \ stock type—whether you use thermal 4x6 labels or standard paper formats. Set\
-    \ image format to PDF for standard printers or PNG for thermal direct printing.\
-    \ Configure whether to include regulatory information for international shipments\
-    \ and whether to generate commercial invoices automatically for cross-border orders.\
-    \ These settings affect both label appearance and compliance with FedEx shipping\
-    \ requirements. Test label generation with your actual printers to ensure compatibility\
-    \ with your hardware setup.\n\n### Webhook Endpoint Setup\nFedEx sends tracking\
-    \ updates to your Odoo instance via webhooks, eliminating the need for continuous\
-    \ polling. Configure the webhook endpoint in Odoo by creating a controller that\
-    \ accepts POST requests from FedEx. Implement verification to ensure requests\
-    \ originate from Fedex servers. Here's a basic webhook implementation:\n\n```python\n\
-    from odoo import http\nimport json\n\nclass FedexWebhook(http.Controller):\n \
-    \   @http.route('/fedex/tracking', type='json', auth='public', csrf=False)\n \
-    \   def fedex_tracking_webhook(self):\n        data = json.loads(request.httprequest.data)\n\
+    \ Configuration\n\n### FedEx Developer Account Setup\nBegin by registering for\
+    \ a FedEx Web Services account at the FedEx Developer Portal. Select the \"Production\"\
+    \ environment for live operations or \"Sandbox\" for testing. FedEx requires business\
+    \ verification before granting production access, which typically takes 2-3 business\
+    \ days. Upon approval, navigate to the \"Key Management\" section to generate\
+    \ your API credentials: meter number, account number, authentication key, and\
+    \ secret password. Store these values securely—you'll need them for Odoo configuration.\
+    \ The FedEx sandbox provides test credentials that mimic production behavior without\
+    \ actual shipping charges, essential for development and integration testing.\n\
+    \n### Odoo Delivery Carrier Configuration\nAccess Odoo 18's delivery carrier configuration\
+    \ through Inventory → Configuration → Delivery Carriers. Click \"Create\" and\
+    \ select \"FedEx\" from the provider dropdown. The system displays connection\
+    \ fields for your FedEx credentials. Enter the authentication key, password, account\
+    \ number, and meter number obtained from the FedEx developer portal. Select the\
+    \ appropriate FedEx environment—Production for live operations or Test for development.\
+    \ Configure default package dimensions and weight that apply when orders lack\
+    \ specific packaging information. These defaults prevent API errors during label\
+    \ generation for orders with missing packaging data.\n\n### Service Level Mapping\n\
+    Map FedEx service levels to Odoo delivery methods that align with your business\
+    \ requirements. Create delivery methods in Odoo for each FedEx service you offer,\
+    \ such as FedEx Ground, FedEx 2Day, or FedEx International Priority. For each\
+    \ method, specify the corresponding FedEx service code—\"FEDEX_GROUND\" for ground\
+    \ service, \"FEDEX_2_DAY\" for two-day delivery. Configure pricing rules that\
+    \ determine shipping costs based on order weight, value, or destination. The integration\
+    \ supports both fixed pricing and dynamic rate shopping where Odoo requests real-time\
+    \ rates from FedEx during checkout. Dynamic pricing requires additional configuration\
+    \ for product dimensions and packaging types.\n\n### Authentication Implementation\n\
+    The integration uses WS-Security authentication for FedEx SOAP API calls. Implement\
+    \ the authentication header in your Odoo module using Python's suds-jurko or zeep\
+    \ SOAP clients. The code generates a security header containing your Web Services\
+    \ Authentication key, password, and other required elements. Here's a minimal\
+    \ implementation:\n\n```python\nfrom zeep import Client\nfrom zeep.wsse.username\
+    \ import UsernameToken\n\nfedex_client = Client('https://ws.fedex.com/web-services/ship?WSDL',\n\
+    \                     wsse=UsernameToken('YOUR_KEY', 'YOUR_PASSWORD'))\n```\n\n\
+    This authentication pattern applies to all FedEx web services, including Ship,\
+    \ Track, and Rate. Handle authentication failures by implementing retry logic\
+    \ with exponential backoff, as FedEx APIs may experience temporary availability\
+    \ issues during maintenance windows.\n\n### Shipping Label Configuration\nConfigure\
+    \ label generation parameters that determine the format and content of FedEx shipping\
+    \ labels. Specify label stock type—whether you use thermal 4x6 labels or standard\
+    \ paper formats. Set image format to PDF for standard printers or PNG for thermal\
+    \ direct printing. Configure whether to include regulatory information for international\
+    \ shipments and whether to generate commercial invoices automatically for cross-border\
+    \ orders. These settings affect both label appearance and compliance with FedEx\
+    \ shipping requirements. Test label generation with your actual printers to ensure\
+    \ compatibility with your hardware setup.\n\n### Webhook Endpoint Setup\nFedEx\
+    \ sends tracking updates to your Odoo instance via webhooks, eliminating the need\
+    \ for continuous polling. Configure the webhook endpoint in Odoo by creating a\
+    \ controller that accepts POST requests from FedEx. Implement verification to\
+    \ ensure requests originate from Fedex servers. Here's a basic webhook implementation:\n\
+    \n```python\nfrom odoo import http\nimport json\n\nclass FedexWebhook(http.Controller):\n\
+    \    @http.route('/fedex/tracking', type='json', auth='public', csrf=False)\n\
+    \    def fedex_tracking_webhook(self):\n        data = json.loads(request.httprequest.data)\n\
     \        tracking_number = data.get('trackingNumber')\n        status = data.get('status')\n\
     \        # Update Odoo delivery order with new status\n```\n\nRegister this webhook\
     \ URL in your FedEx developer account under the \"Webhook\" section. FedEx will\
@@ -188,118 +187,117 @@ ai_generated_content:
     \ elements—tracking number, recipient address, and service level. Check that the\
     \ tracking number saves to the sales order and that the delivery status updates\
     \ to \"shipped.\" These tests verify the complete integration flow before deploying\
-    \ to production.\n\n## Data Mapping and Transformation\n\n### Order\
-    \ to Shipment Mapping\nThe integration transforms Odoo sales orders into FedEx\
-    \ shipment requests through a structured mapping process. Odoo's `sale.order`\
-    \ model provides customer information, delivery addresses, and product details\
-    \ that FedEx requires for shipment processing. The system maps Odoo's partner\
-    \ records to FedEX's `Contact` and `Address` objects, extracting name, company,\
-    \ street address, city, state, postal code, and country fields. Product information\
-    \ from `sale.order.line` transforms into FedEx `RequestedPackageLineItem` objects\
-    \ with weight, dimensions, and declared value. This transformation ensures FedEx\
-    \ receives complete, accurate shipment data that complies with their schema requirements.\n\
-    \n### Address Standardization Challenges\nFedEx imposes strict address formatting\
-    \ rules that often differ from how customers enter addresses in Odoo. The integration\
-    \ handles address normalization through FedEx's Address Validation API, which\
-    \ standardizes street suffixes, directionals, and secondary address elements.\
-    \ For international shipments, the system maps Odoo's country states to FedEx's\
-    \ province codes and ensures postal codes match destination country formats. Complex\
-    \ address scenarios like military addresses (APO/FPO) or special economic zones\
-    \ require additional transformation logic to meet FedEx's specific formatting\
-    \ requirements. The integration preserves the original customer-entered address\
-    \ in Odoo while submitting the standardized version to FedEx.\n\n### Package Dimension\
-    \ Transformation\nFedEx requires precise package dimensions for accurate rating\
-    \ and compliance, but Odoo stores product dimensions at the product level, not\
-    \ the packaging level. The integration implements a packaging dimension hierarchy\
-    \ that prioritizes specific packaging settings over product dimensions. When products\
-    \ lack dimensional data, the system applies default package sizes configured in\
-    \ the delivery carrier settings. For multi-item shipments, the integration employs\
-    \ a boxing algorithm that calculates total shipment dimensions or splits orders\
-    \ into multiple packages based on weight and dimensional limits. This transformation\
-    \ ensures FedEx receives accurate dimensional weight calculations that affect\
-    \ shipping costs.\n\n### International Shipping Compliance\nCross-border shipments\
-    \ require extensive data transformation to meet customs declaration requirements.\
-    \ The integration maps Odoo product categories to Harmonized System (HS) codes\
-    \ for customs classification. It extracts product materials, country of origin,\
-    \ and value information from Odoo product records to populate FedEx's Commercial\
-    \ Invoice data. The system transforms Odoo's customer records into FedEx's importer\
-    \ contact information, ensuring compliance with destination country regulations.\
-    \ For regulated items like electronics or cosmetics, the integration includes\
-    \ necessary certifications and documentation references in the shipment data.\n\
-    \n### Tracking Status Synchronization\nFedEx provides detailed tracking status\
-    \ codes that don't align directly with Odoo's simplified delivery states. The\
-    \ integration implements a status mapping table that translates FedEx statuses\
-    \ like \"OC\" (at origin sort facility) or \"DP\" (at destination sort facility)\
-    \ to Odoo's \"in transit\" state. Special statuses like \"DL\" (delivered) or\
-    \ \"EX\" (exception) trigger specific Odoo workflows—delivery confirmation updates\
-    \ inventory, while exceptions create follow-up tasks for customer service. The\
-    \ system preserves FedEx's original status descriptions in a notes field for detailed\
-    \ troubleshooting while maintaining Odoo's standard delivery workflow.\n\n###\
-    \ Billing Information Mapping\nThe integration transforms Odoo's billing preferences\
-    \ into FedEx's payment processing requirements. It maps Odoo's payment terms (prepaid,\
-    \ collect, third-party) to FedEx's billing types, ensuring accurate charge assignment.\
-    \ For account-based billing, the system includes the FedEx account number from\
-    \ carrier configuration. The integration supports complex billing scenarios like\
-    \ split payments where duties and taxes bill to the recipient while shipping charges\
-    \ bill to the sender. This transformation ensures FedEx applies charges correctly\
-    \ and generates accurate invoices that match Odoo's accounting records.\n\n##\
-    \ Error Handling and Resilience\n\n### Common API Error Patterns\n\
-    FedEx APIs return structured error codes that require specific handling strategies.\
-    \ Authentication errors (1000 series) typically indicate invalid credentials or\
-    \ account suspension—verify your API key and password configuration. Transaction\
-    \ errors (900 series) often stem from invalid data formats, like incorrect address\
-    \ structures or missing required fields. Service availability errors (5000 series)\
-    \ indicate temporary FedEx system issues that warrant retry attempts. The integration\
-    \ categorizes these errors and applies appropriate recovery strategies—immediate\
-    \ retry for transient errors, configuration checks for authentication issues,\
-    \ and data validation for input errors.\n\n### Address Validation Failures\nAddress\
-    \ verification errors represent the most common integration failure point. FedEx\
-    \ may reject addresses that contain unrecognized street names, invalid postal\
-    \ codes, or restricted delivery locations. The integration implements a multi-stage\
-    \ address handling strategy: first attempting auto-correction through FedEx's\
-    \ validation API, then falling back to manual review for problematic addresses.\
-    \ For addresses that fail validation but represent legitimate locations (new construction,\
-    \ rural areas), the integration supports override capabilities with manager approval.\
-    \ This approach balances FedEx compliance with practical shipping requirements.\n\
-    \n### Shipping Label Generation Issues\nLabel generation failures often result\
-    \ from dimensional data problems or service restrictions. FedEx rejects shipments\
-    \ that exceed size or weight limits for selected services, or that contain restricted\
-    \ items without proper documentation. The integration pre-validates packages against\
-    \ FedEx's service limitations before attempting label generation. When label creation\
-    \ fails, the system provides specific error messages that guide users toward resolution—suggesting\
-    \ alternative services for oversized items or prompting for additional documentation\
-    \ for regulated goods. Failed label attempts log detailed diagnostic information\
-    \ for troubleshooting without blocking order processing.\n\n### Network Timeout\
-    \ Handling\nAPI calls to FedEx services may experience network timeouts, especially\
-    \ during peak shipping periods or system maintenance. The integration implements\
-    \ retry logic with exponential backoff—waiting 1 second before the first retry,\
-    \ then 2 seconds, then 4 seconds, up to a maximum of 3 attempts. For non-idempotent\
-    \ operations like shipment creation, the system includes unique idempotency keys\
-    \ that prevent duplicate shipments during retry scenarios. Persistent timeouts\
-    \ trigger fallback behavior where appropriate, such as using cached rates when\
-    \ real-time rating becomes unavailable.\n\n### Data Synchronization Recovery\n\
-    When tracking synchronization fails due to network issues or service unavailability,\
-    \ the integration employs a reconciliation process that identifies and repairs\
-    \ data gaps. Scheduled jobs detect shipments missing tracking updates beyond expected\
-    \ timeframes and initiate targeted synchronization attempts. For severe data inconsistencies,\
-    \ the system provides manual reconciliation tools that allow administrators to\
-    \ compare Odoo shipment records with FedEx system data and selectively apply missing\
-    \ updates. This approach ensures eventual consistency even after extended service\
-    \ disruptions.\n\n### Exception Workflow Management\nShipping exceptions like\
-    \ delivery delays, damaged packages, or failed delivery attempts require immediate\
-    \ attention and special handling. The integration monitors FedEx tracking events\
-    \ for exception codes and automatically creates Odoo tasks for customer service\
-    \ teams. These tasks include relevant shipment details, customer information,\
-    \ and suggested resolution steps based on exception type. For common exception\
-    \ scenarios like address correction, the system provides predefined workflow templates\
-    \ that streamline resolution and maintain customer communication.\n\n## Testing\
-    \ and Validation\n\n### End-to-End Integration Testing\nComprehensive\
-    \ testing validates the complete shipment lifecycle from order creation to delivery\
-    \ confirmation. Create test orders in Odoo with varied scenarios—domestic residential\
-    \ addresses, international commercial destinations, and special handling requirements.\
-    \ Execute the full shipping workflow: rate shopping, service selection, label\
-    \ generation, and tracking synchronization. Verify that each step produces the\
-    \ expected outcomes in both Odoo and FedEx systems. Test edge cases like address\
+    \ to production.\n\n## Data Mapping and Transformation\n\n### Order to Shipment\
+    \ Mapping\nThe integration transforms Odoo sales orders into FedEx shipment requests\
+    \ through a structured mapping process. Odoo's `sale.order` model provides customer\
+    \ information, delivery addresses, and product details that FedEx requires for\
+    \ shipment processing. The system maps Odoo's partner records to FedEX's `Contact`\
+    \ and `Address` objects, extracting name, company, street address, city, state,\
+    \ postal code, and country fields. Product information from `sale.order.line`\
+    \ transforms into FedEx `RequestedPackageLineItem` objects with weight, dimensions,\
+    \ and declared value. This transformation ensures FedEx receives complete, accurate\
+    \ shipment data that complies with their schema requirements.\n\n### Address Standardization\
+    \ Challenges\nFedEx imposes strict address formatting rules that often differ\
+    \ from how customers enter addresses in Odoo. The integration handles address\
+    \ normalization through FedEx's Address Validation API, which standardizes street\
+    \ suffixes, directionals, and secondary address elements. For international shipments,\
+    \ the system maps Odoo's country states to FedEx's province codes and ensures\
+    \ postal codes match destination country formats. Complex address scenarios like\
+    \ military addresses (APO/FPO) or special economic zones require additional transformation\
+    \ logic to meet FedEx's specific formatting requirements. The integration preserves\
+    \ the original customer-entered address in Odoo while submitting the standardized\
+    \ version to FedEx.\n\n### Package Dimension Transformation\nFedEx requires precise\
+    \ package dimensions for accurate rating and compliance, but Odoo stores product\
+    \ dimensions at the product level, not the packaging level. The integration implements\
+    \ a packaging dimension hierarchy that prioritizes specific packaging settings\
+    \ over product dimensions. When products lack dimensional data, the system applies\
+    \ default package sizes configured in the delivery carrier settings. For multi-item\
+    \ shipments, the integration employs a boxing algorithm that calculates total\
+    \ shipment dimensions or splits orders into multiple packages based on weight\
+    \ and dimensional limits. This transformation ensures FedEx receives accurate\
+    \ dimensional weight calculations that affect shipping costs.\n\n### International\
+    \ Shipping Compliance\nCross-border shipments require extensive data transformation\
+    \ to meet customs declaration requirements. The integration maps Odoo product\
+    \ categories to Harmonized System (HS) codes for customs classification. It extracts\
+    \ product materials, country of origin, and value information from Odoo product\
+    \ records to populate FedEx's Commercial Invoice data. The system transforms Odoo's\
+    \ customer records into FedEx's importer contact information, ensuring compliance\
+    \ with destination country regulations. For regulated items like electronics or\
+    \ cosmetics, the integration includes necessary certifications and documentation\
+    \ references in the shipment data.\n\n### Tracking Status Synchronization\nFedEx\
+    \ provides detailed tracking status codes that don't align directly with Odoo's\
+    \ simplified delivery states. The integration implements a status mapping table\
+    \ that translates FedEx statuses like \"OC\" (at origin sort facility) or \"DP\"\
+    \ (at destination sort facility) to Odoo's \"in transit\" state. Special statuses\
+    \ like \"DL\" (delivered) or \"EX\" (exception) trigger specific Odoo workflows—delivery\
+    \ confirmation updates inventory, while exceptions create follow-up tasks for\
+    \ customer service. The system preserves FedEx's original status descriptions\
+    \ in a notes field for detailed troubleshooting while maintaining Odoo's standard\
+    \ delivery workflow.\n\n### Billing Information Mapping\nThe integration transforms\
+    \ Odoo's billing preferences into FedEx's payment processing requirements. It\
+    \ maps Odoo's payment terms (prepaid, collect, third-party) to FedEx's billing\
+    \ types, ensuring accurate charge assignment. For account-based billing, the system\
+    \ includes the FedEx account number from carrier configuration. The integration\
+    \ supports complex billing scenarios like split payments where duties and taxes\
+    \ bill to the recipient while shipping charges bill to the sender. This transformation\
+    \ ensures FedEx applies charges correctly and generates accurate invoices that\
+    \ match Odoo's accounting records.\n\n## Error Handling and Resilience\n\n###\
+    \ Common API Error Patterns\nFedEx APIs return structured error codes that require\
+    \ specific handling strategies. Authentication errors (1000 series) typically\
+    \ indicate invalid credentials or account suspension—verify your API key and password\
+    \ configuration. Transaction errors (900 series) often stem from invalid data\
+    \ formats, like incorrect address structures or missing required fields. Service\
+    \ availability errors (5000 series) indicate temporary FedEx system issues that\
+    \ warrant retry attempts. The integration categorizes these errors and applies\
+    \ appropriate recovery strategies—immediate retry for transient errors, configuration\
+    \ checks for authentication issues, and data validation for input errors.\n\n\
+    ### Address Validation Failures\nAddress verification errors represent the most\
+    \ common integration failure point. FedEx may reject addresses that contain unrecognized\
+    \ street names, invalid postal codes, or restricted delivery locations. The integration\
+    \ implements a multi-stage address handling strategy: first attempting auto-correction\
+    \ through FedEx's validation API, then falling back to manual review for problematic\
+    \ addresses. For addresses that fail validation but represent legitimate locations\
+    \ (new construction, rural areas), the integration supports override capabilities\
+    \ with manager approval. This approach balances FedEx compliance with practical\
+    \ shipping requirements.\n\n### Shipping Label Generation Issues\nLabel generation\
+    \ failures often result from dimensional data problems or service restrictions.\
+    \ FedEx rejects shipments that exceed size or weight limits for selected services,\
+    \ or that contain restricted items without proper documentation. The integration\
+    \ pre-validates packages against FedEx's service limitations before attempting\
+    \ label generation. When label creation fails, the system provides specific error\
+    \ messages that guide users toward resolution—suggesting alternative services\
+    \ for oversized items or prompting for additional documentation for regulated\
+    \ goods. Failed label attempts log detailed diagnostic information for troubleshooting\
+    \ without blocking order processing.\n\n### Network Timeout Handling\nAPI calls\
+    \ to FedEx services may experience network timeouts, especially during peak shipping\
+    \ periods or system maintenance. The integration implements retry logic with exponential\
+    \ backoff—waiting 1 second before the first retry, then 2 seconds, then 4 seconds,\
+    \ up to a maximum of 3 attempts. For non-idempotent operations like shipment creation,\
+    \ the system includes unique idempotency keys that prevent duplicate shipments\
+    \ during retry scenarios. Persistent timeouts trigger fallback behavior where\
+    \ appropriate, such as using cached rates when real-time rating becomes unavailable.\n\
+    \n### Data Synchronization Recovery\nWhen tracking synchronization fails due to\
+    \ network issues or service unavailability, the integration employs a reconciliation\
+    \ process that identifies and repairs data gaps. Scheduled jobs detect shipments\
+    \ missing tracking updates beyond expected timeframes and initiate targeted synchronization\
+    \ attempts. For severe data inconsistencies, the system provides manual reconciliation\
+    \ tools that allow administrators to compare Odoo shipment records with FedEx\
+    \ system data and selectively apply missing updates. This approach ensures eventual\
+    \ consistency even after extended service disruptions.\n\n### Exception Workflow\
+    \ Management\nShipping exceptions like delivery delays, damaged packages, or failed\
+    \ delivery attempts require immediate attention and special handling. The integration\
+    \ monitors FedEx tracking events for exception codes and automatically creates\
+    \ Odoo tasks for customer service teams. These tasks include relevant shipment\
+    \ details, customer information, and suggested resolution steps based on exception\
+    \ type. For common exception scenarios like address correction, the system provides\
+    \ predefined workflow templates that streamline resolution and maintain customer\
+    \ communication.\n\n## Testing and Validation\n\n### End-to-End Integration Testing\n\
+    Comprehensive testing validates the complete shipment lifecycle from order creation\
+    \ to delivery confirmation. Create test orders in Odoo with varied scenarios—domestic\
+    \ residential addresses, international commercial destinations, and special handling\
+    \ requirements. Execute the full shipping workflow: rate shopping, service selection,\
+    \ label generation, and tracking synchronization. Verify that each step produces\
+    \ the expected outcomes in both Odoo and FedEx systems. Test edge cases like address\
     \ corrections, multiple package shipments, and shipment cancellations to ensure\
     \ the integration handles these scenarios without data loss or system errors.\n\
     \n### FedEx API Sandbox Utilization\nLeverage FedEx's testing sandbox extensively\
@@ -343,33 +341,33 @@ ai_generated_content:
     \ operations that might be impacted by integration failures. Establish clear metrics\
     \ for success and failure that determine whether to proceed with the integration\
     \ or revert to previous systems. Rollback planning ensures business continuity\
-    \ during the transition to integrated operations.\n\n## Security Considerations\
-    \\n\n### API Credential Management\nFedEx integration requires sensitive\
-    \ authentication credentials that demand secure handling. Store API keys and passwords\
-    \ in Odoo's configuration parameters rather than hardcoded in module files. Utilize\
-    \ Odoo's built-in encryption capabilities for sensitive data fields, ensuring\
-    \ credentials remain protected in database backups and log files. Implement credential\
-    \ rotation procedures that align with FedEx's security policies, typically updating\
-    \ passwords every 90 days. Never log full authentication credentials—mask sensitive\
-    \ values in debug outputs and system logs to prevent credential exposure during\
-    \ troubleshooting.\n\n### Data Transmission Security\nAll communication between\
-    \ Odoo and Fedex APIs occurs over TLS 1.2 or higher encryption, protecting shipment\
-    \ data and customer information in transit. Verify certificate validity for FedEx\
-    \ endpoints to prevent man-in-the-middle attacks. For webhook callbacks from FedEx,\
-    \ implement signature verification that validates request authenticity using shared\
-    \ secrets. Configure firewalls to allow outbound connections to FedEx's documented\
-    \ IP ranges while restricting inbound connections to known FedEx webhook origin\
-    \ addresses. These measures ensure data confidentiality and integrity throughout\
-    \ the integration data exchange.\n\n### Access Control Integration\nLeverage Odoo's\
-    \ built-in access rights system to control shipping functionality based on user\
-    \ roles. Restrict FedEx configuration access to authorized administrators while\
-    \ providing limited shipping capabilities to warehouse staff. Implement approval\
-    \ workflows for high-value shipments or international destinations that require\
-    \ additional verification. Audit user interactions with shipping operations, maintaining\
-    \ logs of label generation, shipment modifications, and rate shopping activities.\
-    \ These controls prevent unauthorized shipping operations that could result in\
-    \ financial loss or compliance violations.\n\n### Compliance with Shipping Regulations\n\
-    FedEx integration handles sensitive customer data that falls under privacy regulations\
+    \ during the transition to integrated operations.\n\n## Security Considerations\\\
+    n\n### API Credential Management\nFedEx integration requires sensitive authentication\
+    \ credentials that demand secure handling. Store API keys and passwords in Odoo's\
+    \ configuration parameters rather than hardcoded in module files. Utilize Odoo's\
+    \ built-in encryption capabilities for sensitive data fields, ensuring credentials\
+    \ remain protected in database backups and log files. Implement credential rotation\
+    \ procedures that align with FedEx's security policies, typically updating passwords\
+    \ every 90 days. Never log full authentication credentials—mask sensitive values\
+    \ in debug outputs and system logs to prevent credential exposure during troubleshooting.\n\
+    \n### Data Transmission Security\nAll communication between Odoo and Fedex APIs\
+    \ occurs over TLS 1.2 or higher encryption, protecting shipment data and customer\
+    \ information in transit. Verify certificate validity for FedEx endpoints to prevent\
+    \ man-in-the-middle attacks. For webhook callbacks from FedEx, implement signature\
+    \ verification that validates request authenticity using shared secrets. Configure\
+    \ firewalls to allow outbound connections to FedEx's documented IP ranges while\
+    \ restricting inbound connections to known FedEx webhook origin addresses. These\
+    \ measures ensure data confidentiality and integrity throughout the integration\
+    \ data exchange.\n\n### Access Control Integration\nLeverage Odoo's built-in access\
+    \ rights system to control shipping functionality based on user roles. Restrict\
+    \ FedEx configuration access to authorized administrators while providing limited\
+    \ shipping capabilities to warehouse staff. Implement approval workflows for high-value\
+    \ shipments or international destinations that require additional verification.\
+    \ Audit user interactions with shipping operations, maintaining logs of label\
+    \ generation, shipment modifications, and rate shopping activities. These controls\
+    \ prevent unauthorized shipping operations that could result in financial loss\
+    \ or compliance violations.\n\n### Compliance with Shipping Regulations\nFedEx\
+    \ integration handles sensitive customer data that falls under privacy regulations\
     \ like GDPR or CCPA. Implement data retention policies that purge unnecessary\
     \ shipment records after operational requirements expire. Anonymize customer data\
     \ used for analytics or reporting to protect privacy while maintaining business\
@@ -384,12 +382,12 @@ ai_generated_content:
     \ changes. Regular security reviews should verify integration security controls\
     \ remain effective as both Odoo and FedEx platforms evolve. Proactive security\
     \ monitoring protects against emerging threats that target shipping and logistics\
-    \ systems.\n\n## Performance Optimization\n\n### API Call Optimization\n\
-    Minimize FedEx API calls through strategic caching and request batching. Cache\
-    \ rate quotes for 15 minutes since shipping rates remain stable for short periods,\
-    \ reducing redundant rate requests for similar shipments. Batch tracking updates\
-    \ for multiple packages into single API calls where possible, leveraging FedEx's\
-    \ Track API capability to handle up to 30 tracking numbers per request. For high-volume\
+    \ systems.\n\n## Performance Optimization\n\n### API Call Optimization\nMinimize\
+    \ FedEx API calls through strategic caching and request batching. Cache rate quotes\
+    \ for 15 minutes since shipping rates remain stable for short periods, reducing\
+    \ redundant rate requests for similar shipments. Batch tracking updates for multiple\
+    \ packages into single API calls where possible, leveraging FedEx's Track API\
+    \ capability to handle up to 30 tracking numbers per request. For high-volume\
     \ shippers, implement request queuing that smooths API call distribution throughout\
     \ the day, avoiding peak periods when FedEx systems experience heavier loads.\
     \ These optimizations reduce API consumption while maintaining system responsiveness.\n\
@@ -522,13 +520,14 @@ visualizations:
   placement_hint: after_conclusion
   data_context: learning path and knowledge graph
   mermaid_chart_syntax: "flowchart TB\n\n    Current[\"[CURRENT] FedEx to Odoo Integration:\
-    \ Complete 2025 Guide\"]\n\n    %% Related Topics - Cross-References\n    Current\
-    \ -.-> Rel0[\"Cloudflare to Odoo Integration: Complete 2025 Guide\"]\n    Current\
-    \ -.-> Rel1[\"Facebook Pixel to Odoo Integration: Complete 2025 Guide\"]\n\n \
-    \   %% Professional Styling\n    classDef current fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n\
+    \ Complete 2025 Guide\"]\n\n    %% Next Steps - Learning Progression\n    Current\
+    \ --> Next0(\"Complete Implementation Guide\")\n\n    %% Related Topics - Cross-References\n\
+    \    Current -.-> Rel0[\"Cloudflare to Odoo Integration: Complete 2025 Guide\"\
+    ]\n    Current -.-> Rel1[\"Facebook Pixel to Odoo Integration: Complete 2025 Guide\"\
+    ]\n\n    %% Professional Styling\n    classDef current fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n\
     \    classDef prereq fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000\n\
     \    classDef next fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000\n \
     \   classDef related fill:#f5f5f5,stroke:#616161,stroke-width:1px,color:#000\n\
     \    classDef trouble fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000\n\
     \    classDef support fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#000\n\
-    \n    class Current current\n    class Rel0,Rel1 related"
+    \n    class Current current\n    class Next0 next\n    class Rel0,Rel1 related"

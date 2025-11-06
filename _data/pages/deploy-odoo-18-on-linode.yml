@@ -64,86 +64,86 @@ ai_generated_content:
     scaling for future growth and maintains strict security isolation between components.
     Let''s build a foundation that supports your business for the next several years
     without constant re-engineering or emergency maintenance.'
-  main_content: "## Integration Architecture and Data Flow\n\n### Core\
-    \ Component Isolation\nYour Odoo deployment separates application logic, data\
-    \ persistence, and file storage into discrete services. This isolation prevents\
-    \ single points of failure and enables independent scaling. The Linode compute\
-    \ instance hosts only the Odoo application code and system dependencies. A managed\
-    \ PostgreSQL database handles all transactional data with professional backup\
-    \ and replication. Linode Object Storage manages file attachments and document\
-    \ storage, freeing the application instance from disk I/O bottlenecks.\n\nThe\
-    \ architecture employs a reverse proxy configuration using NGINX. This proxy handles\
-    \ SSL termination, static file serving, and request load balancing. This separation\
-    \ ensures your Odoo application focuses on business logic execution rather than\
-    \ network management. The proxy configuration also provides a security barrier,\
-    \ filtering malicious requests before they reach the application layer. Each component\
-    \ communicates through encrypted channels with strict firewall rules limiting\
-    \ exposure.\n\n### Data Flow Patterns\nUser requests follow a specific path through\
-    \ your deployment architecture. External HTTPS connections terminate at the NGINX\
-    \ proxy, which decrypts traffic and forwards requests to the Odoo application.\
-    \ The application processes business logic by querying the managed PostgreSQL\
-    \ database over a secure, isolated network connection. File operations redirect\
-    \ to Object Storage through pre-signed URLs, maintaining data consistency without\
-    \ local storage dependencies.\n\nDatabase connections use connection pooling to\
-    \ manage concurrent user sessions. The Odoo application maintains a pool of persistent\
-    \ database connections, reducing authentication overhead for each request. Session\
-    \ data stores in the database rather than memory, enabling horizontal scaling\
-    \ across multiple application instances. All file uploads generate unique identifiers\
-    \ that map to Object Storage containers, keeping the database lean and performant.\n\
-    \n### Network Security Design\nYour deployment implements a zero-trust network\
-    \ model between components. The Linode compute instance connects to the managed\
-    \ database through a private VLAN, preventing public internet exposure for your\
-    \ data layer. Object Storage access requires specific API keys with limited permissions,\
-    \ not broad administrative credentials. The NGINX proxy implements rate limiting\
-    \ and geographic blocking rules before requests ever reach the application instance.\n\
-    \nFirewall configurations restrict database access to only the application instance\
-    \ IP address. The Odoo configuration file contains database connection strings\
-    \ that use the private network interface. Backup operations from the managed database\
-    \ service use separate credentials with read-only permissions. This security model\
-    \ ensures a compromise of one component does not automatically grant access to\
-    \ other system parts.\n\n## Step-by-Step Configuration\n\n### Initial\
-    \ Server Provisioning\nBegin with a Linode Nanode 1GB or higher instance running\
-    \ Ubuntu 22.04 LTS. Select a data center region closest to your primary user base\
-    \ for reduced latency. During creation, add your SSH public key for secure password-free\
-    \ authentication. Enable private IP addressing to facilitate secure communication\
-    \ with managed database services. Boot the system and connect via SSH using your\
-    \ private key for initial configuration.\n\nUpdate the system packages and create\
-    \ a dedicated user for Odoo operations. Run `apt update && apt upgrade -y` to\
-    \ patch all system vulnerabilities. Create a user account named `odoo` with `adduser\
-    \ odoo` and add this user to the sudo group with `usermod -aG sudo odoo`. Switch\
-    \ to this account using `su - odoo` for all subsequent installation steps. This\
-    \ practice limits accidental system modifications and contains application permissions.\n\
-    \n### Managed Database Setup\nProvision a Linode Managed PostgreSQL database instance\
-    \ through the Cloud Manager. Select PostgreSQL 15 or higher for Odoo 18 compatibility.\
-    \ Choose a plan that matches your expected workload, with 1GB RAM as a minimum\
-    \ for development environments. Configure the database to allow connections from\
-    \ your application instance's private IP address. Note the database hostname,\
-    \ port, and default credentials provided upon creation.\n\nConnect to your managed\
-    \ database using `psql` to create the Odoo database and user. Install the PostgreSQL\
-    \ client with `sudo apt install postgresql-client-14`. Use the connection string\
-    \ from your Linode dashboard: `psql -h [hostname] -U linpostgres -d postgres`.\
-    \ Execute `CREATE USER odoo WITH PASSWORD 'secure_password';` then `CREATE DATABASE\
-    \ odoo OWNER odoo;`. Grant necessary privileges with `GRANT ALL PRIVILEGES ON\
-    \ DATABASE odoo TO odoo;`. These commands establish the dedicated database environment\
-    \ for your installation.\n\n### Odoo Application Installation\nInstall Python\
-    \ and system dependencies required by Odoo. Execute `sudo apt install -y python3-pip\
-    \ python3-dev python3-venv python3-wheel build-essential libxml2-dev libxslt1-dev\
-    \ libldap2-dev libsasl2-dev libssl-dev libjpeg-dev libpq-dev node-less`. These\
-    \ packages provide the compilation tools and libraries for Odoo's operation. Create\
-    \ a Python virtual environment with `python3 -m venv ~/odoo-venv` and activate\
-    \ it using `source ~/odoo-venv/bin/activate`.\n\nInstall Odoo 18 within the virtual\
-    \ environment using pip. Execute `pip install --upgrade pip` followed by `pip\
-    \ install odoo==18.0`. This process downloads and compiles all Python dependencies,\
-    \ requiring several minutes. Verify successful installation with `~/odoo-venv/bin/odoo\
-    \ --version` which should return version 18.0. Create a configuration directory\
-    \ with `mkdir ~/.odoo` and a log directory with `sudo mkdir /var/log/odoo && sudo\
-    \ chown odoo:odoo /var/log/odoo`.\n\n### Application Configuration\nCreate an\
-    \ Odoo configuration file at `~/.odoo/odoo.conf` with these essential parameters:\n\
-    ```\n[options]\naddons_path = ~/odoo-venv/lib/python3.10/site-packages/odoo/addons\n\
-    admin_passwd = super_admin_password\ndb_host = your_managed_db_hostname\ndb_port\
-    \ = 5432\ndb_user = odoo\ndb_password = your_secure_password\ndatabase = odoo\n\
-    logfile = /var/log/odoo/odoo.log\nlog_level = info\nproxy_mode = True\nwithout_demo\
-    \ = ALL\ndata_dir = /home/odoo/.odoo/data\n```\n\nSet strict permissions on this\
+  main_content: "## Integration Architecture and Data Flow\n\n### Core Component Isolation\n\
+    Your Odoo deployment separates application logic, data persistence, and file storage\
+    \ into discrete services. This isolation prevents single points of failure and\
+    \ enables independent scaling. The Linode compute instance hosts only the Odoo\
+    \ application code and system dependencies. A managed PostgreSQL database handles\
+    \ all transactional data with professional backup and replication. Linode Object\
+    \ Storage manages file attachments and document storage, freeing the application\
+    \ instance from disk I/O bottlenecks.\n\nThe architecture employs a reverse proxy\
+    \ configuration using NGINX. This proxy handles SSL termination, static file serving,\
+    \ and request load balancing. This separation ensures your Odoo application focuses\
+    \ on business logic execution rather than network management. The proxy configuration\
+    \ also provides a security barrier, filtering malicious requests before they reach\
+    \ the application layer. Each component communicates through encrypted channels\
+    \ with strict firewall rules limiting exposure.\n\n### Data Flow Patterns\nUser\
+    \ requests follow a specific path through your deployment architecture. External\
+    \ HTTPS connections terminate at the NGINX proxy, which decrypts traffic and forwards\
+    \ requests to the Odoo application. The application processes business logic by\
+    \ querying the managed PostgreSQL database over a secure, isolated network connection.\
+    \ File operations redirect to Object Storage through pre-signed URLs, maintaining\
+    \ data consistency without local storage dependencies.\n\nDatabase connections\
+    \ use connection pooling to manage concurrent user sessions. The Odoo application\
+    \ maintains a pool of persistent database connections, reducing authentication\
+    \ overhead for each request. Session data stores in the database rather than memory,\
+    \ enabling horizontal scaling across multiple application instances. All file\
+    \ uploads generate unique identifiers that map to Object Storage containers, keeping\
+    \ the database lean and performant.\n\n### Network Security Design\nYour deployment\
+    \ implements a zero-trust network model between components. The Linode compute\
+    \ instance connects to the managed database through a private VLAN, preventing\
+    \ public internet exposure for your data layer. Object Storage access requires\
+    \ specific API keys with limited permissions, not broad administrative credentials.\
+    \ The NGINX proxy implements rate limiting and geographic blocking rules before\
+    \ requests ever reach the application instance.\n\nFirewall configurations restrict\
+    \ database access to only the application instance IP address. The Odoo configuration\
+    \ file contains database connection strings that use the private network interface.\
+    \ Backup operations from the managed database service use separate credentials\
+    \ with read-only permissions. This security model ensures a compromise of one\
+    \ component does not automatically grant access to other system parts.\n\n## Step-by-Step\
+    \ Configuration\n\n### Initial Server Provisioning\nBegin with a Linode Nanode\
+    \ 1GB or higher instance running Ubuntu 22.04 LTS. Select a data center region\
+    \ closest to your primary user base for reduced latency. During creation, add\
+    \ your SSH public key for secure password-free authentication. Enable private\
+    \ IP addressing to facilitate secure communication with managed database services.\
+    \ Boot the system and connect via SSH using your private key for initial configuration.\n\
+    \nUpdate the system packages and create a dedicated user for Odoo operations.\
+    \ Run `apt update && apt upgrade -y` to patch all system vulnerabilities. Create\
+    \ a user account named `odoo` with `adduser odoo` and add this user to the sudo\
+    \ group with `usermod -aG sudo odoo`. Switch to this account using `su - odoo`\
+    \ for all subsequent installation steps. This practice limits accidental system\
+    \ modifications and contains application permissions.\n\n### Managed Database\
+    \ Setup\nProvision a Linode Managed PostgreSQL database instance through the Cloud\
+    \ Manager. Select PostgreSQL 15 or higher for Odoo 18 compatibility. Choose a\
+    \ plan that matches your expected workload, with 1GB RAM as a minimum for development\
+    \ environments. Configure the database to allow connections from your application\
+    \ instance's private IP address. Note the database hostname, port, and default\
+    \ credentials provided upon creation.\n\nConnect to your managed database using\
+    \ `psql` to create the Odoo database and user. Install the PostgreSQL client with\
+    \ `sudo apt install postgresql-client-14`. Use the connection string from your\
+    \ Linode dashboard: `psql -h [hostname] -U linpostgres -d postgres`. Execute `CREATE\
+    \ USER odoo WITH PASSWORD 'secure_password';` then `CREATE DATABASE odoo OWNER\
+    \ odoo;`. Grant necessary privileges with `GRANT ALL PRIVILEGES ON DATABASE odoo\
+    \ TO odoo;`. These commands establish the dedicated database environment for your\
+    \ installation.\n\n### Odoo Application Installation\nInstall Python and system\
+    \ dependencies required by Odoo. Execute `sudo apt install -y python3-pip python3-dev\
+    \ python3-venv python3-wheel build-essential libxml2-dev libxslt1-dev libldap2-dev\
+    \ libsasl2-dev libssl-dev libjpeg-dev libpq-dev node-less`. These packages provide\
+    \ the compilation tools and libraries for Odoo's operation. Create a Python virtual\
+    \ environment with `python3 -m venv ~/odoo-venv` and activate it using `source\
+    \ ~/odoo-venv/bin/activate`.\n\nInstall Odoo 18 within the virtual environment\
+    \ using pip. Execute `pip install --upgrade pip` followed by `pip install odoo==18.0`.\
+    \ This process downloads and compiles all Python dependencies, requiring several\
+    \ minutes. Verify successful installation with `~/odoo-venv/bin/odoo --version`\
+    \ which should return version 18.0. Create a configuration directory with `mkdir\
+    \ ~/.odoo` and a log directory with `sudo mkdir /var/log/odoo && sudo chown odoo:odoo\
+    \ /var/log/odoo`.\n\n### Application Configuration\nCreate an Odoo configuration\
+    \ file at `~/.odoo/odoo.conf` with these essential parameters:\n```\n[options]\n\
+    addons_path = ~/odoo-venv/lib/python3.10/site-packages/odoo/addons\nadmin_passwd\
+    \ = super_admin_password\ndb_host = your_managed_db_hostname\ndb_port = 5432\n\
+    db_user = odoo\ndb_password = your_secure_password\ndatabase = odoo\nlogfile =\
+    \ /var/log/odoo/odoo.log\nlog_level = info\nproxy_mode = True\nwithout_demo =\
+    \ ALL\ndata_dir = /home/odoo/.odoo/data\n```\n\nSet strict permissions on this\
     \ configuration file with `chmod 600 ~/.odoo/odoo.conf`. The `admin_passwd` parameter\
     \ secures the database management interface with a master password. The `proxy_mode`\
     \ directive enables proper operation behind NGINX. The `without_demo` flag ensures\
@@ -172,13 +172,13 @@ ai_generated_content:
     \ Odoo with `sudo systemctl start odoo` and check its status using `sudo systemctl\
     \ status odoo`. Verify the application starts without errors and connects to the\
     \ database. Monitor the log file with `tail -f /var/log/odoo/odoo.log` to confirm\
-    \ successful initialization and module loading.\n\n## Data Mapping and Transformation\
-    \\n\n### Database Schema Design\nOdoo 18 employs a modular database\
-    \ architecture where each application module extends the core schema. The base\
-    \ system installs essential tables for partners, users, companies, and access\
-    \ control. Additional modules create their own tables with foreign key relationships\
-    \ to these core entities. Your managed PostgreSQL instance handles these relationships\
-    \ with proper indexing and constraint enforcement.\n\nThe `ir_model` table defines\
+    \ successful initialization and module loading.\n\n## Data Mapping and Transformation\\\
+    n\n### Database Schema Design\nOdoo 18 employs a modular database architecture\
+    \ where each application module extends the core schema. The base system installs\
+    \ essential tables for partners, users, companies, and access control. Additional\
+    \ modules create their own tables with foreign key relationships to these core\
+    \ entities. Your managed PostgreSQL instance handles these relationships with\
+    \ proper indexing and constraint enforcement.\n\nThe `ir_model` table defines\
     \ all data models in the system, while `ir_model_fields` catalogs every field\
     \ across all models. This metadata-driven approach enables runtime schema modifications\
     \ without database migrations. Each business document (invoice, sales order, inventory\
@@ -216,15 +216,15 @@ ai_generated_content:
     \ and thousand separators before conversion to numeric values. Many2many fields\
     \ process semicolon-separated values into proper relationship mappings. These\
     \ transformations ensure data consistency regardless of source system formatting\
-    \ differences.\n\n## Error Handling and Resilience\n\n### Database\
-    \ Connection Failures\nOdoo implements connection pooling with automatic retry\
-    \ logic for database operations. When the managed database becomes temporarily\
-    \ unavailable, the application logs connection errors but maintains service for\
-    \ cached operations. The `db_maxconn` configuration parameter controls the connection\
-    \ pool size, which you should set to match your Linode database plan limitations.\
-    \ Connection timeouts default to 30 seconds but adjust based on network latency.\n\
-    \nMonitor database connection health through the Odoo log file and Linode Cloud\
-    \ Manager metrics. Set up alerts for repeated connection failures that might indicate\
+    \ differences.\n\n## Error Handling and Resilience\n\n### Database Connection\
+    \ Failures\nOdoo implements connection pooling with automatic retry logic for\
+    \ database operations. When the managed database becomes temporarily unavailable,\
+    \ the application logs connection errors but maintains service for cached operations.\
+    \ The `db_maxconn` configuration parameter controls the connection pool size,\
+    \ which you should set to match your Linode database plan limitations. Connection\
+    \ timeouts default to 30 seconds but adjust based on network latency.\n\nMonitor\
+    \ database connection health through the Odoo log file and Linode Cloud Manager\
+    \ metrics. Set up alerts for repeated connection failures that might indicate\
     \ network issues or credential problems. The system automatically attempts reconnection\
     \ with exponential backoff, preventing overload during database maintenance windows.\
     \ Implement a secondary database connection string for fallback instances in high-availability\
@@ -259,30 +259,30 @@ ai_generated_content:
     \ incorrect module version specifications, and permission errors on file system\
     \ operations. Test new modules in a staging environment before production deployment.\
     \ Use Odoo's module update sequence to manage complex dependency chains across\
-    \ multiple business applications.\n\n## Testing and Validation\n\n\
-    ### Installation Verification\nConfirm successful Odoo deployment through a structured\
-    \ validation checklist. Access your domain in a web browser and verify the Odoo\
-    \ database creation screen appears. Create a new database using the master password\
-    \ configured in odoo.conf. Complete the initial setup wizard without error messages.\
-    \ Verify that all core application modules install without dependency warnings\
-    \ or installation failures.\n\nCheck system health through the Odoo dashboard\
-    \ and database manager. Navigate to Settings > Technical > Database Structure\
-    \ > Models and confirm model loading without errors. Access Settings > Technical\
-    \ > Sequences and verify system sequences generate proper numbering. Test basic\
-    \ data operations by creating a new contact, product, and sales order. These actions\
-    \ validate the complete data layer functionality.\n\n### User Acceptance Testing\n\
-    Execute comprehensive business process tests that mirror your operational workflows.\
-    \ Create a complete quote-to-cash cycle including sales order confirmation, delivery\
-    \ processing, and invoice generation. Test inventory operations with stock moves,\
-    \ inventory adjustments, and transfer validations. Verify manufacturing orders\
-    \ process correctly with material consumption and finished product receipt.\n\n\
-    Validate multi-company configurations if applicable to your business structure.\
-    \ Test inter-company transactions and consolidated reporting. Verify user permissions\
-    \ by testing role-based access to sensitive financial data and operational functions.\
-    \ Confirm reporting functionality generates accurate financial statements and\
-    \ operational dashboards. These tests ensure the system meets business requirements\
-    \ beyond technical functionality.\n\n### Integration Testing\nVerify external\
-    \ system integrations through API testing and file exchange validation. Test webhook\
+    \ multiple business applications.\n\n## Testing and Validation\n\n### Installation\
+    \ Verification\nConfirm successful Odoo deployment through a structured validation\
+    \ checklist. Access your domain in a web browser and verify the Odoo database\
+    \ creation screen appears. Create a new database using the master password configured\
+    \ in odoo.conf. Complete the initial setup wizard without error messages. Verify\
+    \ that all core application modules install without dependency warnings or installation\
+    \ failures.\n\nCheck system health through the Odoo dashboard and database manager.\
+    \ Navigate to Settings > Technical > Database Structure > Models and confirm model\
+    \ loading without errors. Access Settings > Technical > Sequences and verify system\
+    \ sequences generate proper numbering. Test basic data operations by creating\
+    \ a new contact, product, and sales order. These actions validate the complete\
+    \ data layer functionality.\n\n### User Acceptance Testing\nExecute comprehensive\
+    \ business process tests that mirror your operational workflows. Create a complete\
+    \ quote-to-cash cycle including sales order confirmation, delivery processing,\
+    \ and invoice generation. Test inventory operations with stock moves, inventory\
+    \ adjustments, and transfer validations. Verify manufacturing orders process correctly\
+    \ with material consumption and finished product receipt.\n\nValidate multi-company\
+    \ configurations if applicable to your business structure. Test inter-company\
+    \ transactions and consolidated reporting. Verify user permissions by testing\
+    \ role-based access to sensitive financial data and operational functions. Confirm\
+    \ reporting functionality generates accurate financial statements and operational\
+    \ dashboards. These tests ensure the system meets business requirements beyond\
+    \ technical functionality.\n\n### Integration Testing\nVerify external system\
+    \ integrations through API testing and file exchange validation. Test webhook\
     \ endpoints with sample payloads to confirm proper processing. Validate email\
     \ gateway functionality by sending purchase orders and receiving vendor confirmations.\
     \ Check payment gateway integrations through test transactions that simulate complete\
@@ -301,60 +301,59 @@ ai_generated_content:
     \ of invoices. Monitor Linode instance metrics during these tests to identify\
     \ resource bottlenecks. Establish performance thresholds that trigger scaling\
     \ operations or optimization efforts. Document these benchmarks for future comparison\
-    \ as your system grows and evolves.\n\n## Security Considerations\n\
-    \n### Authentication Hardening\nOdoo supports multiple authentication backends\
-    \ including OAuth2, LDAP, and database-based authentication. Our deployment uses\
-    \ database authentication with strong password policies enforced through Odoo's\
-    \ configuration. Enable two-factor authentication for administrative accounts\
-    \ through Settings > Users > Select User > Account Security. Implement session\
-    \ timeout policies that automatically log out inactive users after a configurable\
-    \ period.\n\nRestrict database manager access to specific IP addresses using the\
-    \ `db_restrict_ip` configuration parameter. This prevents unauthorized database\
-    \ operations from unexpected network locations. Regularly review user sessions\
-    \ and access logs for suspicious activity. Implement account lockout policies\
-    \ after repeated failed login attempts to prevent brute force attacks.\n\n###\
-    \ Network Security Configuration\nConfigure Linode's cloud firewall to restrict\
-    \ inbound traffic to only ports 80 and 443. Block all other ports including SSH\
-    \ access from unknown IP ranges. Implement VPC (Virtual Private Cloud) for communication\
-    \ between your application instance and managed database. This private network\
-    \ prevents database exposure to the public internet.\n\nNGINX configuration includes\
-    \ security headers that prevent common web vulnerabilities. Implement Content\
-    \ Security Policy headers to mitigate XSS attacks. Configure Strict-Transport-Security\
-    \ to enforce HTTPS connections. Set X-Frame-Options to prevent clickjacking attacks.\
-    \ These headers provide defense-in-depth beyond Odoo's built-in security features.\n\
-    \n### Data Protection Measures\nEncrypt sensitive data at rest using PostgreSQL's\
-    \ built-in encryption capabilities. Linode Managed Databases implement storage\
-    \ encryption by default. For additional protection, enable column-level encryption\
-    \ for specific sensitive fields like payment information or personal identification\
-    \ data. Odoo's encryption fields provide this functionality without application\
-    \ modifications.\n\nImplement regular backup procedures that include both database\
-    \ dumps and file storage contents. Test restoration procedures to ensure backup\
-    \ integrity. Store backups in a separate Linode region or cloud provider for disaster\
-    \ recovery. Establish retention policies that meet your business compliance requirements\
-    \ and recovery point objectives.\n\n## Performance Optimization\n\n\
-    ### Database Query Optimization\nOdoo's ORM generates database queries that benefit\
-    \ from proper indexing. Analyze slow queries through PostgreSQL's `pg_stat_statements`\
-    \ extension. Create custom indexes for frequently filtered fields that lack default\
-    \ indexes. The `@api.model` decorator supports optimized search methods that reduce\
-    \ database load for complex queries.\n\nMonitor database connection pool usage\
-    \ and adjust the `db_maxconn` parameter based on concurrent user load. Implement\
-    \ query timeouts that prevent long-running operations from consuming database\
-    \ resources. Regular database maintenance including vacuum operations and statistics\
-    \ updates maintains query performance as data volumes increase.\n\n### Application\
-    \ Caching Strategies\nImplement Redis-based caching for frequently accessed but\
-    \ rarely changed data. Odoo supports Redis integration for session storage and\
-    \ cache management. This reduces database load for menu structures, translation\
-    \ data, and system parameters. Configure appropriate expiration times based on\
-    \ data volatility.\n\nBrowser-side caching reduces server load for static assets.\
-    \ Configure NGINX to send proper cache-control headers for JavaScript, CSS, and\
-    \ image files. Implement asset bundling and minification through Odoo's built-in\
-    \ tools. These techniques reduce bandwidth usage and improve page load times for\
-    \ remote users.\n\n### Worker Process Tuning\nOptimize Odoo worker configuration\
-    \ based on your Linode instance resources. The `workers` parameter should match\
-    \ your CPU core count, while `limit_memory_soft` controls individual worker memory\
-    \ allocation. Monitor worker process health through system metrics and adjust\
-    \ these parameters based on actual usage patterns.\n\nImplement dedicated worker\
-    \ processes for specific resource-intensive operations. The `--limit-request`\
+    \ as your system grows and evolves.\n\n## Security Considerations\n\n### Authentication\
+    \ Hardening\nOdoo supports multiple authentication backends including OAuth2,\
+    \ LDAP, and database-based authentication. Our deployment uses database authentication\
+    \ with strong password policies enforced through Odoo's configuration. Enable\
+    \ two-factor authentication for administrative accounts through Settings > Users\
+    \ > Select User > Account Security. Implement session timeout policies that automatically\
+    \ log out inactive users after a configurable period.\n\nRestrict database manager\
+    \ access to specific IP addresses using the `db_restrict_ip` configuration parameter.\
+    \ This prevents unauthorized database operations from unexpected network locations.\
+    \ Regularly review user sessions and access logs for suspicious activity. Implement\
+    \ account lockout policies after repeated failed login attempts to prevent brute\
+    \ force attacks.\n\n### Network Security Configuration\nConfigure Linode's cloud\
+    \ firewall to restrict inbound traffic to only ports 80 and 443. Block all other\
+    \ ports including SSH access from unknown IP ranges. Implement VPC (Virtual Private\
+    \ Cloud) for communication between your application instance and managed database.\
+    \ This private network prevents database exposure to the public internet.\n\n\
+    NGINX configuration includes security headers that prevent common web vulnerabilities.\
+    \ Implement Content Security Policy headers to mitigate XSS attacks. Configure\
+    \ Strict-Transport-Security to enforce HTTPS connections. Set X-Frame-Options\
+    \ to prevent clickjacking attacks. These headers provide defense-in-depth beyond\
+    \ Odoo's built-in security features.\n\n### Data Protection Measures\nEncrypt\
+    \ sensitive data at rest using PostgreSQL's built-in encryption capabilities.\
+    \ Linode Managed Databases implement storage encryption by default. For additional\
+    \ protection, enable column-level encryption for specific sensitive fields like\
+    \ payment information or personal identification data. Odoo's encryption fields\
+    \ provide this functionality without application modifications.\n\nImplement regular\
+    \ backup procedures that include both database dumps and file storage contents.\
+    \ Test restoration procedures to ensure backup integrity. Store backups in a separate\
+    \ Linode region or cloud provider for disaster recovery. Establish retention policies\
+    \ that meet your business compliance requirements and recovery point objectives.\n\
+    \n## Performance Optimization\n\n### Database Query Optimization\nOdoo's ORM generates\
+    \ database queries that benefit from proper indexing. Analyze slow queries through\
+    \ PostgreSQL's `pg_stat_statements` extension. Create custom indexes for frequently\
+    \ filtered fields that lack default indexes. The `@api.model` decorator supports\
+    \ optimized search methods that reduce database load for complex queries.\n\n\
+    Monitor database connection pool usage and adjust the `db_maxconn` parameter based\
+    \ on concurrent user load. Implement query timeouts that prevent long-running\
+    \ operations from consuming database resources. Regular database maintenance including\
+    \ vacuum operations and statistics updates maintains query performance as data\
+    \ volumes increase.\n\n### Application Caching Strategies\nImplement Redis-based\
+    \ caching for frequently accessed but rarely changed data. Odoo supports Redis\
+    \ integration for session storage and cache management. This reduces database\
+    \ load for menu structures, translation data, and system parameters. Configure\
+    \ appropriate expiration times based on data volatility.\n\nBrowser-side caching\
+    \ reduces server load for static assets. Configure NGINX to send proper cache-control\
+    \ headers for JavaScript, CSS, and image files. Implement asset bundling and minification\
+    \ through Odoo's built-in tools. These techniques reduce bandwidth usage and improve\
+    \ page load times for remote users.\n\n### Worker Process Tuning\nOptimize Odoo\
+    \ worker configuration based on your Linode instance resources. The `workers`\
+    \ parameter should match your CPU core count, while `limit_memory_soft` controls\
+    \ individual worker memory allocation. Monitor worker process health through system\
+    \ metrics and adjust these parameters based on actual usage patterns.\n\nImplement\
+    \ dedicated worker processes for specific resource-intensive operations. The `--limit-request`\
     \ parameter controls how many requests a worker handles before recycling. This\
     \ prevents memory leaks from accumulating over extended operation. Test worker\
     \ configuration under production load to identify optimal settings for your specific\
@@ -478,24 +477,6 @@ visualizations:
     \ step\n    class Postgres,Python database\n    class Start,Odoo,End milestone\n"
   variant_id: install_chart_001
 - chart_type: mermaid
-  placement_hint: after_conclusion
-  data_context: learning path and knowledge graph
-  mermaid_chart_syntax: "flowchart TB\n\n    Current[\"[CURRENT] Deploy Odoo 18 on\
-    \ Linode: Complete 2025 Guide\"]\n\n    %% Next Steps - Learning Progression\n\
-    \    Current --> Next0(\"Upgrade from Odoo 11 to 18\")\n    Current --> Next1(\"\
-    Optimize PostgreSQL Performance: Improve Performance by 50%\")\n\n    %% Related\
-    \ Topics - Cross-References\n    Current -.-> Rel0[\"Install Odoo 18 on Fedora\
-    \ 39: Complete 2025 Guide\"]\n    Current -.-> Rel1[\"Install Odoo 18 on CentOS\
-    \ 9: Complete 2025 Guide\"]\n    Current -.-> Rel2[\"Install Odoo 18 on Rocky\
-    \ Linux 9: Complete 2025 Guide\"]\n\n    %% Professional Styling\n    classDef\
-    \ current fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n    classDef\
-    \ prereq fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000\n    classDef\
-    \ next fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000\n    classDef related\
-    \ fill:#f5f5f5,stroke:#616161,stroke-width:1px,color:#000\n    classDef trouble\
-    \ fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000\n    classDef support\
-    \ fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#000\n\n    class Current\
-    \ current\n    class Next0,Next1 next\n    class Rel0,Rel1,Rel2 related"
-- chart_type: mermaid
   placement_hint: after_prerequisites
   data_context: 'Phase 1: Infrastructure Preparation'
   mermaid_chart_syntax: "flowchart TB\n    Start([Server Provisioning]) --> Hardware[Verify\
@@ -533,3 +514,22 @@ visualizations:
     \ success fill:#d4edda,stroke:#28a745,stroke-width:2px\n\n    class Health,Database,Login,Module,Load\
     \ test\n    class SSL critical\n    class Start,End success\n"
   variant_id: install_chart_001_testing
+- chart_type: mermaid
+  placement_hint: after_conclusion
+  data_context: learning path and knowledge graph
+  mermaid_chart_syntax: "flowchart TB\n\n    Current[\"[CURRENT] Deploy Odoo 18 on\
+    \ Linode: Complete 2025 Guide\"]\n\n    %% Next Steps - Learning Progression\n\
+    \    Current --> Next0(\"Complete Self-Hosting Guide\")\n    Current --> Next1(\"\
+    Deployment Requirements Guide\")\n    Current --> Next2(\"Backup & Restore Guide\"\
+    )\n\n    %% Related Topics - Cross-References\n    Current -.-> Rel0[\"Install\
+    \ Odoo 18 on Fedora 39: Complete 2025 Guide\"]\n    Current -.-> Rel1[\"Install\
+    \ Odoo 18 on CentOS 9: Complete 2025 Guide\"]\n    Current -.-> Rel2[\"Install\
+    \ Odoo 18 on Rocky Linux 9: Complete 2025 Guide\"]\n\n    %% Professional Styling\n\
+    \    classDef current fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n\
+    \    classDef prereq fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000\n\
+    \    classDef next fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000\n \
+    \   classDef related fill:#f5f5f5,stroke:#616161,stroke-width:1px,color:#000\n\
+    \    classDef trouble fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000\n\
+    \    classDef support fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#000\n\
+    \n    class Current current\n    class Next0,Next1,Next2 next\n    class Rel0,Rel1,Rel2\
+    \ related"

@@ -73,11 +73,11 @@ ai_generated_content:
     gains real-time visibility into shipping exceptions before customers notice problems.
     This technical foundation enables proactive customer service and data-driven shipping
     optimization.'
-  main_content: "## Integration Architecture and Data Flow\n\n### Core\
-    \ Integration Components\n\nThe AfterShip-Odoo integration employs a webhook-driven\
-    \ architecture that maintains data consistency across both systems. Odoo 18 serves\
-    \ as the source of truth for order data and customer information. AfterShip functions\
-    \ as the tracking data aggregation engine, monitoring carrier updates across hundreds\
+  main_content: "## Integration Architecture and Data Flow\n\n### Core Integration\
+    \ Components\n\nThe AfterShip-Odoo integration employs a webhook-driven architecture\
+    \ that maintains data consistency across both systems. Odoo 18 serves as the source\
+    \ of truth for order data and customer information. AfterShip functions as the\
+    \ tracking data aggregation engine, monitoring carrier updates across hundreds\
     \ of shipping providers. The integration connects these systems through Odoo's\
     \ web framework and AfterShip's Tracking API.\n\nYour Odoo instance initiates\
     \ the data flow by pushing shipment events to AfterShip. The system creates tracking\
@@ -106,15 +106,14 @@ ai_generated_content:
     \ API calls. Odoo's automated actions handle temporary AfterShip API unavailability.\
     \ Failed webhook deliveries trigger exponential backoff retries from AfterShip's\
     \ infrastructure. This resilient design prevents data loss during transient network\
-    \ issues.\n\n## Step-by-Step Configuration\n\n### AfterShip Account\
-    \ Preparation\n\nBegin by creating a dedicated AfterShip account for your Odoo\
-    \ integration. Navigate to AfterShip's API settings and generate a new API key\
-    \ with full tracking permissions. This key authenticates all outbound requests\
-    \ from Odoo to AfterShip's APIs. Store this key securely for the Odoo configuration\
-    \ phase.\n\nConfigure your AfterShip webhooks to point to your Odoo instance.\
-    \ Access the Webhook settings in your AfterShip dashboard and create a new endpoint.\
-    \ Use the format `https://your-odoo-domain.com/aftership/webhook/tracking`. Set\
-    \ the webhook secret to a cryptographically secure random string. This secret\
+    \ issues.\n\n## Step-by-Step Configuration\n\n### AfterShip Account Preparation\n\
+    \nBegin by creating a dedicated AfterShip account for your Odoo integration. Navigate\
+    \ to AfterShip's API settings and generate a new API key with full tracking permissions.\
+    \ This key authenticates all outbound requests from Odoo to AfterShip's APIs.\
+    \ Store this key securely for the Odoo configuration phase.\n\nConfigure your\
+    \ AfterShip webhooks to point to your Odoo instance. Access the Webhook settings\
+    \ in your AfterShip dashboard and create a new endpoint. Use the format `https://your-odoo-domain.com/aftership/webhook/tracking`.\
+    \ Set the webhook secret to a cryptographically secure random string. This secret\
     \ validates incoming webhook requests.\n\n### Odoo Module Installation\n\nInstall\
     \ the AfterShip connector module from Odoo's app store or your custom repository.\
     \ The module extends Odoo's delivery infrastructure with AfterShip integration\
@@ -204,101 +203,100 @@ ai_generated_content:
     \ AfterShip's custom fields array.\n\nThe transformation logic handles data type\
     \ conversions between systems. Odoo's float fields become integers where required,\
     \ and date fields format to ISO 8601 standard. These precise transformations prevent\
-    \ data format errors during synchronization.\n\n## Error Handling and Resilience\
-    \\n\n### API Failure Scenarios\n\nAfterShip API outages trigger Odoo's\
-    \ retry mechanism for tracking creation. The system queues failed API calls and\
-    \ retries them using exponential backoff. This approach handles temporary network\
-    \ issues or AfterShip service degradation. Failed operations persist in the job\
-    \ queue for 24 hours.\n\nWebhook delivery failures activate AfterShip's retry\
-    \ policy for tracking updates. AfterShip attempts webhook delivery up to 5 times\
-    \ with increasing delays between attempts. This redundancy ensures Odoo receives\
-    \ critical tracking updates even during brief connectivity issues.\n\n### Data\
-    \ Validation Errors\n\nInvalid tracking numbers generate specific error responses\
-    \ from AfterShip's API. Odoo catches these errors and flags the corresponding\
-    \ delivery records for review. The system notifies logistics team members about\
-    \ invalid tracking data. This proactive alerting prevents prolonged tracking synchronization\
-    \ failures.\n\nCarrier code mismatches produce mapping errors during tracking\
-    \ creation. Odoo logs these errors and falls back to AfterShip's carrier detection\
-    \ when possible. The system suggests correct carrier codes based on tracking number\
-    \ patterns. This intelligent fallback reduces configuration errors.\n\n### Authentication\
-    \ Failures\n\nExpired API keys cause authentication failures in both directions.\
-    \ Odoo detects 401 responses from AfterShip and alerts administrators to update\
-    \ the API key. The system continues processing existing tracking data while awaiting\
-    \ credential updates. This graceful degradation prevents complete integration\
-    \ failure.\n\nWebhook authentication failures indicate potential security issues.\
-    \ Odoo logs these events with full request details for security analysis. The\
-    \ system blocks repeated authentication attempts from suspicious sources. This\
-    \ security measure protects your tracking data integrity.\n\n### Recovery Procedures\n\
-    \nThe integration includes comprehensive recovery tools for data reconciliation.\
-    \ Odoo's AfterShip module provides a synchronization status dashboard that identifies\
-    \ missing tracking records. Administrators can trigger manual synchronization\
-    \ for specific time ranges or orders. This control enables quick recovery from\
-    \ extended outages.\n\nData conflict resolution procedures handle mismatches between\
-    \ Odoo and AfterShip. The system prioritizes Odoo's order data over AfterShip's\
-    \ information for customer details. Tracking status information from AfterShip\
-    \ takes precedence for delivery progress. This clear priority scheme resolves\
-    \ data conflicts automatically.\n\n## Testing and Validation\n\n###\
-    \ Connection Testing\n\nValidate the API connection before full implementation.\
-    \ Use Odoo's built-in connection tester in the AfterShip configuration menu. This\
-    \ tool verifies API key validity and basic connectivity to AfterShip's services.\
-    \ Successful tests confirm proper network configuration and authentication.\n\n\
-    Test webhook reception with AfterShip's webhook simulator. Send sample tracking\
-    \ update payloads to verify Odoo's parsing logic. Confirm that tracking updates\
-    \ properly modify delivery records and trigger customer notifications. This validation\
-    \ ensures the bidirectional data flow functions correctly.\n\n### Data Synchronization\
-    \ Verification\n\nCreate test orders with various carrier configurations to validate\
-    \ tracking creation. Monitor Odoo's logs for successful API calls to AfterShip.\
-    \ Verify that tracking numbers appear in your AfterShip dashboard shortly after\
-    \ delivery confirmation. This testing confirms the automatic synchronization timing.\n\
-    \nValidate tracking update flow by simulating carrier scan events in AfterShip.\
-    \ Use the tracking test feature to generate artificial tracking updates. Confirm\
-    \ these updates appear in Odoo's delivery records and customer communication history.\
-    \ This end-to-end testing validates the complete integration cycle.\n\n### Error\
-    \ Scenario Testing\n\nSimulate network failures during API calls to verify error\
-    \ handling. Temporarily block outbound connections to AfterShip's API endpoints\
-    \ during order processing. Confirm Odoo queues these requests and retries them\
-    \ when connectivity restores. This testing validates the resilience mechanisms.\n\
-    \nTest invalid data handling by creating orders with malformed tracking numbers.\
-    \ Verify the system properly catches these errors and flags records for manual\
-    \ review. Confirm that valid orders continue processing during invalid data scenarios.\
-    \ This testing ensures robust error isolation.\n\n### Performance Validation\n\
-    \nMeasure synchronization timing under various load conditions. Process batches\
-    \ of orders with tracking data to assess system performance. Verify that tracking\
-    \ creation completes within acceptable time limits even during peak order volumes.\
-    \ This performance testing identifies potential bottlenecks.\n\nMonitor system\
-    \ resource usage during large synchronization jobs. Track memory consumption,\
-    \ database load, and API rate limiting compliance. Optimize batch sizes and processing\
-    \ frequency based on these metrics. This proactive monitoring prevents production\
-    \ performance issues.\n\n## Security Considerations\n\n### API Key\
-    \ Management\n\nStore AfterShip API keys in Odoo's system parameters with proper\
-    \ encryption. Never embed keys in source code or configuration files. Rotate API\
-    \ keys quarterly or following security policy requirements. This key management\
-    \ practice prevents credential exposure.\n\nImplement IP whitelisting for AfterShip\
-    \ webhook calls when possible. Configure your firewall to accept connections only\
-    \ from AfterShip's published IP ranges. This additional security layer prevents\
-    \ unauthorized webhook injection attempts.\n\n### Data Privacy Compliance\n\n\
-    The integration design minimizes personal data exposure to AfterShip. Odoo sends\
-    \ only necessary order and tracking information required for shipment monitoring.\
-    \ Customer email addresses and phone numbers remain within Odoo unless explicitly\
-    \ configured for notifications. This privacy-first approach complies with data\
-    \ protection regulations.\n\nImplement data retention policies for tracking history\
-    \ in both systems. Regularly purge old tracking data from AfterShip using their\
-    \ API or dashboard. Configure Odoo to archive completed delivery records according\
-    \ to your data retention schedule. These policies reduce data storage risks.\n\
-    \n### Webhook Security\n\nValidate webhook signatures for all incoming AfterShip\
-    \ requests. Odoo's webhook endpoint verifies the HMAC signature using your webhook\
-    \ secret. This cryptographic validation ensures tracking updates originate from\
-    \ AfterShip, not malicious actors.\n\nImplement rate limiting on webhook endpoints\
-    \ to prevent denial-of-service attacks. Odoo's web framework can throttle excessive\
-    \ requests from any single IP address. This protection maintains system availability\
-    \ during unusual traffic patterns.\n\n### Access Control\n\nRestrict Odoo user\
-    \ permissions for AfterShip configuration. Grant access only to administrators\
-    \ and logistics team members who require integration management. Apply Odoo's\
-    \ granular permission system to prevent unauthorized configuration changes.\n\n\
-    Audit integration activity through Odoo's logging system. Monitor for unusual\
-    \ patterns like unexpected tracking creations or configuration modifications.\
-    \ These audit trails support security investigations and compliance reporting.\n\
-    \n## Performance Optimization\n\n### API Call Efficiency\n\nBatch\
+    \ data format errors during synchronization.\n\n## Error Handling and Resilience\\\
+    n\n### API Failure Scenarios\n\nAfterShip API outages trigger Odoo's retry mechanism\
+    \ for tracking creation. The system queues failed API calls and retries them using\
+    \ exponential backoff. This approach handles temporary network issues or AfterShip\
+    \ service degradation. Failed operations persist in the job queue for 24 hours.\n\
+    \nWebhook delivery failures activate AfterShip's retry policy for tracking updates.\
+    \ AfterShip attempts webhook delivery up to 5 times with increasing delays between\
+    \ attempts. This redundancy ensures Odoo receives critical tracking updates even\
+    \ during brief connectivity issues.\n\n### Data Validation Errors\n\nInvalid tracking\
+    \ numbers generate specific error responses from AfterShip's API. Odoo catches\
+    \ these errors and flags the corresponding delivery records for review. The system\
+    \ notifies logistics team members about invalid tracking data. This proactive\
+    \ alerting prevents prolonged tracking synchronization failures.\n\nCarrier code\
+    \ mismatches produce mapping errors during tracking creation. Odoo logs these\
+    \ errors and falls back to AfterShip's carrier detection when possible. The system\
+    \ suggests correct carrier codes based on tracking number patterns. This intelligent\
+    \ fallback reduces configuration errors.\n\n### Authentication Failures\n\nExpired\
+    \ API keys cause authentication failures in both directions. Odoo detects 401\
+    \ responses from AfterShip and alerts administrators to update the API key. The\
+    \ system continues processing existing tracking data while awaiting credential\
+    \ updates. This graceful degradation prevents complete integration failure.\n\n\
+    Webhook authentication failures indicate potential security issues. Odoo logs\
+    \ these events with full request details for security analysis. The system blocks\
+    \ repeated authentication attempts from suspicious sources. This security measure\
+    \ protects your tracking data integrity.\n\n### Recovery Procedures\n\nThe integration\
+    \ includes comprehensive recovery tools for data reconciliation. Odoo's AfterShip\
+    \ module provides a synchronization status dashboard that identifies missing tracking\
+    \ records. Administrators can trigger manual synchronization for specific time\
+    \ ranges or orders. This control enables quick recovery from extended outages.\n\
+    \nData conflict resolution procedures handle mismatches between Odoo and AfterShip.\
+    \ The system prioritizes Odoo's order data over AfterShip's information for customer\
+    \ details. Tracking status information from AfterShip takes precedence for delivery\
+    \ progress. This clear priority scheme resolves data conflicts automatically.\n\
+    \n## Testing and Validation\n\n### Connection Testing\n\nValidate the API connection\
+    \ before full implementation. Use Odoo's built-in connection tester in the AfterShip\
+    \ configuration menu. This tool verifies API key validity and basic connectivity\
+    \ to AfterShip's services. Successful tests confirm proper network configuration\
+    \ and authentication.\n\nTest webhook reception with AfterShip's webhook simulator.\
+    \ Send sample tracking update payloads to verify Odoo's parsing logic. Confirm\
+    \ that tracking updates properly modify delivery records and trigger customer\
+    \ notifications. This validation ensures the bidirectional data flow functions\
+    \ correctly.\n\n### Data Synchronization Verification\n\nCreate test orders with\
+    \ various carrier configurations to validate tracking creation. Monitor Odoo's\
+    \ logs for successful API calls to AfterShip. Verify that tracking numbers appear\
+    \ in your AfterShip dashboard shortly after delivery confirmation. This testing\
+    \ confirms the automatic synchronization timing.\n\nValidate tracking update flow\
+    \ by simulating carrier scan events in AfterShip. Use the tracking test feature\
+    \ to generate artificial tracking updates. Confirm these updates appear in Odoo's\
+    \ delivery records and customer communication history. This end-to-end testing\
+    \ validates the complete integration cycle.\n\n### Error Scenario Testing\n\n\
+    Simulate network failures during API calls to verify error handling. Temporarily\
+    \ block outbound connections to AfterShip's API endpoints during order processing.\
+    \ Confirm Odoo queues these requests and retries them when connectivity restores.\
+    \ This testing validates the resilience mechanisms.\n\nTest invalid data handling\
+    \ by creating orders with malformed tracking numbers. Verify the system properly\
+    \ catches these errors and flags records for manual review. Confirm that valid\
+    \ orders continue processing during invalid data scenarios. This testing ensures\
+    \ robust error isolation.\n\n### Performance Validation\n\nMeasure synchronization\
+    \ timing under various load conditions. Process batches of orders with tracking\
+    \ data to assess system performance. Verify that tracking creation completes within\
+    \ acceptable time limits even during peak order volumes. This performance testing\
+    \ identifies potential bottlenecks.\n\nMonitor system resource usage during large\
+    \ synchronization jobs. Track memory consumption, database load, and API rate\
+    \ limiting compliance. Optimize batch sizes and processing frequency based on\
+    \ these metrics. This proactive monitoring prevents production performance issues.\n\
+    \n## Security Considerations\n\n### API Key Management\n\nStore AfterShip API\
+    \ keys in Odoo's system parameters with proper encryption. Never embed keys in\
+    \ source code or configuration files. Rotate API keys quarterly or following security\
+    \ policy requirements. This key management practice prevents credential exposure.\n\
+    \nImplement IP whitelisting for AfterShip webhook calls when possible. Configure\
+    \ your firewall to accept connections only from AfterShip's published IP ranges.\
+    \ This additional security layer prevents unauthorized webhook injection attempts.\n\
+    \n### Data Privacy Compliance\n\nThe integration design minimizes personal data\
+    \ exposure to AfterShip. Odoo sends only necessary order and tracking information\
+    \ required for shipment monitoring. Customer email addresses and phone numbers\
+    \ remain within Odoo unless explicitly configured for notifications. This privacy-first\
+    \ approach complies with data protection regulations.\n\nImplement data retention\
+    \ policies for tracking history in both systems. Regularly purge old tracking\
+    \ data from AfterShip using their API or dashboard. Configure Odoo to archive\
+    \ completed delivery records according to your data retention schedule. These\
+    \ policies reduce data storage risks.\n\n### Webhook Security\n\nValidate webhook\
+    \ signatures for all incoming AfterShip requests. Odoo's webhook endpoint verifies\
+    \ the HMAC signature using your webhook secret. This cryptographic validation\
+    \ ensures tracking updates originate from AfterShip, not malicious actors.\n\n\
+    Implement rate limiting on webhook endpoints to prevent denial-of-service attacks.\
+    \ Odoo's web framework can throttle excessive requests from any single IP address.\
+    \ This protection maintains system availability during unusual traffic patterns.\n\
+    \n### Access Control\n\nRestrict Odoo user permissions for AfterShip configuration.\
+    \ Grant access only to administrators and logistics team members who require integration\
+    \ management. Apply Odoo's granular permission system to prevent unauthorized\
+    \ configuration changes.\n\nAudit integration activity through Odoo's logging\
+    \ system. Monitor for unusual patterns like unexpected tracking creations or configuration\
+    \ modifications. These audit trails support security investigations and compliance\
+    \ reporting.\n\n## Performance Optimization\n\n### API Call Efficiency\n\nBatch\
     \ tracking creation requests to minimize API calls to AfterShip. Odoo's job queue\
     \ can group multiple tracking creations into single API requests when possible.\
     \ This batching reduces API overhead and improves synchronization speed.\n\nImplement\
@@ -415,13 +413,14 @@ visualizations:
   placement_hint: after_conclusion
   data_context: learning path and knowledge graph
   mermaid_chart_syntax: "flowchart TB\n\n    Current[\"[CURRENT] Aftership to Odoo\
-    \ Integration: Complete 2025 Guide\"]\n\n    %% Related Topics - Cross-References\n\
-    \    Current -.-> Rel0[\"Cloudflare to Odoo Integration: Complete 2025 Guide\"\
-    ]\n    Current -.-> Rel1[\"Facebook Pixel to Odoo Integration: Complete 2025 Guide\"\
-    ]\n\n    %% Professional Styling\n    classDef current fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n\
-    \    classDef prereq fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000\n\
-    \    classDef next fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000\n \
-    \   classDef related fill:#f5f5f5,stroke:#616161,stroke-width:1px,color:#000\n\
+    \ Integration: Complete 2025 Guide\"]\n\n    %% Next Steps - Learning Progression\n\
+    \    Current --> Next0(\"Complete Implementation Guide\")\n\n    %% Related Topics\
+    \ - Cross-References\n    Current -.-> Rel0[\"Cloudflare to Odoo Integration:\
+    \ Complete 2025 Guide\"]\n    Current -.-> Rel1[\"Facebook Pixel to Odoo Integration:\
+    \ Complete 2025 Guide\"]\n\n    %% Professional Styling\n    classDef current\
+    \ fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n    classDef prereq\
+    \ fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000\n    classDef next fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000\n\
+    \    classDef related fill:#f5f5f5,stroke:#616161,stroke-width:1px,color:#000\n\
     \    classDef trouble fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000\n\
     \    classDef support fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#000\n\
-    \n    class Current current\n    class Rel0,Rel1 related"
+    \n    class Current current\n    class Next0 next\n    class Rel0,Rel1 related"

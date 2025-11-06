@@ -70,12 +70,12 @@ ai_generated_content:
     while customers experience seamless purchase confirmation flows. This technical
     foundation scales with your transaction volume without additional maintenance
     burden.'
-  main_content: "## Integration Architecture and Data Flow\n\n### Klarna\
-    \ Payments API Architecture\n\nKlarna Payments operates through a distributed\
-    \ API architecture with regional endpoints. The European cluster uses api.klarna.com\
-    \ while the North American cluster uses api-na.klarna.com. Your Odoo integration\
-    \ must target the correct regional API based on your merchant account configuration.\
-    \ Each API call requires specific HTTP headers including Authorization, Content-Type,\
+  main_content: "## Integration Architecture and Data Flow\n\n### Klarna Payments\
+    \ API Architecture\n\nKlarna Payments operates through a distributed API architecture\
+    \ with regional endpoints. The European cluster uses api.klarna.com while the\
+    \ North American cluster uses api-na.klarna.com. Your Odoo integration must target\
+    \ the correct regional API based on your merchant account configuration. Each\
+    \ API call requires specific HTTP headers including Authorization, Content-Type,\
     \ and Klarna-specific user agent strings.\n\nThe Klarna system employs OAuth 2.0\
     \ client credentials flow for server-to-server authentication. Your Odoo instance\
     \ obtains an access token using your merchant credentials before making any API\
@@ -106,19 +106,19 @@ ai_generated_content:
     \ logic - authorization events create orders while capture events update payment\
     \ status. The system implements idempotency checks using Klarna's event ID to\
     \ prevent duplicate processing. Database transactions ensure data consistency\
-    \ across order and payment records.\n\n## Step-by-Step Configuration\n\
-    \n### Odoo Module Structure\n\nCreate a new Odoo module named payment_klarna with\
-    \ standard module structure. The __manifest__.py file declares dependencies on\
-    \ payment, sale, and account modules. Your models directory contains Python files\
-    \ for payment transaction handling and webhook processing. Security subdirectory\
-    \ houses ir.model.access.csv for permission definitions.\n\nThe module initialization\
-    \ file imports critical classes including PaymentProvider and PaymentTransaction.\
-    \ You inherit from these base classes to implement Klarna-specific payment processing.\
-    \ The module template includes static descriptions and images for the Odoo app\
-    \ store. Proper module structure ensures smooth installation and upgrade paths.\n\
-    \n```\n# __manifest__.py\n{\n    'name': 'Klarna Payments',\n    'version': '18.0.1.0.0',\n\
-    \    'category': 'Accounting/Payment',\n    'depends': ['payment', 'sale', 'account'],\n\
-    \    'data': [\n        'views/payment_klarna_templates.xml',\n        'views/payment_provider_views.xml',\n\
+    \ across order and payment records.\n\n## Step-by-Step Configuration\n\n### Odoo\
+    \ Module Structure\n\nCreate a new Odoo module named payment_klarna with standard\
+    \ module structure. The __manifest__.py file declares dependencies on payment,\
+    \ sale, and account modules. Your models directory contains Python files for payment\
+    \ transaction handling and webhook processing. Security subdirectory houses ir.model.access.csv\
+    \ for permission definitions.\n\nThe module initialization file imports critical\
+    \ classes including PaymentProvider and PaymentTransaction. You inherit from these\
+    \ base classes to implement Klarna-specific payment processing. The module template\
+    \ includes static descriptions and images for the Odoo app store. Proper module\
+    \ structure ensures smooth installation and upgrade paths.\n\n```\n# __manifest__.py\n\
+    {\n    'name': 'Klarna Payments',\n    'version': '18.0.1.0.0',\n    'category':\
+    \ 'Accounting/Payment',\n    'depends': ['payment', 'sale', 'account'],\n    'data':\
+    \ [\n        'views/payment_klarna_templates.xml',\n        'views/payment_provider_views.xml',\n\
     \        'data/payment_provider_data.xml',\n    ],\n    'application': True,\n\
     }\n```\n\n### Payment Provider Configuration\n\nExtend the payment.provider model\
     \ to add Klarna-specific configuration fields. Create fields for API credentials\
@@ -185,41 +185,41 @@ ai_generated_content:
     \ webhook signature')\n        \n    event_type = request_data['event_type']\n\
     \    event_data = request_data['data']\n    \n    if event_type == 'payment_capture_completed':\n\
     \        self._handle_capture_event(event_data)\n        \n    return jsonify({'status':\
-    \ 'processed'})\n```\n\n## Data Mapping and Transformation\n\n###\
-    \ Order Data Structure Mapping\n\nKlarna's order line specification requires precise\
-    \ mapping from Odoo's sale order structure. Each order line transforms into Klarna's\
-    \ item format with name, quantity, unit_price, and tax_rate fields. The total_amount\
-    \ field must match the sum of all line items including taxes and shipping. Odoo's\
-    \ product variants require special handling to preserve attribute information\
-    \ in the reference field.\n\nProduct type mapping converts Odoo's product categories\
-    \ to Klarna's product types - physical, digital, gift_card, or discount. Shipping\
-    \ fee lines map to the shipping_fee type with zero tax rate for tax-inclusive\
-    \ pricing. Discount lines require negative unit prices and the discount type designation.\
-    \ The cart total validation ensures Klarna's calculated amount matches Odoo's\
-    \ order total.\n\n```\ndef _map_order_lines(self, order):\n    lines = []\n  \
-    \  for line in order.order_line:\n        if line.product_id.type == 'service':\n\
-    \            product_type = 'digital'\n        else:\n            product_type\
-    \ = 'physical'\n            \n        lines.append({\n            'type': product_type,\n\
-    \            'name': line.name,\n            'quantity': line.product_uom_qty,\n\
-    \            'unit_price': int(line.price_unit * 100),\n            'tax_rate':\
-    \ int(line.tax_id.amount * 10000),\n            'total_amount': int(line.price_total\
-    \ * 100),\n        })\n    \n    # Add shipping line\n    if order.carrier_id:\n\
-    \        lines.append({\n            'type': 'shipping_fee',\n            'name':\
-    \ order.carrier_id.name,\n            'quantity': 1,\n            'unit_price':\
-    \ int(order.delivery_price * 100),\n            'tax_rate': 0,\n            'total_amount':\
-    \ int(order.delivery_price * 100),\n        })\n    \n    return lines\n```\n\n\
-    ### Customer Address Transformation\n\nKlarna's address format requires structured\
-    \ data that differs from Odoo's partner fields. The mapping process extracts street\
-    \ name and number from Odoo's single street field using pattern matching. Customer\
-    \ title conversion maps Odoo's selection fields to Klarna's accepted values -\
-    \ mr, mrs, or miss. Phone number formatting ensures E.164 compliance with country\
-    \ code prefix.\n\nAddress validation occurs before session creation to prevent\
-    \ payment authorization failures. The system checks for required fields including\
-    \ postal code, city, and country code. Business customer detection triggers different\
-    \ address fields for company names and organization numbers. Regional address\
-    \ formats accommodate country-specific requirements like Swedish apartment numbers.\n\
-    \n```\ndef _map_address(self, partner):\n    street_name, street_number = self._split_street(partner.street)\n\
-    \    \n    address = {\n        'given_name': partner.first_name,\n        'family_name':\
+    \ 'processed'})\n```\n\n## Data Mapping and Transformation\n\n### Order Data Structure\
+    \ Mapping\n\nKlarna's order line specification requires precise mapping from Odoo's\
+    \ sale order structure. Each order line transforms into Klarna's item format with\
+    \ name, quantity, unit_price, and tax_rate fields. The total_amount field must\
+    \ match the sum of all line items including taxes and shipping. Odoo's product\
+    \ variants require special handling to preserve attribute information in the reference\
+    \ field.\n\nProduct type mapping converts Odoo's product categories to Klarna's\
+    \ product types - physical, digital, gift_card, or discount. Shipping fee lines\
+    \ map to the shipping_fee type with zero tax rate for tax-inclusive pricing. Discount\
+    \ lines require negative unit prices and the discount type designation. The cart\
+    \ total validation ensures Klarna's calculated amount matches Odoo's order total.\n\
+    \n```\ndef _map_order_lines(self, order):\n    lines = []\n    for line in order.order_line:\n\
+    \        if line.product_id.type == 'service':\n            product_type = 'digital'\n\
+    \        else:\n            product_type = 'physical'\n            \n        lines.append({\n\
+    \            'type': product_type,\n            'name': line.name,\n         \
+    \   'quantity': line.product_uom_qty,\n            'unit_price': int(line.price_unit\
+    \ * 100),\n            'tax_rate': int(line.tax_id.amount * 10000),\n        \
+    \    'total_amount': int(line.price_total * 100),\n        })\n    \n    # Add\
+    \ shipping line\n    if order.carrier_id:\n        lines.append({\n          \
+    \  'type': 'shipping_fee',\n            'name': order.carrier_id.name,\n     \
+    \       'quantity': 1,\n            'unit_price': int(order.delivery_price * 100),\n\
+    \            'tax_rate': 0,\n            'total_amount': int(order.delivery_price\
+    \ * 100),\n        })\n    \n    return lines\n```\n\n### Customer Address Transformation\n\
+    \nKlarna's address format requires structured data that differs from Odoo's partner\
+    \ fields. The mapping process extracts street name and number from Odoo's single\
+    \ street field using pattern matching. Customer title conversion maps Odoo's selection\
+    \ fields to Klarna's accepted values - mr, mrs, or miss. Phone number formatting\
+    \ ensures E.164 compliance with country code prefix.\n\nAddress validation occurs\
+    \ before session creation to prevent payment authorization failures. The system\
+    \ checks for required fields including postal code, city, and country code. Business\
+    \ customer detection triggers different address fields for company names and organization\
+    \ numbers. Regional address formats accommodate country-specific requirements\
+    \ like Swedish apartment numbers.\n\n```\ndef _map_address(self, partner):\n \
+    \   street_name, street_number = self._split_street(partner.street)\n    \n  \
+    \  address = {\n        'given_name': partner.first_name,\n        'family_name':\
     \ partner.last_name,\n        'email': partner.email,\n        'street_address':\
     \ street_name,\n        'street_number': street_number,\n        'postal_code':\
     \ partner.zip,\n        'city': partner.city,\n        'country': partner.country_id.code,\n\
@@ -243,11 +243,11 @@ ai_generated_content:
     \ trigger special handling with zero tax rates across all order lines. The system\
     \ validates tax configuration before payment session creation to identify calculation\
     \ discrepancies. Cross-border tax rules require country-specific tax engine configuration\
-    \ for accurate EU VAT handling.\n\n## Error Handling and Resilience\n\
-    \n### Common API Error Patterns\n\nKlarna's API returns structured error responses\
-    \ with HTTP status codes and error identifiers. Authentication failures return\
-    \ 401 status with invalid_credentials error code. Rate limit violations trigger\
-    \ 429 responses with detailed retry-after headers. Validation errors provide field-specific\
+    \ for accurate EU VAT handling.\n\n## Error Handling and Resilience\n\n### Common\
+    \ API Error Patterns\n\nKlarna's API returns structured error responses with HTTP\
+    \ status codes and error identifiers. Authentication failures return 401 status\
+    \ with invalid_credentials error code. Rate limit violations trigger 429 responses\
+    \ with detailed retry-after headers. Validation errors provide field-specific\
     \ messages in the error payload for debugging.\n\nThe integration categorizes\
     \ errors into retryable and non-retryable types. Network timeouts and server errors\
     \ (5xx) qualify for automatic retry with exponential backoff. Business logic errors\
@@ -283,89 +283,89 @@ ai_generated_content:
     \ capture processes use two-phase commit patterns between Odoo and Klarna API\
     \ calls. Transaction rollback handles API failures after local database updates.\
     \ The system maintains audit logs of all transaction boundaries for debugging\
-    \ complex failures.\n\n## Testing and Validation\n\n### Test Environment\
-    \ Configuration\n\nEstablish a dedicated test environment using Klarna's sandbox\
-    \ API endpoints. Create test merchant accounts for each region to validate regional\
-    \ API differences. Configure test webhook endpoints that simulate production URL\
-    \ structure. Generate test products with varied tax configurations to validate\
-    \ calculation accuracy.\n\nThe test suite includes dummy customer profiles with\
-    \ different address formats and business types. Test payment methods cover all\
-    \ Klarna payment options available in your target markets. Load testing simulates\
-    \ peak traffic patterns to identify performance bottlenecks before production\
-    \ deployment.\n\n### Payment Flow Test Scenarios\n\nTest the complete payment\
-    \ lifecycle from session creation through refund processing. Validate successful\
-    \ payment authorization creates orders with correct payment references. Test partial\
-    \ capture scenarios for orders with split shipment requirements. Verify cancellation\
-    \ flows properly void authorized payments before capture.\n\nError condition testing\
-    \ covers payment declines, insufficient funds, and expired authorization sessions.\
-    \ Test timeout handling by simulating slow API responses from Klarna servers.\
-    \ Validate duplicate webhook processing doesn't create duplicate orders in Odoo.\n\
-    \n### Data Validation Procedures\n\nImplement schema validation for all Klarna\
-    \ API requests and responses. Use JSON Schema definitions to validate webhook\
-    \ payload structure before processing. Create data quality checks that verify\
-    \ tax calculation consistency between systems. Validate address formatting meets\
-    \ Klarna's requirements for each target country.\n\nOrder total validation ensures\
-    \ the sum of line items matches the order total within acceptable rounding tolerance.\
-    \ Product reference mapping verification confirms product variants maintain their\
-    \ identity through the payment flow. Customer data validation checks personal\
-    \ identification number formatting for regional requirements.\n\n### Performance\
-    \ Benchmarking\n\nMeasure API response times under different load conditions to\
-    \ establish performance baselines. Test webhook processing capacity by simulating\
-    \ high-volume payment events. Validate database query performance during order\
-    \ synchronization operations. Establish performance thresholds that trigger scaling\
-    \ operations.\n\nLoad testing identifies the maximum concurrent payment sessions\
-    \ your infrastructure supports. Stress testing determines breaking points for\
-    \ graceful degradation planning. Endurance testing verifies system stability under\
-    \ sustained load over multiple hours.\n\n## Security Considerations\n\
-    \n### API Credential Management\n\nStore Klarna API credentials using Odoo's encrypted\
-    \ fields with key rotation every ninety days. Implement credential versioning\
-    \ to support seamless key updates without service interruption. Restrict access\
-    \ to credential configuration to authorized administrators only. Audit credential\
-    \ usage patterns to detect anomalous access.\n\nThe system masks credential exposure\
-    \ in log files and user interface elements. API client implementations never cache\
-    \ credentials in memory beyond individual request cycles. Credential backup procedures\
-    \ maintain security while ensuring business continuity.\n\n### Webhook Security\
-    \ Implementation\n\nValidate every webhook request using the Klarna-Signature\
-    \ header with HMAC verification. Implement timestamp validation to reject requests\
-    \ older than five minutes to prevent replay attacks. Rate limit webhook endpoints\
-    \ by source IP to prevent denial of service attacks. Log all webhook authentication\
-    \ attempts for security monitoring.\n\nWebhook payload processing occurs after\
-    \ successful signature verification only. The system rejects payloads with invalid\
-    \ JSON structure before any business logic execution. IP whitelisting capabilities\
-    \ restrict webhook sources to Klarna's published IP ranges.\n\n### Data Protection\
-    \ Compliance\n\nThe integration follows GDPR principles for customer data minimization\
-    \ and retention. Personal data flows through secure channels with encryption in\
-    \ transit and at rest. Audit trails track data access for compliance reporting\
-    \ requirements. Data retention policies automatically purge sensitive information\
-    \ after legal requirements expire.\n\nPayment card data never touches Odoo's database,\
-    \ remaining in Klarna's PCI-compliant environment. Customer personal information\
-    \ transfers only during essential payment operations. The system provides data\
-    \ export and deletion capabilities for individual customer requests.\n\n## Performance\
-    \ Optimization\n\n### API Call Optimization\n\nReduce Klarna API calls\
-    \ through strategic caching of static data like product information. Batch multiple\
-    \ order line updates into single API calls where possible. Implement request deduplication\
-    \ to prevent identical API calls within short time windows. Use conditional requests\
-    \ with ETag headers to minimize data transfer.\n\nThe payment session creation\
-    \ process precomputes required data to minimize database queries during API calls.\
-    \ Order synchronization operations use bulk processing to handle multiple orders\
-    \ in single transactions. API response caching applies to product tax rates and\
-    \ customer address validation results.\n\n### Database Performance Tuning\n\n\
-    Optimize database indexes on payment reference fields to accelerate order lookups.\
-    \ Partition transaction tables by date to maintain query performance as data volume\
-    \ grows. Implement read replicas for reporting queries that don't require real-time\
-    \ data. Regular database maintenance prevents index fragmentation and statistics\
-    \ staleness.\n\nThe system uses database connection pooling to reduce connection\
-    \ overhead for frequent API operations. Query optimization focuses on payment\
-    \ transaction reconciliation processes that scan large datasets. Background job\
-    \ processing moves heavy operations outside the request-response cycle.\n\n###\
-    \ Background Processing Strategy\n\nImplement asynchronous processing for non-critical\
-    \ path operations like analytics and reporting. Use Odoo's queue job system to\
-    \ handle webhook processing outside real-time constraints. Schedule heavy operations\
-    \ like daily reconciliation during off-peak hours. Implement priority queues to\
-    \ ensure payment processing takes precedence over maintenance tasks.\n\nBackground\
-    \ job monitoring provides alerting for stuck jobs and queue backlog growth. Automatic\
-    \ retry with exponential backoff handles transient failures without manual intervention.\
-    \ Job idempotency ensures safe retry of potentially duplicate operations."
+    \ complex failures.\n\n## Testing and Validation\n\n### Test Environment Configuration\n\
+    \nEstablish a dedicated test environment using Klarna's sandbox API endpoints.\
+    \ Create test merchant accounts for each region to validate regional API differences.\
+    \ Configure test webhook endpoints that simulate production URL structure. Generate\
+    \ test products with varied tax configurations to validate calculation accuracy.\n\
+    \nThe test suite includes dummy customer profiles with different address formats\
+    \ and business types. Test payment methods cover all Klarna payment options available\
+    \ in your target markets. Load testing simulates peak traffic patterns to identify\
+    \ performance bottlenecks before production deployment.\n\n### Payment Flow Test\
+    \ Scenarios\n\nTest the complete payment lifecycle from session creation through\
+    \ refund processing. Validate successful payment authorization creates orders\
+    \ with correct payment references. Test partial capture scenarios for orders with\
+    \ split shipment requirements. Verify cancellation flows properly void authorized\
+    \ payments before capture.\n\nError condition testing covers payment declines,\
+    \ insufficient funds, and expired authorization sessions. Test timeout handling\
+    \ by simulating slow API responses from Klarna servers. Validate duplicate webhook\
+    \ processing doesn't create duplicate orders in Odoo.\n\n### Data Validation Procedures\n\
+    \nImplement schema validation for all Klarna API requests and responses. Use JSON\
+    \ Schema definitions to validate webhook payload structure before processing.\
+    \ Create data quality checks that verify tax calculation consistency between systems.\
+    \ Validate address formatting meets Klarna's requirements for each target country.\n\
+    \nOrder total validation ensures the sum of line items matches the order total\
+    \ within acceptable rounding tolerance. Product reference mapping verification\
+    \ confirms product variants maintain their identity through the payment flow.\
+    \ Customer data validation checks personal identification number formatting for\
+    \ regional requirements.\n\n### Performance Benchmarking\n\nMeasure API response\
+    \ times under different load conditions to establish performance baselines. Test\
+    \ webhook processing capacity by simulating high-volume payment events. Validate\
+    \ database query performance during order synchronization operations. Establish\
+    \ performance thresholds that trigger scaling operations.\n\nLoad testing identifies\
+    \ the maximum concurrent payment sessions your infrastructure supports. Stress\
+    \ testing determines breaking points for graceful degradation planning. Endurance\
+    \ testing verifies system stability under sustained load over multiple hours.\n\
+    \n## Security Considerations\n\n### API Credential Management\n\nStore Klarna\
+    \ API credentials using Odoo's encrypted fields with key rotation every ninety\
+    \ days. Implement credential versioning to support seamless key updates without\
+    \ service interruption. Restrict access to credential configuration to authorized\
+    \ administrators only. Audit credential usage patterns to detect anomalous access.\n\
+    \nThe system masks credential exposure in log files and user interface elements.\
+    \ API client implementations never cache credentials in memory beyond individual\
+    \ request cycles. Credential backup procedures maintain security while ensuring\
+    \ business continuity.\n\n### Webhook Security Implementation\n\nValidate every\
+    \ webhook request using the Klarna-Signature header with HMAC verification. Implement\
+    \ timestamp validation to reject requests older than five minutes to prevent replay\
+    \ attacks. Rate limit webhook endpoints by source IP to prevent denial of service\
+    \ attacks. Log all webhook authentication attempts for security monitoring.\n\n\
+    Webhook payload processing occurs after successful signature verification only.\
+    \ The system rejects payloads with invalid JSON structure before any business\
+    \ logic execution. IP whitelisting capabilities restrict webhook sources to Klarna's\
+    \ published IP ranges.\n\n### Data Protection Compliance\n\nThe integration follows\
+    \ GDPR principles for customer data minimization and retention. Personal data\
+    \ flows through secure channels with encryption in transit and at rest. Audit\
+    \ trails track data access for compliance reporting requirements. Data retention\
+    \ policies automatically purge sensitive information after legal requirements\
+    \ expire.\n\nPayment card data never touches Odoo's database, remaining in Klarna's\
+    \ PCI-compliant environment. Customer personal information transfers only during\
+    \ essential payment operations. The system provides data export and deletion capabilities\
+    \ for individual customer requests.\n\n## Performance Optimization\n\n### API\
+    \ Call Optimization\n\nReduce Klarna API calls through strategic caching of static\
+    \ data like product information. Batch multiple order line updates into single\
+    \ API calls where possible. Implement request deduplication to prevent identical\
+    \ API calls within short time windows. Use conditional requests with ETag headers\
+    \ to minimize data transfer.\n\nThe payment session creation process precomputes\
+    \ required data to minimize database queries during API calls. Order synchronization\
+    \ operations use bulk processing to handle multiple orders in single transactions.\
+    \ API response caching applies to product tax rates and customer address validation\
+    \ results.\n\n### Database Performance Tuning\n\nOptimize database indexes on\
+    \ payment reference fields to accelerate order lookups. Partition transaction\
+    \ tables by date to maintain query performance as data volume grows. Implement\
+    \ read replicas for reporting queries that don't require real-time data. Regular\
+    \ database maintenance prevents index fragmentation and statistics staleness.\n\
+    \nThe system uses database connection pooling to reduce connection overhead for\
+    \ frequent API operations. Query optimization focuses on payment transaction reconciliation\
+    \ processes that scan large datasets. Background job processing moves heavy operations\
+    \ outside the request-response cycle.\n\n### Background Processing Strategy\n\n\
+    Implement asynchronous processing for non-critical path operations like analytics\
+    \ and reporting. Use Odoo's queue job system to handle webhook processing outside\
+    \ real-time constraints. Schedule heavy operations like daily reconciliation during\
+    \ off-peak hours. Implement priority queues to ensure payment processing takes\
+    \ precedence over maintenance tasks.\n\nBackground job monitoring provides alerting\
+    \ for stuck jobs and queue backlog growth. Automatic retry with exponential backoff\
+    \ handles transient failures without manual intervention. Job idempotency ensures\
+    \ safe retry of potentially duplicate operations."
   conclusion: 'Your Klarna integration now processes payments with complete synchronization
     between systems. The implementation handles the complete transaction lifecycle
     from initial authorization through final settlement. Your finance team receives
@@ -460,13 +460,14 @@ visualizations:
   placement_hint: after_conclusion
   data_context: learning path and knowledge graph
   mermaid_chart_syntax: "flowchart TB\n\n    Current[\"[CURRENT] Klarna to Odoo Integration:\
-    \ Complete 2025 Guide\"]\n\n    %% Related Topics - Cross-References\n    Current\
-    \ -.-> Rel0[\"Cloudflare to Odoo Integration: Complete 2025 Guide\"]\n    Current\
-    \ -.-> Rel1[\"Facebook Pixel to Odoo Integration: Complete 2025 Guide\"]\n\n \
-    \   %% Professional Styling\n    classDef current fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n\
+    \ Complete 2025 Guide\"]\n\n    %% Next Steps - Learning Progression\n    Current\
+    \ --> Next0(\"Complete Implementation Guide\")\n\n    %% Related Topics - Cross-References\n\
+    \    Current -.-> Rel0[\"Cloudflare to Odoo Integration: Complete 2025 Guide\"\
+    ]\n    Current -.-> Rel1[\"Facebook Pixel to Odoo Integration: Complete 2025 Guide\"\
+    ]\n\n    %% Professional Styling\n    classDef current fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n\
     \    classDef prereq fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000\n\
     \    classDef next fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000\n \
     \   classDef related fill:#f5f5f5,stroke:#616161,stroke-width:1px,color:#000\n\
     \    classDef trouble fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000\n\
     \    classDef support fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#000\n\
-    \n    class Current current\n    class Rel0,Rel1 related"
+    \n    class Current current\n    class Next0 next\n    class Rel0,Rel1 related"

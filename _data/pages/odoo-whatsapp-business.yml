@@ -73,148 +73,147 @@ ai_generated_content:
     contact data between systems, and build error-resistant data pipelines. This integration
     transforms WhatsApp from a standalone messaging app into a powerful business intelligence
     tool embedded within your Odoo ecosystem.'
-  main_content: "## Integration Architecture and Data Flow\n\n### Core\
-    \ System Components\n\nThe WhatsApp Business to Odoo integration relies on three\
-    \ primary components. The Meta Graph API serves as the official interface for\
-    \ WhatsApp Business operations. Odoo 18 provides the WhatsApp Connector module\
-    \ through its Odoo Studio ecosystem. A custom webhook bridge facilitates real-time\
-    \ communication between these systems. This architecture ensures message delivery\
-    \ while maintaining data consistency across platforms.\n\nYour integration must\
-    \ handle two distinct data flow directions. Outbound messages originate from Odoo\
-    \ and route through the Meta API to customer devices. Inbound messages flow from\
-    \ customer WhatsApp accounts through Meta webhooks to your Odoo instance. This\
-    \ bidirectional communication requires careful session management and message\
-    \ state tracking. The system preserves conversation context across multiple interaction\
-    \ points.\n\n### Authentication and Security Layers\n\nMeta enforces strict authentication\
-    \ using permanent access tokens tied to your WhatsApp Business Account. Odoo authenticates\
-    \ via standard database credentials and API keys. The webhook bridge must validate\
-    \ signatures from both systems to prevent unauthorized access. Implement token\
-    \ rotation policies for enhanced security. These layers ensure only legitimate\
-    \ messages enter your business workflow.\n\nThe data flow begins when a customer\
-    \ initiates a WhatsApp conversation. Meta's webhook service captures this event\
-    \ and forwards it to your configured endpoint. Your webhook bridge processes the\
-    \ payload, extracts the message content, and reformats it for Odoo's API. The\
-    \ system then creates or updates the contact record in Odoo's CRM module. This\
-    \ entire process completes within seconds, enabling real-time engagement.\n\n\
-    ### Message Template Management\n\nWhatsApp Business requires pre-approved message\
-    \ templates for outbound communications not initiated by customer responses. Your\
-    \ integration must manage these templates through the Meta API. Odoo stores template\
-    \ approvals and associates them with specific automation workflows. When a trigger\
-    \ event occurs in Odoo, the system selects the appropriate template, personalizes\
-    \ variables, and submits it for delivery.\n\nThe architecture supports media-rich\
-    \ messages including images, documents, and interactive buttons. These elements\
-    \ require additional processing steps for proper rendering. Your implementation\
-    \ must handle file uploads to Meta's media endpoints and reference these media\
-    \ IDs in message payloads. This capability enables rich customer experiences like\
-    \ product catalogs and document sharing directly through WhatsApp.\n\n## Step-by-Step\
-    \ Configuration\n\n### Meta Business Suite Setup\n\nBegin configuration\
-    \ in the Meta Business Suite. Create a dedicated WhatsApp Business Account if\
-    \ you lack an existing one. Navigate to Business Settings > Accounts > WhatsApp\
-    \ Accounts. Select your phone number for business verification. This process requires\
-    \ documentation proving your business identity. Meta typically approves verified\
-    \ businesses within 48 hours.\n\nAccess the Graph API Explorer to generate your\
-    \ system access token. Select your WhatsApp Business Account from the application\
-    \ dropdown. Choose the \"whatsapp_business_messaging\" permission scope. Generate\
-    \ a long-lived user access token with 60-day validity. Store this token securely\
-    \ for later use in your webhook configuration. Never expose this token in client-side\
-    \ code or public repositories.\n\nConfigure webhook subscriptions for message\
-    \ events. In your App Dashboard, navigate to Webhooks > WhatsApp Business Account.\
-    \ Subscribe to the \"messages\" field. Provide your webhook endpoint URL that\
-    \ points to your Odoo instance or intermediary service. Verify this endpoint responds\
-    \ correctly to Meta's challenge requests. The system now routes all message events\
-    \ to your specified URL.\n\n### Odoo WhatsApp Module Installation\n\nInstall the\
-    \ WhatsApp Connector module through Odoo's App Store. Navigate to Apps > search\
-    \ \"WhatsApp Business Integration\". Purchase and install the official module.\
-    \ Alternative open-source options exist but lack official support. The module\
-    \ adds WhatsApp-specific menu items to your Odoo interface and creates necessary\
-    \ database tables for message storage.\n\nConfigure the module settings through\
-    \ Settings > WhatsApp > Configuration. Paste your Meta access token into the designated\
-    \ field. Provide your WhatsApp Business Account ID and phone number ID. These\
-    \ values appear in your Meta Business Suite under Account Info. Test the connection\
-    \ using the \"Verify Credentials\" button. Resolve any authentication errors before\
-    \ proceeding.\n\nDefine your message templates within Odoo's template management\
-    \ interface. Navigate to WhatsApp > Templates > Create. Name each template descriptively\
-    \ relating to its business purpose. Add template variables using the {{1}} syntax\
-    \ for dynamic content. Submit templates for Meta approval directly through the\
-    \ Odoo interface. Approval typically requires 24 hours but can extend during high-volume\
-    \ periods.\n\n### Webhook Endpoint Implementation\n\nCreate a custom webhook controller\
-    \ in Odoo to receive Meta's messages. Inherit from the http.Controller class and\
-    \ define a route for '/whatsapp/webhook'. Implement both GET and POST methods.\
-    \ The GET method handles Meta's webhook verification challenge. The POST method\
-    \ processes incoming message payloads.\n\n```python\nfrom odoo import http\nimport\
-    \ json\n\nclass WhatsAppWebhook(http.Controller):\n    @http.route('/whatsapp/webhook',\
-    \ auth='public', methods=['GET'])\n    def verify_webhook(self, **kw):\n     \
-    \   hub_challenge = kw.get('hub.challenge')\n        hub_verify_token = kw.get('hub.verify_token')\n\
-    \        if hub_verify_token == 'YOUR_VERIFY_TOKEN':\n            return hub_challenge\n\
-    \        return 'Verification failed'\n\n    @http.route('/whatsapp/webhook',\
-    \ auth='public', methods=['POST'], csrf=False)\n    def process_message(self,\
-    \ **kw):\n        data = json.loads(request.httprequest.data)\n        for entry\
-    \ in data.get('entry', []):\n            for change in entry.get('changes', []):\n\
-    \                if change.get('field') == 'messages':\n                    self.process_whatsapp_message(change['value'])\n\
-    \        return 'OK'\n```\n\nThis controller structure validates webhook ownership\
-    \ and processes incoming messages. Extend the process_whatsapp_message method\
-    \ to handle different message types like text, media, and location. Implement\
-    \ error logging to capture processing failures for later analysis.\n\n### Automation\
-    \ Rule Configuration\n\nBuild automation rules that trigger WhatsApp messages\
-    \ based on Odoo events. Navigate to Settings > Automated Actions > Create. Define\
-    \ triggers for common business scenarios like new lead capture, order confirmation,\
-    \ or support ticket creation. These rules determine when your system sends proactive\
-    \ WhatsApp notifications.\n\nConfigure action rules that specify which template\
-    \ to use and how to populate variables. Use Odoo's domain syntax to filter which\
-    \ records qualify for messaging. Set appropriate delays for time-sensitive communications.\
-    \ Test these rules thoroughly in a staging environment before activating them\
-    \ in production.\n\nEstablish fallback mechanisms for message delivery failures.\
-    \ Configure retry logic for temporary network issues. Implement escalation procedures\
-    \ for persistent delivery problems. These safeguards ensure reliable communication\
-    \ despite intermittent platform issues.\n\n## Data Mapping and Transformation\
-    \\n\n### Contact Synchronization Logic\n\nThe integration must match\
-    \ incoming WhatsApp messages with existing Odoo contacts. Use the WhatsApp phone\
-    \ number as the primary matching key. Implement fuzzy matching algorithms to handle\
-    \ international number formatting differences. The system should normalize all\
-    \ numbers to E.164 format before comparison.\n\nWhen no matching contact exists,\
-    \ create a new partner record in Odoo. Extract the customer's name from the WhatsApp\
-    \ profile information when available. Preserve the original WhatsApp ID for future\
-    \ message correlation. This automatic contact creation eliminates manual data\
-    \ entry for new customer interactions.\n\nMap conversation history to Odoo's CRM\
-    \ activity timeline. Each message becomes a logged activity linked to the contact\
-    \ record. Preserve message direction (inbound/outbound) and timestamps. This mapping\
-    \ provides complete context for sales and support teams during customer interactions.\n\
-    \n### Message Template Variable Binding\n\nOdoo's template system binds dynamic\
-    \ variables to WhatsApp message templates. Define variable sources from Odoo fields\
-    \ like customer name, order number, or appointment date. The transformation engine\
-    \ replaces template placeholders with actual values before sending.\n\nImplement\
-    \ strict validation for variable content to meet WhatsApp's template guidelines.\
-    \ Character limits vary by template category. Text variables cannot exceed 1024\
-    \ characters. Currency values require proper formatting with ISO currency codes.\
-    \ Date-time values must follow specified formats.\n\nHandle special cases for\
-    \ optional variables that might contain empty values. Design fallback content\
-    \ for missing data to prevent sending incomplete messages. This attention to edge\
-    \ cases ensures consistent message quality across variable conditions.\n\n###\
-    \ Media Message Handling\n\nWhatsApp media messages require special processing\
-    \ in Odoo. The system must download media files from Meta's servers and attach\
-    \ them to Odoo records. Implement asynchronous processing for large files to prevent\
-    \ webhook timeouts.\n\nStore media files in Odoo's document management system\
-    \ with proper access controls. Generate secure URLs for internal access while\
-    \ protecting customer privacy. Apply compression to images above certain size\
-    \ thresholds to optimize storage utilization.\n\nMap media types to appropriate\
-    \ Odoo record fields. Product images attach to product records, while document\
-    \ files link to relevant business transactions. This organized media management\
-    \ enhances record context without manual intervention.\n\n### Conversation State\
-    \ Management\n\nMaintain conversation state across multiple message exchanges.\
-    \ Track whether a conversation represents a new inquiry, ongoing support issue,\
-    \ or sales negotiation. This state information guides automated response selection\
-    \ and routing logic.\n\nImplement session timeouts to handle abandoned conversations.\
-    \ Define business rules for when to close inactive dialogues and trigger follow-up\
-    \ actions. This state management prevents resource waste on dead conversations\
-    \ while ensuring important dialogues receive proper attention.\n\nSync conversation\
-    \ status between WhatsApp and Odoo's lead stages. When a prospect moves from awareness\
-    \ to consideration in WhatsApp, update their lead stage in Odoo. This bidirectional\
-    \ status mapping maintains alignment between communication context and sales pipeline\
-    \ position.\n\n## Error Handling and Resilience\n\n### Common API\
-    \ Error Patterns\n\nThe Meta Graph API returns specific error codes your integration\
-    \ must handle. The \"131029\" code indicates template parameter mismatch. The\
-    \ \"131051\" code signals media upload failure. Implement comprehensive error\
-    \ logging that captures these codes with contextual information for debugging.\n\
+  main_content: "## Integration Architecture and Data Flow\n\n### Core System Components\n\
+    \nThe WhatsApp Business to Odoo integration relies on three primary components.\
+    \ The Meta Graph API serves as the official interface for WhatsApp Business operations.\
+    \ Odoo 18 provides the WhatsApp Connector module through its Odoo Studio ecosystem.\
+    \ A custom webhook bridge facilitates real-time communication between these systems.\
+    \ This architecture ensures message delivery while maintaining data consistency\
+    \ across platforms.\n\nYour integration must handle two distinct data flow directions.\
+    \ Outbound messages originate from Odoo and route through the Meta API to customer\
+    \ devices. Inbound messages flow from customer WhatsApp accounts through Meta\
+    \ webhooks to your Odoo instance. This bidirectional communication requires careful\
+    \ session management and message state tracking. The system preserves conversation\
+    \ context across multiple interaction points.\n\n### Authentication and Security\
+    \ Layers\n\nMeta enforces strict authentication using permanent access tokens\
+    \ tied to your WhatsApp Business Account. Odoo authenticates via standard database\
+    \ credentials and API keys. The webhook bridge must validate signatures from both\
+    \ systems to prevent unauthorized access. Implement token rotation policies for\
+    \ enhanced security. These layers ensure only legitimate messages enter your business\
+    \ workflow.\n\nThe data flow begins when a customer initiates a WhatsApp conversation.\
+    \ Meta's webhook service captures this event and forwards it to your configured\
+    \ endpoint. Your webhook bridge processes the payload, extracts the message content,\
+    \ and reformats it for Odoo's API. The system then creates or updates the contact\
+    \ record in Odoo's CRM module. This entire process completes within seconds, enabling\
+    \ real-time engagement.\n\n### Message Template Management\n\nWhatsApp Business\
+    \ requires pre-approved message templates for outbound communications not initiated\
+    \ by customer responses. Your integration must manage these templates through\
+    \ the Meta API. Odoo stores template approvals and associates them with specific\
+    \ automation workflows. When a trigger event occurs in Odoo, the system selects\
+    \ the appropriate template, personalizes variables, and submits it for delivery.\n\
+    \nThe architecture supports media-rich messages including images, documents, and\
+    \ interactive buttons. These elements require additional processing steps for\
+    \ proper rendering. Your implementation must handle file uploads to Meta's media\
+    \ endpoints and reference these media IDs in message payloads. This capability\
+    \ enables rich customer experiences like product catalogs and document sharing\
+    \ directly through WhatsApp.\n\n## Step-by-Step Configuration\n\n### Meta Business\
+    \ Suite Setup\n\nBegin configuration in the Meta Business Suite. Create a dedicated\
+    \ WhatsApp Business Account if you lack an existing one. Navigate to Business\
+    \ Settings > Accounts > WhatsApp Accounts. Select your phone number for business\
+    \ verification. This process requires documentation proving your business identity.\
+    \ Meta typically approves verified businesses within 48 hours.\n\nAccess the Graph\
+    \ API Explorer to generate your system access token. Select your WhatsApp Business\
+    \ Account from the application dropdown. Choose the \"whatsapp_business_messaging\"\
+    \ permission scope. Generate a long-lived user access token with 60-day validity.\
+    \ Store this token securely for later use in your webhook configuration. Never\
+    \ expose this token in client-side code or public repositories.\n\nConfigure webhook\
+    \ subscriptions for message events. In your App Dashboard, navigate to Webhooks\
+    \ > WhatsApp Business Account. Subscribe to the \"messages\" field. Provide your\
+    \ webhook endpoint URL that points to your Odoo instance or intermediary service.\
+    \ Verify this endpoint responds correctly to Meta's challenge requests. The system\
+    \ now routes all message events to your specified URL.\n\n### Odoo WhatsApp Module\
+    \ Installation\n\nInstall the WhatsApp Connector module through Odoo's App Store.\
+    \ Navigate to Apps > search \"WhatsApp Business Integration\". Purchase and install\
+    \ the official module. Alternative open-source options exist but lack official\
+    \ support. The module adds WhatsApp-specific menu items to your Odoo interface\
+    \ and creates necessary database tables for message storage.\n\nConfigure the\
+    \ module settings through Settings > WhatsApp > Configuration. Paste your Meta\
+    \ access token into the designated field. Provide your WhatsApp Business Account\
+    \ ID and phone number ID. These values appear in your Meta Business Suite under\
+    \ Account Info. Test the connection using the \"Verify Credentials\" button. Resolve\
+    \ any authentication errors before proceeding.\n\nDefine your message templates\
+    \ within Odoo's template management interface. Navigate to WhatsApp > Templates\
+    \ > Create. Name each template descriptively relating to its business purpose.\
+    \ Add template variables using the {{1}} syntax for dynamic content. Submit templates\
+    \ for Meta approval directly through the Odoo interface. Approval typically requires\
+    \ 24 hours but can extend during high-volume periods.\n\n### Webhook Endpoint\
+    \ Implementation\n\nCreate a custom webhook controller in Odoo to receive Meta's\
+    \ messages. Inherit from the http.Controller class and define a route for '/whatsapp/webhook'.\
+    \ Implement both GET and POST methods. The GET method handles Meta's webhook verification\
+    \ challenge. The POST method processes incoming message payloads.\n\n```python\n\
+    from odoo import http\nimport json\n\nclass WhatsAppWebhook(http.Controller):\n\
+    \    @http.route('/whatsapp/webhook', auth='public', methods=['GET'])\n    def\
+    \ verify_webhook(self, **kw):\n        hub_challenge = kw.get('hub.challenge')\n\
+    \        hub_verify_token = kw.get('hub.verify_token')\n        if hub_verify_token\
+    \ == 'YOUR_VERIFY_TOKEN':\n            return hub_challenge\n        return 'Verification\
+    \ failed'\n\n    @http.route('/whatsapp/webhook', auth='public', methods=['POST'],\
+    \ csrf=False)\n    def process_message(self, **kw):\n        data = json.loads(request.httprequest.data)\n\
+    \        for entry in data.get('entry', []):\n            for change in entry.get('changes',\
+    \ []):\n                if change.get('field') == 'messages':\n              \
+    \      self.process_whatsapp_message(change['value'])\n        return 'OK'\n```\n\
+    \nThis controller structure validates webhook ownership and processes incoming\
+    \ messages. Extend the process_whatsapp_message method to handle different message\
+    \ types like text, media, and location. Implement error logging to capture processing\
+    \ failures for later analysis.\n\n### Automation Rule Configuration\n\nBuild automation\
+    \ rules that trigger WhatsApp messages based on Odoo events. Navigate to Settings\
+    \ > Automated Actions > Create. Define triggers for common business scenarios\
+    \ like new lead capture, order confirmation, or support ticket creation. These\
+    \ rules determine when your system sends proactive WhatsApp notifications.\n\n\
+    Configure action rules that specify which template to use and how to populate\
+    \ variables. Use Odoo's domain syntax to filter which records qualify for messaging.\
+    \ Set appropriate delays for time-sensitive communications. Test these rules thoroughly\
+    \ in a staging environment before activating them in production.\n\nEstablish\
+    \ fallback mechanisms for message delivery failures. Configure retry logic for\
+    \ temporary network issues. Implement escalation procedures for persistent delivery\
+    \ problems. These safeguards ensure reliable communication despite intermittent\
+    \ platform issues.\n\n## Data Mapping and Transformation\\n\n### Contact Synchronization\
+    \ Logic\n\nThe integration must match incoming WhatsApp messages with existing\
+    \ Odoo contacts. Use the WhatsApp phone number as the primary matching key. Implement\
+    \ fuzzy matching algorithms to handle international number formatting differences.\
+    \ The system should normalize all numbers to E.164 format before comparison.\n\
+    \nWhen no matching contact exists, create a new partner record in Odoo. Extract\
+    \ the customer's name from the WhatsApp profile information when available. Preserve\
+    \ the original WhatsApp ID for future message correlation. This automatic contact\
+    \ creation eliminates manual data entry for new customer interactions.\n\nMap\
+    \ conversation history to Odoo's CRM activity timeline. Each message becomes a\
+    \ logged activity linked to the contact record. Preserve message direction (inbound/outbound)\
+    \ and timestamps. This mapping provides complete context for sales and support\
+    \ teams during customer interactions.\n\n### Message Template Variable Binding\n\
+    \nOdoo's template system binds dynamic variables to WhatsApp message templates.\
+    \ Define variable sources from Odoo fields like customer name, order number, or\
+    \ appointment date. The transformation engine replaces template placeholders with\
+    \ actual values before sending.\n\nImplement strict validation for variable content\
+    \ to meet WhatsApp's template guidelines. Character limits vary by template category.\
+    \ Text variables cannot exceed 1024 characters. Currency values require proper\
+    \ formatting with ISO currency codes. Date-time values must follow specified formats.\n\
+    \nHandle special cases for optional variables that might contain empty values.\
+    \ Design fallback content for missing data to prevent sending incomplete messages.\
+    \ This attention to edge cases ensures consistent message quality across variable\
+    \ conditions.\n\n### Media Message Handling\n\nWhatsApp media messages require\
+    \ special processing in Odoo. The system must download media files from Meta's\
+    \ servers and attach them to Odoo records. Implement asynchronous processing for\
+    \ large files to prevent webhook timeouts.\n\nStore media files in Odoo's document\
+    \ management system with proper access controls. Generate secure URLs for internal\
+    \ access while protecting customer privacy. Apply compression to images above\
+    \ certain size thresholds to optimize storage utilization.\n\nMap media types\
+    \ to appropriate Odoo record fields. Product images attach to product records,\
+    \ while document files link to relevant business transactions. This organized\
+    \ media management enhances record context without manual intervention.\n\n###\
+    \ Conversation State Management\n\nMaintain conversation state across multiple\
+    \ message exchanges. Track whether a conversation represents a new inquiry, ongoing\
+    \ support issue, or sales negotiation. This state information guides automated\
+    \ response selection and routing logic.\n\nImplement session timeouts to handle\
+    \ abandoned conversations. Define business rules for when to close inactive dialogues\
+    \ and trigger follow-up actions. This state management prevents resource waste\
+    \ on dead conversations while ensuring important dialogues receive proper attention.\n\
+    \nSync conversation status between WhatsApp and Odoo's lead stages. When a prospect\
+    \ moves from awareness to consideration in WhatsApp, update their lead stage in\
+    \ Odoo. This bidirectional status mapping maintains alignment between communication\
+    \ context and sales pipeline position.\n\n## Error Handling and Resilience\n\n\
+    ### Common API Error Patterns\n\nThe Meta Graph API returns specific error codes\
+    \ your integration must handle. The \"131029\" code indicates template parameter\
+    \ mismatch. The \"131051\" code signals media upload failure. Implement comprehensive\
+    \ error logging that captures these codes with contextual information for debugging.\n\
     \nOdoo's ORM throws database constraint violations during contact creation. Duplicate\
     \ partner records trigger unique constraint errors. Implement duplicate detection\
     \ before insertion attempts. Use Odoo's name_search functionality to identify\
@@ -250,13 +249,13 @@ ai_generated_content:
     \ features for partial outages. When media uploads fail, fall back to text-only\
     \ messages. When template messages reject, use free-form messages within customer-initiated\
     \ conversations. These adaptations maintain communication continuity during partial\
-    \ system failures.\n\n## Testing and Validation\n\n### End-to-End\
-    \ Message Flow Testing\n\nCreate comprehensive test scenarios that cover all message\
-    \ types. Test text messages, images, documents, and interactive buttons. Verify\
-    \ that each message type processes correctly through the complete integration\
-    \ pipeline.\n\nValidate template message approval and rendering. Submit test templates\
-    \ through the approval process and verify they display correctly on target devices.\
-    \ Test variable substitution with edge cases like special characters, long strings,\
+    \ system failures.\n\n## Testing and Validation\n\n### End-to-End Message Flow\
+    \ Testing\n\nCreate comprehensive test scenarios that cover all message types.\
+    \ Test text messages, images, documents, and interactive buttons. Verify that\
+    \ each message type processes correctly through the complete integration pipeline.\n\
+    \nValidate template message approval and rendering. Submit test templates through\
+    \ the approval process and verify they display correctly on target devices. Test\
+    \ variable substitution with edge cases like special characters, long strings,\
     \ and empty values.\n\nConfirm webhook delivery for all supported event types.\
     \ Test message status updates, including delivered and read receipts. Verify these\
     \ events update corresponding records in Odoo with correct timestamps.\n\n###\
@@ -286,54 +285,53 @@ ai_generated_content:
     \ history.\n\nConduct mobile device testing to ensure message rendering quality\
     \ across different smartphones. Test on both iOS and Android platforms with various\
     \ screen sizes. Verify that interactive elements like buttons function correctly\
-    \ on all devices.\n\n## Security Considerations\n\n### Authentication\
-    \ Token Management\n\nImplement secure storage for Meta access tokens within Odoo.\
-    \ Use Odoo's configuration parameter system with proper access controls. Never\
-    \ hardcode tokens in source code or database fields with broad read permissions.\n\
-    \nEstablish token rotation procedures before expiration dates. Create automated\
-    \ alerts that notify administrators when tokens approach expiration. Develop renewal\
-    \ workflows that minimize service disruption during token transitions.\n\nSecure\
-    \ webhook verification tokens with the same rigor as access tokens. These tokens\
-    \ validate that incoming webhooks originate from Meta's infrastructure. Compromised\
-    \ verification tokens enable fake message injection.\n\n### Data Privacy Compliance\n\
-    \nAnonymize or pseudonymize message content in test environments. Production data\
-    \ must never appear in development systems. Implement data masking procedures\
-    \ that preserve functional characteristics while protecting customer privacy.\n\
-    \nEstablish message retention policies that comply with data protection regulations.\
-    \ Automatically purge old messages after specified retention periods. Provide\
-    \ export tools for customers exercising their right to data access.\n\nEncrypt\
-    \ message content in database storage and during transmission. Use TLS 1.2+ for\
-    \ all external communications. Implement database encryption for message tables\
-    \ containing sensitive customer information.\n\n### Access Control Implementation\n\
-    \nConfigure role-based permissions for WhatsApp functionality within Odoo. Restrict\
-    \ template management to marketing teams. Limit message sending capabilities to\
-    \ authorized customer-facing roles.\n\nImplement conversation assignment rules\
-    \ that prevent unauthorized access to sensitive dialogues. Healthcare or financial\
-    \ conversations may require special access controls beyond standard CRM permissions.\n\
-    \nAudit message access and modification through Odoo's built-in tracking features.\
-    \ Monitor for unusual access patterns that might indicate security breaches. Regular\
-    \ access reviews help maintain compliance with internal security policies.\n\n\
-    ### Webhook Security Measures\n\nValidate webhook signatures for all incoming\
-    \ requests. Meta signs webhook payloads with HMAC signatures using your app secret.\
-    \ Verify these signatures to ensure message authenticity before processing.\n\n\
-    Implement rate limiting on webhook endpoints to prevent denial-of-service attacks.\
-    \ Reject requests from unauthorized IP addresses. These measures protect your\
-    \ integration from malicious traffic while allowing legitimate messages.\n\nSanitize\
-    \ all incoming message content to prevent injection attacks. Validate payload\
-    \ structure before processing. Escape special characters in text content to mitigate\
-    \ cross-site scripting risks in Odoo's interface.\n\n## Performance Optimization\
-    \\n\n### Database Query Optimization\n\nAnalyze query performance\
-    \ for message retrieval operations. Odoo's ORM can generate inefficient SQL for\
-    \ complex domain filters. Use database EXPLAIN plans to identify full table scans\
-    \ and missing indexes.\n\nCreate custom indexes on frequently searched fields\
-    \ like phone numbers, message timestamps, and conversation status. These indexes\
-    \ dramatically improve response times in message-heavy environments.\n\nImplement\
-    \ database partitioning for message history tables. Partition by date ranges to\
-    \ improve query performance and simplify archive operations. This strategy maintains\
-    \ performance as message volumes grow over time.\n\n### Message Processing Pipeline\
-    \ Tuning\n\nIdentify bottlenecks in the message processing workflow. Use Odoo's\
-    \ logging facilities to measure processing time for each transformation step.\
-    \ Focus optimization efforts on the slowest components.\n\nImplement asynchronous\
+    \ on all devices.\n\n## Security Considerations\n\n### Authentication Token Management\n\
+    \nImplement secure storage for Meta access tokens within Odoo. Use Odoo's configuration\
+    \ parameter system with proper access controls. Never hardcode tokens in source\
+    \ code or database fields with broad read permissions.\n\nEstablish token rotation\
+    \ procedures before expiration dates. Create automated alerts that notify administrators\
+    \ when tokens approach expiration. Develop renewal workflows that minimize service\
+    \ disruption during token transitions.\n\nSecure webhook verification tokens with\
+    \ the same rigor as access tokens. These tokens validate that incoming webhooks\
+    \ originate from Meta's infrastructure. Compromised verification tokens enable\
+    \ fake message injection.\n\n### Data Privacy Compliance\n\nAnonymize or pseudonymize\
+    \ message content in test environments. Production data must never appear in development\
+    \ systems. Implement data masking procedures that preserve functional characteristics\
+    \ while protecting customer privacy.\n\nEstablish message retention policies that\
+    \ comply with data protection regulations. Automatically purge old messages after\
+    \ specified retention periods. Provide export tools for customers exercising their\
+    \ right to data access.\n\nEncrypt message content in database storage and during\
+    \ transmission. Use TLS 1.2+ for all external communications. Implement database\
+    \ encryption for message tables containing sensitive customer information.\n\n\
+    ### Access Control Implementation\n\nConfigure role-based permissions for WhatsApp\
+    \ functionality within Odoo. Restrict template management to marketing teams.\
+    \ Limit message sending capabilities to authorized customer-facing roles.\n\n\
+    Implement conversation assignment rules that prevent unauthorized access to sensitive\
+    \ dialogues. Healthcare or financial conversations may require special access\
+    \ controls beyond standard CRM permissions.\n\nAudit message access and modification\
+    \ through Odoo's built-in tracking features. Monitor for unusual access patterns\
+    \ that might indicate security breaches. Regular access reviews help maintain\
+    \ compliance with internal security policies.\n\n### Webhook Security Measures\n\
+    \nValidate webhook signatures for all incoming requests. Meta signs webhook payloads\
+    \ with HMAC signatures using your app secret. Verify these signatures to ensure\
+    \ message authenticity before processing.\n\nImplement rate limiting on webhook\
+    \ endpoints to prevent denial-of-service attacks. Reject requests from unauthorized\
+    \ IP addresses. These measures protect your integration from malicious traffic\
+    \ while allowing legitimate messages.\n\nSanitize all incoming message content\
+    \ to prevent injection attacks. Validate payload structure before processing.\
+    \ Escape special characters in text content to mitigate cross-site scripting risks\
+    \ in Odoo's interface.\n\n## Performance Optimization\\n\n### Database Query Optimization\n\
+    \nAnalyze query performance for message retrieval operations. Odoo's ORM can generate\
+    \ inefficient SQL for complex domain filters. Use database EXPLAIN plans to identify\
+    \ full table scans and missing indexes.\n\nCreate custom indexes on frequently\
+    \ searched fields like phone numbers, message timestamps, and conversation status.\
+    \ These indexes dramatically improve response times in message-heavy environments.\n\
+    \nImplement database partitioning for message history tables. Partition by date\
+    \ ranges to improve query performance and simplify archive operations. This strategy\
+    \ maintains performance as message volumes grow over time.\n\n### Message Processing\
+    \ Pipeline Tuning\n\nIdentify bottlenecks in the message processing workflow.\
+    \ Use Odoo's logging facilities to measure processing time for each transformation\
+    \ step. Focus optimization efforts on the slowest components.\n\nImplement asynchronous\
     \ processing for non-critical operations. Use Odoo's queue job system to defer\
     \ activities like analytics processing and secondary data updates. This approach\
     \ keeps the primary message path responsive.\n\nBatch process outgoing messages\
@@ -449,13 +447,15 @@ visualizations:
   placement_hint: after_conclusion
   data_context: learning path and knowledge graph
   mermaid_chart_syntax: "flowchart TB\n\n    Current[\"[CURRENT] Whatsapp Business\
-    \ to Odoo Integration: Complete 2025 Guide\"]\n\n    %% Related Topics - Cross-References\n\
-    \    Current -.-> Rel0[\"Cloudflare to Odoo Integration: Complete 2025 Guide\"\
-    ]\n    Current -.-> Rel1[\"Facebook Pixel to Odoo Integration: Complete 2025 Guide\"\
-    ]\n\n    %% Professional Styling\n    classDef current fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n\
+    \ to Odoo Integration: Complete 2025 Guide\"]\n\n    %% Next Steps - Learning\
+    \ Progression\n    Current --> Next0(\"Complete Implementation Guide\")\n\n  \
+    \  %% Related Topics - Cross-References\n    Current -.-> Rel0[\"Cloudflare to\
+    \ Odoo Integration: Complete 2025 Guide\"]\n    Current -.-> Rel1[\"Facebook Pixel\
+    \ to Odoo Integration: Complete 2025 Guide\"]\n\n    %% Professional Styling\n\
+    \    classDef current fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n\
     \    classDef prereq fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000\n\
     \    classDef next fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000\n \
     \   classDef related fill:#f5f5f5,stroke:#616161,stroke-width:1px,color:#000\n\
     \    classDef trouble fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000\n\
     \    classDef support fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#000\n\
-    \n    class Current current\n    class Rel0,Rel1 related"
+    \n    class Current current\n    class Next0 next\n    class Rel0,Rel1 related"

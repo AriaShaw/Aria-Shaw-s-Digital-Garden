@@ -65,15 +65,15 @@ ai_generated_content:
     files you can adapt for your specific business requirements. Follow each step
     with attention to detail, and you will build a seamless bridge between these platforms
     that eliminates manual work and ensures data consistency across your entire operation.'
-  main_content: "## Integration Architecture and Data Flow\n\n### Core\
-    \ Integration Components\n\nThe Wish-Odoo integration operates on a hub-and-spoke\
-    \ architecture with Odoo 18 as the central system. Wish provides a comprehensive\
-    \ REST API for external system communication. Your integration acts as the middleware\
-    \ that facilitates bidirectional data exchange between these platforms. The core\
-    \ components include the Odoo ORM layer, custom integration modules, scheduled\
-    \ actions, and webhook handlers for real-time updates.\n\nOdoo's modular framework\
-    \ supports custom development through dedicated integration apps. You create these\
-    \ apps using Python classes that extend Odoo's base models. The integration connects\
+  main_content: "## Integration Architecture and Data Flow\n\n### Core Integration\
+    \ Components\n\nThe Wish-Odoo integration operates on a hub-and-spoke architecture\
+    \ with Odoo 18 as the central system. Wish provides a comprehensive REST API for\
+    \ external system communication. Your integration acts as the middleware that\
+    \ facilitates bidirectional data exchange between these platforms. The core components\
+    \ include the Odoo ORM layer, custom integration modules, scheduled actions, and\
+    \ webhook handlers for real-time updates.\n\nOdoo's modular framework supports\
+    \ custom development through dedicated integration apps. You create these apps\
+    \ using Python classes that extend Odoo's base models. The integration connects\
     \ to Wish API endpoints using Python's requests library with proper authentication\
     \ headers. Data transformation occurs within custom methods that map Wish data\
     \ structures to Odoo model fields. The system stores API credentials securely\
@@ -100,30 +100,30 @@ ai_generated_content:
     \ addresses against Wish's published ranges. Each handler includes comprehensive\
     \ error logging and retry logic for failed processing attempts. This approach\
     \ minimizes data latency and ensures rapid order processing during high-volume\
-    \ sales periods.\n\n## Step-by-Step Configuration\n\n### Wish API\
-    \ Access Setup\n\nBegin with Wish Merchant Center configuration. Log into your\
-    \ Wish account and navigate to the API Settings section. Generate new API credentials\
-    \ with appropriate permissions for orders, products, and inventory. Wish provides\
-    \ a Client ID, Client Secret, and Redirect URI for OAuth 2.0 authentication. Store\
-    \ these credentials securely as you will reference them throughout the integration\
-    \ setup.\n\nThe OAuth flow requires a callback endpoint in your Odoo instance.\
-    \ Create a new controller in your custom module that handles the authorization\
-    \ response. This endpoint captures the authorization code and exchanges it for\
-    \ access and refresh tokens. Implement token refresh logic that automatically\
-    \ renews expired tokens using the refresh token. Proper token management prevents\
-    \ authentication failures during extended operation.\n\n### Odoo Custom Module\
-    \ Development\n\nCreate a new Odoo module specifically for Wish integration. Define\
-    \ the module structure with proper manifest file declarations. The __manifest__.py\
-    \ file must specify dependencies on Odoo's sale, stock, and product modules. Create\
-    \ models for storing Wish configuration parameters, API credentials, and synchronization\
-    \ logs. These models maintain the integration state and provide audit trails for\
-    \ troubleshooting.\n\nDevelop the core integration class that encapsulates all\
-    \ API interactions. This class contains methods for API authentication, request\
-    \ building, and response handling. Implement exponential backoff for rate limit\
-    \ management and comprehensive error handling for network failures. The class\
-    \ serves as the foundation for all data synchronization processes between Wish\
-    \ and Odoo.\n\n```python\nclass WishIntegration(models.Model):\n    _name = 'wish.integration'\n\
-    \    _description = 'Wish Platform Integration'\n    \n    name = fields.Char(string='Integration\
+    \ sales periods.\n\n## Step-by-Step Configuration\n\n### Wish API Access Setup\n\
+    \nBegin with Wish Merchant Center configuration. Log into your Wish account and\
+    \ navigate to the API Settings section. Generate new API credentials with appropriate\
+    \ permissions for orders, products, and inventory. Wish provides a Client ID,\
+    \ Client Secret, and Redirect URI for OAuth 2.0 authentication. Store these credentials\
+    \ securely as you will reference them throughout the integration setup.\n\nThe\
+    \ OAuth flow requires a callback endpoint in your Odoo instance. Create a new\
+    \ controller in your custom module that handles the authorization response. This\
+    \ endpoint captures the authorization code and exchanges it for access and refresh\
+    \ tokens. Implement token refresh logic that automatically renews expired tokens\
+    \ using the refresh token. Proper token management prevents authentication failures\
+    \ during extended operation.\n\n### Odoo Custom Module Development\n\nCreate a\
+    \ new Odoo module specifically for Wish integration. Define the module structure\
+    \ with proper manifest file declarations. The __manifest__.py file must specify\
+    \ dependencies on Odoo's sale, stock, and product modules. Create models for storing\
+    \ Wish configuration parameters, API credentials, and synchronization logs. These\
+    \ models maintain the integration state and provide audit trails for troubleshooting.\n\
+    \nDevelop the core integration class that encapsulates all API interactions. This\
+    \ class contains methods for API authentication, request building, and response\
+    \ handling. Implement exponential backoff for rate limit management and comprehensive\
+    \ error handling for network failures. The class serves as the foundation for\
+    \ all data synchronization processes between Wish and Odoo.\n\n```python\nclass\
+    \ WishIntegration(models.Model):\n    _name = 'wish.integration'\n    _description\
+    \ = 'Wish Platform Integration'\n    \n    name = fields.Char(string='Integration\
     \ Name', required=True)\n    client_id = fields.Char(string='Client ID', required=True)\n\
     \    client_secret = fields.Char(string='Client Secret', required=True)\n    access_token\
     \ = fields.Char(string='Access Token')\n    refresh_token = fields.Char(string='Refresh\
@@ -159,29 +159,29 @@ ai_generated_content:
     \ trigger the appropriate processing workflows. Configure fallback mechanisms\
     \ that handle webhook delivery failures through periodic synchronization checks.\
     \ This redundancy ensures data consistency even if webhook delivery experiences\
-    \ temporary issues.\n\n## Data Mapping and Transformation\n\n### Order\
-    \ Data Transformation\n\nWish order data arrives as nested JSON structures with\
-    \ specific field naming conventions. Your integration must flatten this structure\
-    \ into Odoo's relational model. Map the Wish order ID to Odoo's origin field while\
-    \ creating a unique sales order reference. Transform the customer information\
-    \ into Odoo partner records, checking for existing matches based on email address\
-    \ and shipping address.\n\nHandle Wish's combined name fields by parsing them\
-    \ into Odoo's separate first name and last name fields. Process address information\
-    \ with special attention to international format differences. Wish provides address\
-    \ components in a single string that requires parsing into street, city, state,\
-    \ and zip code fields. Implement address validation logic that standardizes these\
-    \ values for Odoo's address structure.\n\n### Product Catalog Synchronization\n\
-    \nProduct synchronization presents complex mapping challenges due to variant handling\
-    \ differences. Wish treats each product variant as a separate listing, while Odoo\
-    \ manages variants as attributes of a main product template. Your integration\
-    \ must identify variant relationships and maintain them during synchronization.\
-    \ Map Wish product IDs to Odoo product templates and handle variant creation through\
-    \ attribute value assignment.\n\nTransform product descriptions and images between\
-    \ the platforms. Wish supports multiple product images that must download and\
-    \ attach to Odoo product records. Handle character encoding differences and HTML\
-    \ formatting in product descriptions. Implement inventory level synchronization\
-    \ that maintains separate stock quantities for each variant while respecting Odoo's\
-    \ inventory management rules.\n\n### Pricing and Currency Conversion\n\nWish transactions\
+    \ temporary issues.\n\n## Data Mapping and Transformation\n\n### Order Data Transformation\n\
+    \nWish order data arrives as nested JSON structures with specific field naming\
+    \ conventions. Your integration must flatten this structure into Odoo's relational\
+    \ model. Map the Wish order ID to Odoo's origin field while creating a unique\
+    \ sales order reference. Transform the customer information into Odoo partner\
+    \ records, checking for existing matches based on email address and shipping address.\n\
+    \nHandle Wish's combined name fields by parsing them into Odoo's separate first\
+    \ name and last name fields. Process address information with special attention\
+    \ to international format differences. Wish provides address components in a single\
+    \ string that requires parsing into street, city, state, and zip code fields.\
+    \ Implement address validation logic that standardizes these values for Odoo's\
+    \ address structure.\n\n### Product Catalog Synchronization\n\nProduct synchronization\
+    \ presents complex mapping challenges due to variant handling differences. Wish\
+    \ treats each product variant as a separate listing, while Odoo manages variants\
+    \ as attributes of a main product template. Your integration must identify variant\
+    \ relationships and maintain them during synchronization. Map Wish product IDs\
+    \ to Odoo product templates and handle variant creation through attribute value\
+    \ assignment.\n\nTransform product descriptions and images between the platforms.\
+    \ Wish supports multiple product images that must download and attach to Odoo\
+    \ product records. Handle character encoding differences and HTML formatting in\
+    \ product descriptions. Implement inventory level synchronization that maintains\
+    \ separate stock quantities for each variant while respecting Odoo's inventory\
+    \ management rules.\n\n### Pricing and Currency Conversion\n\nWish transactions\
     \ occur in multiple currencies, requiring careful price transformation. The integration\
     \ must convert order totals and line item prices to your Odoo base currency. Use\
     \ historical exchange rates from the order date rather than current rates for\
@@ -200,14 +200,14 @@ ai_generated_content:
     \ Odoo return orders with proper reason codes and restocking policies. Map return\
     \ status updates between both systems to maintain visibility throughout the return\
     \ process. Implement synchronization for refund processing that updates Odoo accounting\
-    \ entries based on Wish refund transactions.\n\n## Error Handling and Resilience\
-    \\n\n### API Rate Limit Management\n\nWish imposes strict rate limits\
-    \ on API calls to prevent system overload. Your integration must implement intelligent\
-    \ throttling that respects these limits while maintaining synchronization performance.\
-    \ Track API call counts within rolling time windows and introduce delays when\
-    \ approaching limit thresholds. Use exponential backoff algorithms for retry attempts\
-    \ after receiving rate limit errors.\n\nHandle 429 Too Many Requests responses\
-    \ with proper retry-after header parsing. The integration should pause synchronization\
+    \ entries based on Wish refund transactions.\n\n## Error Handling and Resilience\\\
+    n\n### API Rate Limit Management\n\nWish imposes strict rate limits on API calls\
+    \ to prevent system overload. Your integration must implement intelligent throttling\
+    \ that respects these limits while maintaining synchronization performance. Track\
+    \ API call counts within rolling time windows and introduce delays when approaching\
+    \ limit thresholds. Use exponential backoff algorithms for retry attempts after\
+    \ receiving rate limit errors.\n\nHandle 429 Too Many Requests responses with\
+    \ proper retry-after header parsing. The integration should pause synchronization\
     \ tasks until the rate limit resets, then resume processing. Implement queue prioritization\
     \ that processes critical updates like order acknowledgments before background\
     \ synchronization tasks. This ensures business-critical operations receive priority\
@@ -245,10 +245,10 @@ ai_generated_content:
     \ fail. This prevents data inconsistency where orders create without corresponding\
     \ products or inventory updates. Use Odoo's built-in transaction management to\
     \ ensure atomic operations across related data modifications.\n\n## Testing and\
-    \ Validation\n\n### Development Environment Setup\n\nEstablish a dedicated\
-    \ testing environment that mirrors your production Odoo instance. Create a separate\
-    \ Wish developer account with sandbox access for integration testing. Populate\
-    \ the test environment with representative data that covers all your product types,\
+    \ Validation\n\n### Development Environment Setup\n\nEstablish a dedicated testing\
+    \ environment that mirrors your production Odoo instance. Create a separate Wish\
+    \ developer account with sandbox access for integration testing. Populate the\
+    \ test environment with representative data that covers all your product types,\
     \ customer scenarios, and order variations. This environment serves as your primary\
     \ validation platform before deploying changes to production.\n\nDevelop comprehensive\
     \ test cases that exercise every integration pathway. Create test scenarios for\
@@ -286,11 +286,11 @@ ai_generated_content:
     \ times, and error rates during the testing period. Use these benchmarks to establish\
     \ performance baselines for production monitoring. Create operational runbooks\
     \ that guide support teams through common troubleshooting procedures and escalation\
-    \ paths.\n\n## Security Considerations\n\n### API Credential Protection\n\
-    \nSecure Wish API credentials using Odoo's encrypted fields rather than storing\
-    \ them in plain text. Implement credential rotation policies that periodically\
-    \ refresh access tokens and API keys. Restrict access to integration configuration\
-    \ pages to authorized administrators only. Use Odoo's group-based permission system\
+    \ paths.\n\n## Security Considerations\n\n### API Credential Protection\n\nSecure\
+    \ Wish API credentials using Odoo's encrypted fields rather than storing them\
+    \ in plain text. Implement credential rotation policies that periodically refresh\
+    \ access tokens and API keys. Restrict access to integration configuration pages\
+    \ to authorized administrators only. Use Odoo's group-based permission system\
     \ to control who can modify integration settings.\n\nImplement secure credential\
     \ storage with proper key management practices. Never log API keys or access tokens\
     \ in debug output or application logs. Use environment variables for sensitive\
@@ -314,38 +314,38 @@ ai_generated_content:
     \ Apply regular security updates to both Odoo and underlying system components.\
     \ Use web application firewalls to detect and block malicious requests. Conduct\
     \ periodic security reviews of integration code and configuration to identify\
-    \ potential vulnerabilities.\n\n## Performance Optimization\n\n###\
-    \ Database Indexing Strategy\n\nAnalyze query patterns generated by the integration\
-    \ and create targeted database indexes. Add indexes to frequently searched fields\
-    \ like Wish order IDs, product SKUs, and synchronization timestamps. Optimize\
-    \ Odoo's ORM queries by selecting only necessary fields and using proper prefetch\
-    \ patterns. Monitor query performance during high-volume synchronization and refine\
-    \ indexes based on actual usage patterns.\n\nImplement database maintenance routines\
-    \ that keep statistics current and rebuild fragmented indexes. Schedule these\
-    \ maintenance activities during low-traffic periods to minimize user impact. Use\
-    \ Odoo's built-in query profiling tools to identify performance bottlenecks in\
-    \ custom integration code. Optimize complex data transformations by breaking them\
-    \ into smaller, more efficient database operations.\n\n### Caching Implementation\n\
-    \nImplement strategic caching for reference data that changes infrequently. Cache\
-    \ product information, customer details, and shipping method mappings to reduce\
-    \ database queries during synchronization. Use Odoo's caching mechanisms or Redis\
-    \ for distributed caching in multi-worker environments. Establish cache invalidation\
-    \ policies that refresh data when underlying information changes.\n\nCache Wish\
-    \ API responses where appropriate to reduce external API calls. Implement response\
-    \ caching with proper TTL values for product catalog information and static reference\
-    \ data. Use conditional requests with ETag headers where supported by the Wish\
-    \ API to minimize data transfer. Cache transformed data structures to avoid reprocessing\
-    \ identical transformation operations.\n\n### Synchronization Process Optimization\n\
-    \nOptimize synchronization batches based on your business volume and performance\
-    \ requirements. Adjust batch sizes to balance memory usage against database transaction\
-    \ overhead. Implement parallel processing for independent synchronization tasks\
-    \ where possible. Use Odoo's queue job system to distribute workload across multiple\
-    \ workers and prevent blocking operations.\n\nMonitor synchronization performance\
-    \ and identify bottlenecks through detailed logging. Measure time spent on API\
-    \ calls, data transformation, and database operations. Optimize the slowest components\
-    \ through code refinement, additional indexing, or architectural changes. Implement\
-    \ progressive synchronization that prioritizes recent data while processing historical\
-    \ information during low-load periods."
+    \ potential vulnerabilities.\n\n## Performance Optimization\n\n### Database Indexing\
+    \ Strategy\n\nAnalyze query patterns generated by the integration and create targeted\
+    \ database indexes. Add indexes to frequently searched fields like Wish order\
+    \ IDs, product SKUs, and synchronization timestamps. Optimize Odoo's ORM queries\
+    \ by selecting only necessary fields and using proper prefetch patterns. Monitor\
+    \ query performance during high-volume synchronization and refine indexes based\
+    \ on actual usage patterns.\n\nImplement database maintenance routines that keep\
+    \ statistics current and rebuild fragmented indexes. Schedule these maintenance\
+    \ activities during low-traffic periods to minimize user impact. Use Odoo's built-in\
+    \ query profiling tools to identify performance bottlenecks in custom integration\
+    \ code. Optimize complex data transformations by breaking them into smaller, more\
+    \ efficient database operations.\n\n### Caching Implementation\n\nImplement strategic\
+    \ caching for reference data that changes infrequently. Cache product information,\
+    \ customer details, and shipping method mappings to reduce database queries during\
+    \ synchronization. Use Odoo's caching mechanisms or Redis for distributed caching\
+    \ in multi-worker environments. Establish cache invalidation policies that refresh\
+    \ data when underlying information changes.\n\nCache Wish API responses where\
+    \ appropriate to reduce external API calls. Implement response caching with proper\
+    \ TTL values for product catalog information and static reference data. Use conditional\
+    \ requests with ETag headers where supported by the Wish API to minimize data\
+    \ transfer. Cache transformed data structures to avoid reprocessing identical\
+    \ transformation operations.\n\n### Synchronization Process Optimization\n\nOptimize\
+    \ synchronization batches based on your business volume and performance requirements.\
+    \ Adjust batch sizes to balance memory usage against database transaction overhead.\
+    \ Implement parallel processing for independent synchronization tasks where possible.\
+    \ Use Odoo's queue job system to distribute workload across multiple workers and\
+    \ prevent blocking operations.\n\nMonitor synchronization performance and identify\
+    \ bottlenecks through detailed logging. Measure time spent on API calls, data\
+    \ transformation, and database operations. Optimize the slowest components through\
+    \ code refinement, additional indexing, or architectural changes. Implement progressive\
+    \ synchronization that prioritizes recent data while processing historical information\
+    \ during low-load periods."
   conclusion: 'Your Wish-Odoo integration now operates as a seamless data conduit
     that eliminates manual entry and ensures perfect synchronization. You process
     orders the moment they appear in your Wish dashboard, with customer details flowing
@@ -432,13 +432,14 @@ visualizations:
   placement_hint: after_conclusion
   data_context: learning path and knowledge graph
   mermaid_chart_syntax: "flowchart TB\n\n    Current[\"[CURRENT] Wish to Odoo Integration:\
-    \ Complete 2025 Guide\"]\n\n    %% Related Topics - Cross-References\n    Current\
-    \ -.-> Rel0[\"Cloudflare to Odoo Integration: Complete 2025 Guide\"]\n    Current\
-    \ -.-> Rel1[\"Facebook Pixel to Odoo Integration: Complete 2025 Guide\"]\n\n \
-    \   %% Professional Styling\n    classDef current fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n\
+    \ Complete 2025 Guide\"]\n\n    %% Next Steps - Learning Progression\n    Current\
+    \ --> Next0(\"Complete Implementation Guide\")\n\n    %% Related Topics - Cross-References\n\
+    \    Current -.-> Rel0[\"Cloudflare to Odoo Integration: Complete 2025 Guide\"\
+    ]\n    Current -.-> Rel1[\"Facebook Pixel to Odoo Integration: Complete 2025 Guide\"\
+    ]\n\n    %% Professional Styling\n    classDef current fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n\
     \    classDef prereq fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000\n\
     \    classDef next fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000\n \
     \   classDef related fill:#f5f5f5,stroke:#616161,stroke-width:1px,color:#000\n\
     \    classDef trouble fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000\n\
     \    classDef support fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#000\n\
-    \n    class Current current\n    class Rel0,Rel1 related"
+    \n    class Current current\n    class Next0 next\n    class Rel0,Rel1 related"

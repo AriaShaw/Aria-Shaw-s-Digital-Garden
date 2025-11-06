@@ -70,23 +70,23 @@ ai_generated_content:
     while maintaining complete audit trails across both systems. Follow this guide
     to transform your disconnected accounting and ERP workflows into a synchronized
     business management powerhouse.'
-  main_content: "## Integration Architecture and Data Flow\n\nFreeAgent\
-    \ and Odoo 18 integration employs a hub-and-spoke architecture where Odoo acts\
-    \ as the central data hub. The design uses Odoo's web engine to create scheduled\
-    \ actions that poll FreeAgent's REST API at configurable intervals. This approach\
-    \ gives you full control over synchronization timing and prevents API rate limit\
-    \ issues that plague webhook-based implementations. The architecture maintains\
-    \ Odoo as the system of record for operational data while treating FreeAgent as\
-    \ the specialized accounting endpoint.\n\nOdoo 18's new external API service handles\
-    \ all outbound connections to FreeAgent. You configure this service with your\
-    \ FreeAgent subdomain and authentication tokens. The service manages connection\
-    \ pooling and implements automatic retry logic for temporary network failures.\
-    \ Each data synchronization job runs as a separate queue worker within Odoo's\
-    \ job queue system. This design prevents long-running sync operations from blocking\
-    \ other Odoo functions.\n\nData flows from FreeAgent to Odoo follow a strict dependency\
-    \ hierarchy. The system first imports contacts, then products and services, followed\
-    \ by invoices and payments. This order ensures all foreign key relationships resolve\
-    \ correctly during the import process. Outbound flows from Odoo to FreeAgent prioritize\
+  main_content: "## Integration Architecture and Data Flow\n\nFreeAgent and Odoo 18\
+    \ integration employs a hub-and-spoke architecture where Odoo acts as the central\
+    \ data hub. The design uses Odoo's web engine to create scheduled actions that\
+    \ poll FreeAgent's REST API at configurable intervals. This approach gives you\
+    \ full control over synchronization timing and prevents API rate limit issues\
+    \ that plague webhook-based implementations. The architecture maintains Odoo as\
+    \ the system of record for operational data while treating FreeAgent as the specialized\
+    \ accounting endpoint.\n\nOdoo 18's new external API service handles all outbound\
+    \ connections to FreeAgent. You configure this service with your FreeAgent subdomain\
+    \ and authentication tokens. The service manages connection pooling and implements\
+    \ automatic retry logic for temporary network failures. Each data synchronization\
+    \ job runs as a separate queue worker within Odoo's job queue system. This design\
+    \ prevents long-running sync operations from blocking other Odoo functions.\n\n\
+    Data flows from FreeAgent to Odoo follow a strict dependency hierarchy. The system\
+    \ first imports contacts, then products and services, followed by invoices and\
+    \ payments. This order ensures all foreign key relationships resolve correctly\
+    \ during the import process. Outbound flows from Odoo to FreeAgent prioritize\
     \ invoice creation followed by payment allocation. The bidirectional sync uses\
     \ timestamp-based change detection to identify records that require updates.\n\
     \nThe core integration module consists of three primary components. The FreeAgent\
@@ -100,11 +100,11 @@ ai_generated_content:
     \ fields like payment status and invoice amounts. Odoo maintains control over\
     \ product descriptions and customer contact information. This balanced approach\
     \ respects each system's domain authority while maintaining data consistency across\
-    \ platforms.\n\n## Step-by-Step Configuration\n\n### FreeAgent API\
-    \ Application Setup\n\nBegin by creating a dedicated API application in your FreeAgent\
-    \ account. Navigate to the \"My Apps\" section under your account settings and\
-    \ select \"Create New App.\" Provide a descriptive name like \"Odoo 18 Integration\"\
-    \ and set the redirect URI to your Odoo instance's base URL followed by \"/freeagent/auth.\"\
+    \ platforms.\n\n## Step-by-Step Configuration\n\n### FreeAgent API Application\
+    \ Setup\n\nBegin by creating a dedicated API application in your FreeAgent account.\
+    \ Navigate to the \"My Apps\" section under your account settings and select \"\
+    Create New App.\" Provide a descriptive name like \"Odoo 18 Integration\" and\
+    \ set the redirect URI to your Odoo instance's base URL followed by \"/freeagent/auth.\"\
     \ FreeAgent displays your client ID and client secret after application creation.\
     \ Store these credentials securely—you will need them for Odoo configuration.\n\
     \nFreeAgent requires explicit user consent for API access. Implement the OAuth\
@@ -159,13 +159,13 @@ ai_generated_content:
     \ processes only records from the last 24 hours. Verify data accuracy by comparing\
     \ record counts and field values between systems. Once testing completes, activate\
     \ the full synchronization schedule and monitor performance for the first 48 hours.\n\
-    \n## Data Mapping and Transformation\n\n### Contact and Company Mapping\n\
-    \nFreeAgent contact records require significant transformation to match Odoo's\
-    \ partner model. FreeAgent stores individual names in separate 'first_name' and\
-    \ 'last_name' fields, while Odoo uses a single 'name' field for display purposes.\
-    \ Your mapping logic must concatenate these fields with proper handling for missing\
-    \ components. Business contacts present additional complexity—FreeAgent's 'organisation_name'\
-    \ maps to Odoo's 'commercial_company_name' with fallback logic for sole proprietors.\n\
+    \n## Data Mapping and Transformation\n\n### Contact and Company Mapping\n\nFreeAgent\
+    \ contact records require significant transformation to match Odoo's partner model.\
+    \ FreeAgent stores individual names in separate 'first_name' and 'last_name' fields,\
+    \ while Odoo uses a single 'name' field for display purposes. Your mapping logic\
+    \ must concatenate these fields with proper handling for missing components. Business\
+    \ contacts present additional complexity—FreeAgent's 'organisation_name' maps\
+    \ to Odoo's 'commercial_company_name' with fallback logic for sole proprietors.\n\
     \nAddress data transformation demands careful field-by-field mapping. FreeAgent's\
     \ address structure differs from Odoo's multi-line street approach. Map 'address1'\
     \ to 'street' and combine 'address2' with 'address3' for 'street2'. Country mapping\
@@ -213,10 +213,10 @@ ai_generated_content:
     \ entries based on account name and last four digits of account number. Create\
     \ missing bank journals in Odoo when new accounts appear in FreeAgent. This proactive\
     \ approach ensures all financial transactions have proper destination accounts.\n\
-    \n## Error Handling and Resilience\n\n### API Rate Limit Management\n\
-    \nFreeAgent imposes strict API rate limits—60 requests per minute for most endpoints.\
-    \ Your integration must implement intelligent request throttling to avoid hitting\
-    \ these limits. Track request counts within rolling 60-second windows and introduce\
+    \n## Error Handling and Resilience\n\n### API Rate Limit Management\n\nFreeAgent\
+    \ imposes strict API rate limits—60 requests per minute for most endpoints. Your\
+    \ integration must implement intelligent request throttling to avoid hitting these\
+    \ limits. Track request counts within rolling 60-second windows and introduce\
     \ automatic delays when approaching the limit. Implement exponential backoff for\
     \ retry attempts, starting with 2-second delays and doubling after each failure.\n\
     \nHandle 429 Too Many Requests responses with graceful degradation. When the API\
@@ -254,25 +254,25 @@ ai_generated_content:
     \ and deletion with timestamps and user context. These logs enable precise identification\
     \ of when data corruption occurred and simplify restoration from backups. Create\
     \ data repair scripts that can reverse specific sync operations while preserving\
-    \ legitimate changes.\n\n## Testing and Validation\n\n### Test Environment\
-    \ Configuration\n\nEstablish isolated testing environments for both FreeAgent\
-    \ and Odoo. Create a FreeAgent sandbox account using their developer program—this\
-    \ provides full API access without affecting live financial data. Set up a dedicated\
-    \ Odoo 18 test instance with sample data that mirrors your production environment.\
-    \ This isolation lets you test integration behavior without risking business data\
-    \ corruption.\n\nPrepare comprehensive test datasets that cover all integration\
-    \ scenarios. Create test contacts with varying attributes—individuals, companies,\
-    \ international addresses, and special characters in names. Build product catalogs\
-    \ with different tax treatments and pricing models. Generate invoice test cases\
-    \ that include partial payments, overdue amounts, and credit notes. This diversity\
-    \ ensures your integration handles edge cases.\n\n### Synchronization Validation\
-    \ Procedures\n\nImplement automated validation checks that run after each synchronization\
-    \ cycle. Create validators that compare record counts for each data type between\
-    \ systems. Develop field-level checksums that verify data integrity by calculating\
-    \ hash values for critical fields across matched records. These automated checks\
-    \ catch synchronization issues before they affect business operations.\n\nValidate\
-    \ financial data accuracy with amount reconciliation procedures. Create test reports\
-    \ that sum invoice totals, payment amounts, and tax calculations across both systems.\
+    \ legitimate changes.\n\n## Testing and Validation\n\n### Test Environment Configuration\n\
+    \nEstablish isolated testing environments for both FreeAgent and Odoo. Create\
+    \ a FreeAgent sandbox account using their developer program—this provides full\
+    \ API access without affecting live financial data. Set up a dedicated Odoo 18\
+    \ test instance with sample data that mirrors your production environment. This\
+    \ isolation lets you test integration behavior without risking business data corruption.\n\
+    \nPrepare comprehensive test datasets that cover all integration scenarios. Create\
+    \ test contacts with varying attributes—individuals, companies, international\
+    \ addresses, and special characters in names. Build product catalogs with different\
+    \ tax treatments and pricing models. Generate invoice test cases that include\
+    \ partial payments, overdue amounts, and credit notes. This diversity ensures\
+    \ your integration handles edge cases.\n\n### Synchronization Validation Procedures\n\
+    \nImplement automated validation checks that run after each synchronization cycle.\
+    \ Create validators that compare record counts for each data type between systems.\
+    \ Develop field-level checksums that verify data integrity by calculating hash\
+    \ values for critical fields across matched records. These automated checks catch\
+    \ synchronization issues before they affect business operations.\n\nValidate financial\
+    \ data accuracy with amount reconciliation procedures. Create test reports that\
+    \ sum invoice totals, payment amounts, and tax calculations across both systems.\
     \ The totals should match within acceptable rounding differences. Implement currency\
     \ conversion validation for multi-currency transactions by verifying exchange\
     \ rate applications match between systems.\n\n### Performance Benchmarking\n\n\
@@ -323,34 +323,34 @@ ai_generated_content:
     \ Implement data retention policies that automatically purge old synchronization\
     \ logs while preserving required financial records. Create data export tools that\
     \ can extract integration configuration for compliance audits. Document your security\
-    \ measures for regulatory review.\n\n## Performance Optimization\n\
-    \n### API Call Optimization\n\nReduce API calls through intelligent batching and\
-    \ caching strategies. FreeAgent's API supports including related resources in\
-    \ single requests—use these include parameters to fetch contacts with their invoices\
-    \ in fewer calls. Implement response caching for relatively static data like tax\
-    \ rates and currency codes that change infrequently.\n\nOptimize sync frequency\
-    \ based on data volatility patterns. Configure contact synchronization to run\
-    \ less frequently than payment syncs since customer data changes less often. Implement\
-    \ change detection mechanisms that only sync records modified since the last successful\
-    \ sync. This incremental approach dramatically reduces API consumption compared\
-    \ to full syncs each time.\n\n### Database Performance\n\nOptimize database queries\
-    \ within your synchronization logic. Use Odoo's read_group operations for bulk\
-    \ data retrieval instead of individual record searches. Implement selective field\
-    \ loading to fetch only necessary fields rather than complete records. Create\
-    \ database indexes on synchronization timestamp fields to speed up change detection\
-    \ queries.\n\nManage database transactions carefully during bulk operations. Process\
-    \ records in batches of 50-100 to prevent long database transactions that block\
-    \ other operations. Use Odoo's delay_create and delay_write methods for non-critical\
-    \ updates that can process asynchronously. This approach maintains system responsiveness\
-    \ during large sync operations.\n\n### Memory Management\n\nImplement efficient\
-    \ memory usage patterns in your sync jobs. Use generator expressions instead of\
-    \ lists for processing large record sets. This streams data through your integration\
-    \ rather than loading everything into memory simultaneously. Explicitly close\
-    \ database cursors and API connections after use to prevent resource leaks.\n\n\
-    Monitor memory usage during synchronization and implement garbage collection triggers.\
-    \ Profile your integration to identify memory hotspots—typically record cache\
-    \ structures and field mapping dictionaries. Implement size limits on in-memory\
-    \ caches and disk-based swapping for exceptionally large datasets."
+    \ measures for regulatory review.\n\n## Performance Optimization\n\n### API Call\
+    \ Optimization\n\nReduce API calls through intelligent batching and caching strategies.\
+    \ FreeAgent's API supports including related resources in single requests—use\
+    \ these include parameters to fetch contacts with their invoices in fewer calls.\
+    \ Implement response caching for relatively static data like tax rates and currency\
+    \ codes that change infrequently.\n\nOptimize sync frequency based on data volatility\
+    \ patterns. Configure contact synchronization to run less frequently than payment\
+    \ syncs since customer data changes less often. Implement change detection mechanisms\
+    \ that only sync records modified since the last successful sync. This incremental\
+    \ approach dramatically reduces API consumption compared to full syncs each time.\n\
+    \n### Database Performance\n\nOptimize database queries within your synchronization\
+    \ logic. Use Odoo's read_group operations for bulk data retrieval instead of individual\
+    \ record searches. Implement selective field loading to fetch only necessary fields\
+    \ rather than complete records. Create database indexes on synchronization timestamp\
+    \ fields to speed up change detection queries.\n\nManage database transactions\
+    \ carefully during bulk operations. Process records in batches of 50-100 to prevent\
+    \ long database transactions that block other operations. Use Odoo's delay_create\
+    \ and delay_write methods for non-critical updates that can process asynchronously.\
+    \ This approach maintains system responsiveness during large sync operations.\n\
+    \n### Memory Management\n\nImplement efficient memory usage patterns in your sync\
+    \ jobs. Use generator expressions instead of lists for processing large record\
+    \ sets. This streams data through your integration rather than loading everything\
+    \ into memory simultaneously. Explicitly close database cursors and API connections\
+    \ after use to prevent resource leaks.\n\nMonitor memory usage during synchronization\
+    \ and implement garbage collection triggers. Profile your integration to identify\
+    \ memory hotspots—typically record cache structures and field mapping dictionaries.\
+    \ Implement size limits on in-memory caches and disk-based swapping for exceptionally\
+    \ large datasets."
   conclusion: 'Your FreeAgent to Odoo 18 integration now operates as a seamless financial
     data pipeline. The synchronized systems eliminate manual data entry and provide
     real-time visibility into your business finances. You have built a robust architecture
@@ -443,13 +443,14 @@ visualizations:
   placement_hint: after_conclusion
   data_context: learning path and knowledge graph
   mermaid_chart_syntax: "flowchart TB\n\n    Current[\"[CURRENT] Freeagent to Odoo\
-    \ Integration: Complete 2025 Guide\"]\n\n    %% Related Topics - Cross-References\n\
-    \    Current -.-> Rel0[\"Cloudflare to Odoo Integration: Complete 2025 Guide\"\
-    ]\n    Current -.-> Rel1[\"Facebook Pixel to Odoo Integration: Complete 2025 Guide\"\
-    ]\n\n    %% Professional Styling\n    classDef current fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n\
-    \    classDef prereq fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000\n\
-    \    classDef next fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000\n \
-    \   classDef related fill:#f5f5f5,stroke:#616161,stroke-width:1px,color:#000\n\
+    \ Integration: Complete 2025 Guide\"]\n\n    %% Next Steps - Learning Progression\n\
+    \    Current --> Next0(\"Complete Implementation Guide\")\n\n    %% Related Topics\
+    \ - Cross-References\n    Current -.-> Rel0[\"Cloudflare to Odoo Integration:\
+    \ Complete 2025 Guide\"]\n    Current -.-> Rel1[\"Facebook Pixel to Odoo Integration:\
+    \ Complete 2025 Guide\"]\n\n    %% Professional Styling\n    classDef current\
+    \ fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n    classDef prereq\
+    \ fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000\n    classDef next fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000\n\
+    \    classDef related fill:#f5f5f5,stroke:#616161,stroke-width:1px,color:#000\n\
     \    classDef trouble fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000\n\
     \    classDef support fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#000\n\
-    \n    class Current current\n    class Rel0,Rel1 related"
+    \n    class Current current\n    class Next0 next\n    class Rel0,Rel1 related"

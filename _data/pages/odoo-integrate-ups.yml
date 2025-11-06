@@ -73,26 +73,26 @@ ai_generated_content:
     engine with your logistics backbone, eliminating the friction that currently costs
     you time, money, and customer goodwill. Let''s build a system where your shipping
     data flows as effortlessly as your ideas.'
-  main_content: "## Integration Architecture and Data Flow\n\nA robust\
-    \ UPS integration for Odoo 18 operates on a hybrid architecture, blending Odoo's\
-    \ native framework with UPS's modern API ecosystem. The system hinges on the Odoo\
-    \ UPS Connector module, which acts as a dedicated middleware layer within your\
-    \ Odoo instance. This module does not function as a passive bridge; it actively\
-    \ manages the entire shipping lifecycle. Its core components include a configuration\
-    \ engine for storing UPS credentials and shipping preferences, a real-time API\
-    \ client for communicating with UPS servers, and a data mapping service that translates\
-    \ Odoo sales order fields into UPS-compliant shipment requests. This design ensures\
-    \ that shipping logic becomes a native capability of your ERP, not a bolted-on\
-    \ afterthought.\n\nThe data flow initiates when a user validates a sales order\
-    \ or triggers the \"Send to Shipping\" action within Odoo. The connector module\
-    \ intercepts this event and packages the relevant order data—destination address,\
-    \ package dimensions, product weight, and shipping service level—into a structured\
-    \ JSON object. This object then makes a secure HTTPS POST request to the UPS Shipping\
-    \ API endpoint. The API gateway authenticates the request using Odoo-stored access\
-    \ keys before the UPS core logistics platform processes the shipment. This entire\
-    \ exchange, from trigger to API call, typically completes in under two seconds.\n\
-    \nUpon successful processing, the UPS API returns a rich response payload back\
-    \ to the Odoo connector. This payload contains the critical tracking number, shipping\
+  main_content: "## Integration Architecture and Data Flow\n\nA robust UPS integration\
+    \ for Odoo 18 operates on a hybrid architecture, blending Odoo's native framework\
+    \ with UPS's modern API ecosystem. The system hinges on the Odoo UPS Connector\
+    \ module, which acts as a dedicated middleware layer within your Odoo instance.\
+    \ This module does not function as a passive bridge; it actively manages the entire\
+    \ shipping lifecycle. Its core components include a configuration engine for storing\
+    \ UPS credentials and shipping preferences, a real-time API client for communicating\
+    \ with UPS servers, and a data mapping service that translates Odoo sales order\
+    \ fields into UPS-compliant shipment requests. This design ensures that shipping\
+    \ logic becomes a native capability of your ERP, not a bolted-on afterthought.\n\
+    \nThe data flow initiates when a user validates a sales order or triggers the\
+    \ \"Send to Shipping\" action within Odoo. The connector module intercepts this\
+    \ event and packages the relevant order data—destination address, package dimensions,\
+    \ product weight, and shipping service level—into a structured JSON object. This\
+    \ object then makes a secure HTTPS POST request to the UPS Shipping API endpoint.\
+    \ The API gateway authenticates the request using Odoo-stored access keys before\
+    \ the UPS core logistics platform processes the shipment. This entire exchange,\
+    \ from trigger to API call, typically completes in under two seconds.\n\nUpon\
+    \ successful processing, the UPS API returns a rich response payload back to the\
+    \ Odoo connector. This payload contains the critical tracking number, shipping\
     \ charges, a printable label in PDF or ZPL format, and the estimated delivery\
     \ date. The connector module parses this response and updates the original Odoo\
     \ sales order, the associated delivery order, and the stock move records. It attaches\
@@ -107,10 +107,10 @@ ai_generated_content:
     \ responses, and errors—in a dedicated log table. This provides a complete audit\
     \ trail for troubleshooting disputed shipments, analyzing shipping costs, and\
     \ generating compliance reports. You maintain full visibility into every data\
-    \ exchange between your ERP and the carrier.\n\n## Step-by-Step Configuration\
-    \\n\n### Prerequisites and Module Installation\nBegin by gathering\
-    \ your UPS API credentials. You need a UPS Developer Kit account with active access\
-    \ to the Shipping API. Secure your Client ID and Client Secret from the UPS Developer\
+    \ exchange between your ERP and the carrier.\n\n## Step-by-Step Configuration\\\
+    n\n### Prerequisites and Module Installation\nBegin by gathering your UPS API\
+    \ credentials. You need a UPS Developer Kit account with active access to the\
+    \ Shipping API. Secure your Client ID and Client Secret from the UPS Developer\
     \ Portal; these keys authenticate your Odoo instance with UPS's OAuth 2.0 service.\
     \ Within your Odoo 18 environment, install the official `delivery_ups` module\
     \ from the Odoo Apps store. Verify your installation activates the Delivery and\
@@ -195,8 +195,8 @@ ai_generated_content:
     \ `InsuredValue` field. When products lack explicit weight data, the integration\
     \ falls back to a default weight value defined in the product category, preventing\
     \ rate calculation failures and ensuring every shipment receives a valid quote.\n\
-    \n## Error Handling and Resilience\n\nThe integration encounters several\
-    \ common error categories, each requiring a specific handling strategy. Authentication\
+    \n## Error Handling and Resilience\n\nThe integration encounters several common\
+    \ error categories, each requiring a specific handling strategy. Authentication\
     \ failures, signaled by `UPS Api Error: 401 Unauthorized`, typically indicate\
     \ expired or invalid access tokens. The system should implement an automatic token\
     \ refresh mechanism, using the stored refresh token to obtain new credentials\
@@ -226,37 +226,36 @@ ai_generated_content:
     \ shipments from your account that lack a corresponding Odoo tracking number.\
     \ This script should run daily to maintain synchronization and prevent billing\
     \ discrepancies for shipments that never entered your Odoo workflow.\n\n## Testing\
-    \ and Validation\n\nConstruct a test suite that covers all shipping\
-    \ scenarios your business encounters. Start with a simple domestic residential\
-    \ shipment, the baseline case. Progress to commercial address delivery, international\
-    \ shipments to key markets like the EU and Canada, and multi-package shipments\
-    \ with mixed product types. Test edge cases like high-value goods requiring insurance,\
-    \ hazardous material restrictions, and COD payments. Each test case must validate\
-    \ the complete flow: rate calculation, label generation, tracking number assignment,\
-    \ and data synchronization back to the sales order.\n\nValidate the data mapping\
-    \ accuracy with a focused checklist. Confirm the ship-to address transmits without\
-    \ truncation or corruption. Verify the package weight calculation matches a manual\
-    \ calculation for the same order. Check that the correct shipping service codes\
-    \ display during the checkout process. For international orders, validate that\
-    \ the HS Code, product description, and country of manufacture populate the commercial\
-    \ invoice correctly. Print sample labels to ensure barcode scannability and that\
-    \ all required information—address, tracking number, service level—appears in\
-    \ the correct layout.\n\nExecute performance benchmarks to gauge system behavior\
-    \ under load. Time the API response for a single rate calculation; it should return\
-    \ in under two seconds. Test batch processing of fifty orders to measure throughput\
-    \ and identify potential timeout issues. Monitor Odoo server resources during\
-    \ these tests—CPU usage, memory consumption, and database load—to ensure the integration\
-    \ scales with your order volume without degrading the user experience for other\
-    \ Odoo functions. These benchmarks establish a performance baseline for future\
-    \ optimization.\n\nImplement a pre-go-live validation sprint. Create a set of\
-    \ test sales orders that mirror your live order profile. Process these orders\
-    \ through the integrated system in a staging environment, using UPS's test API\
-    \ endpoints to avoid generating real shipping labels or charges. Perform a final\
-    \ reconciliation, comparing the expected shipping costs and data outputs against\
-    \ the actual results. This dry run exposes configuration gaps and data mapping\
-    \ errors before the integration touches live customer orders, ensuring a smooth\
-    \ and professional cutover.\n\n## Security Considerations\n\nTreat\
-    \ your UPS API credentials as sensitive secrets equivalent to database passwords.\
+    \ and Validation\n\nConstruct a test suite that covers all shipping scenarios\
+    \ your business encounters. Start with a simple domestic residential shipment,\
+    \ the baseline case. Progress to commercial address delivery, international shipments\
+    \ to key markets like the EU and Canada, and multi-package shipments with mixed\
+    \ product types. Test edge cases like high-value goods requiring insurance, hazardous\
+    \ material restrictions, and COD payments. Each test case must validate the complete\
+    \ flow: rate calculation, label generation, tracking number assignment, and data\
+    \ synchronization back to the sales order.\n\nValidate the data mapping accuracy\
+    \ with a focused checklist. Confirm the ship-to address transmits without truncation\
+    \ or corruption. Verify the package weight calculation matches a manual calculation\
+    \ for the same order. Check that the correct shipping service codes display during\
+    \ the checkout process. For international orders, validate that the HS Code, product\
+    \ description, and country of manufacture populate the commercial invoice correctly.\
+    \ Print sample labels to ensure barcode scannability and that all required information—address,\
+    \ tracking number, service level—appears in the correct layout.\n\nExecute performance\
+    \ benchmarks to gauge system behavior under load. Time the API response for a\
+    \ single rate calculation; it should return in under two seconds. Test batch processing\
+    \ of fifty orders to measure throughput and identify potential timeout issues.\
+    \ Monitor Odoo server resources during these tests—CPU usage, memory consumption,\
+    \ and database load—to ensure the integration scales with your order volume without\
+    \ degrading the user experience for other Odoo functions. These benchmarks establish\
+    \ a performance baseline for future optimization.\n\nImplement a pre-go-live validation\
+    \ sprint. Create a set of test sales orders that mirror your live order profile.\
+    \ Process these orders through the integrated system in a staging environment,\
+    \ using UPS's test API endpoints to avoid generating real shipping labels or charges.\
+    \ Perform a final reconciliation, comparing the expected shipping costs and data\
+    \ outputs against the actual results. This dry run exposes configuration gaps\
+    \ and data mapping errors before the integration touches live customer orders,\
+    \ ensuring a smooth and professional cutover.\n\n## Security Considerations\n\n\
+    Treat your UPS API credentials as sensitive secrets equivalent to database passwords.\
     \ Store the Client ID and Client Secret in Odoo's system parameters, not in plain\
     \ text within the delivery method configuration. Odoo encrypts these parameters\
     \ in the database, protecting them from direct database exposure. Restrict access\
@@ -278,37 +277,36 @@ ai_generated_content:
     \ like GDPR and CCPA, reducing your compliance footprint and protecting customer\
     \ data from unnecessary exposure. Configure these log retention policies during\
     \ the initial setup to establish a secure operational standard from day one.\n\
-    \n## Performance Optimization\n\nThe UPS API rate calculation call\
-    \ often becomes the primary performance bottleneck, especially during peak sales\
-    \ periods when customers expect instant shipping quotes. Implement a multi-tiered\
-    \ caching strategy to mitigate this. Cache rate quotes for common origin-destination-service\
-    \ combinations for a short duration, such as fifteen minutes. Use Odoo's in-memory\
-    \ cache or Redis to store these results. This approach reduces redundant API calls\
-    \ for multiple orders going to the same destination on the same day, slashing\
-    \ response times and conserving your API call quota.\n\nOptimize the package weight\
-    \ calculation logic, a frequent source of performance degradation. Precompute\
-    \ and store the product weight in the product template, and ensure the field uses\
-    \ a stored decimal field, not a computed field that recalculates on every access.\
-    \ For complex kits or configurable products, calculate the total weight during\
-    \ the sale order confirmation process and store it in a dedicated field on the\
-    \ order. This precomputation eliminates expensive real-time weight calculations\
-    \ when the shipping method triggers, making the rate quote process almost instantaneous.\n\
-    \nFor high-volume e-commerce operations, offload the synchronous shipping rate\
-    \ calculation from the checkout process. Instead, display estimated shipping costs\
-    \ based on a pre-calculated rate table or a simplified algorithm. Calculate the\
-    \ precise UPS rates asynchronously in the background after order confirmation.\
-    \ This strategy guarantees a fast, responsive checkout experience for customers,\
-    \ even during UPS API slowdowns or outages. The system can then batch-process\
-    \ the precise rate calculations and label generation for all confirmed orders\
-    \ on a scheduled interval, optimizing both user experience and backend resource\
-    \ usage.\n\nMonitor the integration's health with specific key performance indicators.\
-    \ Track the average response time for the UPS Rate API and Ship API endpoints.\
-    \ Chart the daily volume of successful versus failed API calls. Set up alerts\
-    \ for a rising error rate or a sudden spike in response latency. These metrics\
-    \ provide early warning signs of performance decay, whether from increased order\
-    \ volume, network issues, or changes in the UPS API service. Proactive monitoring\
-    \ lets you address performance issues before they impact your warehouse operations\
-    \ or customer delivery promises."
+    \n## Performance Optimization\n\nThe UPS API rate calculation call often becomes\
+    \ the primary performance bottleneck, especially during peak sales periods when\
+    \ customers expect instant shipping quotes. Implement a multi-tiered caching strategy\
+    \ to mitigate this. Cache rate quotes for common origin-destination-service combinations\
+    \ for a short duration, such as fifteen minutes. Use Odoo's in-memory cache or\
+    \ Redis to store these results. This approach reduces redundant API calls for\
+    \ multiple orders going to the same destination on the same day, slashing response\
+    \ times and conserving your API call quota.\n\nOptimize the package weight calculation\
+    \ logic, a frequent source of performance degradation. Precompute and store the\
+    \ product weight in the product template, and ensure the field uses a stored decimal\
+    \ field, not a computed field that recalculates on every access. For complex kits\
+    \ or configurable products, calculate the total weight during the sale order confirmation\
+    \ process and store it in a dedicated field on the order. This precomputation\
+    \ eliminates expensive real-time weight calculations when the shipping method\
+    \ triggers, making the rate quote process almost instantaneous.\n\nFor high-volume\
+    \ e-commerce operations, offload the synchronous shipping rate calculation from\
+    \ the checkout process. Instead, display estimated shipping costs based on a pre-calculated\
+    \ rate table or a simplified algorithm. Calculate the precise UPS rates asynchronously\
+    \ in the background after order confirmation. This strategy guarantees a fast,\
+    \ responsive checkout experience for customers, even during UPS API slowdowns\
+    \ or outages. The system can then batch-process the precise rate calculations\
+    \ and label generation for all confirmed orders on a scheduled interval, optimizing\
+    \ both user experience and backend resource usage.\n\nMonitor the integration's\
+    \ health with specific key performance indicators. Track the average response\
+    \ time for the UPS Rate API and Ship API endpoints. Chart the daily volume of\
+    \ successful versus failed API calls. Set up alerts for a rising error rate or\
+    \ a sudden spike in response latency. These metrics provide early warning signs\
+    \ of performance decay, whether from increased order volume, network issues, or\
+    \ changes in the UPS API service. Proactive monitoring lets you address performance\
+    \ issues before they impact your warehouse operations or customer delivery promises."
   conclusion: 'Your journey from manual data entry to automated shipping excellence
     concludes with a system that operates with quiet precision. The integration you
     built connects Odoo 18 and UPS with a robust, fault-tolerant data pipeline that
@@ -402,13 +400,14 @@ visualizations:
   placement_hint: after_conclusion
   data_context: learning path and knowledge graph
   mermaid_chart_syntax: "flowchart TB\n\n    Current[\"[CURRENT] UPS to Odoo Integration:\
-    \ Complete 2025 Guide\"]\n\n    %% Related Topics - Cross-References\n    Current\
-    \ -.-> Rel0[\"Cloudflare to Odoo Integration: Complete 2025 Guide\"]\n    Current\
-    \ -.-> Rel1[\"Facebook Pixel to Odoo Integration: Complete 2025 Guide\"]\n\n \
-    \   %% Professional Styling\n    classDef current fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n\
+    \ Complete 2025 Guide\"]\n\n    %% Next Steps - Learning Progression\n    Current\
+    \ --> Next0(\"Complete Implementation Guide\")\n\n    %% Related Topics - Cross-References\n\
+    \    Current -.-> Rel0[\"Cloudflare to Odoo Integration: Complete 2025 Guide\"\
+    ]\n    Current -.-> Rel1[\"Facebook Pixel to Odoo Integration: Complete 2025 Guide\"\
+    ]\n\n    %% Professional Styling\n    classDef current fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n\
     \    classDef prereq fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000\n\
     \    classDef next fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000\n \
     \   classDef related fill:#f5f5f5,stroke:#616161,stroke-width:1px,color:#000\n\
     \    classDef trouble fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000\n\
     \    classDef support fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#000\n\
-    \n    class Current current\n    class Rel0,Rel1 related"
+    \n    class Current current\n    class Next0 next\n    class Rel0,Rel1 related"

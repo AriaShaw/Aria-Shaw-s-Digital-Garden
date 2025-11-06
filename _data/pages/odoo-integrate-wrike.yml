@@ -69,29 +69,29 @@ ai_generated_content:
     staging environment for testing. The result will be a seamless, automated flow
     of project information that eliminates manual work and unifies your operational
     data.'
-  main_content: "## Integration Architecture and Data Flow\n\nA successful\
-    \ Wrike-Odoo integration hinges on a clear, event-driven architecture. You must\
-    \ design a system that synchronizes data bidirectionally while preventing loops\
-    \ and ensuring data consistency. The core pattern uses Odoo as the system of record\
-    \ for business operations and Wrike as the project execution engine. This design\
-    \ establishes a master-slave relationship for specific data domains, dictating\
-    \ which system initiates changes for particular records.\n\n**Core Synchronization\
-    \ Patterns and Directionality**\nThe integration follows three primary data flow\
-    \ patterns. The first pattern pushes new customer projects from Odoo Sales to\
-    \ Wrike. When a sales order confirms in Odoo, the system triggers a webhook that\
-    \ creates a corresponding project in a predefined Wrike folder. The second pattern\
-    \ synchronizes task status updates from Wrike back to Odoo operations. A Wrike\
-    \ webhook notifies an Odoo endpoint about task completion, which then updates\
-    \ the linked manufacturing work order or project task. The third pattern handles\
-    \ time and material data. Employees log hours against Wrike tasks, and the integration\
-    \ pushes this data into Odoo's Timesheets module for payroll processing and client\
-    \ invoicing.\n\n**Odoo 18 Modules and Wrike Data Model Alignment**\nYour integration\
-    \ must map specific Odoo 18 modules to corresponding Wrike entities. The Odoo\
-    \ Project module aligns with Wrike folders and projects. Individual Odoo project.tasks\
-    \ map to Wrike tasks. The Odoo Manufacturing module connects work orders to Wrike\
-    \ tasks for tracking production milestones. The Odoo Helpdesk team can create\
-    \ Wrike tasks from support tickets that require complex, multi-step resolution.\
-    \ The Odoo Timesheets app collects data from Wrike time logs. You must understand\
+  main_content: "## Integration Architecture and Data Flow\n\nA successful Wrike-Odoo\
+    \ integration hinges on a clear, event-driven architecture. You must design a\
+    \ system that synchronizes data bidirectionally while preventing loops and ensuring\
+    \ data consistency. The core pattern uses Odoo as the system of record for business\
+    \ operations and Wrike as the project execution engine. This design establishes\
+    \ a master-slave relationship for specific data domains, dictating which system\
+    \ initiates changes for particular records.\n\n**Core Synchronization Patterns\
+    \ and Directionality**\nThe integration follows three primary data flow patterns.\
+    \ The first pattern pushes new customer projects from Odoo Sales to Wrike. When\
+    \ a sales order confirms in Odoo, the system triggers a webhook that creates a\
+    \ corresponding project in a predefined Wrike folder. The second pattern synchronizes\
+    \ task status updates from Wrike back to Odoo operations. A Wrike webhook notifies\
+    \ an Odoo endpoint about task completion, which then updates the linked manufacturing\
+    \ work order or project task. The third pattern handles time and material data.\
+    \ Employees log hours against Wrike tasks, and the integration pushes this data\
+    \ into Odoo's Timesheets module for payroll processing and client invoicing.\n\
+    \n**Odoo 18 Modules and Wrike Data Model Alignment**\nYour integration must map\
+    \ specific Odoo 18 modules to corresponding Wrike entities. The Odoo Project module\
+    \ aligns with Wrike folders and projects. Individual Odoo project.tasks map to\
+    \ Wrike tasks. The Odoo Manufacturing module connects work orders to Wrike tasks\
+    \ for tracking production milestones. The Odoo Helpdesk team can create Wrike\
+    \ tasks from support tickets that require complex, multi-step resolution. The\
+    \ Odoo Timesheets app collects data from Wrike time logs. You must understand\
     \ the field mappings and lifecycle states for each module pair to design accurate\
     \ data transformations.\n\n**Technical Components and Data Flow Sequence**\nThe\
     \ architecture employs several key technical components. Odoo Scheduled Actions\
@@ -102,31 +102,31 @@ ai_generated_content:
     \ data flow starts with an event in one system, triggers an API call, passes through\
     \ validation and transformation logic, and culminates in a create, read, update,\
     \ or delete operation in the target system. This sequence ensures data integrity\
-    \ across both platforms.\n\n## Step-by-Step Configuration\n\n**Wrike\
-    \ API Application Setup and Authentication**\nBegin by configuring API access\
-    \ in your Wrike workspace. Log into Wrike as an administrator and navigate to\
-    \ the Apps & Integrations section in your settings. Create a new API application\
-    \ and note your Client ID and Client Secret. Your application needs specific scopes:\
-    \ wsReadWrite for project and task data, and wsReadWrite for time tracking data.\
-    \ Configure the redirect URI to point to your Odoo instance's authentication callback\
-    \ endpoint, typically `https://your-odoo-server.com/auth_oauth/signin`. This setup\
-    \ enables the OAuth 2.0 flow that secures all API communications.\n\nStore these\
-    \ credentials securely in Odoo using the OAuth Provider menu. Create a new record\
-    \ under Settings > General Settings > Integrations > OAuth Authentication. Select\
-    \ \"OAuth 2.0\" as the protocol. Name the provider \"Wrike API\". Paste your Client\
-    \ ID and Client Secret into the corresponding fields. Set the authorization URL\
-    \ to `https://www.wrike.com/oauth2/authorize` and the access token URL to `https://www.wrike.com/oauth2/token`.\
-    \ Define the scope parameter as `wsReadWrite,wsReadWrite`. Odoo will use this\
-    \ configuration to obtain and refresh access tokens automatically, handling the\
-    \ complete OAuth flow without custom code.\n\n**Custom Odoo Module Structure and\
-    \ Core Models**\nDevelop a custom Odoo module to encapsulate the integration logic.\
-    \ Create a module named `wrike_connector` with a standard Python package structure.\
-    \ Define a central model `wrike.sync.record` to track synchronization state and\
-    \ prevent data loops. This model stores the external Wrike ID, the internal Odoo\
-    \ ID, the model name, and the last sync timestamp. Implement the core synchronization\
-    \ logic in a model `wrike.api.client` that handles all HTTP requests to Wrike,\
-    \ manages rate limits, and parses API responses.\n\n```\nclass WrikeSyncRecord(models.Model):\n\
-    \    _name = 'wrike.sync.record'\n    _description = 'Wrike Synchronization Record'\n\
+    \ across both platforms.\n\n## Step-by-Step Configuration\n\n**Wrike API Application\
+    \ Setup and Authentication**\nBegin by configuring API access in your Wrike workspace.\
+    \ Log into Wrike as an administrator and navigate to the Apps & Integrations section\
+    \ in your settings. Create a new API application and note your Client ID and Client\
+    \ Secret. Your application needs specific scopes: wsReadWrite for project and\
+    \ task data, and wsReadWrite for time tracking data. Configure the redirect URI\
+    \ to point to your Odoo instance's authentication callback endpoint, typically\
+    \ `https://your-odoo-server.com/auth_oauth/signin`. This setup enables the OAuth\
+    \ 2.0 flow that secures all API communications.\n\nStore these credentials securely\
+    \ in Odoo using the OAuth Provider menu. Create a new record under Settings >\
+    \ General Settings > Integrations > OAuth Authentication. Select \"OAuth 2.0\"\
+    \ as the protocol. Name the provider \"Wrike API\". Paste your Client ID and Client\
+    \ Secret into the corresponding fields. Set the authorization URL to `https://www.wrike.com/oauth2/authorize`\
+    \ and the access token URL to `https://www.wrike.com/oauth2/token`. Define the\
+    \ scope parameter as `wsReadWrite,wsReadWrite`. Odoo will use this configuration\
+    \ to obtain and refresh access tokens automatically, handling the complete OAuth\
+    \ flow without custom code.\n\n**Custom Odoo Module Structure and Core Models**\n\
+    Develop a custom Odoo module to encapsulate the integration logic. Create a module\
+    \ named `wrike_connector` with a standard Python package structure. Define a central\
+    \ model `wrike.sync.record` to track synchronization state and prevent data loops.\
+    \ This model stores the external Wrike ID, the internal Odoo ID, the model name,\
+    \ and the last sync timestamp. Implement the core synchronization logic in a model\
+    \ `wrike.api.client` that handles all HTTP requests to Wrike, manages rate limits,\
+    \ and parses API responses.\n\n```\nclass WrikeSyncRecord(models.Model):\n   \
+    \ _name = 'wrike.sync.record'\n    _description = 'Wrike Synchronization Record'\n\
     \n    external_id = fields.Char(string='Wrike ID', required=True, index=True)\n\
     \    internal_id = fields.Integer(string='Odoo Record ID', required=True)\n  \
     \  model_name = fields.Char(string='Odoo Model', required=True)\n    last_sync\
@@ -159,29 +159,29 @@ ai_generated_content:
     \ the Wrike field ID, the Odoo model, the Odoo field name, and any required data\
     \ transformation. Use this mapping during synchronization to automatically convert\
     \ values between the two systems' formats, handling data type differences and\
-    \ value set mappings.\n\n## Data Mapping and Transformation\n\n**Core\
-    \ Object Relationship Mapping**\nThe integration requires precise mapping between\
-    \ Wrike's hierarchy and Odoo's relational structure. A Wrike Folder typically\
-    \ becomes an Odoo Project. A Wrike Project maps to an Odoo Project as well, but\
-    \ with different lifecycle states. Wrike Tasks correspond to Odoo Project Tasks.\
-    \ Wrike Sub-Tasks can map to either Odoo Project Tasks with a parent-child relationship\
-    \ or to Checklist Items, depending on your operational needs. Wrike Time Entries\
-    \ must transform into Odoo Account Analytic Line items for proper timesheet integration\
-    \ and project costing.\n\n**Custom Field Transformation Logic**\nWrike's custom\
-    \ field system presents the most complex transformation challenge. Each custom\
-    \ field type requires specific handling. Wrike Text fields map directly to Odoo\
-    \ Char fields. Wrike Dropdown fields need value-by-value mapping to Odoo Selection\
-    \ fields. Wrike Numeric fields convert to Odoo Integer or Float fields. Wrike\
-    \ Date fields align with Odoo Date fields, but you must handle timezone differences.\
-    \ Wrike Contact fields map to Odoo Many2one relations with the res.partner model.\
-    \ Implement a transformation engine that applies these rules based on the predefined\
-    \ field mappings.\n\n**Status and Lifecycle State Synchronization**\nTask status\
-    \ synchronization demands careful design to prevent infinite update loops. Map\
-    \ Wrike's status system (Active, Completed, On Hold, Cancelled) to Odoo's stage\
-    \ pipeline. You might map \"Active\" to Odoo's \"In Progress\" stage, \"Completed\"\
-    \ to \"Done,\" and create custom stages for \"On Hold\" and \"Cancelled.\" Implement\
-    \ logic that only triggers a status update in the target system when the change\
-    \ originates from a user action, not from the integration itself. Use the `wrike.sync.record`\
+    \ value set mappings.\n\n## Data Mapping and Transformation\n\n**Core Object Relationship\
+    \ Mapping**\nThe integration requires precise mapping between Wrike's hierarchy\
+    \ and Odoo's relational structure. A Wrike Folder typically becomes an Odoo Project.\
+    \ A Wrike Project maps to an Odoo Project as well, but with different lifecycle\
+    \ states. Wrike Tasks correspond to Odoo Project Tasks. Wrike Sub-Tasks can map\
+    \ to either Odoo Project Tasks with a parent-child relationship or to Checklist\
+    \ Items, depending on your operational needs. Wrike Time Entries must transform\
+    \ into Odoo Account Analytic Line items for proper timesheet integration and project\
+    \ costing.\n\n**Custom Field Transformation Logic**\nWrike's custom field system\
+    \ presents the most complex transformation challenge. Each custom field type requires\
+    \ specific handling. Wrike Text fields map directly to Odoo Char fields. Wrike\
+    \ Dropdown fields need value-by-value mapping to Odoo Selection fields. Wrike\
+    \ Numeric fields convert to Odoo Integer or Float fields. Wrike Date fields align\
+    \ with Odoo Date fields, but you must handle timezone differences. Wrike Contact\
+    \ fields map to Odoo Many2one relations with the res.partner model. Implement\
+    \ a transformation engine that applies these rules based on the predefined field\
+    \ mappings.\n\n**Status and Lifecycle State Synchronization**\nTask status synchronization\
+    \ demands careful design to prevent infinite update loops. Map Wrike's status\
+    \ system (Active, Completed, On Hold, Cancelled) to Odoo's stage pipeline. You\
+    \ might map \"Active\" to Odoo's \"In Progress\" stage, \"Completed\" to \"Done,\"\
+    \ and create custom stages for \"On Hold\" and \"Cancelled.\" Implement logic\
+    \ that only triggers a status update in the target system when the change originates\
+    \ from a user action, not from the integration itself. Use the `wrike.sync.record`\
     \ model to track which system initiated the last update.\n\n**User and Assignment\
     \ Synchronization**\nUser mapping forms a critical foundation for assignment synchronization.\
     \ Create a mapping table that correlates Wrike user IDs with Odoo res.partner\
@@ -237,104 +237,103 @@ ai_generated_content:
     \ for specific records or projects. Implement a bulk resync capability that can\
     \ reprocess all data for a project after a major integration failure or configuration\
     \ change. This safety net ensures long-term data consistency.\n\n## Testing and\
-    \ Validation\n\n**Comprehensive Test Environment Setup**\nEstablish\
-    \ a dedicated testing environment that mirrors your production setup. Create a\
-    \ separate Wrike workspace for testing, using Wrike's sandbox environment if available.\
-    \ Restore a recent copy of your production Odoo database to a staging server,\
-    \ but update all API configurations to point to the test Wrike workspace. This\
-    \ setup lets you validate the integration with real data without affecting live\
-    \ operations. Create test cases that cover all major business processes affected\
-    \ by the integration.\n\n**End-to-End Business Process Testing**\nDesign test\
-    \ scenarios that replicate complete business workflows across both systems. Test\
-    \ a lead-to-cash process: create a sales order in Odoo, verify the project generates\
-    \ in Wrike, complete tasks in Wrike, log time against those tasks, and confirm\
-    \ the invoice generates in Odoo with the correct time entries. Test a support-to-resolution\
-    \ process: create a helpdesk ticket in Odoo, verify the linked Wrike task creates\
-    \ with the correct priority, update the task status in Wrike, and confirm the\
-    \ helpdesk ticket resolves in Odoo. Document each step and verify data accuracy\
-    \ at every stage.\n\n**API Failure and Edge Case Testing**\nSimulate API failures\
-    \ and edge cases to validate your error handling. Temporarily disconnect your\
-    \ test environment from the internet during synchronization to test network failure\
-    \ recovery. Modify your Wrike API credentials to invalid values and verify the\
-    \ integration handles authentication errors gracefully. Test with malformed data,\
-    \ such as Wrike tasks with custom fields that don't exist in your mapping configuration.\
-    \ Create scenarios with circular dependencies, like two tasks that reference each\
-    \ other as parents, to ensure your integration detects and handles these edge\
-    \ cases.\n\n**Performance and Load Testing**\nMeasure integration performance\
-    \ under realistic load conditions. Create a test that synchronizes 1000 tasks\
-    \ from Odoo to Wrike and time the complete process. Monitor API rate limit consumption\
-    \ during this test to ensure you stay within Wrike's boundaries. Test webhook\
-    \ handling by simulating 100 concurrent updates from Wrike and verifying Odoo\
-    \ processes them without data loss or corruption. Establish performance benchmarks\
-    \ for critical operations and include these in your ongoing monitoring to detect\
-    \ performance degradation.\n\n**User Acceptance Testing and Validation Checklist**\n\
-    Engage business users from each department to validate the integration meets their\
-    \ operational needs. Provide a detailed checklist that covers all key integration\
-    \ points. The checklist should include items like \"Sales order approval creates\
-    \ Wrike project with correct client information\" and \"Task completion in Wrike\
-    \ updates manufacturing work order status in Odoo.\" Collect feedback from these\
-    \ users and prioritize any issues they identify before deploying to production.\
-    \ This final validation ensures the integration delivers tangible business value.\n\
-    \n## Security Considerations\n\n**API Credential Management and Storage**\n\
-    Secure your Wrike API credentials using Odoo's built-in security features. Store\
-    \ the Client Secret in Odoo's OAuth provider configuration, which encrypts the\
-    \ value in the database. Never hardcode credentials in your custom module or commit\
-    \ them to version control. Implement credential rotation procedures that allow\
-    \ you to update API keys without service interruption. Use Odoo's access rights\
-    \ system to restrict which users can view or modify the integration configuration,\
-    \ preventing unauthorized changes to API settings.\n\n**Webhook Security and Payload\
-    \ Validation**\nProtect your webhook endpoints from unauthorized access and malicious\
-    \ payloads. Validate the webhook signature on every incoming request to ensure\
-    \ it originated from Wrike. Implement payload schema validation to reject malformed\
-    \ JSON that could exploit vulnerabilities in your processing logic. Limit the\
-    \ payload size your webhook endpoint accepts to prevent denial-of-service attacks.\
-    \ Use Odoo's CSRF protection mechanisms for all webhook endpoints, even though\
-    \ Wrike doesn't support CSRF tokens in webhook requests.\n\n**Data Privacy and\
-    \ Compliance Mapping**\nAudit the data flowing between systems for privacy and\
-    \ compliance requirements. Identify any personal data transferred from Odoo to\
-    \ Wrike and ensure this complies with your data processing agreements. Consider\
-    \ implementing field-level security that prevents synchronization of sensitive\
-    \ fields like social security numbers or financial account information. Document\
-    \ the complete data flow for compliance audits, including which systems store\
-    \ what data and how long they retain it. Implement data anonymization for test\
-    \ environments to prevent accidental exposure of production data.\n\n**Access\
-    \ Control and Permission Synchronization**\nAlign user permissions between Odoo\
-    \ and Wrike to maintain security consistency. When the integration creates a Wrike\
-    \ project from Odoo, set the folder permissions to mirror the Odoo project's access\
-    \ rights. Map Odoo user groups to Wrike user groups to maintain consistent authorization\
-    \ levels. Implement validation that prevents the integration from escalating user\
-    \ privileges by creating records with broader access than the originating user\
-    \ possesses. This maintains your security model across both systems.\n\n## Performance\
-    \ Optimization\n\n**API Call Batching and Request Optimization**\n\
-    Minimize API calls through intelligent batching and field selection. When polling\
-    \ Wrike for updated tasks, request multiple pages of results in a single call\
-    \ using Wrike's pagination parameters. Specify exactly which fields you need in\
-    \ each API call using Wrike's field parameter, avoiding the transfer of unnecessary\
-    \ data. For creating multiple related records, like tasks with custom fields,\
-    \ use Wrike's batch operations where available. These techniques reduce network\
-    \ overhead and improve synchronization speed.\n\n**Caching Strategies for Reference\
-    \ Data**\nImplement caching for relatively static reference data to reduce API\
-    \ calls. Cache the mapping between Wrike custom fields and Odoo fields, refreshing\
-    \ this cache only when you detect schema changes. Cache the user mapping between\
-    \ systems, updating only when users join or leave the organization. Cache Wrike\
-    \ folder structures and project templates that change infrequently. Use Odoo's\
-    \ in-memory cache or Redis integration to store this data with appropriate expiration\
-    \ times, balancing performance with data freshness.\n\n**Database Indexing and\
-    \ Query Optimization**\nOptimize database performance for integration-related\
-    \ queries. Add indexes to the `wrike.sync.record` model on the external_id and\
-    \ internal_id fields to speed up lookups during synchronization. Index the last_sync\
-    \ field to improve the performance of polling operations that fetch recently changed\
-    \ records. Review the query plans for your busiest synchronization jobs and add\
-    \ covering indexes where appropriate. Monitor database performance during peak\
-    \ synchronization periods and scale your database resources to handle the additional\
-    \ load.\n\n**Background Processing and Job Queuing**\nMove all synchronization\
-    \ work to background jobs to maintain Odoo's frontend performance. Use Odoo's\
-    \ built-in queue job system or integrate with Redis Queue for more advanced job\
-    \ handling. Prioritize jobs based on business criticality—real-time updates for\
-    \ task status changes can have higher priority than nightly reconciliation processes.\
-    \ Implement job timeouts to prevent stalled synchronization jobs from consuming\
-    \ resources indefinitely. Monitor your job queue length and processing time to\
-    \ detect performance issues before they affect data freshness."
+    \ Validation\n\n**Comprehensive Test Environment Setup**\nEstablish a dedicated\
+    \ testing environment that mirrors your production setup. Create a separate Wrike\
+    \ workspace for testing, using Wrike's sandbox environment if available. Restore\
+    \ a recent copy of your production Odoo database to a staging server, but update\
+    \ all API configurations to point to the test Wrike workspace. This setup lets\
+    \ you validate the integration with real data without affecting live operations.\
+    \ Create test cases that cover all major business processes affected by the integration.\n\
+    \n**End-to-End Business Process Testing**\nDesign test scenarios that replicate\
+    \ complete business workflows across both systems. Test a lead-to-cash process:\
+    \ create a sales order in Odoo, verify the project generates in Wrike, complete\
+    \ tasks in Wrike, log time against those tasks, and confirm the invoice generates\
+    \ in Odoo with the correct time entries. Test a support-to-resolution process:\
+    \ create a helpdesk ticket in Odoo, verify the linked Wrike task creates with\
+    \ the correct priority, update the task status in Wrike, and confirm the helpdesk\
+    \ ticket resolves in Odoo. Document each step and verify data accuracy at every\
+    \ stage.\n\n**API Failure and Edge Case Testing**\nSimulate API failures and edge\
+    \ cases to validate your error handling. Temporarily disconnect your test environment\
+    \ from the internet during synchronization to test network failure recovery. Modify\
+    \ your Wrike API credentials to invalid values and verify the integration handles\
+    \ authentication errors gracefully. Test with malformed data, such as Wrike tasks\
+    \ with custom fields that don't exist in your mapping configuration. Create scenarios\
+    \ with circular dependencies, like two tasks that reference each other as parents,\
+    \ to ensure your integration detects and handles these edge cases.\n\n**Performance\
+    \ and Load Testing**\nMeasure integration performance under realistic load conditions.\
+    \ Create a test that synchronizes 1000 tasks from Odoo to Wrike and time the complete\
+    \ process. Monitor API rate limit consumption during this test to ensure you stay\
+    \ within Wrike's boundaries. Test webhook handling by simulating 100 concurrent\
+    \ updates from Wrike and verifying Odoo processes them without data loss or corruption.\
+    \ Establish performance benchmarks for critical operations and include these in\
+    \ your ongoing monitoring to detect performance degradation.\n\n**User Acceptance\
+    \ Testing and Validation Checklist**\nEngage business users from each department\
+    \ to validate the integration meets their operational needs. Provide a detailed\
+    \ checklist that covers all key integration points. The checklist should include\
+    \ items like \"Sales order approval creates Wrike project with correct client\
+    \ information\" and \"Task completion in Wrike updates manufacturing work order\
+    \ status in Odoo.\" Collect feedback from these users and prioritize any issues\
+    \ they identify before deploying to production. This final validation ensures\
+    \ the integration delivers tangible business value.\n\n## Security Considerations\n\
+    \n**API Credential Management and Storage**\nSecure your Wrike API credentials\
+    \ using Odoo's built-in security features. Store the Client Secret in Odoo's OAuth\
+    \ provider configuration, which encrypts the value in the database. Never hardcode\
+    \ credentials in your custom module or commit them to version control. Implement\
+    \ credential rotation procedures that allow you to update API keys without service\
+    \ interruption. Use Odoo's access rights system to restrict which users can view\
+    \ or modify the integration configuration, preventing unauthorized changes to\
+    \ API settings.\n\n**Webhook Security and Payload Validation**\nProtect your webhook\
+    \ endpoints from unauthorized access and malicious payloads. Validate the webhook\
+    \ signature on every incoming request to ensure it originated from Wrike. Implement\
+    \ payload schema validation to reject malformed JSON that could exploit vulnerabilities\
+    \ in your processing logic. Limit the payload size your webhook endpoint accepts\
+    \ to prevent denial-of-service attacks. Use Odoo's CSRF protection mechanisms\
+    \ for all webhook endpoints, even though Wrike doesn't support CSRF tokens in\
+    \ webhook requests.\n\n**Data Privacy and Compliance Mapping**\nAudit the data\
+    \ flowing between systems for privacy and compliance requirements. Identify any\
+    \ personal data transferred from Odoo to Wrike and ensure this complies with your\
+    \ data processing agreements. Consider implementing field-level security that\
+    \ prevents synchronization of sensitive fields like social security numbers or\
+    \ financial account information. Document the complete data flow for compliance\
+    \ audits, including which systems store what data and how long they retain it.\
+    \ Implement data anonymization for test environments to prevent accidental exposure\
+    \ of production data.\n\n**Access Control and Permission Synchronization**\nAlign\
+    \ user permissions between Odoo and Wrike to maintain security consistency. When\
+    \ the integration creates a Wrike project from Odoo, set the folder permissions\
+    \ to mirror the Odoo project's access rights. Map Odoo user groups to Wrike user\
+    \ groups to maintain consistent authorization levels. Implement validation that\
+    \ prevents the integration from escalating user privileges by creating records\
+    \ with broader access than the originating user possesses. This maintains your\
+    \ security model across both systems.\n\n## Performance Optimization\n\n**API\
+    \ Call Batching and Request Optimization**\nMinimize API calls through intelligent\
+    \ batching and field selection. When polling Wrike for updated tasks, request\
+    \ multiple pages of results in a single call using Wrike's pagination parameters.\
+    \ Specify exactly which fields you need in each API call using Wrike's field parameter,\
+    \ avoiding the transfer of unnecessary data. For creating multiple related records,\
+    \ like tasks with custom fields, use Wrike's batch operations where available.\
+    \ These techniques reduce network overhead and improve synchronization speed.\n\
+    \n**Caching Strategies for Reference Data**\nImplement caching for relatively\
+    \ static reference data to reduce API calls. Cache the mapping between Wrike custom\
+    \ fields and Odoo fields, refreshing this cache only when you detect schema changes.\
+    \ Cache the user mapping between systems, updating only when users join or leave\
+    \ the organization. Cache Wrike folder structures and project templates that change\
+    \ infrequently. Use Odoo's in-memory cache or Redis integration to store this\
+    \ data with appropriate expiration times, balancing performance with data freshness.\n\
+    \n**Database Indexing and Query Optimization**\nOptimize database performance\
+    \ for integration-related queries. Add indexes to the `wrike.sync.record` model\
+    \ on the external_id and internal_id fields to speed up lookups during synchronization.\
+    \ Index the last_sync field to improve the performance of polling operations that\
+    \ fetch recently changed records. Review the query plans for your busiest synchronization\
+    \ jobs and add covering indexes where appropriate. Monitor database performance\
+    \ during peak synchronization periods and scale your database resources to handle\
+    \ the additional load.\n\n**Background Processing and Job Queuing**\nMove all\
+    \ synchronization work to background jobs to maintain Odoo's frontend performance.\
+    \ Use Odoo's built-in queue job system or integrate with Redis Queue for more\
+    \ advanced job handling. Prioritize jobs based on business criticality—real-time\
+    \ updates for task status changes can have higher priority than nightly reconciliation\
+    \ processes. Implement job timeouts to prevent stalled synchronization jobs from\
+    \ consuming resources indefinitely. Monitor your job queue length and processing\
+    \ time to detect performance issues before they affect data freshness."
   conclusion: 'Your Wrike to Odoo 18 integration now establishes a unified operational
     command center. The technical work you completed eliminates manual data transfers
     between project management and business operations. Your sales team creates projects
@@ -424,13 +423,14 @@ visualizations:
   placement_hint: after_conclusion
   data_context: learning path and knowledge graph
   mermaid_chart_syntax: "flowchart TB\n\n    Current[\"[CURRENT] Wrike to Odoo Integration:\
-    \ Complete 2025 Guide\"]\n\n    %% Related Topics - Cross-References\n    Current\
-    \ -.-> Rel0[\"Cloudflare to Odoo Integration: Complete 2025 Guide\"]\n    Current\
-    \ -.-> Rel1[\"Facebook Pixel to Odoo Integration: Complete 2025 Guide\"]\n\n \
-    \   %% Professional Styling\n    classDef current fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n\
+    \ Complete 2025 Guide\"]\n\n    %% Next Steps - Learning Progression\n    Current\
+    \ --> Next0(\"Complete Implementation Guide\")\n\n    %% Related Topics - Cross-References\n\
+    \    Current -.-> Rel0[\"Cloudflare to Odoo Integration: Complete 2025 Guide\"\
+    ]\n    Current -.-> Rel1[\"Facebook Pixel to Odoo Integration: Complete 2025 Guide\"\
+    ]\n\n    %% Professional Styling\n    classDef current fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n\
     \    classDef prereq fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000\n\
     \    classDef next fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000\n \
     \   classDef related fill:#f5f5f5,stroke:#616161,stroke-width:1px,color:#000\n\
     \    classDef trouble fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000\n\
     \    classDef support fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#000\n\
-    \n    class Current current\n    class Rel0,Rel1 related"
+    \n    class Current current\n    class Next0 next\n    class Rel0,Rel1 related"

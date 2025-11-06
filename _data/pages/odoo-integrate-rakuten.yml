@@ -67,90 +67,90 @@ ai_generated_content:
     seamless, automated data flow that eliminates manual work and provides real-time
     business visibility. You transform two separate systems into a unified commerce
     engine that operates with precision and scale.'
-  main_content: "## Integration Architecture and Data Flow\n\n### Rakuten\
-    \ API Gateway Structure\n\nRakuten provides a RESTful API gateway that serves\
-    \ as the primary integration point. The API employs OAuth 2.0 authentication with\
-    \ specific scopes for different data operations. Your Odoo instance initiates\
-    \ all requests to Rakuten's endpoints, following a pull-based architecture for\
-    \ order retrieval and a push-based approach for inventory updates. The API rate\
-    \ limits vary by endpoint, with order-related calls permitting higher frequency\
-    \ than product catalog operations. You must design your synchronization strategy\
-    \ around these constraints to avoid service throttling.\n\nThe core integration\
-    \ connects Odoo's external data sources framework with Rakuten's marketplace ecosystem.\
-    \ Odoo acts as the system of record for inventory, product information, and customer\
-    \ data. Rakuten functions as the sales channel that generates orders and provides\
-    \ marketplace analytics. This master-slave relationship dictates the data flow\
-    \ direction—orders flow inward to Odoo, while inventory and shipment data flow\
-    \ outward to Rakuten. The architecture maintains data consistency through bidirectional\
-    \ synchronization with conflict resolution rules.\n\n### Data Synchronization\
-    \ Patterns\n\nOrder synchronization follows a continuous polling pattern. Your\
-    \ Odoo instance queries Rakuten's Orders API endpoint at regular intervals, typically\
-    \ every 5-15 minutes based on your order volume. The integration retrieves orders\
-    \ with status \"Unshipped\" and transforms them into Odoo sale orders. Each Rakuten\
-    \ order includes marketplace-specific details like seller fulfillment responsibility\
-    \ and shipping service requirements. The mapping process preserves the Rakuten\
-    \ order ID as a unique reference for future updates.\n\nInventory updates operate\
-    \ on a change-driven trigger system. Odoo monitors stock level modifications through\
-    \ its inventory module and pushes quantity updates to Rakuten via the Inventory\
-    \ API. The integration includes a buffer mechanism that prevents excessive API\
-    \ calls during bulk inventory operations. Product catalog synchronization follows\
-    \ a different pattern—initial bulk import with selective updates based on Odoo\
-    \ product modifications. This approach minimizes API consumption while maintaining\
-    \ catalog accuracy across both platforms.\n\n### Webhook Integration for Real-time\
-    \ Updates\n\nRakuten supports webhook notifications for critical events like new\
-    \ orders and cancellations. This optional enhancement reduces order processing\
-    \ latency compared to standard polling. Configure Rakuten to send HTTPS POST requests\
-    \ to your Odoo instance when specific events occur. Your Odoo system must expose\
-    \ a secure endpoint to receive these notifications and process them through a\
-    \ dedicated controller. The webhook payload contains minimal data, triggering\
-    \ an immediate API call to fetch complete order details.\n\nThe webhook implementation\
-    \ requires careful security consideration. Implement signature verification using\
-    \ Rakuten's provided secret to validate incoming requests. Your endpoint must\
-    \ handle duplicate notifications and implement proper error responses to prevent\
-    \ retry storms. Combine webhooks with traditional polling as a fallback mechanism\
-    \ for maximum reliability. This hybrid approach ensures you capture all orders\
-    \ even during temporary webhook delivery failures or system maintenance windows.\n\
-    \n## Step-by-Step Configuration\n\n### Rakuten Developer Account Setup\n\
-    \nBegin with Rakuten developer account registration. Navigate to the Rakuten Developer\
-    \ Portal and create a business account using your existing Rakuten seller credentials.\
-    \ Complete the merchant verification process, which may require business documentation\
-    \ submission. Once verified, create a new application in the developer dashboard\
-    \ to generate your API credentials. Select the appropriate API package based on\
-    \ your marketplace category—standard retail, automotive, or travel.\n\nThe application\
-    \ configuration requires specific callback URLs for OAuth authentication. Set\
-    \ your Odoo instance's base URL with the Rakuten authentication endpoint path.\
-    \ Rakuten issues a client ID and client secret that you will use throughout the\
-    \ integration. Store these credentials securely—never hardcode them in your Odoo\
-    \ modules. The developer dashboard also provides access to Rakuten's sandbox environment,\
-    \ which you should use for initial development and testing before migrating to\
-    \ production.\n\n### Odoo Module Installation and Dependencies\n\nInstall the\
-    \ base connector module for ecommerce integrations in Odoo 18. Use the Odoo Apps\
-    \ interface to search for and install \"connector_ecommerce\" or utilize a specialized\
-    \ Rakuten connector module from the Odoo marketplace. The installation process\
-    \ automatically resolves dependencies including the framework connector module,\
-    \ queue job system, and component architecture. Verify successful installation\
-    \ by checking for new menu items under the Sales and Inventory applications.\n\
-    \nConfigure the connector framework through Odoo's technical settings. Enable\
-    \ the \"Queue Jobs\" functionality and set up dedicated Redis or PostgreSQL queues\
-    \ for Rakuten synchronization tasks. Adjust the job channel configuration to prioritize\
-    \ order import over inventory export operations. Create specific user groups for\
-    \ Rakuten integration management and assign appropriate access rights. These preparations\
-    \ ensure the integration operates with proper security and performance characteristics\
-    \ from the start.\n\n### Authentication Configuration in Odoo\n\nCreate a new\
-    \ Rakuten backend instance through Odoo's Connectors menu. Navigate to Sales >\
-    \ Configuration > Connectors > Backends and select \"Rakuten\" from the available\
-    \ connector types. The backend configuration form requires your Rakuten client\
-    \ ID, client secret, and merchant ID. Set the environment to \"sandbox\" during\
-    \ initial setup, transitioning to \"production\" only after thorough testing.\
-    \ The version field should specify the latest supported Rakuten API version.\n\
-    \nThe OAuth authentication flow requires a dedicated controller in your custom\
-    \ Odoo module. Implement a route that handles the callback from Rakuten's authorization\
-    \ server. The controller exchanges the authorization code for an access token\
-    \ and refresh token, storing them securely in the backend configuration. The integration\
-    \ automatically handles token refresh operations before expiration. Test the complete\
-    \ authentication flow end-to-end, verifying that Odoo can establish and maintain\
-    \ a valid session with Rakuten's API.\n\n```python\n# Example OAuth callback controller\
-    \ in Odoo\nclass RakutenAuthController(http.Controller):\n    @http.route('/rakuten/auth/callback',\
+  main_content: "## Integration Architecture and Data Flow\n\n### Rakuten API Gateway\
+    \ Structure\n\nRakuten provides a RESTful API gateway that serves as the primary\
+    \ integration point. The API employs OAuth 2.0 authentication with specific scopes\
+    \ for different data operations. Your Odoo instance initiates all requests to\
+    \ Rakuten's endpoints, following a pull-based architecture for order retrieval\
+    \ and a push-based approach for inventory updates. The API rate limits vary by\
+    \ endpoint, with order-related calls permitting higher frequency than product\
+    \ catalog operations. You must design your synchronization strategy around these\
+    \ constraints to avoid service throttling.\n\nThe core integration connects Odoo's\
+    \ external data sources framework with Rakuten's marketplace ecosystem. Odoo acts\
+    \ as the system of record for inventory, product information, and customer data.\
+    \ Rakuten functions as the sales channel that generates orders and provides marketplace\
+    \ analytics. This master-slave relationship dictates the data flow direction—orders\
+    \ flow inward to Odoo, while inventory and shipment data flow outward to Rakuten.\
+    \ The architecture maintains data consistency through bidirectional synchronization\
+    \ with conflict resolution rules.\n\n### Data Synchronization Patterns\n\nOrder\
+    \ synchronization follows a continuous polling pattern. Your Odoo instance queries\
+    \ Rakuten's Orders API endpoint at regular intervals, typically every 5-15 minutes\
+    \ based on your order volume. The integration retrieves orders with status \"\
+    Unshipped\" and transforms them into Odoo sale orders. Each Rakuten order includes\
+    \ marketplace-specific details like seller fulfillment responsibility and shipping\
+    \ service requirements. The mapping process preserves the Rakuten order ID as\
+    \ a unique reference for future updates.\n\nInventory updates operate on a change-driven\
+    \ trigger system. Odoo monitors stock level modifications through its inventory\
+    \ module and pushes quantity updates to Rakuten via the Inventory API. The integration\
+    \ includes a buffer mechanism that prevents excessive API calls during bulk inventory\
+    \ operations. Product catalog synchronization follows a different pattern—initial\
+    \ bulk import with selective updates based on Odoo product modifications. This\
+    \ approach minimizes API consumption while maintaining catalog accuracy across\
+    \ both platforms.\n\n### Webhook Integration for Real-time Updates\n\nRakuten\
+    \ supports webhook notifications for critical events like new orders and cancellations.\
+    \ This optional enhancement reduces order processing latency compared to standard\
+    \ polling. Configure Rakuten to send HTTPS POST requests to your Odoo instance\
+    \ when specific events occur. Your Odoo system must expose a secure endpoint to\
+    \ receive these notifications and process them through a dedicated controller.\
+    \ The webhook payload contains minimal data, triggering an immediate API call\
+    \ to fetch complete order details.\n\nThe webhook implementation requires careful\
+    \ security consideration. Implement signature verification using Rakuten's provided\
+    \ secret to validate incoming requests. Your endpoint must handle duplicate notifications\
+    \ and implement proper error responses to prevent retry storms. Combine webhooks\
+    \ with traditional polling as a fallback mechanism for maximum reliability. This\
+    \ hybrid approach ensures you capture all orders even during temporary webhook\
+    \ delivery failures or system maintenance windows.\n\n## Step-by-Step Configuration\n\
+    \n### Rakuten Developer Account Setup\n\nBegin with Rakuten developer account\
+    \ registration. Navigate to the Rakuten Developer Portal and create a business\
+    \ account using your existing Rakuten seller credentials. Complete the merchant\
+    \ verification process, which may require business documentation submission. Once\
+    \ verified, create a new application in the developer dashboard to generate your\
+    \ API credentials. Select the appropriate API package based on your marketplace\
+    \ category—standard retail, automotive, or travel.\n\nThe application configuration\
+    \ requires specific callback URLs for OAuth authentication. Set your Odoo instance's\
+    \ base URL with the Rakuten authentication endpoint path. Rakuten issues a client\
+    \ ID and client secret that you will use throughout the integration. Store these\
+    \ credentials securely—never hardcode them in your Odoo modules. The developer\
+    \ dashboard also provides access to Rakuten's sandbox environment, which you should\
+    \ use for initial development and testing before migrating to production.\n\n\
+    ### Odoo Module Installation and Dependencies\n\nInstall the base connector module\
+    \ for ecommerce integrations in Odoo 18. Use the Odoo Apps interface to search\
+    \ for and install \"connector_ecommerce\" or utilize a specialized Rakuten connector\
+    \ module from the Odoo marketplace. The installation process automatically resolves\
+    \ dependencies including the framework connector module, queue job system, and\
+    \ component architecture. Verify successful installation by checking for new menu\
+    \ items under the Sales and Inventory applications.\n\nConfigure the connector\
+    \ framework through Odoo's technical settings. Enable the \"Queue Jobs\" functionality\
+    \ and set up dedicated Redis or PostgreSQL queues for Rakuten synchronization\
+    \ tasks. Adjust the job channel configuration to prioritize order import over\
+    \ inventory export operations. Create specific user groups for Rakuten integration\
+    \ management and assign appropriate access rights. These preparations ensure the\
+    \ integration operates with proper security and performance characteristics from\
+    \ the start.\n\n### Authentication Configuration in Odoo\n\nCreate a new Rakuten\
+    \ backend instance through Odoo's Connectors menu. Navigate to Sales > Configuration\
+    \ > Connectors > Backends and select \"Rakuten\" from the available connector\
+    \ types. The backend configuration form requires your Rakuten client ID, client\
+    \ secret, and merchant ID. Set the environment to \"sandbox\" during initial setup,\
+    \ transitioning to \"production\" only after thorough testing. The version field\
+    \ should specify the latest supported Rakuten API version.\n\nThe OAuth authentication\
+    \ flow requires a dedicated controller in your custom Odoo module. Implement a\
+    \ route that handles the callback from Rakuten's authorization server. The controller\
+    \ exchanges the authorization code for an access token and refresh token, storing\
+    \ them securely in the backend configuration. The integration automatically handles\
+    \ token refresh operations before expiration. Test the complete authentication\
+    \ flow end-to-end, verifying that Odoo can establish and maintain a valid session\
+    \ with Rakuten's API.\n\n```python\n# Example OAuth callback controller in Odoo\n\
+    class RakutenAuthController(http.Controller):\n    @http.route('/rakuten/auth/callback',\
     \ type='http', auth='public')\n    def rakuten_callback(self, code, state, **kwargs):\n\
     \        backend = request.env['rakuten.backend'].browse(int(state))\n       \
     \ tokens = backend._get_access_tokens(code)\n        backend.write({\n       \
@@ -197,37 +197,37 @@ ai_generated_content:
     \ test orders in Rakuten sandbox and verifying they flow through to Odoo. Update\
     \ inventory quantities in Odoo and confirm they propagate to Rakuten listings.\
     \ This validation confirms the integration operates correctly before transitioning\
-    \ to production.\n\n## Data Mapping and Transformation\n\n### Product\
-    \ Data Model Alignment\n\nRakuten's product schema differs significantly from\
-    \ Odoo's product model. Rakuten items map to Odoo product templates, while Rakuten\
-    \ SKUs correspond to Odoo product variants. The transformation process must handle\
-    \ Rakuten's required attributes like Product ID Type, Product ID, and Publisher\
-    \ while mapping them to appropriate Odoo fields. Standard attributes like title,\
-    \ description, and images transfer directly, but marketplace-specific attributes\
-    \ require custom field creation in Odoo.\n\nImplement attribute value transformation\
-    \ for categorical data. Rakuten uses predefined value lists for categories, conditions,\
-    \ and other product characteristics. Create mapping tables that convert Rakuten's\
-    \ enum values to Odoo's selection fields or related records. For example, map\
-    \ Rakuten's product condition \"New\" to Odoo's corresponding condition record.\
-    \ These transformations ensure data consistency while maintaining each system's\
-    \ native data structure requirements.\n\n### Inventory Quantity Synchronization\n\
-    \nRakuten inventory synchronization involves complex quantity calculations. The\
-    \ integration must transform Odoo's available quantity concept to Rakuten's listing\
-    \ quantity requirements. Account for Odoo's reserved stock and incoming shipments\
-    \ when computing quantities for Rakuten. Implement buffer logic to prevent overselling\
-    \ during high-volume periods—maintain a safety stock cushion that accounts for\
-    \ synchronization latency and order processing time.\n\nHandle multi-warehouse\
-    \ inventory scenarios with precision. Rakuten expects a single quantity per listing,\
-    \ while Odoo may track inventory across multiple locations. Develop aggregation\
-    \ rules that combine stock from specific warehouses designated for Rakuten fulfillment.\
-    \ The transformation logic must exclude inventory reserved for other sales channels\
-    \ or internal use. These calculations prevent overselling while maximizing your\
-    \ available inventory exposure on the marketplace.\n\n### Order Data Transformation\n\
-    \nRakuten orders arrive with a nested structure that requires flattening for Odoo's\
-    \ sale order model. Extract shipping addresses from Rakuten's format and transform\
-    \ them into Odoo partner records. Preserve the original Rakuten shipping service\
-    \ level as a sale order line for accurate cost tracking. The order import process\
-    \ must handle Rakuten's tax calculation methodology, converting marketplace-collected\
+    \ to production.\n\n## Data Mapping and Transformation\n\n### Product Data Model\
+    \ Alignment\n\nRakuten's product schema differs significantly from Odoo's product\
+    \ model. Rakuten items map to Odoo product templates, while Rakuten SKUs correspond\
+    \ to Odoo product variants. The transformation process must handle Rakuten's required\
+    \ attributes like Product ID Type, Product ID, and Publisher while mapping them\
+    \ to appropriate Odoo fields. Standard attributes like title, description, and\
+    \ images transfer directly, but marketplace-specific attributes require custom\
+    \ field creation in Odoo.\n\nImplement attribute value transformation for categorical\
+    \ data. Rakuten uses predefined value lists for categories, conditions, and other\
+    \ product characteristics. Create mapping tables that convert Rakuten's enum values\
+    \ to Odoo's selection fields or related records. For example, map Rakuten's product\
+    \ condition \"New\" to Odoo's corresponding condition record. These transformations\
+    \ ensure data consistency while maintaining each system's native data structure\
+    \ requirements.\n\n### Inventory Quantity Synchronization\n\nRakuten inventory\
+    \ synchronization involves complex quantity calculations. The integration must\
+    \ transform Odoo's available quantity concept to Rakuten's listing quantity requirements.\
+    \ Account for Odoo's reserved stock and incoming shipments when computing quantities\
+    \ for Rakuten. Implement buffer logic to prevent overselling during high-volume\
+    \ periods—maintain a safety stock cushion that accounts for synchronization latency\
+    \ and order processing time.\n\nHandle multi-warehouse inventory scenarios with\
+    \ precision. Rakuten expects a single quantity per listing, while Odoo may track\
+    \ inventory across multiple locations. Develop aggregation rules that combine\
+    \ stock from specific warehouses designated for Rakuten fulfillment. The transformation\
+    \ logic must exclude inventory reserved for other sales channels or internal use.\
+    \ These calculations prevent overselling while maximizing your available inventory\
+    \ exposure on the marketplace.\n\n### Order Data Transformation\n\nRakuten orders\
+    \ arrive with a nested structure that requires flattening for Odoo's sale order\
+    \ model. Extract shipping addresses from Rakuten's format and transform them into\
+    \ Odoo partner records. Preserve the original Rakuten shipping service level as\
+    \ a sale order line for accurate cost tracking. The order import process must\
+    \ handle Rakuten's tax calculation methodology, converting marketplace-collected\
     \ taxes to Odoo's tax record structure.\n\nMap Rakuten order line items to Odoo\
     \ sale order lines with precise quantity and pricing information. Each order line\
     \ references the corresponding Odoo product through the Rakuten SKU external identifier.\
@@ -245,9 +245,9 @@ ai_generated_content:
     \ map directly to Odoo's address model. Develop cleansing routines that normalize\
     \ state codes, zip codes, and country references. These transformations ensure\
     \ accurate shipping label generation and reliable customer communication throughout\
-    \ the order fulfillment process.\n\n## Error Handling and Resilience\n\
-    \n### Common API Integration Errors\n\nRakuten API responses include specific\
-    \ error codes that require tailored handling. Authentication errors like \"invalid_client\"\
+    \ the order fulfillment process.\n\n## Error Handling and Resilience\n\n### Common\
+    \ API Integration Errors\n\nRakuten API responses include specific error codes\
+    \ that require tailored handling. Authentication errors like \"invalid_client\"\
     \ or \"invalid_grant\" indicate credential problems that may require manual intervention.\
     \ Rate limit errors return HTTP 429 status codes—implement automatic retry with\
     \ exponential backoff for these transient failures. Resource not found errors\
@@ -292,16 +292,16 @@ ai_generated_content:
     \ levels, and financial totals to detect synchronization problems before they\
     \ impact operations. Create automated reconciliation reports that highlight discrepancies\
     \ for investigation. These proactive monitoring measures ensure long-term integration\
-    \ health and data accuracy.\n\n## Testing and Validation\n\n### Sandbox\
-    \ Environment Configuration\n\nRakuten provides a comprehensive sandbox environment\
-    \ that mirrors the production API structure. Configure a separate Odoo instance\
-    \ dedicated to integration testing, using the sandbox credentials for all API\
-    \ interactions. Populate the sandbox with test listings that represent your actual\
-    \ product catalog diversity—including variations, bundles, and digital products.\
-    \ This preparation ensures your testing covers all product scenarios you encounter\
-    \ in production.\n\nCreate test orders in the Rakuten sandbox using various scenarios—single\
-    \ item orders, multi-item orders, orders with promotions, and orders requiring\
-    \ special handling. Execute the complete order lifecycle from import through shipment\
+    \ health and data accuracy.\n\n## Testing and Validation\n\n### Sandbox Environment\
+    \ Configuration\n\nRakuten provides a comprehensive sandbox environment that mirrors\
+    \ the production API structure. Configure a separate Odoo instance dedicated to\
+    \ integration testing, using the sandbox credentials for all API interactions.\
+    \ Populate the sandbox with test listings that represent your actual product catalog\
+    \ diversity—including variations, bundles, and digital products. This preparation\
+    \ ensures your testing covers all product scenarios you encounter in production.\n\
+    \nCreate test orders in the Rakuten sandbox using various scenarios—single item\
+    \ orders, multi-item orders, orders with promotions, and orders requiring special\
+    \ handling. Execute the complete order lifecycle from import through shipment\
     \ and tracking synchronization. Verify each stage processes correctly and data\
     \ appears accurately in both systems. This end-to-end testing validates your integration\
     \ configuration before impacting live operations.\n\n### Data Mapping Validation\
@@ -338,8 +338,8 @@ ai_generated_content:
     \ that compare key metrics between Rakuten and Odoo. Set up alerts for synchronization\
     \ failures or data discrepancy thresholds. This continuous validation catches\
     \ problems early before they impact customer experience or financial reporting\
-    \ accuracy.\n\n## Security Considerations\n\n### API Credential Management\n\
-    \nRakuten API credentials provide full access to your marketplace account—treat\
+    \ accuracy.\n\n## Security Considerations\n\n### API Credential Management\n\n\
+    Rakuten API credentials provide full access to your marketplace account—treat\
     \ them with appropriate security measures. Store client secrets and access tokens\
     \ in Odoo's encrypted parameters rather than database fields where possible. Implement\
     \ credential rotation policies that refresh tokens regularly and update stored\
@@ -371,48 +371,48 @@ ai_generated_content:
     \ of service and API usage guidelines. Implement data handling procedures that\
     \ respect customer privacy rights and fulfill regulatory obligations. These compliance\
     \ measures protect your business from policy violations that could jeopardize\
-    \ your marketplace standing.\n\n## Performance Optimization\n\n###\
-    \ API Call Efficiency Strategies\n\nRakuten's API rate limits demand efficient\
-    \ call patterns to maximize synchronization frequency. Batch multiple inventory\
-    \ updates into single API calls using Rakuten's bulk operations where available.\
-    \ For order imports, use the modified date filter to retrieve only changed records\
-    \ rather than full order history. These techniques reduce API consumption while\
-    \ maintaining data currency.\n\nImplement intelligent polling intervals that adapt\
-    \ to your business patterns. Increase order import frequency during peak sales\
-    \ hours and reduce it during off-peak periods. For inventory updates, use change-based\
-    \ triggers rather than periodic full synchronization. These dynamic scheduling\
-    \ approaches optimize API usage while ensuring timely data synchronization.\n\n\
-    ### Database Optimization Techniques\n\nThe integration generates substantial\
-    \ database activity that requires optimization. Create appropriate indexes on\
-    \ external reference fields to speed up record matching during synchronization.\
-    \ Implement database maintenance routines that archive completed synchronization\
-    \ jobs and purge old logs. These measures prevent database bloat that could degrade\
-    \ integration performance over time.\n\nOptimize Odoo's queue job processing for\
-    \ Rakuten synchronization tasks. Configure dedicated queues for different integration\
-    \ functions—separate queues for order import, inventory export, and product synchronization.\
-    \ Adjust the number of concurrent workers based on your server capacity and synchronization\
-    \ requirements. These queue configurations prevent resource contention and ensure\
-    \ critical operations complete promptly.\n\n### Caching Strategies for Repeated\
-    \ Data\n\nImplement strategic caching to avoid redundant API calls and database\
-    \ queries. Cache Rakuten product information that changes infrequently, such as\
-    \ category structures and attribute definitions. Cache Odoo product mappings to\
-    \ speed up order import transformation. These cache layers reduce system load\
-    \ and improve synchronization speed for frequently accessed data.\n\nDesign cache\
-    \ invalidation rules that maintain data accuracy while maximizing performance\
-    \ benefits. Invalidate product caches when related information changes in either\
-    \ system. Set appropriate time-to-live values for different data types based on\
-    \ their volatility. These cache management practices ensure performance gains\
-    \ don't come at the cost of data accuracy.\n\n### Monitoring and Performance Metrics\n\
-    \nImplement comprehensive performance monitoring for all integration components.\
-    \ Track synchronization job duration, API response times, and queue lengths to\
-    \ identify performance degradation early. Set up alerts for abnormal patterns\
-    \ like sudden increases in error rates or extended synchronization delays. These\
-    \ monitoring capabilities enable proactive performance management.\n\nEstablish\
-    \ key performance indicators that measure integration effectiveness. Monitor order\
-    \ import latency, inventory synchronization accuracy, and system availability.\
-    \ Regularly review these metrics to identify optimization opportunities and validate\
-    \ performance improvements. This data-driven approach ensures your integration\
-    \ continues to meet business requirements as your marketplace operations scale."
+    \ your marketplace standing.\n\n## Performance Optimization\n\n### API Call Efficiency\
+    \ Strategies\n\nRakuten's API rate limits demand efficient call patterns to maximize\
+    \ synchronization frequency. Batch multiple inventory updates into single API\
+    \ calls using Rakuten's bulk operations where available. For order imports, use\
+    \ the modified date filter to retrieve only changed records rather than full order\
+    \ history. These techniques reduce API consumption while maintaining data currency.\n\
+    \nImplement intelligent polling intervals that adapt to your business patterns.\
+    \ Increase order import frequency during peak sales hours and reduce it during\
+    \ off-peak periods. For inventory updates, use change-based triggers rather than\
+    \ periodic full synchronization. These dynamic scheduling approaches optimize\
+    \ API usage while ensuring timely data synchronization.\n\n### Database Optimization\
+    \ Techniques\n\nThe integration generates substantial database activity that requires\
+    \ optimization. Create appropriate indexes on external reference fields to speed\
+    \ up record matching during synchronization. Implement database maintenance routines\
+    \ that archive completed synchronization jobs and purge old logs. These measures\
+    \ prevent database bloat that could degrade integration performance over time.\n\
+    \nOptimize Odoo's queue job processing for Rakuten synchronization tasks. Configure\
+    \ dedicated queues for different integration functions—separate queues for order\
+    \ import, inventory export, and product synchronization. Adjust the number of\
+    \ concurrent workers based on your server capacity and synchronization requirements.\
+    \ These queue configurations prevent resource contention and ensure critical operations\
+    \ complete promptly.\n\n### Caching Strategies for Repeated Data\n\nImplement\
+    \ strategic caching to avoid redundant API calls and database queries. Cache Rakuten\
+    \ product information that changes infrequently, such as category structures and\
+    \ attribute definitions. Cache Odoo product mappings to speed up order import\
+    \ transformation. These cache layers reduce system load and improve synchronization\
+    \ speed for frequently accessed data.\n\nDesign cache invalidation rules that\
+    \ maintain data accuracy while maximizing performance benefits. Invalidate product\
+    \ caches when related information changes in either system. Set appropriate time-to-live\
+    \ values for different data types based on their volatility. These cache management\
+    \ practices ensure performance gains don't come at the cost of data accuracy.\n\
+    \n### Monitoring and Performance Metrics\n\nImplement comprehensive performance\
+    \ monitoring for all integration components. Track synchronization job duration,\
+    \ API response times, and queue lengths to identify performance degradation early.\
+    \ Set up alerts for abnormal patterns like sudden increases in error rates or\
+    \ extended synchronization delays. These monitoring capabilities enable proactive\
+    \ performance management.\n\nEstablish key performance indicators that measure\
+    \ integration effectiveness. Monitor order import latency, inventory synchronization\
+    \ accuracy, and system availability. Regularly review these metrics to identify\
+    \ optimization opportunities and validate performance improvements. This data-driven\
+    \ approach ensures your integration continues to meet business requirements as\
+    \ your marketplace operations scale."
   conclusion: 'Your Rakuten to Odoo 18 integration now operates as a seamless data
     conduit that eliminates manual processes and synchronizes your commerce operations.
     The technical implementation you completed establishes a robust foundation for
@@ -509,13 +509,14 @@ visualizations:
   placement_hint: after_conclusion
   data_context: learning path and knowledge graph
   mermaid_chart_syntax: "flowchart TB\n\n    Current[\"[CURRENT] Rakuten to Odoo Integration:\
-    \ Complete 2025 Guide\"]\n\n    %% Related Topics - Cross-References\n    Current\
-    \ -.-> Rel0[\"Cloudflare to Odoo Integration: Complete 2025 Guide\"]\n    Current\
-    \ -.-> Rel1[\"Facebook Pixel to Odoo Integration: Complete 2025 Guide\"]\n\n \
-    \   %% Professional Styling\n    classDef current fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n\
+    \ Complete 2025 Guide\"]\n\n    %% Next Steps - Learning Progression\n    Current\
+    \ --> Next0(\"Complete Implementation Guide\")\n\n    %% Related Topics - Cross-References\n\
+    \    Current -.-> Rel0[\"Cloudflare to Odoo Integration: Complete 2025 Guide\"\
+    ]\n    Current -.-> Rel1[\"Facebook Pixel to Odoo Integration: Complete 2025 Guide\"\
+    ]\n\n    %% Professional Styling\n    classDef current fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n\
     \    classDef prereq fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000\n\
     \    classDef next fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000\n \
     \   classDef related fill:#f5f5f5,stroke:#616161,stroke-width:1px,color:#000\n\
     \    classDef trouble fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000\n\
     \    classDef support fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#000\n\
-    \n    class Current current\n    class Rel0,Rel1 related"
+    \n    class Current current\n    class Next0 next\n    class Rel0,Rel1 related"

@@ -69,23 +69,23 @@ ai_generated_content:
     We start with the core architecture that makes this data flow possible. You will
     understand how events move from a browser to Facebook''s analytics platform, then
     see the step-by-step configuration to make it work in your Odoo environment.'
-  main_content: "## Integration Architecture and Data Flow\n\nThe Facebook\
-    \ Pixel integration with Odoo 18 operates on a dual-layer architecture. This design\
-    \ combines client-side browser events with server-side confirmation for data resilience.\
-    \ The system captures user interactions on your Odoo website and relays this data\
-    \ to Facebook's advertising platform. Understanding this flow is essential for\
-    \ a robust implementation.\n\nThe client-side layer uses JavaScript. You inject\
-    \ the Facebook Pixel base code into your Odoo website's header. This code loads\
-    \ the Facebook library and establishes a connection with their tracking domain.\
-    \ When a user performs a key action, like viewing a product or completing a purchase,\
-    \ your website triggers a specific Pixel event. These events contain standardized\
-    \ parameters such as currency, value, and content IDs.\n\nThe server-side layer\
-    \ provides a backup and validation mechanism. Odoo sends a duplicate purchase\
-    \ event directly from its server to Facebook's Conversions API. This server-to-server\
-    \ communication bypasses browser ad blockers and network issues that can disrupt\
-    \ client-side tracking. The two data streams merge within Facebook's system, which\
-    \ deduplicates events based on their unique event ID.\n\nData flows from the user's\
-    \ browser to multiple endpoints. The client-side Pixel sends events to `https://connect.facebook.net`\
+  main_content: "## Integration Architecture and Data Flow\n\nThe Facebook Pixel integration\
+    \ with Odoo 18 operates on a dual-layer architecture. This design combines client-side\
+    \ browser events with server-side confirmation for data resilience. The system\
+    \ captures user interactions on your Odoo website and relays this data to Facebook's\
+    \ advertising platform. Understanding this flow is essential for a robust implementation.\n\
+    \nThe client-side layer uses JavaScript. You inject the Facebook Pixel base code\
+    \ into your Odoo website's header. This code loads the Facebook library and establishes\
+    \ a connection with their tracking domain. When a user performs a key action,\
+    \ like viewing a product or completing a purchase, your website triggers a specific\
+    \ Pixel event. These events contain standardized parameters such as currency,\
+    \ value, and content IDs.\n\nThe server-side layer provides a backup and validation\
+    \ mechanism. Odoo sends a duplicate purchase event directly from its server to\
+    \ Facebook's Conversions API. This server-to-server communication bypasses browser\
+    \ ad blockers and network issues that can disrupt client-side tracking. The two\
+    \ data streams merge within Facebook's system, which deduplicates events based\
+    \ on their unique event ID.\n\nData flows from the user's browser to multiple\
+    \ endpoints. The client-side Pixel sends events to `https://connect.facebook.net`\
     \ and `https://www.facebook.com/tr/`. The server-side API uses a dedicated endpoint\
     \ like `https://graph.facebook.com/v18.0/<PIXEL_ID>/events`. Odoo's QWeb templates\
     \ render the necessary JavaScript variables, populating them with dynamic data\
@@ -94,14 +94,14 @@ ai_generated_content:
     \ the server-side API still records the conversion. Facebook matches the events\
     \ using parameters like `event_id` and deduplicates them automatically. Your reports\
     \ reflect a complete picture of user activity without double-counting purchases\
-    \ or other valuable actions.\n\n## Step-by-Step Configuration\n\n\
-    Begin the configuration by locating your Facebook Pixel ID. Access your Facebook\
-    \ Events Manager and select the appropriate Pixel. The ID is a long numeric string\
-    \ visible in the Pixel settings. You will use this identifier in both the client-side\
-    \ code and the server-side API configuration. Store this value in Odoo's system\
-    \ parameters for secure, centralized access.\n\nInject the base Pixel code into\
-    \ your Odoo website header. Navigate to the Website app, enter debug mode, and\
-    \ edit the header template. Insert the standard Facebook script, replacing `'YOUR_PIXEL_ID'`\
+    \ or other valuable actions.\n\n## Step-by-Step Configuration\n\nBegin the configuration\
+    \ by locating your Facebook Pixel ID. Access your Facebook Events Manager and\
+    \ select the appropriate Pixel. The ID is a long numeric string visible in the\
+    \ Pixel settings. You will use this identifier in both the client-side code and\
+    \ the server-side API configuration. Store this value in Odoo's system parameters\
+    \ for secure, centralized access.\n\nInject the base Pixel code into your Odoo\
+    \ website header. Navigate to the Website app, enter debug mode, and edit the\
+    \ header template. Insert the standard Facebook script, replacing `'YOUR_PIXEL_ID'`\
     \ with your actual numeric ID. This code initializes the `fbq` function queue\
     \ and tracks the standard PageView event for all site visitors.\n\n```xml\n<!--\
     \ Insert in website.layout template head -->\n<script>\n!function(f,b,e,v,n,t,s)\n\
@@ -147,51 +147,50 @@ ai_generated_content:
     \ to verify that client-side events fire with the correct parameters. Check the\
     \ Odoo server logs for any errors in the server-side API calls. This validation\
     \ ensures your implementation works before you deploy it to production.\n\n##\
-    \ Data Mapping and Transformation\n\nData mapping defines how Odoo's\
-    \ internal data structures convert into Facebook's standard event parameters.\
-    \ Each event type requires a specific set of fields that must align between the\
-    \ two systems. Incorrect mapping creates data quality issues and hampers your\
-    \ advertising optimization. We will examine the critical mappings for the core\
-    \ eCommerce events.\n\nThe ViewContent event maps product data from Odoo's `product.template`\
-    \ or `product.product` model. The `content_ids` parameter should use the product's\
-    \ default code or ID. The `content_name` maps to the product's name field. The\
-    \ `content_type` must equal 'product' for standard goods. The `value` parameter\
-    \ should use the product's public price, and `currency` comes from the order's\
-    \ currency.\n\nThe AddToCart event requires both product and quantity information.\
-    \ The `content_ids` field contains the product variant ID. The `content_name`\
-    \ uses the product's full display name. The `value` represents the total value\
-    \ of the added items (price × quantity). The `contents` array should include a\
-    \ dictionary for each product variant added, with `id`, `quantity`, and `item_price`\
-    \ specified.\n\nThe Purchase event demands the most comprehensive data mapping.\
-    \ The `value` parameter must equal the order's total amount, including taxes and\
-    \ shipping. The `currency` comes from the order's currency field. The `contents`\
-    \ array should include every order line, with each item containing the product\
-    \ ID, quantity, and item price. The `num_items` parameter should reflect the total\
-    \ number of items in the order.\n\nTransform Odoo's monetary values into the correct\
-    \ format for Facebook. All currency values must use a standard currency code like\
-    \ 'USD' or 'EUR'. Numeric values must not include currency symbols and should\
-    \ use a decimal point for fractions. Convert Odoo's float fields to strings with\
-    \ two decimal places to prevent floating-point precision issues in the JSON payload.\n\
-    \nHandle product ID mapping with care. Facebook expects either the product's SKU\
-    \ or a unique identifier in the `content_ids` field. Use the product's default\
-    \ code (SKU) when available, but fall back to the product's database ID if no\
-    \ SKU exists. Maintain consistency across all events for the same product to ensure\
-    \ Facebook can build accurate product catalogs.\n\nManage the special case of\
-    \ product variants. When a customer purchases a variant, track the specific variant\
-    \ ID rather than the template ID. This granular tracking enables more precise\
-    \ audience building for remarketing campaigns. Extract the variant information\
-    \ from the sale order line, which references the `product.product` model rather\
-    \ than `product.template`.\n\nTransform the order timeline data into Facebook's\
-    \ expected parameters. The `predicted_ltv` parameter should represent the customer's\
-    \ lifetime value if your business model supports this calculation. The `fbp` and\
-    \ `fbc` parameters capture the Facebook click ID and browser ID, which you must\
-    \ extract from the request cookies and pass through from the initial site visit.\n\
-    \nAddress edge cases in the data transformation logic. Empty carts, zero-value\
-    \ orders, and orders with multiple shipping addresses require special handling.\
-    \ Always validate the data before sending it to Facebook to prevent API errors.\
-    \ Log any transformation issues for review, but ensure the primary event still\
-    \ sends even if some optional parameters contain null values.\n\n## Error Handling\
-    \ and Resilience\n\nFacebook Pixel implementations encounter several\
+    \ Data Mapping and Transformation\n\nData mapping defines how Odoo's internal\
+    \ data structures convert into Facebook's standard event parameters. Each event\
+    \ type requires a specific set of fields that must align between the two systems.\
+    \ Incorrect mapping creates data quality issues and hampers your advertising optimization.\
+    \ We will examine the critical mappings for the core eCommerce events.\n\nThe\
+    \ ViewContent event maps product data from Odoo's `product.template` or `product.product`\
+    \ model. The `content_ids` parameter should use the product's default code or\
+    \ ID. The `content_name` maps to the product's name field. The `content_type`\
+    \ must equal 'product' for standard goods. The `value` parameter should use the\
+    \ product's public price, and `currency` comes from the order's currency.\n\n\
+    The AddToCart event requires both product and quantity information. The `content_ids`\
+    \ field contains the product variant ID. The `content_name` uses the product's\
+    \ full display name. The `value` represents the total value of the added items\
+    \ (price × quantity). The `contents` array should include a dictionary for each\
+    \ product variant added, with `id`, `quantity`, and `item_price` specified.\n\n\
+    The Purchase event demands the most comprehensive data mapping. The `value` parameter\
+    \ must equal the order's total amount, including taxes and shipping. The `currency`\
+    \ comes from the order's currency field. The `contents` array should include every\
+    \ order line, with each item containing the product ID, quantity, and item price.\
+    \ The `num_items` parameter should reflect the total number of items in the order.\n\
+    \nTransform Odoo's monetary values into the correct format for Facebook. All currency\
+    \ values must use a standard currency code like 'USD' or 'EUR'. Numeric values\
+    \ must not include currency symbols and should use a decimal point for fractions.\
+    \ Convert Odoo's float fields to strings with two decimal places to prevent floating-point\
+    \ precision issues in the JSON payload.\n\nHandle product ID mapping with care.\
+    \ Facebook expects either the product's SKU or a unique identifier in the `content_ids`\
+    \ field. Use the product's default code (SKU) when available, but fall back to\
+    \ the product's database ID if no SKU exists. Maintain consistency across all\
+    \ events for the same product to ensure Facebook can build accurate product catalogs.\n\
+    \nManage the special case of product variants. When a customer purchases a variant,\
+    \ track the specific variant ID rather than the template ID. This granular tracking\
+    \ enables more precise audience building for remarketing campaigns. Extract the\
+    \ variant information from the sale order line, which references the `product.product`\
+    \ model rather than `product.template`.\n\nTransform the order timeline data into\
+    \ Facebook's expected parameters. The `predicted_ltv` parameter should represent\
+    \ the customer's lifetime value if your business model supports this calculation.\
+    \ The `fbp` and `fbc` parameters capture the Facebook click ID and browser ID,\
+    \ which you must extract from the request cookies and pass through from the initial\
+    \ site visit.\n\nAddress edge cases in the data transformation logic. Empty carts,\
+    \ zero-value orders, and orders with multiple shipping addresses require special\
+    \ handling. Always validate the data before sending it to Facebook to prevent\
+    \ API errors. Log any transformation issues for review, but ensure the primary\
+    \ event still sends even if some optional parameters contain null values.\n\n\
+    ## Error Handling and Resilience\n\nFacebook Pixel implementations encounter several\
     \ common error patterns. Understanding these failure modes helps you build a more\
     \ resilient integration. The most frequent issues involve blocked client-side\
     \ scripts, API authentication failures, data validation errors, and network timeouts.\
@@ -230,13 +229,13 @@ ai_generated_content:
     \ dashboard for the integration's health. Track key metrics like event volume,\
     \ success rate, and latency. Set up alerts for significant deviations from baseline\
     \ performance. This proactive monitoring helps you identify and resolve issues\
-    \ before they impact your advertising data quality.\n\n## Testing and Validation\
-    \\n\nA rigorous testing protocol ensures your Facebook Pixel integration\
-    \ captures accurate data. Begin with unit tests for individual components, then\
-    \ progress to integration tests that validate the complete data flow. Create test\
-    \ scenarios that cover all standard eCommerce user journeys on your Odoo website.\n\
-    \nPrepare test data that represents real-world scenarios. Create sample products\
-    \ with varied prices and categories. Generate test orders with different quantities,\
+    \ before they impact your advertising data quality.\n\n## Testing and Validation\\\
+    n\nA rigorous testing protocol ensures your Facebook Pixel integration captures\
+    \ accurate data. Begin with unit tests for individual components, then progress\
+    \ to integration tests that validate the complete data flow. Create test scenarios\
+    \ that cover all standard eCommerce user journeys on your Odoo website.\n\nPrepare\
+    \ test data that represents real-world scenarios. Create sample products with\
+    \ varied prices and categories. Generate test orders with different quantities,\
     \ shipping methods, and payment types. Use both simple products and product variants\
     \ to ensure your event parameters handle both cases correctly. Maintain a separate\
     \ test Odoo database to prevent contamination of your production data.\n\nValidate\
@@ -270,79 +269,79 @@ ai_generated_content:
     \ sign-off. This checklist should include all event types, data accuracy verification,\
     \ error handling confirmation, and performance benchmarks. Share this checklist\
     \ with stakeholders to ensure comprehensive testing before moving the integration\
-    \ to production.\n\n## Security Considerations\n\nThe Facebook Pixel\
-    \ integration introduces specific security requirements. Protect sensitive access\
-    \ tokens, secure data transmission, and ensure compliance with privacy regulations.\
-    \ These measures safeguard your Odoo instance and maintain customer trust. We\
-    \ will examine the key security considerations for this integration.\n\nSecure\
-    \ your Facebook access tokens with the highest priority. The Pixel ID and Conversions\
-    \ API token represent credentials that authorize data transmission to Facebook.\
-    \ Store these values in Odoo's system parameters rather than hardcoding them in\
-    \ templates or source files. Restrict access to these parameters to authorized\
-    \ administrators only.\n\nEncrypt all data transmitted to Facebook's APIs. The\
-    \ client-side Pixel uses HTTPS by default, but verify your Odoo website enforces\
-    \ HTTPS connections. The server-side API calls must use TLS encryption to protect\
-    \ the data in transit. Configure your Odoo instance to validate SSL certificates\
-    \ for all outbound HTTP requests.\n\nImplement data minimization practices to\
-    \ comply with privacy regulations. The Facebook Pixel should only collect information\
-    \ necessary for advertising measurement and optimization. Avoid sending personally\
-    \ identifiable information such as customer names, email addresses, or phone numbers\
-    \ through the Pixel parameters. Facebook's terms prohibit this data collection\
-    \ through Pixel events.\n\nRespect user consent preferences for data tracking.\
-    \ Implement a cookie consent management solution that blocks the Facebook Pixel\
-    \ until users opt into tracking. Configure the Pixel to respect the `fbp` and\
-    \ `fbc` restrictions based on user consent. Develop a mechanism to suspend server-side\
-    \ tracking for users who decline data collection.\n\nSecure the server-side API\
-    \ endpoint against abuse. Validate all input parameters before constructing the\
-    \ event payload to prevent injection attacks. Implement rate limiting on the server-side\
-    \ event transmission to prevent denial-of-service attacks. Log all API requests\
-    \ for security auditing and anomaly detection.\n\nManage access control for the\
-    \ integration configuration. Restrict permissions for modifying Facebook Pixel\
-    \ settings to authorized administrators only. Use Odoo's group-based security\
-    \ model to create a dedicated group for marketing technology administrators. Audit\
-    \ these permissions regularly to prevent unauthorized changes.\n\nEnsure compliance\
-    \ with regional data protection laws. The integration may transfer personal data\
-    \ outside the European Economic Area, requiring appropriate safeguards under GDPR.\
-    \ Consult with legal counsel to determine the necessary disclosures in your privacy\
-    \ policy and the lawful basis for this data processing.\n\n## Performance Optimization\
-    \\n\nThe Facebook Pixel integration impacts your Odoo website's performance.\
-    \ Optimize the implementation to minimize page load delays and server resource\
-    \ consumption. A well-tuned integration maintains site speed while delivering\
-    \ comprehensive tracking data. We will explore key optimization techniques.\n\n\
-    Load the Facebook Pixel script asynchronously to prevent render blocking. The\
-    \ standard implementation already uses async loading, but verify your custom code\
-    \ follows this pattern. Place the base Pixel code in the document head, but defer\
-    \ non-essential event tracking until after the page content loads. This approach\
-    \ prioritizes the user experience.\n\nImplement lazy loading for ViewContent events\
-    \ on product listing pages. Instead of firing an event for every product in a\
-    \ category view, track only the products visible in the viewport. As the user\
-    \ scrolls, trigger events for newly visible products. This technique reduces the\
-    \ initial JavaScript execution time on page load.\n\nBatch multiple AddToCart\
-    \ events when users add several products in quick succession. Instead of sending\
-    \ individual events for each addition, collect the products and send a single\
-    \ event with all items. This reduces the number of network requests and improves\
-    \ tracking efficiency during intensive shopping sessions.\n\nCache the Facebook\
-    \ Pixel configuration to reduce external dependencies. The Pixel settings typically\
-    \ load from Facebook's servers on each page view. Implement a local caching mechanism\
-    \ for these settings to decrease load times. Refresh the cache periodically to\
-    \ ensure configuration changes propagate correctly.\n\nOptimize the server-side\
-    \ API calls for purchase events. Instead of processing these events synchronously\
-    \ during the order confirmation, implement a background job queue. This approach\
-    \ prevents order confirmation delays if the Facebook API experiences slow response\
-    \ times. The job queue can retry failed events without impacting the user experience.\n\
-    \nMinimize the payload size for server-side events. Include only the necessary\
-    \ parameters required by Facebook's API. Remove any empty or null values from\
-    \ the JSON payload before transmission. Compress the request body using gzip encoding\
-    \ to reduce bandwidth usage, though most HTTP libraries handle this automatically.\n\
-    \nMonitor the integration's performance impact with real-user monitoring. Track\
-    \ metrics like page load time, time to interactive, and first input delay. Compare\
-    \ these metrics before and after implementing the Pixel. Set up performance budgets\
-    \ to alert you if the tracking code exceeds specified size or execution time limits.\n\
-    \nImplement conditional loading for the Pixel based on user behavior. Users who\
-    \ don't interact with key pages or elements may not need the full tracking implementation.\
-    \ Consider loading the Pixel only for users who demonstrate purchase intent, such\
-    \ as visiting product pages or adding items to their cart. This strategic approach\
-    \ balances data collection with performance."
+    \ to production.\n\n## Security Considerations\n\nThe Facebook Pixel integration\
+    \ introduces specific security requirements. Protect sensitive access tokens,\
+    \ secure data transmission, and ensure compliance with privacy regulations. These\
+    \ measures safeguard your Odoo instance and maintain customer trust. We will examine\
+    \ the key security considerations for this integration.\n\nSecure your Facebook\
+    \ access tokens with the highest priority. The Pixel ID and Conversions API token\
+    \ represent credentials that authorize data transmission to Facebook. Store these\
+    \ values in Odoo's system parameters rather than hardcoding them in templates\
+    \ or source files. Restrict access to these parameters to authorized administrators\
+    \ only.\n\nEncrypt all data transmitted to Facebook's APIs. The client-side Pixel\
+    \ uses HTTPS by default, but verify your Odoo website enforces HTTPS connections.\
+    \ The server-side API calls must use TLS encryption to protect the data in transit.\
+    \ Configure your Odoo instance to validate SSL certificates for all outbound HTTP\
+    \ requests.\n\nImplement data minimization practices to comply with privacy regulations.\
+    \ The Facebook Pixel should only collect information necessary for advertising\
+    \ measurement and optimization. Avoid sending personally identifiable information\
+    \ such as customer names, email addresses, or phone numbers through the Pixel\
+    \ parameters. Facebook's terms prohibit this data collection through Pixel events.\n\
+    \nRespect user consent preferences for data tracking. Implement a cookie consent\
+    \ management solution that blocks the Facebook Pixel until users opt into tracking.\
+    \ Configure the Pixel to respect the `fbp` and `fbc` restrictions based on user\
+    \ consent. Develop a mechanism to suspend server-side tracking for users who decline\
+    \ data collection.\n\nSecure the server-side API endpoint against abuse. Validate\
+    \ all input parameters before constructing the event payload to prevent injection\
+    \ attacks. Implement rate limiting on the server-side event transmission to prevent\
+    \ denial-of-service attacks. Log all API requests for security auditing and anomaly\
+    \ detection.\n\nManage access control for the integration configuration. Restrict\
+    \ permissions for modifying Facebook Pixel settings to authorized administrators\
+    \ only. Use Odoo's group-based security model to create a dedicated group for\
+    \ marketing technology administrators. Audit these permissions regularly to prevent\
+    \ unauthorized changes.\n\nEnsure compliance with regional data protection laws.\
+    \ The integration may transfer personal data outside the European Economic Area,\
+    \ requiring appropriate safeguards under GDPR. Consult with legal counsel to determine\
+    \ the necessary disclosures in your privacy policy and the lawful basis for this\
+    \ data processing.\n\n## Performance Optimization\\n\nThe Facebook Pixel integration\
+    \ impacts your Odoo website's performance. Optimize the implementation to minimize\
+    \ page load delays and server resource consumption. A well-tuned integration maintains\
+    \ site speed while delivering comprehensive tracking data. We will explore key\
+    \ optimization techniques.\n\nLoad the Facebook Pixel script asynchronously to\
+    \ prevent render blocking. The standard implementation already uses async loading,\
+    \ but verify your custom code follows this pattern. Place the base Pixel code\
+    \ in the document head, but defer non-essential event tracking until after the\
+    \ page content loads. This approach prioritizes the user experience.\n\nImplement\
+    \ lazy loading for ViewContent events on product listing pages. Instead of firing\
+    \ an event for every product in a category view, track only the products visible\
+    \ in the viewport. As the user scrolls, trigger events for newly visible products.\
+    \ This technique reduces the initial JavaScript execution time on page load.\n\
+    \nBatch multiple AddToCart events when users add several products in quick succession.\
+    \ Instead of sending individual events for each addition, collect the products\
+    \ and send a single event with all items. This reduces the number of network requests\
+    \ and improves tracking efficiency during intensive shopping sessions.\n\nCache\
+    \ the Facebook Pixel configuration to reduce external dependencies. The Pixel\
+    \ settings typically load from Facebook's servers on each page view. Implement\
+    \ a local caching mechanism for these settings to decrease load times. Refresh\
+    \ the cache periodically to ensure configuration changes propagate correctly.\n\
+    \nOptimize the server-side API calls for purchase events. Instead of processing\
+    \ these events synchronously during the order confirmation, implement a background\
+    \ job queue. This approach prevents order confirmation delays if the Facebook\
+    \ API experiences slow response times. The job queue can retry failed events without\
+    \ impacting the user experience.\n\nMinimize the payload size for server-side\
+    \ events. Include only the necessary parameters required by Facebook's API. Remove\
+    \ any empty or null values from the JSON payload before transmission. Compress\
+    \ the request body using gzip encoding to reduce bandwidth usage, though most\
+    \ HTTP libraries handle this automatically.\n\nMonitor the integration's performance\
+    \ impact with real-user monitoring. Track metrics like page load time, time to\
+    \ interactive, and first input delay. Compare these metrics before and after implementing\
+    \ the Pixel. Set up performance budgets to alert you if the tracking code exceeds\
+    \ specified size or execution time limits.\n\nImplement conditional loading for\
+    \ the Pixel based on user behavior. Users who don't interact with key pages or\
+    \ elements may not need the full tracking implementation. Consider loading the\
+    \ Pixel only for users who demonstrate purchase intent, such as visiting product\
+    \ pages or adding items to their cart. This strategic approach balances data collection\
+    \ with performance."
   conclusion: 'Your Facebook Pixel integration with Odoo 18 now tracks the complete
     customer journey. You capture page views, product interactions, cart additions,
     and purchases with precision. This data pipeline connects your advertising spend
@@ -442,13 +441,14 @@ visualizations:
   placement_hint: after_conclusion
   data_context: learning path and knowledge graph
   mermaid_chart_syntax: "flowchart TB\n\n    Current[\"[CURRENT] Facebook Pixel to\
-    \ Odoo Integration: Complete 2025 Guide\"]\n\n    %% Related Topics - Cross-References\n\
-    \    Current -.-> Rel0[\"Cloudflare to Odoo Integration: Complete 2025 Guide\"\
-    ]\n    Current -.-> Rel1[\"Google Analytics to Odoo Integration: Complete 2025\
-    \ Guide\"]\n\n    %% Professional Styling\n    classDef current fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n\
-    \    classDef prereq fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000\n\
-    \    classDef next fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000\n \
-    \   classDef related fill:#f5f5f5,stroke:#616161,stroke-width:1px,color:#000\n\
+    \ Odoo Integration: Complete 2025 Guide\"]\n\n    %% Next Steps - Learning Progression\n\
+    \    Current --> Next0(\"Complete Implementation Guide\")\n\n    %% Related Topics\
+    \ - Cross-References\n    Current -.-> Rel0[\"Cloudflare to Odoo Integration:\
+    \ Complete 2025 Guide\"]\n    Current -.-> Rel1[\"Google Analytics to Odoo Integration:\
+    \ Complete 2025 Guide\"]\n\n    %% Professional Styling\n    classDef current\
+    \ fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n    classDef prereq\
+    \ fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000\n    classDef next fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000\n\
+    \    classDef related fill:#f5f5f5,stroke:#616161,stroke-width:1px,color:#000\n\
     \    classDef trouble fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000\n\
     \    classDef support fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#000\n\
-    \n    class Current current\n    class Rel0,Rel1 related"
+    \n    class Current current\n    class Next0 next\n    class Rel0,Rel1 related"

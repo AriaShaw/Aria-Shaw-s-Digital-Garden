@@ -69,14 +69,14 @@ ai_generated_content:
     roles. Time off requests sync bi-directionally between systems. Manager changes
     in BambooHR propagate to Odoo project teams. This guide gives you the complete
     technical blueprint to eliminate manual HR data processes forever.'
-  main_content: "## Integration Architecture and Data Flow\n\n### Core\
-    \ Integration Patterns\n\nBambooHR and Odoo 18 integration follows two primary\
-    \ architectural patterns. The first pattern uses webhooks for real-time synchronization\
-    \ of critical employee events. BambooHR sends instant notifications when employees\
-    \ join, leave, or change departments. The second pattern employs scheduled batch\
-    \ processing for comprehensive data synchronization. This dual approach balances\
-    \ immediacy with data consistency.\n\nOdoo 18 serves as the integration orchestrator\
-    \ in this architecture. The system uses Odoo's scheduled actions to initiate data\
+  main_content: "## Integration Architecture and Data Flow\n\n### Core Integration\
+    \ Patterns\n\nBambooHR and Odoo 18 integration follows two primary architectural\
+    \ patterns. The first pattern uses webhooks for real-time synchronization of critical\
+    \ employee events. BambooHR sends instant notifications when employees join, leave,\
+    \ or change departments. The second pattern employs scheduled batch processing\
+    \ for comprehensive data synchronization. This dual approach balances immediacy\
+    \ with data consistency.\n\nOdoo 18 serves as the integration orchestrator in\
+    \ this architecture. The system uses Odoo's scheduled actions to initiate data\
     \ exchange at regular intervals. A custom Odoo module handles the BambooHR API\
     \ communication, data transformation, and error management. This design centralizes\
     \ the integration logic within your Odoo instance for simpler maintenance and\
@@ -99,27 +99,27 @@ ai_generated_content:
     \ these actions with appropriate retry policies and failure notifications. The\
     \ integration includes comprehensive logging of all API interactions, data transformations,\
     \ and synchronization results for audit purposes and troubleshooting.\n\n## Step-by-Step\
-    \ Configuration\n\n### BambooHR API Preparation\n\nBegin integration\
-    \ work in your BambooHR account. Navigate to the API Key section in your settings\
-    \ and generate a new API key with full employee read permissions. Record your\
-    \ BambooHR subdomain name and this API key securely. These credentials form the\
-    \ foundation for all data exchange between the systems.\n\nBambooHR imposes specific\
-    \ rate limits on API usage. The standard limit allows 100 requests per minute.\
-    \ Plan your synchronization frequency within these constraints. For most organizations,\
-    \ synchronizing employee data every 30 minutes provides adequate freshness without\
-    \ approaching rate limits. Consider your employee count and update frequency needs\
-    \ when determining this interval.\n\n### Odoo Module Development\n\nCreate a new\
-    \ Odoo module to contain the integration logic. Define the module structure with\
-    \ standard Odoo development practices. The module requires models for storing\
-    \ configuration, API interaction logic, and data mapping rules. Implement the\
-    \ core models in the module's Python files and define the user interface in XML\
-    \ views.\n\nStart with the configuration model that stores BambooHR connection\
-    \ details. This model should encrypt the API key using Odoo's built-in security\
-    \ fields. Create a settings page where administrators can input the BambooHR subdomain,\
-    \ API key, and synchronization preferences. This centralizes all integration configuration\
-    \ in one accessible location.\n\n```python\nclass BambooHRConfiguration(models.Model):\n\
-    \    _name = 'bamboo.hr.config'\n    \n    name = fields.Char(string='Configuration\
-    \ Name', required=True)\n    bamboo_subdomain = fields.Char(string='BambooHR Subdomain',\
+    \ Configuration\n\n### BambooHR API Preparation\n\nBegin integration work in your\
+    \ BambooHR account. Navigate to the API Key section in your settings and generate\
+    \ a new API key with full employee read permissions. Record your BambooHR subdomain\
+    \ name and this API key securely. These credentials form the foundation for all\
+    \ data exchange between the systems.\n\nBambooHR imposes specific rate limits\
+    \ on API usage. The standard limit allows 100 requests per minute. Plan your synchronization\
+    \ frequency within these constraints. For most organizations, synchronizing employee\
+    \ data every 30 minutes provides adequate freshness without approaching rate limits.\
+    \ Consider your employee count and update frequency needs when determining this\
+    \ interval.\n\n### Odoo Module Development\n\nCreate a new Odoo module to contain\
+    \ the integration logic. Define the module structure with standard Odoo development\
+    \ practices. The module requires models for storing configuration, API interaction\
+    \ logic, and data mapping rules. Implement the core models in the module's Python\
+    \ files and define the user interface in XML views.\n\nStart with the configuration\
+    \ model that stores BambooHR connection details. This model should encrypt the\
+    \ API key using Odoo's built-in security fields. Create a settings page where\
+    \ administrators can input the BambooHR subdomain, API key, and synchronization\
+    \ preferences. This centralizes all integration configuration in one accessible\
+    \ location.\n\n```python\nclass BambooHRConfiguration(models.Model):\n    _name\
+    \ = 'bamboo.hr.config'\n    \n    name = fields.Char(string='Configuration Name',\
+    \ required=True)\n    bamboo_subdomain = fields.Char(string='BambooHR Subdomain',\
     \ required=True)\n    api_key = fields.Char(string='API Key', required=True)\n\
     \    sync_interval = fields.Integer(string='Sync Interval (minutes)', default=30)\n\
     \    last_sync_date = fields.Datetime(string='Last Synchronization')\n    active\
@@ -175,26 +175,26 @@ ai_generated_content:
     \ for incoming webhook requests. Verify the webhook signature to ensure requests\
     \ originate from BambooHR. Store webhook payloads in a queue table for processing\
     \ by the scheduled action. This asynchronous approach prevents timeouts and ensures\
-    \ reliable processing even during system load.\n\n## Data Mapping and Transformation\
-    \\n\n### Core Employee Field Mapping\n\nBambooHR and Odoo 18 employ\
-    \ different data models for employee information. Create a comprehensive mapping\
-    \ table that translates BambooHR fields to Odoo HR model fields. Standard fields\
-    \ like name, email, and phone numbers map directly between systems. Custom fields\
-    \ in BambooHR require special handling to preserve their data in Odoo.\n\nThe\
-    \ mapping logic must handle data type conversions between systems. BambooHR stores\
-    \ dates as strings in ISO format, while Odoo uses native date fields. Implement\
-    \ transformation functions that parse these strings into proper Python date objects\
-    \ before writing to Odoo models. Similar transformations apply to boolean fields\
-    \ and numeric values.\n\n### Department and Job Title Synchronization\n\nBambooHR's\
-    \ department structure maps to Odoo's hr.department model. The integration must\
-    \ create departments in Odoo that don't exist, using the department name as the\
-    \ unique identifier. Implement logic to handle department hierarchy by matching\
-    \ parent department relationships between the two systems.\n\nJob titles require\
-    \ similar mapping logic between BambooHR's job title field and Odoo's hr.job model.\
-    \ The integration should create new job positions in Odoo when encountering titles\
-    \ that don't exist. Maintain consistency by using the same job title name in both\
-    \ systems, or implement a configurable mapping table for organizations with different\
-    \ naming conventions.\n\n### Custom Field Handling\n\nBambooHR custom fields present\
+    \ reliable processing even during system load.\n\n## Data Mapping and Transformation\\\
+    n\n### Core Employee Field Mapping\n\nBambooHR and Odoo 18 employ different data\
+    \ models for employee information. Create a comprehensive mapping table that translates\
+    \ BambooHR fields to Odoo HR model fields. Standard fields like name, email, and\
+    \ phone numbers map directly between systems. Custom fields in BambooHR require\
+    \ special handling to preserve their data in Odoo.\n\nThe mapping logic must handle\
+    \ data type conversions between systems. BambooHR stores dates as strings in ISO\
+    \ format, while Odoo uses native date fields. Implement transformation functions\
+    \ that parse these strings into proper Python date objects before writing to Odoo\
+    \ models. Similar transformations apply to boolean fields and numeric values.\n\
+    \n### Department and Job Title Synchronization\n\nBambooHR's department structure\
+    \ maps to Odoo's hr.department model. The integration must create departments\
+    \ in Odoo that don't exist, using the department name as the unique identifier.\
+    \ Implement logic to handle department hierarchy by matching parent department\
+    \ relationships between the two systems.\n\nJob titles require similar mapping\
+    \ logic between BambooHR's job title field and Odoo's hr.job model. The integration\
+    \ should create new job positions in Odoo when encountering titles that don't\
+    \ exist. Maintain consistency by using the same job title name in both systems,\
+    \ or implement a configurable mapping table for organizations with different naming\
+    \ conventions.\n\n### Custom Field Handling\n\nBambooHR custom fields present\
     \ a particular mapping challenge. These fields have unique identifiers and data\
     \ types specific to each BambooHR instance. The integration must first query BambooHR's\
     \ metadata API to discover available custom fields. Then map these fields to appropriate\
@@ -220,9 +220,9 @@ ai_generated_content:
     \ BambooHR uses a standardized address format, while Odoo provides more flexibility.\
     \ Implement transformation logic that preserves address completeness while adapting\
     \ to Odoo's address field structure. Pay particular attention to country and state\
-    \ mappings which use different coding systems.\n\n## Error Handling and Resilience\
-    \\n\n### API Error Classification\n\nBambooHR API interactions generate\
-    \ several categories of errors that require different handling strategies. Authentication\
+    \ mappings which use different coding systems.\n\n## Error Handling and Resilience\\\
+    n\n### API Error Classification\n\nBambooHR API interactions generate several\
+    \ categories of errors that require different handling strategies. Authentication\
     \ errors occur with invalid API keys or subdomains. Rate limit errors happen when\
     \ exceeding request thresholds. Data validation errors arise from incorrect field\
     \ values or formats. Network errors stem from connectivity issues between systems.\n\
@@ -259,11 +259,11 @@ ai_generated_content:
     \ failures, and data validation problems. Implement health checks that verify\
     \ both the BambooHR API connectivity and the integration module's proper operation.\
     \ Provide administrators with a dashboard showing integration status and recent\
-    \ activity.\n\n## Testing and Validation\n\n### Test Environment Setup\n\
-    \nEstablish separate BambooHR and Odoo instances for integration testing. Use\
-    \ BambooHR's sandbox environment if available, or create a dedicated test company\
-    \ in your production instance. Populate the test environment with representative\
-    \ employee data that covers all scenarios the integration will encounter in production.\n\
+    \ activity.\n\n## Testing and Validation\n\n### Test Environment Setup\n\nEstablish\
+    \ separate BambooHR and Odoo instances for integration testing. Use BambooHR's\
+    \ sandbox environment if available, or create a dedicated test company in your\
+    \ production instance. Populate the test environment with representative employee\
+    \ data that covers all scenarios the integration will encounter in production.\n\
     \nCreate test cases that validate each integration component in isolation before\
     \ testing the complete system. Test the API client separately from the data transformation\
     \ logic. Verify the synchronization engine with controlled input data. This systematic\
@@ -295,12 +295,12 @@ ai_generated_content:
     \ procedures should verify that synchronization completes successfully, data remains\
     \ consistent between systems, and error rates stay within acceptable thresholds.\
     \ Automate these checks where possible and incorporate them into your standard\
-    \ operational monitoring.\n\n## Security Considerations\n\n### API\
-    \ Credential Management\n\nBambooHR API keys provide full access to employee data,\
-    \ requiring stringent security measures. Store these credentials in Odoo's encrypted\
-    \ parameters rather than in code or database fields. Implement credential rotation\
-    \ policies and provide administrative interfaces for updating keys without code\
-    \ changes. Never log API keys in clear text.\n\nLimit access to integration configuration\
+    \ operational monitoring.\n\n## Security Considerations\n\n### API Credential\
+    \ Management\n\nBambooHR API keys provide full access to employee data, requiring\
+    \ stringent security measures. Store these credentials in Odoo's encrypted parameters\
+    \ rather than in code or database fields. Implement credential rotation policies\
+    \ and provide administrative interfaces for updating keys without code changes.\
+    \ Never log API keys in clear text.\n\nLimit access to integration configuration\
     \ to authorized administrators only. Use Odoo's built-in access rights system\
     \ to control who can view or modify BambooHR connection settings. Audit configuration\
     \ changes to maintain security oversight. Consider implementing approval workflows\
@@ -322,11 +322,11 @@ ai_generated_content:
     \ activities. Log synchronization events, data access, and configuration changes.\
     \ Retain these logs for compliance purposes and security incident investigation.\
     \ Implement alerting for suspicious activities like unauthorized access attempts\
-    \ or unexpected data access patterns.\n\n## Performance Optimization\n\
-    \n### API Call Optimization\n\nBambooHR API rate limits necessitate efficient\
-    \ API usage patterns. Implement field filtering to request only necessary employee\
-    \ fields, reducing payload size and processing time. Use BambooHR's since parameter\
-    \ to fetch only changed records during incremental synchronizations. Combine related\
+    \ or unexpected data access patterns.\n\n## Performance Optimization\n\n### API\
+    \ Call Optimization\n\nBambooHR API rate limits necessitate efficient API usage\
+    \ patterns. Implement field filtering to request only necessary employee fields,\
+    \ reducing payload size and processing time. Use BambooHR's since parameter to\
+    \ fetch only changed records during incremental synchronizations. Combine related\
     \ API calls where possible to minimize total request count.\n\nImplement intelligent\
     \ caching for relatively static data like department lists and job titles. Refresh\
     \ this cached data on a less frequent schedule than employee data. Use Odoo's\
@@ -447,13 +447,14 @@ visualizations:
   placement_hint: after_conclusion
   data_context: learning path and knowledge graph
   mermaid_chart_syntax: "flowchart TB\n\n    Current[\"[CURRENT] Bamboohr to Odoo\
-    \ Integration: Complete 2025 Guide\"]\n\n    %% Related Topics - Cross-References\n\
-    \    Current -.-> Rel0[\"Cloudflare to Odoo Integration: Complete 2025 Guide\"\
-    ]\n    Current -.-> Rel1[\"Facebook Pixel to Odoo Integration: Complete 2025 Guide\"\
-    ]\n\n    %% Professional Styling\n    classDef current fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n\
-    \    classDef prereq fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000\n\
-    \    classDef next fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000\n \
-    \   classDef related fill:#f5f5f5,stroke:#616161,stroke-width:1px,color:#000\n\
+    \ Integration: Complete 2025 Guide\"]\n\n    %% Next Steps - Learning Progression\n\
+    \    Current --> Next0(\"Complete Implementation Guide\")\n\n    %% Related Topics\
+    \ - Cross-References\n    Current -.-> Rel0[\"Cloudflare to Odoo Integration:\
+    \ Complete 2025 Guide\"]\n    Current -.-> Rel1[\"Facebook Pixel to Odoo Integration:\
+    \ Complete 2025 Guide\"]\n\n    %% Professional Styling\n    classDef current\
+    \ fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n    classDef prereq\
+    \ fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000\n    classDef next fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000\n\
+    \    classDef related fill:#f5f5f5,stroke:#616161,stroke-width:1px,color:#000\n\
     \    classDef trouble fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000\n\
     \    classDef support fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#000\n\
-    \n    class Current current\n    class Rel0,Rel1 related"
+    \n    class Current current\n    class Next0 next\n    class Rel0,Rel1 related"

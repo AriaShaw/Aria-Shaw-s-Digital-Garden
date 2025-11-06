@@ -67,11 +67,11 @@ ai_generated_content:
     bridge that eliminates manual entry and delivers perfect financial synchronization.
     Let’s build a integration that handles thousands of transactions with zero human
     oversight.'
-  main_content: "## Integration Architecture and Data Flow\n\n### Core\
-    \ Integration Components\n\nThe Sage Online and Odoo 18 integration relies on\
-    \ a middleware layer that orchestrates data exchange. This intermediary service,\
-    \ which you can host on your infrastructure or deploy as a cloud function, manages\
-    \ the complex translation between Sage’s accounting-focused API and Odoo’s business-process-driven\
+  main_content: "## Integration Architecture and Data Flow\n\n### Core Integration\
+    \ Components\n\nThe Sage Online and Odoo 18 integration relies on a middleware\
+    \ layer that orchestrates data exchange. This intermediary service, which you\
+    \ can host on your infrastructure or deploy as a cloud function, manages the complex\
+    \ translation between Sage’s accounting-focused API and Odoo’s business-process-driven\
     \ framework. The middleware handles authentication renewal, data transformation,\
     \ and error recovery without constant supervision. This architecture prevents\
     \ direct point-to-point coupling that creates brittle connections.\n\nYour middleware\
@@ -104,24 +104,23 @@ ai_generated_content:
     \ appropriate access rights for data reading and writing. It verifies the Sage\
     \ Online subscription includes necessary API capabilities. This preliminary validation\
     \ prevents runtime permission errors that disrupt sync operations after deployment.\n\
-    \n## Step-by-Step Configuration\n\n### Sage Online API Setup\n\nBegin\
-    \ your configuration in the Sage Online developer portal. Navigate to the API\
-    \ management section and create a new application registration. Generate your\
-    \ client credentials, including the essential Client ID and Client Secret values.\
-    \ Configure the redirect URI to point to your middleware authentication endpoint,\
-    \ typically yourserver.com/auth/sage/callback. These credentials form the foundation\
-    \ of your secure connection.\n\nEnable specific API scopes that match your integration\
-    \ requirements. Select the “commercial_entity” scope for company data access.\
-    \ Choose the “contacts” scope for customer and vendor synchronization. Activate\
-    \ the “products” scope for item catalog management. Enable the “transactions”\
-    \ scope for invoice and payment processing. These scopes determine which Sage\
-    \ Online data resources your integration can access and modify.\n\nImplement the\
-    \ OAuth 2.0 authorization code flow in your middleware. Construct the authorization\
-    \ request URL with your client ID, required scopes, and redirect URI. The following\
-    \ Python snippet demonstrates the initial authorization step:\n\n```python\nsage_auth_url\
-    \ = (\n    \"https://oauth.sageonline.com/oauth/authorize\"\n    \"?response_type=code\"\
-    \n    \"&client_id=YOUR_CLIENT_ID\"\n    \"&redirect_uri=YOUR_REDIRECT_URI\"\n\
-    \    \"&scope=commercial_entity contacts products transactions\"\n    \"&state=RANDOM_SECURE_STRING\"\
+    \n## Step-by-Step Configuration\n\n### Sage Online API Setup\n\nBegin your configuration\
+    \ in the Sage Online developer portal. Navigate to the API management section\
+    \ and create a new application registration. Generate your client credentials,\
+    \ including the essential Client ID and Client Secret values. Configure the redirect\
+    \ URI to point to your middleware authentication endpoint, typically yourserver.com/auth/sage/callback.\
+    \ These credentials form the foundation of your secure connection.\n\nEnable specific\
+    \ API scopes that match your integration requirements. Select the “commercial_entity”\
+    \ scope for company data access. Choose the “contacts” scope for customer and\
+    \ vendor synchronization. Activate the “products” scope for item catalog management.\
+    \ Enable the “transactions” scope for invoice and payment processing. These scopes\
+    \ determine which Sage Online data resources your integration can access and modify.\n\
+    \nImplement the OAuth 2.0 authorization code flow in your middleware. Construct\
+    \ the authorization request URL with your client ID, required scopes, and redirect\
+    \ URI. The following Python snippet demonstrates the initial authorization step:\n\
+    \n```python\nsage_auth_url = (\n    \"https://oauth.sageonline.com/oauth/authorize\"\
+    \n    \"?response_type=code\"\n    \"&client_id=YOUR_CLIENT_ID\"\n    \"&redirect_uri=YOUR_REDIRECT_URI\"\
+    \n    \"&scope=commercial_entity contacts products transactions\"\n    \"&state=RANDOM_SECURE_STRING\"\
     \n)\n```\n\nAfter receiving the authorization code at your callback endpoint,\
     \ exchange it for access and refresh tokens. This token exchange establishes your\
     \ ongoing API access credentials.\n\n### Odoo 18 API Configuration\n\nConfigure\
@@ -171,19 +170,19 @@ ai_generated_content:
     \ that display real-time API availability for both Sage Online and Odoo. Build\
     \ alert mechanisms that notify administrators of authentication failures or connection\
     \ timeouts. These monitoring capabilities provide early warning of integration\
-    \ problems before they create data discrepancies.\n\n## Data Mapping and Transformation\
-    \\n\n### Customer and Vendor Synchronization\n\nMap Sage Online contact\
-    \ entities to Odoo’s res.partner model with careful field alignment. Transform\
-    \ Sage’s customer records into Odoo partners with specific customer flags enabled.\
-    \ Convert Sage vendor accounts into Odoo partners marked as suppliers. Handle\
-    \ complex business entities that serve as both customers and vendors by setting\
-    \ both flags in Odoo. This bidirectional mapping ensures complete partner record\
-    \ synchronization.\n\nAddress field format disparities between the systems. Convert\
-    \ Sage’s single address field into Odoo’s structured address format with separate\
-    \ street, city, state, and postal code fields. Transform Sage’s phone number formats\
-    \ to comply with Odoo’s telephone validation rules. Map Sage’s credit limit values\
-    \ to Odoo’s monetary fields with proper currency conversion. These transformations\
-    \ maintain data integrity across platform boundaries.\n\nImplement duplicate detection\
+    \ problems before they create data discrepancies.\n\n## Data Mapping and Transformation\\\
+    n\n### Customer and Vendor Synchronization\n\nMap Sage Online contact entities\
+    \ to Odoo’s res.partner model with careful field alignment. Transform Sage’s customer\
+    \ records into Odoo partners with specific customer flags enabled. Convert Sage\
+    \ vendor accounts into Odoo partners marked as suppliers. Handle complex business\
+    \ entities that serve as both customers and vendors by setting both flags in Odoo.\
+    \ This bidirectional mapping ensures complete partner record synchronization.\n\
+    \nAddress field format disparities between the systems. Convert Sage’s single\
+    \ address field into Odoo’s structured address format with separate street, city,\
+    \ state, and postal code fields. Transform Sage’s phone number formats to comply\
+    \ with Odoo’s telephone validation rules. Map Sage’s credit limit values to Odoo’s\
+    \ monetary fields with proper currency conversion. These transformations maintain\
+    \ data integrity across platform boundaries.\n\nImplement duplicate detection\
     \ logic that prevents contact record proliferation. Create matching algorithms\
     \ that compare email addresses, tax identification numbers, and company names\
     \ before creating new partner records. When the system detects potential duplicates,\
@@ -223,92 +222,91 @@ ai_generated_content:
     \ integration creates it in Odoo with a source identifier that prevents Odoo from\
     \ sending it back to Sage. This source tracking mechanism establishes clear system\
     \ of record ownership for each transaction, eliminating duplicate entries and\
-    \ conflicting updates.\n\n## Error Handling and Resilience\n\n###\
-    \ Common Sync Failure Scenarios\n\nAPI rate limiting represents the most frequent\
-    \ integration challenge. Sage Online imposes strict request thresholds that vary\
-    \ by subscription tier. Odoo’s performance limits depend on server hardware and\
-    \ concurrent user load. Your middleware must detect 429 HTTP status codes from\
-    \ both platforms and implement automatic retry with exponential backoff. This\
-    \ graceful handling prevents sync failures during high-volume processing.\n\n\
-    Data validation errors occur when field values exceed length restrictions or contain\
-    \ invalid characters. Sage Online product codes may contain special characters\
-    \ that Odoo’s default_code field rejects. Odoo’s partner names might include emoji\
-    \ that Sage’s traditional character set cannot process. Implement comprehensive\
-    \ data sanitization that strips or converts problematic characters before transmission.\
-    \ This preprocessing prevents validation failures that block entire sync operations.\n\
-    \nNetwork timeouts and connection drops disrupt sync operations, especially during\
-    \ large file transfers or complex data queries. Build resilient connection handlers\
-    \ that attempt reconnection after brief delays. Implement chunking for large data\
-    \ sets, breaking them into smaller packets that survive intermittent connectivity\
-    \ issues. These techniques maintain sync continuity despite unreliable network\
-    \ conditions.\n\n### Error Recovery Procedures\n\nDesign your error handling system\
-    \ with automated recovery attempts for common failure modes. When record creation\
-    \ fails due to validation errors, implement field-by-field correction logic that\
-    \ addresses specific rejection reasons. For duplicate detection errors, create\
-    \ merge procedures that reconcile conflicting records based on data freshness\
-    \ and user preferences. These automated corrections resolve many issues without\
-    \ manual intervention.\n\nBuild a dead letter queue for messages that fail repeated\
-    \ processing attempts. This quarantine area holds problematic records while allowing\
-    \ other sync operations to continue. Implement administrative alerts that notify\
-    \ technical staff when messages enter the dead letter queue. Create a dashboard\
-    \ for reviewing and manually resolving these stuck transactions. This containment\
-    \ strategy prevents single record failures from blocking entire sync workflows.\n\
-    \nDevelop comprehensive rollback procedures for partial sync failures. When a\
-    \ multi-record transaction fails midway, the system must reverse already-completed\
-    \ changes to maintain data consistency. Implement compensation transactions that\
-    \ undo partial updates, returning both systems to their pre-sync state. This atomicity\
-    \ guarantee ensures all-or-nothing sync behavior for complex operations.\n\n###\
-    \ Debugging and Logging\n\nImplement structured logging that captures detailed\
-    \ context for every sync operation. Record the source data, transformation results,\
-    \ API requests, and responses for every record processed. Include correlation\
-    \ identifiers that trace a record’s journey through the entire integration pipeline.\
-    \ These audit trails simplify debugging when sync anomalies occur.\n\nCreate diagnostic\
-    \ endpoints that expose system health metrics and recent error details. Build\
-    \ administrative screens that display queue depths, processing rates, and error\
-    \ frequencies. Implement data comparison tools that highlight discrepancies between\
-    \ Sage and Odoo records for the same business entities. These visibility features\
-    \ accelerate problem identification and resolution.\n\n## Testing and Validation\
-    \\n\n### Test Environment Configuration\n\nEstablish isolated testing\
-    \ instances for both Sage Online and Odoo 18. Create a dedicated Sage sandbox\
-    \ company that mirrors your production organization structure. Build an Odoo test\
-    \ database that replicates your production modules and configuration. These isolated\
-    \ environments allow comprehensive testing without risking live business data.\n\
-    \nPopulate your test environments with representative data volumes that match\
-    \ your production scale. Include complex customer hierarchies with multiple shipping\
-    \ addresses and payment terms. Add product catalogs with varied attribute combinations\
-    \ and pricing structures. Create transaction histories that span multiple accounting\
-    \ periods with diverse tax scenarios. This realistic test data reveals performance\
-    \ and functional issues before production deployment.\n\n### Integration Test\
-    \ Scenarios\n\nExecute a phased test approach that progresses from unit tests\
-    \ to full integration validation. Begin with isolated component testing that verifies\
-    \ individual transformation functions and API connectors. Progress to end-to-end\
-    \ tests that validate complete sync workflows for each data entity type. Conclude\
-    \ with load testing that simulates production transaction volumes across all integrated\
-    \ data domains.\n\nValidate sync accuracy with automated reconciliation reports\
-    \ that compare data between systems after each test run. Create validation scripts\
-    \ that check record counts, field-level data matches, and calculated value accuracy.\
-    \ Implement balance verification for financial data that ensures debit and credit\
-    \ amounts match across both platforms. These automated checks provide quantitative\
-    \ quality measures for your integration.\n\n### User Acceptance Testing\n\nEngage\
-    \ business stakeholders in validation exercises that mirror real-world operational\
-    \ scenarios. Have accounting team members verify that sync transactions post to\
-    \ correct general ledger accounts. Ask sales operations staff to confirm that\
-    \ customer data flows completely from Odoo opportunities to Sage customer records.\
-    \ Involve inventory managers in stock level reconciliation checks across both\
-    \ systems.\n\nDocument test scenarios that cover edge cases and exception conditions.\
-    \ Test partial payment application, product returns with credit notes, multi-currency\
-    \ transactions, and inventory adjustments. Validate error handling by simulating\
-    \ network failures, API limitations, and invalid data scenarios. These comprehensive\
-    \ tests build confidence in the integration’s robustness before production cutover.\n\
-    \n## Security Considerations\n\n### Authentication Security\n\nImplement\
-    \ secure credential management using industry-standard secret storage solutions.\
-    \ Never embed API keys or client secrets directly in your application code. Use\
-    \ environment variables, Kubernetes secrets, or cloud key management services\
-    \ to protect authentication credentials. Rotate access tokens according to security\
-    \ policy schedules, with automated renewal processes that prevent integration\
-    \ disruption.\n\nApply the principle of least privilege to all integration access\
-    \ rights. Grant the middleware only the specific permissions required for its\
-    \ sync operations. Avoid using administrative accounts for routine data synchronization.\
+    \ conflicting updates.\n\n## Error Handling and Resilience\n\n### Common Sync\
+    \ Failure Scenarios\n\nAPI rate limiting represents the most frequent integration\
+    \ challenge. Sage Online imposes strict request thresholds that vary by subscription\
+    \ tier. Odoo’s performance limits depend on server hardware and concurrent user\
+    \ load. Your middleware must detect 429 HTTP status codes from both platforms\
+    \ and implement automatic retry with exponential backoff. This graceful handling\
+    \ prevents sync failures during high-volume processing.\n\nData validation errors\
+    \ occur when field values exceed length restrictions or contain invalid characters.\
+    \ Sage Online product codes may contain special characters that Odoo’s default_code\
+    \ field rejects. Odoo’s partner names might include emoji that Sage’s traditional\
+    \ character set cannot process. Implement comprehensive data sanitization that\
+    \ strips or converts problematic characters before transmission. This preprocessing\
+    \ prevents validation failures that block entire sync operations.\n\nNetwork timeouts\
+    \ and connection drops disrupt sync operations, especially during large file transfers\
+    \ or complex data queries. Build resilient connection handlers that attempt reconnection\
+    \ after brief delays. Implement chunking for large data sets, breaking them into\
+    \ smaller packets that survive intermittent connectivity issues. These techniques\
+    \ maintain sync continuity despite unreliable network conditions.\n\n### Error\
+    \ Recovery Procedures\n\nDesign your error handling system with automated recovery\
+    \ attempts for common failure modes. When record creation fails due to validation\
+    \ errors, implement field-by-field correction logic that addresses specific rejection\
+    \ reasons. For duplicate detection errors, create merge procedures that reconcile\
+    \ conflicting records based on data freshness and user preferences. These automated\
+    \ corrections resolve many issues without manual intervention.\n\nBuild a dead\
+    \ letter queue for messages that fail repeated processing attempts. This quarantine\
+    \ area holds problematic records while allowing other sync operations to continue.\
+    \ Implement administrative alerts that notify technical staff when messages enter\
+    \ the dead letter queue. Create a dashboard for reviewing and manually resolving\
+    \ these stuck transactions. This containment strategy prevents single record failures\
+    \ from blocking entire sync workflows.\n\nDevelop comprehensive rollback procedures\
+    \ for partial sync failures. When a multi-record transaction fails midway, the\
+    \ system must reverse already-completed changes to maintain data consistency.\
+    \ Implement compensation transactions that undo partial updates, returning both\
+    \ systems to their pre-sync state. This atomicity guarantee ensures all-or-nothing\
+    \ sync behavior for complex operations.\n\n### Debugging and Logging\n\nImplement\
+    \ structured logging that captures detailed context for every sync operation.\
+    \ Record the source data, transformation results, API requests, and responses\
+    \ for every record processed. Include correlation identifiers that trace a record’s\
+    \ journey through the entire integration pipeline. These audit trails simplify\
+    \ debugging when sync anomalies occur.\n\nCreate diagnostic endpoints that expose\
+    \ system health metrics and recent error details. Build administrative screens\
+    \ that display queue depths, processing rates, and error frequencies. Implement\
+    \ data comparison tools that highlight discrepancies between Sage and Odoo records\
+    \ for the same business entities. These visibility features accelerate problem\
+    \ identification and resolution.\n\n## Testing and Validation\\n\n### Test Environment\
+    \ Configuration\n\nEstablish isolated testing instances for both Sage Online and\
+    \ Odoo 18. Create a dedicated Sage sandbox company that mirrors your production\
+    \ organization structure. Build an Odoo test database that replicates your production\
+    \ modules and configuration. These isolated environments allow comprehensive testing\
+    \ without risking live business data.\n\nPopulate your test environments with\
+    \ representative data volumes that match your production scale. Include complex\
+    \ customer hierarchies with multiple shipping addresses and payment terms. Add\
+    \ product catalogs with varied attribute combinations and pricing structures.\
+    \ Create transaction histories that span multiple accounting periods with diverse\
+    \ tax scenarios. This realistic test data reveals performance and functional issues\
+    \ before production deployment.\n\n### Integration Test Scenarios\n\nExecute a\
+    \ phased test approach that progresses from unit tests to full integration validation.\
+    \ Begin with isolated component testing that verifies individual transformation\
+    \ functions and API connectors. Progress to end-to-end tests that validate complete\
+    \ sync workflows for each data entity type. Conclude with load testing that simulates\
+    \ production transaction volumes across all integrated data domains.\n\nValidate\
+    \ sync accuracy with automated reconciliation reports that compare data between\
+    \ systems after each test run. Create validation scripts that check record counts,\
+    \ field-level data matches, and calculated value accuracy. Implement balance verification\
+    \ for financial data that ensures debit and credit amounts match across both platforms.\
+    \ These automated checks provide quantitative quality measures for your integration.\n\
+    \n### User Acceptance Testing\n\nEngage business stakeholders in validation exercises\
+    \ that mirror real-world operational scenarios. Have accounting team members verify\
+    \ that sync transactions post to correct general ledger accounts. Ask sales operations\
+    \ staff to confirm that customer data flows completely from Odoo opportunities\
+    \ to Sage customer records. Involve inventory managers in stock level reconciliation\
+    \ checks across both systems.\n\nDocument test scenarios that cover edge cases\
+    \ and exception conditions. Test partial payment application, product returns\
+    \ with credit notes, multi-currency transactions, and inventory adjustments. Validate\
+    \ error handling by simulating network failures, API limitations, and invalid\
+    \ data scenarios. These comprehensive tests build confidence in the integration’s\
+    \ robustness before production cutover.\n\n## Security Considerations\n\n### Authentication\
+    \ Security\n\nImplement secure credential management using industry-standard secret\
+    \ storage solutions. Never embed API keys or client secrets directly in your application\
+    \ code. Use environment variables, Kubernetes secrets, or cloud key management\
+    \ services to protect authentication credentials. Rotate access tokens according\
+    \ to security policy schedules, with automated renewal processes that prevent\
+    \ integration disruption.\n\nApply the principle of least privilege to all integration\
+    \ access rights. Grant the middleware only the specific permissions required for\
+    \ its sync operations. Avoid using administrative accounts for routine data synchronization.\
     \ This limited access scope reduces the potential damage from security breaches\
     \ or credential compromise.\n\n### Data Protection Measures\n\nEncrypt sensitive\
     \ data both in transit and at rest. Use TLS 1.2 or higher for all API communications\
@@ -329,39 +327,39 @@ ai_generated_content:
     \ which system serves as the master record for each data entity type. Create procedures\
     \ for handling data correction requests that might originate in either system.\
     \ These governance protocols prevent jurisdictional conflicts and maintain data\
-    \ integrity across platform boundaries.\n\n## Performance Optimization\n\
-    \n### Bottleneck Identification\n\nMonitor integration performance to identify\
-    \ constraint points under production load. Common bottlenecks include Sage Online\
-    \ API rate limits, Odoo database query performance, and middleware processing\
-    \ capacity. Use application performance monitoring tools to measure transaction\
-    \ throughput, API response times, and queue processing rates. These metrics pinpoint\
-    \ the factors that limit your sync velocity.\n\nProfile data transformation logic\
-    \ to identify computational inefficiencies. Complex field mappings and validation\
-    \ rules can consume disproportionate processing time. Look for repetitive API\
-    \ calls that fetch the same reference data multiple times. Identify memory leaks\
-    \ in long-running sync processes that gradually degrade performance. These optimizations\
-    \ improve resource utilization and processing speed.\n\n### Optimization Techniques\n\
-    \nImplement intelligent caching for reference data that changes infrequently.\
-    \ Store product categories, tax codes, and unit of measure definitions in local\
-    \ cache with appropriate expiration policies. This caching reduces API calls to\
-    \ both Sage and Odoo, conserving rate limit capacity for transaction data. Use\
-    \ cache invalidation triggers that detect when reference data changes in either\
-    \ system.\n\nUse bulk API operations whenever possible to reduce round-trip latency.\
-    \ Instead of creating records individually, batch multiple entities into single\
-    \ API calls. Odoo’s XML-RPC interface supports batch creation of up to 100 records\
-    \ per request. Sage Online’s batch endpoints process multiple transactions in\
-    \ a single operation. These bulk techniques dramatically improve sync throughput\
-    \ for large data volumes.\n\n### Scaling Strategies\n\nDesign your middleware\
-    \ for horizontal scaling to handle increasing transaction volumes. Use stateless\
-    \ application design that allows multiple middleware instances to share the same\
-    \ message queue. Implement database connection pooling that efficiently manages\
-    \ concurrent database sessions. These architectural patterns support seamless\
-    \ capacity expansion as your integration workload grows.\n\nImplement selective\
-    \ sync strategies that optimize data flow based on business needs. Configure real-time\
-    \ sync only for time-sensitive data like sales orders and inventory adjustments.\
-    \ Use scheduled batch sync for less urgent data like historical transactions and\
-    \ product descriptions. This prioritized approach ensures critical data moves\
-    \ quickly while conserving system resources for non-essential synchronization."
+    \ integrity across platform boundaries.\n\n## Performance Optimization\n\n###\
+    \ Bottleneck Identification\n\nMonitor integration performance to identify constraint\
+    \ points under production load. Common bottlenecks include Sage Online API rate\
+    \ limits, Odoo database query performance, and middleware processing capacity.\
+    \ Use application performance monitoring tools to measure transaction throughput,\
+    \ API response times, and queue processing rates. These metrics pinpoint the factors\
+    \ that limit your sync velocity.\n\nProfile data transformation logic to identify\
+    \ computational inefficiencies. Complex field mappings and validation rules can\
+    \ consume disproportionate processing time. Look for repetitive API calls that\
+    \ fetch the same reference data multiple times. Identify memory leaks in long-running\
+    \ sync processes that gradually degrade performance. These optimizations improve\
+    \ resource utilization and processing speed.\n\n### Optimization Techniques\n\n\
+    Implement intelligent caching for reference data that changes infrequently. Store\
+    \ product categories, tax codes, and unit of measure definitions in local cache\
+    \ with appropriate expiration policies. This caching reduces API calls to both\
+    \ Sage and Odoo, conserving rate limit capacity for transaction data. Use cache\
+    \ invalidation triggers that detect when reference data changes in either system.\n\
+    \nUse bulk API operations whenever possible to reduce round-trip latency. Instead\
+    \ of creating records individually, batch multiple entities into single API calls.\
+    \ Odoo’s XML-RPC interface supports batch creation of up to 100 records per request.\
+    \ Sage Online’s batch endpoints process multiple transactions in a single operation.\
+    \ These bulk techniques dramatically improve sync throughput for large data volumes.\n\
+    \n### Scaling Strategies\n\nDesign your middleware for horizontal scaling to handle\
+    \ increasing transaction volumes. Use stateless application design that allows\
+    \ multiple middleware instances to share the same message queue. Implement database\
+    \ connection pooling that efficiently manages concurrent database sessions. These\
+    \ architectural patterns support seamless capacity expansion as your integration\
+    \ workload grows.\n\nImplement selective sync strategies that optimize data flow\
+    \ based on business needs. Configure real-time sync only for time-sensitive data\
+    \ like sales orders and inventory adjustments. Use scheduled batch sync for less\
+    \ urgent data like historical transactions and product descriptions. This prioritized\
+    \ approach ensures critical data moves quickly while conserving system resources\
+    \ for non-essential synchronization."
   conclusion: 'Your completed Sage Online to Odoo 18 integration delivers immediate
     operational improvements that transform your business workflows. The automated
     data synchronization eliminates manual entry tasks that previously consumed dozens
@@ -457,13 +455,14 @@ visualizations:
   placement_hint: after_conclusion
   data_context: learning path and knowledge graph
   mermaid_chart_syntax: "flowchart TB\n\n    Current[\"[CURRENT] Sage Online to Odoo\
-    \ Integration: Complete 2025 Guide\"]\n\n    %% Related Topics - Cross-References\n\
-    \    Current -.-> Rel0[\"Cloudflare to Odoo Integration: Complete 2025 Guide\"\
-    ]\n    Current -.-> Rel1[\"Facebook Pixel to Odoo Integration: Complete 2025 Guide\"\
-    ]\n\n    %% Professional Styling\n    classDef current fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n\
-    \    classDef prereq fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000\n\
-    \    classDef next fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000\n \
-    \   classDef related fill:#f5f5f5,stroke:#616161,stroke-width:1px,color:#000\n\
+    \ Integration: Complete 2025 Guide\"]\n\n    %% Next Steps - Learning Progression\n\
+    \    Current --> Next0(\"Complete Implementation Guide\")\n\n    %% Related Topics\
+    \ - Cross-References\n    Current -.-> Rel0[\"Cloudflare to Odoo Integration:\
+    \ Complete 2025 Guide\"]\n    Current -.-> Rel1[\"Facebook Pixel to Odoo Integration:\
+    \ Complete 2025 Guide\"]\n\n    %% Professional Styling\n    classDef current\
+    \ fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n    classDef prereq\
+    \ fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000\n    classDef next fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000\n\
+    \    classDef related fill:#f5f5f5,stroke:#616161,stroke-width:1px,color:#000\n\
     \    classDef trouble fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000\n\
     \    classDef support fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#000\n\
-    \n    class Current current\n    class Rel0,Rel1 related"
+    \n    class Current current\n    class Next0 next\n    class Rel0,Rel1 related"

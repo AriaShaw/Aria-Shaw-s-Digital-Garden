@@ -74,10 +74,10 @@ ai_generated_content:
     Python or XML proficiency for Odoo module customization. The integration will
     transform your business operations, but it requires a methodical, detail-oriented
     implementation. Let''s build a connection that drives your business forward.'
-  main_content: "## Integration Architecture and Data Flow\n\n### Core\
-    \ Integration Patterns\n\nYou must choose an integration architecture that aligns\
-    \ with your data volume and real-time requirements. The most robust pattern uses\
-    \ Odoo as the system of record, with ActiveCampaign serving as the marketing execution\
+  main_content: "## Integration Architecture and Data Flow\n\n### Core Integration\
+    \ Patterns\n\nYou must choose an integration architecture that aligns with your\
+    \ data volume and real-time requirements. The most robust pattern uses Odoo as\
+    \ the system of record, with ActiveCampaign serving as the marketing execution\
     \ layer. This design establishes a unidirectional data flow for contact and order\
     \ information from Odoo to ActiveCampaign. Marketing engagement data, such as\
     \ email opens and link clicks, flows back into Odoo for a complete customer view.\n\
@@ -226,92 +226,91 @@ ai_generated_content:
     \ Create a mapping table that standardizes this conversion, ensuring consistency\
     \ in your geographic segmentation. Consider storing the ISO country code in an\
     \ ActiveCampaign custom field for more precise geographic targeting in campaigns.\n\
-    \n## Error Handling and Resilience\n\n### Common API Error Patterns\n\
-    \nThe ActiveCampaign API returns specific HTTP status codes for common issues.\
-    \ A 401 status indicates invalid API credentials, often due to key rotation or\
-    \ configuration errors. A 403 error may signal insufficient permissions or a disabled\
-    \ account. Rate limiting triggers 429 responses, which your client must handle\
-    \ with graceful retries. 422 errors often point to validation failures in your\
-    \ data payload.\n\nOdoo-side errors typically involve missing related records\
-    \ or validation constraints. Attempting to sync a partner without an email address\
-    \ will fail, as ActiveCampaign requires email for contacts. Likewise, creating\
-    \ a deal without linking it to an existing contact or pipeline produces errors.\
-    \ Your integration must validate data completeness before attempting API calls\
-    \ to prevent these preventable failures.\n\n### Retry Logic and Circuit Breakers\n\
-    \nImplement a robust retry mechanism for transient API failures. Use an exponential\
-    \ backoff strategy, waiting 1 second after the first failure, then 2, 4, 8, and\
-    \ so on, up to a maximum delay. Cap the total retry attempts at 5 to prevent endless\
-    \ loops. For Odoo queue jobs, leverage the built-in retry mechanism by setting\
-    \ the `retry_pattern` attribute, which specifies the delay between retries.\n\n\
-    A circuit breaker pattern protects your systems during extended API outages. Track\
-    \ the failure rate of API calls to ActiveCampaign; if failures exceed a threshold\
-    \ (e.g., 50% over 5 minutes), open the circuit and fail immediately for new requests.\
-    \ This prevents your queue from clogging with failing jobs. Periodically test\
-    \ the connection with a simple API call, and close the circuit once the service\
-    \ recovers.\n\n### Data Validation and Sanitization\n\nValidate all data before\
-    \ transmission to ActiveCampaign. Check for required fields, data formats, and\
-    \ field length constraints. ActiveCampaign has specific character limits for fields\
-    \ like contact names (100 characters) and deal titles (250 characters). Truncate\
-    \ or transform data that exceeds these limits to prevent validation errors. Strip\
-    \ HTML tags from text fields unless the destination field supports rich content.\n\
-    \nHandle special characters and encoding issues, particularly with international\
-    \ data. Ensure your payload uses UTF-8 encoding throughout the integration pipeline.\
-    \ Test with diverse data sets containing accented characters, emojis, and non-Latin\
-    \ scripts to identify encoding problems before they reach production. Implement\
-    \ a sanitization layer that normalizes text data to a consistent encoding standard.\n\
-    \n### Error Logging and Alerting\n\nCreate a dedicated error logging model `ac.error.log`\
-    \ in your Odoo module to track integration failures. Each log entry should capture\
-    \ the error timestamp, affected record, error message, stack trace, and the operation\
-    \ being performed. Include a field for the raw payload to aid in debugging. Implement\
-    \ a cleanup job that archives or deletes old error logs after 30 days to manage\
-    \ database growth.\n\nConfigure proactive alerts for critical error patterns.\
-    \ Set up Odoo scheduled actions that check the error log for repeated failures\
-    \ and send email notifications to administrators. Monitor for specific error codes\
-    \ that indicate configuration problems, like authentication failures. For high-volume\
-    \ integrations, create a dashboard that displays error rates, success percentages,\
-    \ and average processing times.\n\n## Testing and Validation\n\n###\
-    \ Development Environment Setup\n\nEstablish isolated testing instances for both\
-    \ Odoo and ActiveCampaign. Use Odoo’s test mode to create sample data without\
-    \ affecting production operations. In ActiveCampaign, leverage the free trial\
-    \ or developer account to build a complete test environment with pipelines, custom\
-    \ fields, and automations that mirror your production setup. This sandbox environment\
-    \ enables comprehensive testing without business risk.\n\nCreate a standardized\
-    \ test data set that covers common scenarios and edge cases. Include partners\
-    \ with complete and minimal data, sale orders in various stages, and products\
-    \ with different pricing models. Document this test data set so team members can\
-    \ reproduce tests consistently. For automated testing, serialize this data into\
-    \ Odoo fixture files that load with your module.\n\n### Integration Test Scenarios\n\
-    \nDesign end-to-end test cases that validate the complete data flow. A basic test\
-    \ creates a partner in Odoo and verifies the corresponding contact appears in\
-    \ ActiveCampaign with all mapped fields. A more advanced test confirms that a\
-    \ sale order triggers a deal creation with proper stage mapping and line items.\
-    \ Test the reverse flow by simulating webhook calls from ActiveCampaign and checking\
-    \ for Odoo record updates.\n\nExecute negative tests to confirm your error handling\
-    \ works. Attempt to sync partners without email addresses, trigger API rate limiting,\
-    \ and simulate network timeouts. Verify that your system logs appropriate errors,\
-    \ retries transient failures, and alerts administrators for critical issues. These\
-    \ tests prove your integration's resilience under adverse conditions.\n\n### Data\
-    \ Integrity Validation\n\nDevelop validation scripts that compare data between\
-    \ the systems. For contacts, query ActiveCampaign's API to count contacts with\
-    \ specific Odoo-originated tags, then compare that number with the corresponding\
-    \ partner count in Odoo. For deals, verify that the total value of open deals\
-    \ in ActiveCampaign matches the expected value based on Odoo's open quotations.\n\
-    \nCheck field-level data consistency with sample-based audits. Select a random\
-    \ sample of recently synced records from both systems and compare key field values.\
-    \ Automate this process with a scheduled job that runs daily, flags discrepancies,\
-    \ and generates a compliance report. This ongoing validation ensures long-term\
-    \ data integrity as both systems evolve.\n\n### Performance and Load Testing\n\
-    \nMeasure synchronization performance under various loads. Start with single-record\
-    \ tests to establish baseline timing, then gradually increase to batches of 100,\
-    \ 1000, and 10,000 records. Monitor API rate limit consumption, memory usage,\
-    \ and processing time. Identify the optimal batch size that maximizes throughput\
-    \ without triggering rate limits or timeout errors.\n\nStress test the webhook\
-    \ handling capacity by simulating high-volume engagement events. Use a script\
-    \ to send multiple webhook payloads to your Odoo endpoint in quick succession.\
-    \ Verify that your queuing system processes all events without data loss, even\
-    \ under heavy load. These tests ensure your integration maintains reliability\
-    \ during marketing campaign spikes or seasonal business peaks.\n\n## Security\
-    \ Considerations\n\n### API Credential Management\n\nNever store ActiveCampaign\
+    \n## Error Handling and Resilience\n\n### Common API Error Patterns\n\nThe ActiveCampaign\
+    \ API returns specific HTTP status codes for common issues. A 401 status indicates\
+    \ invalid API credentials, often due to key rotation or configuration errors.\
+    \ A 403 error may signal insufficient permissions or a disabled account. Rate\
+    \ limiting triggers 429 responses, which your client must handle with graceful\
+    \ retries. 422 errors often point to validation failures in your data payload.\n\
+    \nOdoo-side errors typically involve missing related records or validation constraints.\
+    \ Attempting to sync a partner without an email address will fail, as ActiveCampaign\
+    \ requires email for contacts. Likewise, creating a deal without linking it to\
+    \ an existing contact or pipeline produces errors. Your integration must validate\
+    \ data completeness before attempting API calls to prevent these preventable failures.\n\
+    \n### Retry Logic and Circuit Breakers\n\nImplement a robust retry mechanism for\
+    \ transient API failures. Use an exponential backoff strategy, waiting 1 second\
+    \ after the first failure, then 2, 4, 8, and so on, up to a maximum delay. Cap\
+    \ the total retry attempts at 5 to prevent endless loops. For Odoo queue jobs,\
+    \ leverage the built-in retry mechanism by setting the `retry_pattern` attribute,\
+    \ which specifies the delay between retries.\n\nA circuit breaker pattern protects\
+    \ your systems during extended API outages. Track the failure rate of API calls\
+    \ to ActiveCampaign; if failures exceed a threshold (e.g., 50% over 5 minutes),\
+    \ open the circuit and fail immediately for new requests. This prevents your queue\
+    \ from clogging with failing jobs. Periodically test the connection with a simple\
+    \ API call, and close the circuit once the service recovers.\n\n### Data Validation\
+    \ and Sanitization\n\nValidate all data before transmission to ActiveCampaign.\
+    \ Check for required fields, data formats, and field length constraints. ActiveCampaign\
+    \ has specific character limits for fields like contact names (100 characters)\
+    \ and deal titles (250 characters). Truncate or transform data that exceeds these\
+    \ limits to prevent validation errors. Strip HTML tags from text fields unless\
+    \ the destination field supports rich content.\n\nHandle special characters and\
+    \ encoding issues, particularly with international data. Ensure your payload uses\
+    \ UTF-8 encoding throughout the integration pipeline. Test with diverse data sets\
+    \ containing accented characters, emojis, and non-Latin scripts to identify encoding\
+    \ problems before they reach production. Implement a sanitization layer that normalizes\
+    \ text data to a consistent encoding standard.\n\n### Error Logging and Alerting\n\
+    \nCreate a dedicated error logging model `ac.error.log` in your Odoo module to\
+    \ track integration failures. Each log entry should capture the error timestamp,\
+    \ affected record, error message, stack trace, and the operation being performed.\
+    \ Include a field for the raw payload to aid in debugging. Implement a cleanup\
+    \ job that archives or deletes old error logs after 30 days to manage database\
+    \ growth.\n\nConfigure proactive alerts for critical error patterns. Set up Odoo\
+    \ scheduled actions that check the error log for repeated failures and send email\
+    \ notifications to administrators. Monitor for specific error codes that indicate\
+    \ configuration problems, like authentication failures. For high-volume integrations,\
+    \ create a dashboard that displays error rates, success percentages, and average\
+    \ processing times.\n\n## Testing and Validation\n\n### Development Environment\
+    \ Setup\n\nEstablish isolated testing instances for both Odoo and ActiveCampaign.\
+    \ Use Odoo’s test mode to create sample data without affecting production operations.\
+    \ In ActiveCampaign, leverage the free trial or developer account to build a complete\
+    \ test environment with pipelines, custom fields, and automations that mirror\
+    \ your production setup. This sandbox environment enables comprehensive testing\
+    \ without business risk.\n\nCreate a standardized test data set that covers common\
+    \ scenarios and edge cases. Include partners with complete and minimal data, sale\
+    \ orders in various stages, and products with different pricing models. Document\
+    \ this test data set so team members can reproduce tests consistently. For automated\
+    \ testing, serialize this data into Odoo fixture files that load with your module.\n\
+    \n### Integration Test Scenarios\n\nDesign end-to-end test cases that validate\
+    \ the complete data flow. A basic test creates a partner in Odoo and verifies\
+    \ the corresponding contact appears in ActiveCampaign with all mapped fields.\
+    \ A more advanced test confirms that a sale order triggers a deal creation with\
+    \ proper stage mapping and line items. Test the reverse flow by simulating webhook\
+    \ calls from ActiveCampaign and checking for Odoo record updates.\n\nExecute negative\
+    \ tests to confirm your error handling works. Attempt to sync partners without\
+    \ email addresses, trigger API rate limiting, and simulate network timeouts. Verify\
+    \ that your system logs appropriate errors, retries transient failures, and alerts\
+    \ administrators for critical issues. These tests prove your integration's resilience\
+    \ under adverse conditions.\n\n### Data Integrity Validation\n\nDevelop validation\
+    \ scripts that compare data between the systems. For contacts, query ActiveCampaign's\
+    \ API to count contacts with specific Odoo-originated tags, then compare that\
+    \ number with the corresponding partner count in Odoo. For deals, verify that\
+    \ the total value of open deals in ActiveCampaign matches the expected value based\
+    \ on Odoo's open quotations.\n\nCheck field-level data consistency with sample-based\
+    \ audits. Select a random sample of recently synced records from both systems\
+    \ and compare key field values. Automate this process with a scheduled job that\
+    \ runs daily, flags discrepancies, and generates a compliance report. This ongoing\
+    \ validation ensures long-term data integrity as both systems evolve.\n\n### Performance\
+    \ and Load Testing\n\nMeasure synchronization performance under various loads.\
+    \ Start with single-record tests to establish baseline timing, then gradually\
+    \ increase to batches of 100, 1000, and 10,000 records. Monitor API rate limit\
+    \ consumption, memory usage, and processing time. Identify the optimal batch size\
+    \ that maximizes throughput without triggering rate limits or timeout errors.\n\
+    \nStress test the webhook handling capacity by simulating high-volume engagement\
+    \ events. Use a script to send multiple webhook payloads to your Odoo endpoint\
+    \ in quick succession. Verify that your queuing system processes all events without\
+    \ data loss, even under heavy load. These tests ensure your integration maintains\
+    \ reliability during marketing campaign spikes or seasonal business peaks.\n\n\
+    ## Security Considerations\n\n### API Credential Management\n\nNever store ActiveCampaign\
     \ API credentials in plain text within your Odoo database. Use Odoo's `fields.Encrypted`\
     \ type for the API key field, which leverages the database's encryption capabilities.\
     \ Restrict access to the integration configuration model to authorized administrators\
@@ -352,13 +351,13 @@ ai_generated_content:
     \ settings and when. Review these logs as part of your security compliance procedures.\
     \ Implement notification alerts for suspicious activities, such as multiple failed\
     \ connection tests that might indicate credential brute force attacks.\n\n## Performance\
-    \ Optimization\n\n### API Call Efficiency\n\nMinimize API calls through\
-    \ strategic batching and caching. ActiveCampaign's batch API endpoints allow you\
-    \ to create or update multiple contacts or deals in a single request. Implement\
-    \ a queuing system that collects individual record updates and processes them\
-    \ in batches every few minutes. This approach dramatically reduces API call volume\
-    \ and helps avoid rate limits.\n\nCache frequently accessed but infrequently changed\
-    \ data from ActiveCampaign. Pipeline stages, custom field definitions, and automation\
+    \ Optimization\n\n### API Call Efficiency\n\nMinimize API calls through strategic\
+    \ batching and caching. ActiveCampaign's batch API endpoints allow you to create\
+    \ or update multiple contacts or deals in a single request. Implement a queuing\
+    \ system that collects individual record updates and processes them in batches\
+    \ every few minutes. This approach dramatically reduces API call volume and helps\
+    \ avoid rate limits.\n\nCache frequently accessed but infrequently changed data\
+    \ from ActiveCampaign. Pipeline stages, custom field definitions, and automation\
     \ lists change rarely but get referenced often during synchronization. Store this\
     \ metadata in Odoo with appropriate expiration times, refreshing it periodically\
     \ or through webhook notifications for changes. This eliminates redundant metadata\
@@ -477,13 +476,14 @@ visualizations:
   placement_hint: after_conclusion
   data_context: learning path and knowledge graph
   mermaid_chart_syntax: "flowchart TB\n\n    Current[\"[CURRENT] Activecampaign to\
-    \ Odoo Integration: Complete 2025 Guide\"]\n\n    %% Related Topics - Cross-References\n\
-    \    Current -.-> Rel0[\"Cloudflare to Odoo Integration: Complete 2025 Guide\"\
-    ]\n    Current -.-> Rel1[\"Facebook Pixel to Odoo Integration: Complete 2025 Guide\"\
-    ]\n\n    %% Professional Styling\n    classDef current fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n\
-    \    classDef prereq fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000\n\
-    \    classDef next fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000\n \
-    \   classDef related fill:#f5f5f5,stroke:#616161,stroke-width:1px,color:#000\n\
+    \ Odoo Integration: Complete 2025 Guide\"]\n\n    %% Next Steps - Learning Progression\n\
+    \    Current --> Next0(\"Complete Implementation Guide\")\n\n    %% Related Topics\
+    \ - Cross-References\n    Current -.-> Rel0[\"Cloudflare to Odoo Integration:\
+    \ Complete 2025 Guide\"]\n    Current -.-> Rel1[\"Facebook Pixel to Odoo Integration:\
+    \ Complete 2025 Guide\"]\n\n    %% Professional Styling\n    classDef current\
+    \ fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n    classDef prereq\
+    \ fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000\n    classDef next fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000\n\
+    \    classDef related fill:#f5f5f5,stroke:#616161,stroke-width:1px,color:#000\n\
     \    classDef trouble fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000\n\
     \    classDef support fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#000\n\
-    \n    class Current current\n    class Rel0,Rel1 related"
+    \n    class Current current\n    class Next0 next\n    class Rel0,Rel1 related"

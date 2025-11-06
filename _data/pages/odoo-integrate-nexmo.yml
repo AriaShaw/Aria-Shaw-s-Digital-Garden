@@ -66,47 +66,47 @@ ai_generated_content:
     complex data structures, implement failover mechanisms, and secure your communication
     pipeline. This comprehensive approach ensures your integration handles production
     loads without data loss or service interruptions.'
-  main_content: "## Integration Architecture and Data Flow\n\n### Core\
-    \ Integration Components\n\nThe Nexmo-Odoo integration relies on three primary\
-    \ components that work in concert. Your Odoo 18 instance serves as the central\
-    \ business logic hub, managing contacts, leads, and communication history. The\
-    \ Vonage API platform handles all telecommunication operations, including SMS\
-    \ delivery, voice calls, and number verification. A custom Odoo module acts as\
-    \ the bridge between these systems, containing webhook handlers, data transformation\
-    \ logic, and synchronization mechanisms.\n\nThis architecture follows an event-driven\
-    \ pattern where actions in one system trigger reactions in the other. When a customer\
-    \ sends an SMS to your Nexmo virtual number, the Vonage API routes this message\
-    \ to your Odoo webhook endpoint. Your integration processes the incoming data,\
-    \ matches it to the correct contact record, and creates a new message in the Odoo\
-    \ chatter. This bidirectional flow ensures complete communication history tracking.\n\
-    \n### Data Flow Patterns\n\nOutbound messages from Odoo follow a straightforward\
-    \ request-response pattern. Your custom code prepares the message payload, authenticates\
-    \ with the Vonage SMS API, and dispatches the communication. The API returns immediate\
-    \ delivery status and a unique message identifier for tracking. This synchronous\
-    \ operation lets your users know the system dispatched their message.\n\nInbound\
-    \ messages employ an asynchronous webhook pattern for better reliability. Vonage\
-    \ API queues incoming messages and forwards them to your configured webhook URL.\
-    \ Your Odoo module receives these POST requests, validates their authenticity,\
-    \ and processes the content. This decoupled approach handles traffic spikes without\
-    \ losing messages, as Vonage retries failed webhook deliveries.\n\n### Webhook\
-    \ Configuration Strategy\n\nYour webhook endpoint requires proper SSL configuration\
-    \ and predictable routing. Use a dedicated controller path like `/webhook/nexmo/inbound`\
-    \ within your Odoo module. This separation from standard Odoo controllers simplifies\
-    \ security configuration and monitoring. Configure your Vonage account with this\
-    \ full URL, ensuring it remains accessible through your firewall.\n\nThe webhook\
-    \ handshake process validates both directions of communication. Vonage sends initial\
-    \ verification requests to confirm endpoint ownership. Your integration must respond\
-    \ correctly to these challenges. Implement proper signature verification using\
-    \ the Vonage signature secret to prevent spoofed messages. This security measure\
-    \ protects your system from injection attacks.\n\n## Step-by-Step Configuration\
-    \\n\n### Vonage API Account Setup\n\nBegin with your Vonage API account\
-    \ configuration. Log into your Vonage API dashboard and navigate to the Numbers\
-    \ section. Purchase a virtual number capable of SMS reception in your target regions.\
-    \ Consider number porting if you maintain existing business contacts. This number\
-    \ becomes your primary sender identity for all automated communications.\n\nGenerate\
-    \ dedicated API credentials for your Odoo integration. Create a new API key and\
-    \ secret pair specifically for this project rather than reusing existing credentials.\
-    \ This practice limits potential security exposure and simplifies credential rotation.\
+  main_content: "## Integration Architecture and Data Flow\n\n### Core Integration\
+    \ Components\n\nThe Nexmo-Odoo integration relies on three primary components\
+    \ that work in concert. Your Odoo 18 instance serves as the central business logic\
+    \ hub, managing contacts, leads, and communication history. The Vonage API platform\
+    \ handles all telecommunication operations, including SMS delivery, voice calls,\
+    \ and number verification. A custom Odoo module acts as the bridge between these\
+    \ systems, containing webhook handlers, data transformation logic, and synchronization\
+    \ mechanisms.\n\nThis architecture follows an event-driven pattern where actions\
+    \ in one system trigger reactions in the other. When a customer sends an SMS to\
+    \ your Nexmo virtual number, the Vonage API routes this message to your Odoo webhook\
+    \ endpoint. Your integration processes the incoming data, matches it to the correct\
+    \ contact record, and creates a new message in the Odoo chatter. This bidirectional\
+    \ flow ensures complete communication history tracking.\n\n### Data Flow Patterns\n\
+    \nOutbound messages from Odoo follow a straightforward request-response pattern.\
+    \ Your custom code prepares the message payload, authenticates with the Vonage\
+    \ SMS API, and dispatches the communication. The API returns immediate delivery\
+    \ status and a unique message identifier for tracking. This synchronous operation\
+    \ lets your users know the system dispatched their message.\n\nInbound messages\
+    \ employ an asynchronous webhook pattern for better reliability. Vonage API queues\
+    \ incoming messages and forwards them to your configured webhook URL. Your Odoo\
+    \ module receives these POST requests, validates their authenticity, and processes\
+    \ the content. This decoupled approach handles traffic spikes without losing messages,\
+    \ as Vonage retries failed webhook deliveries.\n\n### Webhook Configuration Strategy\n\
+    \nYour webhook endpoint requires proper SSL configuration and predictable routing.\
+    \ Use a dedicated controller path like `/webhook/nexmo/inbound` within your Odoo\
+    \ module. This separation from standard Odoo controllers simplifies security configuration\
+    \ and monitoring. Configure your Vonage account with this full URL, ensuring it\
+    \ remains accessible through your firewall.\n\nThe webhook handshake process validates\
+    \ both directions of communication. Vonage sends initial verification requests\
+    \ to confirm endpoint ownership. Your integration must respond correctly to these\
+    \ challenges. Implement proper signature verification using the Vonage signature\
+    \ secret to prevent spoofed messages. This security measure protects your system\
+    \ from injection attacks.\n\n## Step-by-Step Configuration\\n\n### Vonage API\
+    \ Account Setup\n\nBegin with your Vonage API account configuration. Log into\
+    \ your Vonage API dashboard and navigate to the Numbers section. Purchase a virtual\
+    \ number capable of SMS reception in your target regions. Consider number porting\
+    \ if you maintain existing business contacts. This number becomes your primary\
+    \ sender identity for all automated communications.\n\nGenerate dedicated API\
+    \ credentials for your Odoo integration. Create a new API key and secret pair\
+    \ specifically for this project rather than reusing existing credentials. This\
+    \ practice limits potential security exposure and simplifies credential rotation.\
     \ Store these credentials securely as they form the foundation of your outbound\
     \ communication authority.\n\nConfigure your SMS API settings to enable both inbound\
     \ webhooks and delivery receipts. Set the inbound webhook URL to point to your\
@@ -153,27 +153,27 @@ ai_generated_content:
     \ Odoo's existing communication workflows. Add SMS options to the chatter widget\
     \ alongside standard email and note options. Extend the CRM lead and opportunity\
     \ views to include quick SMS actions. This seamless integration encourages user\
-    \ adoption by fitting natural work patterns.\n\n## Data Mapping and Transformation\
-    \\n\n### Contact Matching Logic\n\nThe integration must accurately\
-    \ match incoming messages to existing Odoo contacts. Implement a multi-stage matching\
-    \ algorithm that first searches for exact phone number matches. Normalize all\
-    \ phone numbers to E.164 format before comparison to handle international variations.\
-    \ This standardization prevents missed matches due to formatting differences.\n\
-    \nWhen exact matches fail, employ fuzzy matching based on contact name extraction.\
-    \ Analyze incoming message content for potential contact references and cross-reference\
-    \ with your CRM data. For complete mismatches, create new contact records with\
-    \ the phone number as the primary identifier. Flag these automatically created\
-    \ contacts for later verification by your sales team.\n\n### Message Threading\
-    \ Architecture\n\nMaintain complete conversation history through proper message\
-    \ threading. Group related messages into logical threads based on sender-receiver\
-    \ pairs and time proximity. Implement a conversation model that tracks message\
-    \ sequences regardless of communication direction. This architecture provides\
-    \ context for customer support interactions.\n\nYour threading logic must handle\
-    \ multiple simultaneous conversations with the same contact. Use message content\
-    \ analysis to detect topic changes that warrant new threads. Implement a time-based\
-    \ threshold that automatically starts new conversations after extended silences.\
-    \ This balance maintains conversation continuity without creating monolithic threads.\n\
-    \n### Field Mapping Specifications\n\nMap Vonage API response fields to appropriate\
+    \ adoption by fitting natural work patterns.\n\n## Data Mapping and Transformation\\\
+    n\n### Contact Matching Logic\n\nThe integration must accurately match incoming\
+    \ messages to existing Odoo contacts. Implement a multi-stage matching algorithm\
+    \ that first searches for exact phone number matches. Normalize all phone numbers\
+    \ to E.164 format before comparison to handle international variations. This standardization\
+    \ prevents missed matches due to formatting differences.\n\nWhen exact matches\
+    \ fail, employ fuzzy matching based on contact name extraction. Analyze incoming\
+    \ message content for potential contact references and cross-reference with your\
+    \ CRM data. For complete mismatches, create new contact records with the phone\
+    \ number as the primary identifier. Flag these automatically created contacts\
+    \ for later verification by your sales team.\n\n### Message Threading Architecture\n\
+    \nMaintain complete conversation history through proper message threading. Group\
+    \ related messages into logical threads based on sender-receiver pairs and time\
+    \ proximity. Implement a conversation model that tracks message sequences regardless\
+    \ of communication direction. This architecture provides context for customer\
+    \ support interactions.\n\nYour threading logic must handle multiple simultaneous\
+    \ conversations with the same contact. Use message content analysis to detect\
+    \ topic changes that warrant new threads. Implement a time-based threshold that\
+    \ automatically starts new conversations after extended silences. This balance\
+    \ maintains conversation continuity without creating monolithic threads.\n\n###\
+    \ Field Mapping Specifications\n\nMap Vonage API response fields to appropriate\
     \ Odoo model attributes. The Vonage message UUID becomes the Odoo message external\
     \ identifier for deduplication. Message timestamps convert from Vonage's ISO format\
     \ to Odoo's datetime objects. Status updates map to corresponding tracking states\
@@ -190,77 +190,76 @@ ai_generated_content:
     \ services to protect your Odoo instance from malicious attachments. Apply content\
     \ validation to ensure media files meet your business policies. This protective\
     \ measure maintains system integrity while preserving communication functionality.\n\
-    \n## Error Handling and Resilience\n\n### API Failure Scenarios\n\n\
-    Vonage API outages require graceful degradation rather than complete failure.\
-    \ Implement circuit breaker patterns that detect API unavailability and queue\
-    \ outbound messages locally. This approach prevents Odoo interface freezes when\
-    \ external services experience problems. Resume normal operation automatically\
-    \ when API health checks pass.\n\nHandle specific Vonage error codes with appropriate\
-    \ responses. Rate limit errors (429) trigger automatic retry with exponential\
-    \ backoff. Authentication failures (401) alert administrators to credential problems.\
-    \ Invalid number errors (420) flag contact record issues for manual resolution.\
-    \ This targeted response strategy maximizes delivery success.\n\n### Webhook Delivery\
-    \ Guarantees\n\nVonage webhook delivery attempts require idempotent processing\
-    \ to handle duplicates. Implement message deduplication using Vonage-provided\
-    \ message UUIDs. Store processed message identifiers and reject duplicates within\
-    \ a configurable time window. This prevention mechanism maintains data integrity\
-    \ during webhook retries.\n\nHandle webhook processing failures with explicit\
-    \ error responses. Return 5xx status codes only for truly transient conditions\
-    \ that might resolve on retry. For permanent failures like invalid payloads, return\
-    \ 4xx codes to stop delivery attempts. This response guidance helps Vonage's webhook\
-    \ system optimize retry behavior.\n\n### Data Validation Framework\n\nValidate\
-    \ all incoming webhook data against expected schemas before processing. Verify\
-    \ required fields exist and contain valid values. Reject messages that fail validation\
-    \ with appropriate error logging. This defensive programming practice prevents\
-    \ malformed data from corrupting your Odoo database.\n\nImplement comprehensive\
-    \ input sanitization for message content. Remove potentially dangerous HTML and\
-    \ script elements from incoming messages while preserving legitimate formatting.\
-    \ Apply character set normalization to prevent encoding issues in your database.\
-    \ These measures protect against injection attacks and data corruption.\n\n###\
-    \ Recovery Procedures\n\nBuild automated recovery tools for common synchronization\
-    \ problems. Create a message reconciliation process that identifies missing delivery\
-    \ receipts and updates message status accordingly. Implement a contact matching\
-    \ repair tool that fixes incorrect message-thread associations. These self-healing\
-    \ capabilities reduce manual maintenance overhead.\n\nDevelop manual intervention\
-    \ procedures for complex failure scenarios. Create administrator views that show\
-    \ message delivery status and allow forced retries. Build diagnostic tools that\
-    \ test integration health and identify configuration problems. These administrative\
-    \ controls empower your team to resolve issues without developer assistance.\n\
-    \n## Testing and Validation\n\n### Integration Test Scenarios\n\n\
-    Create comprehensive test cases that validate all integration data flows. Test\
-    \ inbound message processing with various phone number formats and character encodings.\
-    \ Verify outbound message delivery through actual Vonage API calls in a sandbox\
-    \ environment. These end-to-end tests confirm system behavior under realistic\
-    \ conditions.\n\nSimulate failure scenarios to validate your error handling. Temporarily\
-    \ disable network connectivity to test queuing behavior. Send malformed webhook\
-    \ payloads to verify proper rejection. These negative tests ensure robustness\
-    \ when problems occur in production environments.\n\n### Performance Benchmarking\n\
-    \nMeasure message processing throughput under various load conditions. Test how\
-    \ many inbound messages per minute your integration can handle without degradation.\
-    \ Identify bottlenecks in database writes or external API calls. These benchmarks\
-    \ inform capacity planning and scaling decisions.\n\nEstablish performance baselines\
-    \ for key integration operations. Time how long typical outbound message delivery\
-    \ takes from user action to Vonage API acceptance. Measure inbound message processing\
-    \ latency from webhook receipt to Odoo database persistence. These metrics help\
-    \ detect performance regression during system updates.\n\n### User Acceptance\
-    \ Testing\n\nEngage business users in testing the integrated solution before deployment.\
-    \ Create realistic test scenarios that mirror actual business workflows. Have\
-    \ sales team members send test messages to leads and verify the conversation history\
-    \ appears correctly. These practical tests validate the integration from a user\
-    \ perspective.\n\nSolicit specific feedback on the user interface integration\
-    \ points. Verify that SMS options appear in expected locations within Odoo modules.\
-    \ Confirm that message status displays provide sufficient information for user\
-    \ needs. This user-centered validation ensures adoption and satisfaction.\n\n\
-    ### Data Validation Procedures\n\nImplement automated data consistency checks\
-    \ that run periodically. Verify that all messages with delivery receipts have\
-    \ corresponding outbound records. Check that contact message counts match actual\
-    \ database records. These validation routines catch data integrity issues early.\n\
-    \nCreate reconciliation reports that compare Vonage account message logs with\
-    \ Odoo records. Identify any discrepancies in message counts or statuses. Investigate\
-    \ and resolve differences to maintain system trustworthiness. This thorough approach\
-    \ ensures complete data accuracy.\n\n## Security Considerations\n\n\
-    ### Authentication Implementation\n\nSecure your Vonage API credentials with proper\
-    \ secret management. Store API keys and secrets in Odoo's encrypted configuration\
+    \n## Error Handling and Resilience\n\n### API Failure Scenarios\n\nVonage API\
+    \ outages require graceful degradation rather than complete failure. Implement\
+    \ circuit breaker patterns that detect API unavailability and queue outbound messages\
+    \ locally. This approach prevents Odoo interface freezes when external services\
+    \ experience problems. Resume normal operation automatically when API health checks\
+    \ pass.\n\nHandle specific Vonage error codes with appropriate responses. Rate\
+    \ limit errors (429) trigger automatic retry with exponential backoff. Authentication\
+    \ failures (401) alert administrators to credential problems. Invalid number errors\
+    \ (420) flag contact record issues for manual resolution. This targeted response\
+    \ strategy maximizes delivery success.\n\n### Webhook Delivery Guarantees\n\n\
+    Vonage webhook delivery attempts require idempotent processing to handle duplicates.\
+    \ Implement message deduplication using Vonage-provided message UUIDs. Store processed\
+    \ message identifiers and reject duplicates within a configurable time window.\
+    \ This prevention mechanism maintains data integrity during webhook retries.\n\
+    \nHandle webhook processing failures with explicit error responses. Return 5xx\
+    \ status codes only for truly transient conditions that might resolve on retry.\
+    \ For permanent failures like invalid payloads, return 4xx codes to stop delivery\
+    \ attempts. This response guidance helps Vonage's webhook system optimize retry\
+    \ behavior.\n\n### Data Validation Framework\n\nValidate all incoming webhook\
+    \ data against expected schemas before processing. Verify required fields exist\
+    \ and contain valid values. Reject messages that fail validation with appropriate\
+    \ error logging. This defensive programming practice prevents malformed data from\
+    \ corrupting your Odoo database.\n\nImplement comprehensive input sanitization\
+    \ for message content. Remove potentially dangerous HTML and script elements from\
+    \ incoming messages while preserving legitimate formatting. Apply character set\
+    \ normalization to prevent encoding issues in your database. These measures protect\
+    \ against injection attacks and data corruption.\n\n### Recovery Procedures\n\n\
+    Build automated recovery tools for common synchronization problems. Create a message\
+    \ reconciliation process that identifies missing delivery receipts and updates\
+    \ message status accordingly. Implement a contact matching repair tool that fixes\
+    \ incorrect message-thread associations. These self-healing capabilities reduce\
+    \ manual maintenance overhead.\n\nDevelop manual intervention procedures for complex\
+    \ failure scenarios. Create administrator views that show message delivery status\
+    \ and allow forced retries. Build diagnostic tools that test integration health\
+    \ and identify configuration problems. These administrative controls empower your\
+    \ team to resolve issues without developer assistance.\n\n## Testing and Validation\n\
+    \n### Integration Test Scenarios\n\nCreate comprehensive test cases that validate\
+    \ all integration data flows. Test inbound message processing with various phone\
+    \ number formats and character encodings. Verify outbound message delivery through\
+    \ actual Vonage API calls in a sandbox environment. These end-to-end tests confirm\
+    \ system behavior under realistic conditions.\n\nSimulate failure scenarios to\
+    \ validate your error handling. Temporarily disable network connectivity to test\
+    \ queuing behavior. Send malformed webhook payloads to verify proper rejection.\
+    \ These negative tests ensure robustness when problems occur in production environments.\n\
+    \n### Performance Benchmarking\n\nMeasure message processing throughput under\
+    \ various load conditions. Test how many inbound messages per minute your integration\
+    \ can handle without degradation. Identify bottlenecks in database writes or external\
+    \ API calls. These benchmarks inform capacity planning and scaling decisions.\n\
+    \nEstablish performance baselines for key integration operations. Time how long\
+    \ typical outbound message delivery takes from user action to Vonage API acceptance.\
+    \ Measure inbound message processing latency from webhook receipt to Odoo database\
+    \ persistence. These metrics help detect performance regression during system\
+    \ updates.\n\n### User Acceptance Testing\n\nEngage business users in testing\
+    \ the integrated solution before deployment. Create realistic test scenarios that\
+    \ mirror actual business workflows. Have sales team members send test messages\
+    \ to leads and verify the conversation history appears correctly. These practical\
+    \ tests validate the integration from a user perspective.\n\nSolicit specific\
+    \ feedback on the user interface integration points. Verify that SMS options appear\
+    \ in expected locations within Odoo modules. Confirm that message status displays\
+    \ provide sufficient information for user needs. This user-centered validation\
+    \ ensures adoption and satisfaction.\n\n### Data Validation Procedures\n\nImplement\
+    \ automated data consistency checks that run periodically. Verify that all messages\
+    \ with delivery receipts have corresponding outbound records. Check that contact\
+    \ message counts match actual database records. These validation routines catch\
+    \ data integrity issues early.\n\nCreate reconciliation reports that compare Vonage\
+    \ account message logs with Odoo records. Identify any discrepancies in message\
+    \ counts or statuses. Investigate and resolve differences to maintain system trustworthiness.\
+    \ This thorough approach ensures complete data accuracy.\n\n## Security Considerations\n\
+    \n### Authentication Implementation\n\nSecure your Vonage API credentials with\
+    \ proper secret management. Store API keys and secrets in Odoo's encrypted configuration\
     \ rather than code files. Implement credential rotation procedures that update\
     \ stored secrets without service interruption. This protection limits exposure\
     \ if credentials compromise occurs.\n\nValidate all incoming webhook requests\
@@ -283,32 +282,32 @@ ai_generated_content:
     \ regulations for automated messaging systems. Include proper opt-out mechanisms\
     \ in all marketing communications. Honor do-not-call lists and other compliance\
     \ requirements through integration with your preference management system. This\
-    \ careful attention to regulation prevents legal issues.\n\n## Performance Optimization\
-    \\n\n### Database Optimization Strategies\n\nMessage volume growth\
-    \ requires careful database performance planning. Implement appropriate indexing\
-    \ on message tables for common query patterns. Create indexes on phone numbers,\
-    \ timestamps, and message status fields. These indexes maintain performance as\
-    \ your message history expands.\n\nPartition message tables by time to improve\
-    \ query performance and simplify archiving. Create monthly or quarterly partitions\
-    \ that contain messages from specific time periods. This partitioning strategy\
-    \ speeds up historical data queries and reduces maintenance windows.\n\n### Caching\
-    \ Implementation\n\nReduce Vonage API calls through strategic caching of frequently\
-    \ accessed data. Cache virtual number configuration to avoid repeated API queries\
-    \ for sender identities. Implement contact lookup caching to speed up inbound\
-    \ message processing. These cache layers decrease external dependency and improve\
-    \ response times.\n\nUse Odoo's built-in caching mechanisms for expensive database\
-    \ queries. Cache conversation history views to speed up user interface rendering.\
-    \ Implement proper cache invalidation that updates when new messages arrive. This\
-    \ balanced approach maintains performance without sacrificing data freshness.\n\
-    \n### Message Processing Optimization\n\nHandle high-volume message bursts through\
-    \ queued processing. Implement a job queue for inbound message persistence to\
-    \ avoid database contention during traffic spikes. Use Odoo's built-in queue system\
-    \ or integrate with Redis for more sophisticated job management. This asynchronous\
-    \ processing maintains system responsiveness.\n\nOptimize outbound message delivery\
-    \ through batching and connection pooling. Group multiple messages into single\
-    \ API calls where Vonage's API supports batch operations. Maintain persistent\
-    \ HTTP connections to Vonage servers to reduce connection establishment overhead.\
-    \ These techniques improve throughput for bulk messaging operations."
+    \ careful attention to regulation prevents legal issues.\n\n## Performance Optimization\\\
+    n\n### Database Optimization Strategies\n\nMessage volume growth requires careful\
+    \ database performance planning. Implement appropriate indexing on message tables\
+    \ for common query patterns. Create indexes on phone numbers, timestamps, and\
+    \ message status fields. These indexes maintain performance as your message history\
+    \ expands.\n\nPartition message tables by time to improve query performance and\
+    \ simplify archiving. Create monthly or quarterly partitions that contain messages\
+    \ from specific time periods. This partitioning strategy speeds up historical\
+    \ data queries and reduces maintenance windows.\n\n### Caching Implementation\n\
+    \nReduce Vonage API calls through strategic caching of frequently accessed data.\
+    \ Cache virtual number configuration to avoid repeated API queries for sender\
+    \ identities. Implement contact lookup caching to speed up inbound message processing.\
+    \ These cache layers decrease external dependency and improve response times.\n\
+    \nUse Odoo's built-in caching mechanisms for expensive database queries. Cache\
+    \ conversation history views to speed up user interface rendering. Implement proper\
+    \ cache invalidation that updates when new messages arrive. This balanced approach\
+    \ maintains performance without sacrificing data freshness.\n\n### Message Processing\
+    \ Optimization\n\nHandle high-volume message bursts through queued processing.\
+    \ Implement a job queue for inbound message persistence to avoid database contention\
+    \ during traffic spikes. Use Odoo's built-in queue system or integrate with Redis\
+    \ for more sophisticated job management. This asynchronous processing maintains\
+    \ system responsiveness.\n\nOptimize outbound message delivery through batching\
+    \ and connection pooling. Group multiple messages into single API calls where\
+    \ Vonage's API supports batch operations. Maintain persistent HTTP connections\
+    \ to Vonage servers to reduce connection establishment overhead. These techniques\
+    \ improve throughput for bulk messaging operations."
   conclusion: 'Your Nexmo-Odoo integration now connects customer communication directly
     to your business operations. Sales teams receive instant notifications when leads
     respond to outreach campaigns. Support staff maintain complete conversation history
@@ -398,13 +397,14 @@ visualizations:
   placement_hint: after_conclusion
   data_context: learning path and knowledge graph
   mermaid_chart_syntax: "flowchart TB\n\n    Current[\"[CURRENT] Nexmo to Odoo Integration:\
-    \ Complete 2025 Guide\"]\n\n    %% Related Topics - Cross-References\n    Current\
-    \ -.-> Rel0[\"Cloudflare to Odoo Integration: Complete 2025 Guide\"]\n    Current\
-    \ -.-> Rel1[\"Facebook Pixel to Odoo Integration: Complete 2025 Guide\"]\n\n \
-    \   %% Professional Styling\n    classDef current fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n\
+    \ Complete 2025 Guide\"]\n\n    %% Next Steps - Learning Progression\n    Current\
+    \ --> Next0(\"Complete Implementation Guide\")\n\n    %% Related Topics - Cross-References\n\
+    \    Current -.-> Rel0[\"Cloudflare to Odoo Integration: Complete 2025 Guide\"\
+    ]\n    Current -.-> Rel1[\"Facebook Pixel to Odoo Integration: Complete 2025 Guide\"\
+    ]\n\n    %% Professional Styling\n    classDef current fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n\
     \    classDef prereq fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000\n\
     \    classDef next fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000\n \
     \   classDef related fill:#f5f5f5,stroke:#616161,stroke-width:1px,color:#000\n\
     \    classDef trouble fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000\n\
     \    classDef support fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#000\n\
-    \n    class Current current\n    class Rel0,Rel1 related"
+    \n    class Current current\n    class Next0 next\n    class Rel0,Rel1 related"

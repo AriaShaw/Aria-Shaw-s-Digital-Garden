@@ -74,61 +74,60 @@ ai_generated_content:
     Easypost''s infrastructure. The error handling procedures derive from actual production
     troubleshooting scenarios. You receive battle-tested implementation patterns,
     not abstract concepts.'
-  main_content: "## Integration Architecture and Data Flow\n\nThe Easypost-Odoo\
-    \ integration employs a hybrid architecture that combines Odoo's server-side logic\
-    \ with Easypost's shipping API ecosystem. This design creates a bidirectional\
-    \ data flow that synchronizes shipping operations across both platforms. Your\
-    \ Odoo instance becomes the system of record for order data, while Easypost handles\
-    \ carrier communication and label generation. The architecture maintains data\
-    \ consistency without introducing complex distributed transaction management.\n\
-    \nOdoo's delivery carrier integration framework provides the foundation for the\
-    \ connection. You extend the `delivery.carrier` model with Easypost-specific functionality.\
-    \ This approach preserves Odoo's native shipping workflow while adding Easypost's\
-    \ multi-carrier capabilities. The integration intercepts shipping requests from\
-    \ sales orders and transfers them to Easypost's API. Rate retrieval, label generation,\
-    \ and tracking synchronization all flow through this abstraction layer.\n\nData\
-    \ moves from Odoo to Easypost during the shipping label creation process. The\
-    \ integration sends order details, package dimensions, and destination addresses\
-    \ to Easypost's API. Easypost processes this information through its carrier network\
-    \ and returns available shipping options. Your Odoo instance presents these rates\
-    \ to users through the standard delivery method selection interface. This pattern\
-    \ maintains user experience consistency while expanding carrier options.\n\nEasypost\
-    \ pushes tracking events back to Odoo through webhook endpoints. You configure\
-    \ Easypost to send shipment status updates to a dedicated controller in your Odoo\
-    \ instance. This controller processes the webhook payloads and updates corresponding\
-    \ stock moves and delivery orders. The real-time tracking synchronization eliminates\
-    \ manual status checks and provides customers with automatic shipping notifications.\n\
-    \nThe architecture implements a fault-tolerant design with retry mechanisms for\
-    \ API calls. Failed Easypost requests trigger exponential backoff retries with\
-    \ jitter to prevent thundering herd problems. Idempotency keys ensure duplicate\
-    \ shipping requests don't create multiple labels. This resilience pattern handles\
-    \ temporary network issues and Easypost API rate limits without data loss.\n\n\
-    Data validation occurs at multiple points in the integration flow. Odoo validates\
-    \ address data against its partner records before sending to Easypost. Easypost\
-    \ performs additional address verification and correction using its carrier-specific\
-    \ validation rules. The integration compares these results and flags discrepancies\
-    \ for manual review. This multi-layer validation prevents shipping errors due\
-    \ to address problems.\n\n## Step-by-Step Configuration\n\nBegin the\
-    \ configuration process by installing the base delivery module in Odoo 18. Navigate\
-    \ to the Apps menu and search for \"delivery\". Install the \"Delivery Costs\"\
-    \ module if not already active. This module provides the carrier infrastructure\
-    \ that the Easypost integration extends. Verify the module functions correctly\
-    \ by creating a test delivery method through the shipping menu.\n\nCreate your\
-    \ Easypost developer account through their website. The sandbox environment provides\
-    \ a risk-free space for initial integration work. Generate API keys from your\
-    \ Easypost dashboard, making sure to copy both test and production keys. Store\
-    \ these keys securely as they grant access to your shipping account. The test\
-    \ key starts with \"EZAK\" while the production key begins with \"EZPK\".\n\n\
-    Implement the carrier module structure in Odoo. Create a new Python file named\
-    \ `easypost_delivery.py` in your custom module's models directory. Define the\
-    \ main carrier class that inherits from `delivery.carrier`. This class encapsulates\
-    \ all Easypost-specific logic and overrides standard carrier methods. The class\
-    \ structure provides the framework for rate calculation, label generation, and\
-    \ tracking integration.\n\n```python\nfrom odoo import models, fields, api\n\n\
-    class EasypostCarrier(models.Model):\n    _inherit = 'delivery.carrier'\n    \n\
-    \    delivery_type = fields.Selection(\n        selection_add=[('easypost', 'Easypost')],\n\
-    \        ondelete={'easypost': 'set default'}\n    )\n    easypost_test_key =\
-    \ fields.Char(string='Test API Key')\n    easypost_production_key = fields.Char(string='Production\
+  main_content: "## Integration Architecture and Data Flow\n\nThe Easypost-Odoo integration\
+    \ employs a hybrid architecture that combines Odoo's server-side logic with Easypost's\
+    \ shipping API ecosystem. This design creates a bidirectional data flow that synchronizes\
+    \ shipping operations across both platforms. Your Odoo instance becomes the system\
+    \ of record for order data, while Easypost handles carrier communication and label\
+    \ generation. The architecture maintains data consistency without introducing\
+    \ complex distributed transaction management.\n\nOdoo's delivery carrier integration\
+    \ framework provides the foundation for the connection. You extend the `delivery.carrier`\
+    \ model with Easypost-specific functionality. This approach preserves Odoo's native\
+    \ shipping workflow while adding Easypost's multi-carrier capabilities. The integration\
+    \ intercepts shipping requests from sales orders and transfers them to Easypost's\
+    \ API. Rate retrieval, label generation, and tracking synchronization all flow\
+    \ through this abstraction layer.\n\nData moves from Odoo to Easypost during the\
+    \ shipping label creation process. The integration sends order details, package\
+    \ dimensions, and destination addresses to Easypost's API. Easypost processes\
+    \ this information through its carrier network and returns available shipping\
+    \ options. Your Odoo instance presents these rates to users through the standard\
+    \ delivery method selection interface. This pattern maintains user experience\
+    \ consistency while expanding carrier options.\n\nEasypost pushes tracking events\
+    \ back to Odoo through webhook endpoints. You configure Easypost to send shipment\
+    \ status updates to a dedicated controller in your Odoo instance. This controller\
+    \ processes the webhook payloads and updates corresponding stock moves and delivery\
+    \ orders. The real-time tracking synchronization eliminates manual status checks\
+    \ and provides customers with automatic shipping notifications.\n\nThe architecture\
+    \ implements a fault-tolerant design with retry mechanisms for API calls. Failed\
+    \ Easypost requests trigger exponential backoff retries with jitter to prevent\
+    \ thundering herd problems. Idempotency keys ensure duplicate shipping requests\
+    \ don't create multiple labels. This resilience pattern handles temporary network\
+    \ issues and Easypost API rate limits without data loss.\n\nData validation occurs\
+    \ at multiple points in the integration flow. Odoo validates address data against\
+    \ its partner records before sending to Easypost. Easypost performs additional\
+    \ address verification and correction using its carrier-specific validation rules.\
+    \ The integration compares these results and flags discrepancies for manual review.\
+    \ This multi-layer validation prevents shipping errors due to address problems.\n\
+    \n## Step-by-Step Configuration\n\nBegin the configuration process by installing\
+    \ the base delivery module in Odoo 18. Navigate to the Apps menu and search for\
+    \ \"delivery\". Install the \"Delivery Costs\" module if not already active. This\
+    \ module provides the carrier infrastructure that the Easypost integration extends.\
+    \ Verify the module functions correctly by creating a test delivery method through\
+    \ the shipping menu.\n\nCreate your Easypost developer account through their website.\
+    \ The sandbox environment provides a risk-free space for initial integration work.\
+    \ Generate API keys from your Easypost dashboard, making sure to copy both test\
+    \ and production keys. Store these keys securely as they grant access to your\
+    \ shipping account. The test key starts with \"EZAK\" while the production key\
+    \ begins with \"EZPK\".\n\nImplement the carrier module structure in Odoo. Create\
+    \ a new Python file named `easypost_delivery.py` in your custom module's models\
+    \ directory. Define the main carrier class that inherits from `delivery.carrier`.\
+    \ This class encapsulates all Easypost-specific logic and overrides standard carrier\
+    \ methods. The class structure provides the framework for rate calculation, label\
+    \ generation, and tracking integration.\n\n```python\nfrom odoo import models,\
+    \ fields, api\n\nclass EasypostCarrier(models.Model):\n    _inherit = 'delivery.carrier'\n\
+    \    \n    delivery_type = fields.Selection(\n        selection_add=[('easypost',\
+    \ 'Easypost')],\n        ondelete={'easypost': 'set default'}\n    )\n    easypost_test_key\
+    \ = fields.Char(string='Test API Key')\n    easypost_production_key = fields.Char(string='Production\
     \ API Key')\n    easypost_default_package_type = fields.Selection([\n        ('Card',\
     \ 'Cardboard Box'),\n        ('Pak', 'Package'),\n        ('Tube', 'Tube'),\n\
     \        ('Pallet', 'Pallet')\n    ], string='Default Package Type')\n```\n\n\
@@ -192,19 +191,19 @@ ai_generated_content:
     \ settings for the webhook endpoint. Implement request validation to ensure only\
     \ Easypost can submit webhook data. Add rate limiting to prevent abuse of the\
     \ public endpoint. The webhook processor should handle duplicate events idempotently\
-    \ to maintain data consistency.\n\n## Data Mapping and Transformation\n\
-    \nThe integration transforms data between Odoo's relational model and Easypost's\
-    \ JSON API schema. This mapping process requires careful field-by-field conversion\
-    \ to maintain data integrity. Odoo's partner addresses become Easypost address\
-    \ objects with specific formatting rules. Product dimensions and weights transform\
-    \ into Easypost parcel objects with unit conversions.\n\nMap Odoo's partner records\
-    \ to Easypost's address format. The integration extracts name, company, street,\
-    \ city, state, zip, and country fields from Odoo's `res.partner` model. It converts\
-    \ these into Easypost's address validation request format. The system handles\
-    \ international address variations including province codes for Canada and VAT\
-    \ numbers for European shipments.\n\n```python\ndef _convert_partner_to_easypost_address(self,\
-    \ partner):\n    \"\"\"Transform Odoo partner record to Easypost address format\"\
-    \"\"\n    return {\n        'name': partner.name,\n        'company': partner.parent_id.name\
+    \ to maintain data consistency.\n\n## Data Mapping and Transformation\n\nThe integration\
+    \ transforms data between Odoo's relational model and Easypost's JSON API schema.\
+    \ This mapping process requires careful field-by-field conversion to maintain\
+    \ data integrity. Odoo's partner addresses become Easypost address objects with\
+    \ specific formatting rules. Product dimensions and weights transform into Easypost\
+    \ parcel objects with unit conversions.\n\nMap Odoo's partner records to Easypost's\
+    \ address format. The integration extracts name, company, street, city, state,\
+    \ zip, and country fields from Odoo's `res.partner` model. It converts these into\
+    \ Easypost's address validation request format. The system handles international\
+    \ address variations including province codes for Canada and VAT numbers for European\
+    \ shipments.\n\n```python\ndef _convert_partner_to_easypost_address(self, partner):\n\
+    \    \"\"\"Transform Odoo partner record to Easypost address format\"\"\"\n  \
+    \  return {\n        'name': partner.name,\n        'company': partner.parent_id.name\
     \ or partner.name,\n        'street1': partner.street,\n        'street2': partner.street2\
     \ or '',\n        'city': partner.city,\n        'state': partner.state_id.code\
     \ or partner.state_id.name,\n        'zip': partner.zip,\n        'country': partner.country_id.code,\n\
@@ -241,8 +240,8 @@ ai_generated_content:
     \ the integration presents these suggestions to users. Accepted corrections update\
     \ both the Odoo partner record and the current shipment. This process maintains\
     \ address consistency across future orders without automatic partner record modification.\n\
-    \n## Error Handling and Resilience\n\nThe integration encounters specific\
-    \ error conditions that require structured handling. Easypost API responses include\
+    \n## Error Handling and Resilience\n\nThe integration encounters specific error\
+    \ conditions that require structured handling. Easypost API responses include\
     \ detailed error codes that dictate appropriate recovery actions. Common errors\
     \ include address validation failures, rate calculation exceptions, and label\
     \ generation problems. Each error type demands specific handling logic to maintain\
@@ -294,9 +293,9 @@ ai_generated_content:
     \ The system records request/response pairs for troubleshooting and audit purposes.\
     \ Log entries include correlation IDs that track operations across both systems.\
     \ This logging strategy accelerates problem resolution during production incidents.\n\
-    \n## Testing and Validation\n\nEstablish a comprehensive testing strategy\
-    \ that covers all integration scenarios. The testing approach combines unit tests\
-    \ for individual components with integration tests for complete workflows. Create\
+    \n## Testing and Validation\n\nEstablish a comprehensive testing strategy that\
+    \ covers all integration scenarios. The testing approach combines unit tests for\
+    \ individual components with integration tests for complete workflows. Create\
     \ test cases that validate both successful operations and error conditions. The\
     \ test suite must verify data consistency across Odoo and Easypost systems.\n\n\
     Develop unit tests for the core data transformation functions. Test address conversion\
@@ -335,8 +334,8 @@ ai_generated_content:
     \ that execute on code changes. Configure continuous integration to run the test\
     \ suite after each commit. Set up environment-specific test configurations for\
     \ development, staging, and production. This automation prevents regression errors\
-    \ during system evolution.\n\n## Security Considerations\n\nThe integration\
-    \ handles sensitive data that demands robust security protection. Shipping information\
+    \ during system evolution.\n\n## Security Considerations\n\nThe integration handles\
+    \ sensitive data that demands robust security protection. Shipping information\
     \ includes customer addresses, product details, and commercial values. The security\
     \ implementation must safeguard this data throughout the integration lifecycle.\
     \ Follow defense-in-depth principles with multiple security layers.\n\nProtect\
@@ -373,17 +372,17 @@ ai_generated_content:
     \ with data protection regulations. Shipping data often contains personal information\
     \ subject to GDPR, CCPA, or other privacy laws. Implement data retention policies\
     \ that automatically purge old shipping records. Provide data export and deletion\
-    \ capabilities for privacy request fulfillment.\n\n## Performance Optimization\
-    \\n\nThe integration introduces performance considerations that impact\
-    \ user experience. Rate calculation during checkout requires low latency to maintain\
-    \ sales conversion. Label generation must complete quickly to support efficient\
-    \ warehouse operations. Tracking synchronization should occur near real-time for\
-    \ customer communication.\n\nOptimize rate calculation performance through strategic\
-    \ caching. Store frequently used rate combinations in Odoo's cache system. Implement\
-    \ cache invalidation rules that refresh rates when products, addresses, or carriers\
-    \ change. This caching strategy reduces Easypost API calls while maintaining rate\
-    \ accuracy.\n\n```python\ndef get_cached_rates(self, order):\n    \"\"\"Retrieve\
-    \ rates from cache or calculate fresh if expired\"\"\"\n    cache_key = f\"easypost_rates_{order.id}_{order.write_date.timestamp()}\"\
+    \ capabilities for privacy request fulfillment.\n\n## Performance Optimization\\\
+    n\nThe integration introduces performance considerations that impact user experience.\
+    \ Rate calculation during checkout requires low latency to maintain sales conversion.\
+    \ Label generation must complete quickly to support efficient warehouse operations.\
+    \ Tracking synchronization should occur near real-time for customer communication.\n\
+    \nOptimize rate calculation performance through strategic caching. Store frequently\
+    \ used rate combinations in Odoo's cache system. Implement cache invalidation\
+    \ rules that refresh rates when products, addresses, or carriers change. This\
+    \ caching strategy reduces Easypost API calls while maintaining rate accuracy.\n\
+    \n```python\ndef get_cached_rates(self, order):\n    \"\"\"Retrieve rates from\
+    \ cache or calculate fresh if expired\"\"\"\n    cache_key = f\"easypost_rates_{order.id}_{order.write_date.timestamp()}\"\
     \n    cached_rates = self.env.cache.get(cache_key)\n    \n    if cached_rates:\n\
     \        return cached_rates\n    \n    # Calculate fresh rates\n    new_rates\
     \ = self._retrieve_fresh_rates(order)\n    \n    # Cache for 15 minutes\n    self.env.cache.set(cache_key,\
@@ -513,13 +512,14 @@ visualizations:
   placement_hint: after_conclusion
   data_context: learning path and knowledge graph
   mermaid_chart_syntax: "flowchart TB\n\n    Current[\"[CURRENT] Easypost to Odoo\
-    \ Integration: Complete 2025 Guide\"]\n\n    %% Related Topics - Cross-References\n\
-    \    Current -.-> Rel0[\"Cloudflare to Odoo Integration: Complete 2025 Guide\"\
-    ]\n    Current -.-> Rel1[\"Facebook Pixel to Odoo Integration: Complete 2025 Guide\"\
-    ]\n\n    %% Professional Styling\n    classDef current fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n\
-    \    classDef prereq fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000\n\
-    \    classDef next fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000\n \
-    \   classDef related fill:#f5f5f5,stroke:#616161,stroke-width:1px,color:#000\n\
+    \ Integration: Complete 2025 Guide\"]\n\n    %% Next Steps - Learning Progression\n\
+    \    Current --> Next0(\"Complete Implementation Guide\")\n\n    %% Related Topics\
+    \ - Cross-References\n    Current -.-> Rel0[\"Cloudflare to Odoo Integration:\
+    \ Complete 2025 Guide\"]\n    Current -.-> Rel1[\"Facebook Pixel to Odoo Integration:\
+    \ Complete 2025 Guide\"]\n\n    %% Professional Styling\n    classDef current\
+    \ fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n    classDef prereq\
+    \ fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000\n    classDef next fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000\n\
+    \    classDef related fill:#f5f5f5,stroke:#616161,stroke-width:1px,color:#000\n\
     \    classDef trouble fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000\n\
     \    classDef support fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#000\n\
-    \n    class Current current\n    class Rel0,Rel1 related"
+    \n    class Current current\n    class Next0 next\n    class Rel0,Rel1 related"

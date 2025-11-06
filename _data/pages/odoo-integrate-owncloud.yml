@@ -69,21 +69,21 @@ ai_generated_content:
     Follow each section in sequence, as the configuration builds upon previous steps.
     Let''s start with the underlying architecture that makes this document synchronization
     possible.'
-  main_content: "## Integration Architecture and Data Flow\n\nThe Owncloud-Odoo\
-    \ integration employs a bridge architecture with Odoo as the orchestration hub.\
-    \ This design centralizes control within your business system while maintaining\
-    \ Owncloud as your dedicated file storage layer. The bridge handles all document\
-    \ transfers, metadata synchronization, and conflict resolution between both systems.\
-    \ You deploy this bridge as a custom Odoo module that operates alongside your\
-    \ core business logic.\n\nDocument flow follows a bidirectional synchronization\
-    \ pattern with configurable triggers. Odoo initiates file operations based on\
-    \ business events—new sales orders, project creations, or customer updates. The\
-    \ bridge module captures these events and translates them into Owncloud API calls.\
-    \ For reverse synchronization, a webhook endpoint in Odoo receives notifications\
-    \ from Owncloud about file changes, ensuring both systems maintain consistent\
-    \ document states.\n\nThe authentication layer uses OAuth 2.0 for secure access\
-    \ delegation between systems. Your Odoo instance acts as the OAuth client, requesting\
-    \ access tokens from your Owncloud server. These tokens grant controlled permissions\
+  main_content: "## Integration Architecture and Data Flow\n\nThe Owncloud-Odoo integration\
+    \ employs a bridge architecture with Odoo as the orchestration hub. This design\
+    \ centralizes control within your business system while maintaining Owncloud as\
+    \ your dedicated file storage layer. The bridge handles all document transfers,\
+    \ metadata synchronization, and conflict resolution between both systems. You\
+    \ deploy this bridge as a custom Odoo module that operates alongside your core\
+    \ business logic.\n\nDocument flow follows a bidirectional synchronization pattern\
+    \ with configurable triggers. Odoo initiates file operations based on business\
+    \ events—new sales orders, project creations, or customer updates. The bridge\
+    \ module captures these events and translates them into Owncloud API calls. For\
+    \ reverse synchronization, a webhook endpoint in Odoo receives notifications from\
+    \ Owncloud about file changes, ensuring both systems maintain consistent document\
+    \ states.\n\nThe authentication layer uses OAuth 2.0 for secure access delegation\
+    \ between systems. Your Odoo instance acts as the OAuth client, requesting access\
+    \ tokens from your Owncloud server. These tokens grant controlled permissions\
     \ for file operations without sharing user credentials. The architecture supports\
     \ both user-level authentication for personal documents and system-level authentication\
     \ for shared organizational files.\n\nData transformation occurs at three distinct\
@@ -96,13 +96,13 @@ ai_generated_content:
     \ queues for problematic files that require manual intervention. All synchronization\
     \ operations generate audit trails for compliance and troubleshooting. This robust\
     \ foundation ensures your document management remains reliable under varying load\
-    \ conditions and network reliability scenarios.\n\n## Step-by-Step Configuration\
-    \\n\nBegin with Owncloud application registration to establish API\
-    \ connectivity. Access your Owncloud administration panel and navigate to the\
-    \ OAuth 2.0 client management section. Create a new client with the redirect URI\
-    \ pointing to your Odoo instance—typically https://your-odoo-server.com/auth_oauth/signin.\
-    \ Note the client identifier and secret for Odoo configuration. Set appropriate\
-    \ scopes for file read/write operations based on your integration needs.\n\nConfigure\
+    \ conditions and network reliability scenarios.\n\n## Step-by-Step Configuration\\\
+    n\nBegin with Owncloud application registration to establish API connectivity.\
+    \ Access your Owncloud administration panel and navigate to the OAuth 2.0 client\
+    \ management section. Create a new client with the redirect URI pointing to your\
+    \ Odoo instance—typically https://your-odoo-server.com/auth_oauth/signin. Note\
+    \ the client identifier and secret for Odoo configuration. Set appropriate scopes\
+    \ for file read/write operations based on your integration needs.\n\nConfigure\
     \ Odoo's OAuth authentication provider with the Owncloud credentials. Access Odoo's\
     \ developer mode and navigate to Settings > General Settings > Integrations. Create\
     \ a new OAuth provider with these parameters:\n- Name: Owncloud\n- Client ID:\
@@ -146,48 +146,48 @@ ai_generated_content:
     \ the authentication flow before proceeding to data mapping. Verify that Odoo\
     \ can obtain OAuth tokens and perform basic file operations. Use Odoo's built-in\
     \ logging to monitor API requests and identify configuration issues early in the\
-    \ process.\n\n## Data Mapping and Transformation\n\nThe integration\
-    \ requires precise mapping between Odoo's relational document model and Owncloud's\
-    \ hierarchical file system. Each Odoo record type demands specific folder structures\
-    \ and naming conventions in Owncloud. Sales orders map to /Sales/Orders/[ORDER_NUMBER]/\
-    \ with supporting documents in subfolders. Customer records maintain dedicated\
-    \ folders under /Customers/[CUSTOMER_CODE]/ for contracts and communications.\n\
-    \nDocument metadata synchronization presents complex challenges. Owncloud stores\
-    \ metadata as WebDAV properties, while Odoo uses model fields. The transformation\
-    \ engine converts between these systems, preserving critical information like\
-    \ document authors, creation dates, and modification timestamps. Custom properties\
-    \ in Owncloud store Odoo record references for bidirectional lookup capabilities.\n\
-    \nFile version handling requires special consideration across both platforms.\
-    \ Owncloud maintains native file versioning, while Odoo tracks document revisions\
-    \ through attachment mechanisms. The integration synchronizes version metadata\
-    \ to prevent conflicts. When users update files in Owncloud, the system creates\
-    \ new Odoo attachment versions with proper change tracking.\n\nPath resolution\
-    \ algorithms determine optimal file locations based on Odoo record context. The\
-    \ system analyzes record relationships to construct logical folder hierarchies.\
-    \ A sales order line document might reside in /Sales/Orders/SO001/Line_Items/\
-    \ while maintaining reference to both the order and specific line item in Odoo.\n\
-    \nField extraction from documents enables advanced search and reporting capabilities.\
-    \ The integration parses common file formats to extract text content for Odoo's\
-    \ search index. This transformation allows users to find documents based on content\
-    \ rather than just filenames or metadata. The system handles PDF, Office documents,\
-    \ and text formats through configured parsers.\n\nConflict resolution protocols\
-    \ manage simultaneous edits across both systems. The integration detects when\
-    \ the same document receives updates in both Odoo and Owncloud within a short\
-    \ timeframe. Resolution strategies include timestamp-based wins, manual merge\
-    \ operations for certain file types, or business-rule based prioritization for\
-    \ specific document categories.\n\nBidirectional reference integrity ensures documents\
-    \ remain accessible from both interfaces. The system maintains cross-reference\
-    \ tables that map Owncloud file IDs to Odoo attachment IDs. These references enable\
-    \ quick navigation between systems—clicking a document in Odoo opens the corresponding\
-    \ file in Owncloud, and vice versa.\n\n## Error Handling and Resilience\n\
-    \nNetwork connectivity issues represent the most common failure point in cloud\
-    \ integrations. The system implements retry logic with exponential backoff for\
-    \ all Owncloud API calls. Failed operations queue for later processing, with configurable\
-    \ retry limits based on error types. Authentication token expiration receives\
-    \ special handling with automatic token refresh mechanisms.\n\nFile synchronization\
-    \ errors require detailed categorization and handling strategies. Permission denials\
-    \ trigger security reviews and access right adjustments. File size limitations\
-    \ invoke compression or chunking algorithms for large documents. Path length restrictions\
+    \ process.\n\n## Data Mapping and Transformation\n\nThe integration requires precise\
+    \ mapping between Odoo's relational document model and Owncloud's hierarchical\
+    \ file system. Each Odoo record type demands specific folder structures and naming\
+    \ conventions in Owncloud. Sales orders map to /Sales/Orders/[ORDER_NUMBER]/ with\
+    \ supporting documents in subfolders. Customer records maintain dedicated folders\
+    \ under /Customers/[CUSTOMER_CODE]/ for contracts and communications.\n\nDocument\
+    \ metadata synchronization presents complex challenges. Owncloud stores metadata\
+    \ as WebDAV properties, while Odoo uses model fields. The transformation engine\
+    \ converts between these systems, preserving critical information like document\
+    \ authors, creation dates, and modification timestamps. Custom properties in Owncloud\
+    \ store Odoo record references for bidirectional lookup capabilities.\n\nFile\
+    \ version handling requires special consideration across both platforms. Owncloud\
+    \ maintains native file versioning, while Odoo tracks document revisions through\
+    \ attachment mechanisms. The integration synchronizes version metadata to prevent\
+    \ conflicts. When users update files in Owncloud, the system creates new Odoo\
+    \ attachment versions with proper change tracking.\n\nPath resolution algorithms\
+    \ determine optimal file locations based on Odoo record context. The system analyzes\
+    \ record relationships to construct logical folder hierarchies. A sales order\
+    \ line document might reside in /Sales/Orders/SO001/Line_Items/ while maintaining\
+    \ reference to both the order and specific line item in Odoo.\n\nField extraction\
+    \ from documents enables advanced search and reporting capabilities. The integration\
+    \ parses common file formats to extract text content for Odoo's search index.\
+    \ This transformation allows users to find documents based on content rather than\
+    \ just filenames or metadata. The system handles PDF, Office documents, and text\
+    \ formats through configured parsers.\n\nConflict resolution protocols manage\
+    \ simultaneous edits across both systems. The integration detects when the same\
+    \ document receives updates in both Odoo and Owncloud within a short timeframe.\
+    \ Resolution strategies include timestamp-based wins, manual merge operations\
+    \ for certain file types, or business-rule based prioritization for specific document\
+    \ categories.\n\nBidirectional reference integrity ensures documents remain accessible\
+    \ from both interfaces. The system maintains cross-reference tables that map Owncloud\
+    \ file IDs to Odoo attachment IDs. These references enable quick navigation between\
+    \ systems—clicking a document in Odoo opens the corresponding file in Owncloud,\
+    \ and vice versa.\n\n## Error Handling and Resilience\n\nNetwork connectivity\
+    \ issues represent the most common failure point in cloud integrations. The system\
+    \ implements retry logic with exponential backoff for all Owncloud API calls.\
+    \ Failed operations queue for later processing, with configurable retry limits\
+    \ based on error types. Authentication token expiration receives special handling\
+    \ with automatic token refresh mechanisms.\n\nFile synchronization errors require\
+    \ detailed categorization and handling strategies. Permission denials trigger\
+    \ security reviews and access right adjustments. File size limitations invoke\
+    \ compression or chunking algorithms for large documents. Path length restrictions\
     \ initiate filename shortening procedures while maintaining unique identification.\n\
     \nAPI rate limiting demands careful request throttling and queue management. The\
     \ integration monitors Owncloud response headers for rate limit information, adjusting\
@@ -210,11 +210,11 @@ ai_generated_content:
     \ The system maintains synchronization checkpoints that enable resumption from\
     \ known good states after outages. For catastrophic failures, complete re-synchronization\
     \ workflows re-establish consistency between systems while preserving recent updates.\n\
-    \n## Testing and Validation\n\nDevelop comprehensive test scenarios\
-    \ that cover all integration touchpoints. Create test data representing each document\
-    \ type and business process your integration supports. Include edge cases like\
-    \ special characters in filenames, large file sizes, and complex folder hierarchies.\
-    \ Test both happy path scenarios and error conditions to validate robust operation.\n\
+    \n## Testing and Validation\n\nDevelop comprehensive test scenarios that cover\
+    \ all integration touchpoints. Create test data representing each document type\
+    \ and business process your integration supports. Include edge cases like special\
+    \ characters in filenames, large file sizes, and complex folder hierarchies. Test\
+    \ both happy path scenarios and error conditions to validate robust operation.\n\
     \nAuthentication testing verifies OAuth flow integrity across different user roles\
     \ and permission levels. Test with multiple user accounts having varying access\
     \ rights in both Odoo and Owncloud. Verify that permission restrictions in one\
@@ -242,25 +242,25 @@ ai_generated_content:
     \ users from different departments to test real-world workflows. Gather feedback\
     \ on document organization, search functionality, and cross-system navigation.\
     \ Refine the configuration based on user experience before moving to production\
-    \ deployment.\n\n## Security Considerations\n\nAuthentication security\
-    \ requires proper OAuth 2.0 implementation with secure token storage. The integration\
-    \ never stores user credentials, relying instead on short-lived access tokens.\
-    \ Implement secure token refresh mechanisms that validate user sessions before\
-    \ granting new tokens. Use Odoo's built-in security infrastructure for access\
-    \ control rather than custom implementations.\n\nData encryption protects documents\
-    \ both in transit and at rest. All communications between Odoo and Owncloud use\
-    \ TLS encryption with strong cipher suites. For highly sensitive documents, consider\
-    \ client-side encryption before synchronization, ensuring only authorized users\
-    \ can decrypt content. Implement proper key management for any encryption the\
-    \ integration handles directly.\n\nAccess control synchronization maintains consistent\
-    \ permission models across both systems. Map Odoo user groups to Owncloud share\
-    \ permissions, ensuring document access follows organizational policies. Implement\
-    \ principle of least privilege, granting only necessary permissions for integration\
-    \ operations. Regular access reviews verify permission alignment as organizational\
-    \ structures change.\n\nAudit logging tracks all document access and modification\
-    \ across both platforms. The integration captures who accessed which documents,\
-    \ when, and from which system. Maintain audit trails for compliance requirements\
-    \ and security incident investigation. Secure audit log storage prevents tampering\
+    \ deployment.\n\n## Security Considerations\n\nAuthentication security requires\
+    \ proper OAuth 2.0 implementation with secure token storage. The integration never\
+    \ stores user credentials, relying instead on short-lived access tokens. Implement\
+    \ secure token refresh mechanisms that validate user sessions before granting\
+    \ new tokens. Use Odoo's built-in security infrastructure for access control rather\
+    \ than custom implementations.\n\nData encryption protects documents both in transit\
+    \ and at rest. All communications between Odoo and Owncloud use TLS encryption\
+    \ with strong cipher suites. For highly sensitive documents, consider client-side\
+    \ encryption before synchronization, ensuring only authorized users can decrypt\
+    \ content. Implement proper key management for any encryption the integration\
+    \ handles directly.\n\nAccess control synchronization maintains consistent permission\
+    \ models across both systems. Map Odoo user groups to Owncloud share permissions,\
+    \ ensuring document access follows organizational policies. Implement principle\
+    \ of least privilege, granting only necessary permissions for integration operations.\
+    \ Regular access reviews verify permission alignment as organizational structures\
+    \ change.\n\nAudit logging tracks all document access and modification across\
+    \ both platforms. The integration captures who accessed which documents, when,\
+    \ and from which system. Maintain audit trails for compliance requirements and\
+    \ security incident investigation. Secure audit log storage prevents tampering\
     \ while maintaining accessibility for authorized reviews.\n\nAPI security hardening\
     \ protects against common web application vulnerabilities. Validate all inputs\
     \ from both Odoo and Owncloud to prevent injection attacks. Implement proper error\
@@ -270,17 +270,17 @@ ai_generated_content:
     \ regulatory obligations for document storage, privacy, and access controls. Implement\
     \ data governance policies that the integration enforces automatically. Include\
     \ data sovereignty considerations when Owncloud and Odoo instances reside in different\
-    \ jurisdictions.\n\n## Performance Optimization\n\nAPI call batching\
-    \ reduces network overhead during bulk synchronization operations. Instead of\
-    \ individual requests for each file, group multiple operations into single API\
-    \ calls where supported. Owncloud's WebDAV implementation handles batch file operations\
-    \ through specific endpoints. Implement smart batching that balances request size\
-    \ with operational efficiency.\n\nCaching strategies minimize redundant API calls\
-    \ for frequently accessed metadata. Cache Owncloud folder structures and file\
-    \ listings to avoid repeated directory scans. Implement cache invalidation protocols\
-    \ that detect changes through webhook notifications rather than periodic polling.\
-    \ Use Odoo's built-in caching mechanisms for expensive database queries.\n\nConnection\
-    \ pooling maintains persistent HTTP connections to Owncloud servers. Reusing connections\
+    \ jurisdictions.\n\n## Performance Optimization\n\nAPI call batching reduces network\
+    \ overhead during bulk synchronization operations. Instead of individual requests\
+    \ for each file, group multiple operations into single API calls where supported.\
+    \ Owncloud's WebDAV implementation handles batch file operations through specific\
+    \ endpoints. Implement smart batching that balances request size with operational\
+    \ efficiency.\n\nCaching strategies minimize redundant API calls for frequently\
+    \ accessed metadata. Cache Owncloud folder structures and file listings to avoid\
+    \ repeated directory scans. Implement cache invalidation protocols that detect\
+    \ changes through webhook notifications rather than periodic polling. Use Odoo's\
+    \ built-in caching mechanisms for expensive database queries.\n\nConnection pooling\
+    \ maintains persistent HTTP connections to Owncloud servers. Reusing connections\
     \ avoids the overhead of establishing new TLS sessions for each request. Configure\
     \ appropriate pool sizes based on concurrent user counts and synchronization workloads.\
     \ Monitor connection health and implement automatic reconnection for failed connections.\n\
@@ -399,13 +399,14 @@ visualizations:
   placement_hint: after_conclusion
   data_context: learning path and knowledge graph
   mermaid_chart_syntax: "flowchart TB\n\n    Current[\"[CURRENT] Owncloud to Odoo\
-    \ Integration: Complete 2025 Guide\"]\n\n    %% Related Topics - Cross-References\n\
-    \    Current -.-> Rel0[\"Cloudflare to Odoo Integration: Complete 2025 Guide\"\
-    ]\n    Current -.-> Rel1[\"Facebook Pixel to Odoo Integration: Complete 2025 Guide\"\
-    ]\n\n    %% Professional Styling\n    classDef current fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n\
-    \    classDef prereq fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000\n\
-    \    classDef next fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000\n \
-    \   classDef related fill:#f5f5f5,stroke:#616161,stroke-width:1px,color:#000\n\
+    \ Integration: Complete 2025 Guide\"]\n\n    %% Next Steps - Learning Progression\n\
+    \    Current --> Next0(\"Complete Implementation Guide\")\n\n    %% Related Topics\
+    \ - Cross-References\n    Current -.-> Rel0[\"Cloudflare to Odoo Integration:\
+    \ Complete 2025 Guide\"]\n    Current -.-> Rel1[\"Facebook Pixel to Odoo Integration:\
+    \ Complete 2025 Guide\"]\n\n    %% Professional Styling\n    classDef current\
+    \ fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n    classDef prereq\
+    \ fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000\n    classDef next fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000\n\
+    \    classDef related fill:#f5f5f5,stroke:#616161,stroke-width:1px,color:#000\n\
     \    classDef trouble fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000\n\
     \    classDef support fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#000\n\
-    \n    class Current current\n    class Rel0,Rel1 related"
+    \n    class Current current\n    class Next0 next\n    class Rel0,Rel1 related"

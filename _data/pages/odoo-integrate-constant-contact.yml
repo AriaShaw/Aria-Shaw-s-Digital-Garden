@@ -74,77 +74,76 @@ ai_generated_content:
     token issues and resolve data mapping conflicts. We cover advanced scenarios like
     webhook failure recovery and batch processing optimization. Your integration will
     handle production loads with robust error handling and monitoring.'
-  main_content: "## Integration Architecture and Data Flow\n\n### Core\
-    \ Integration Components\n\nThe Constant Contact to Odoo 18 integration employs\
-    \ a distributed architecture with three main components. Odoo 18 acts as the central\
-    \ data hub, managing contact records and triggering synchronization events. Constant\
-    \ Contact serves as the email marketing engine, processing campaigns and tracking\
-    \ engagement metrics. A custom Odoo module implements the synchronization logic,\
-    \ handling API communication and data transformation. This module uses Odoo's\
-    \ server actions framework and scheduled jobs for automation.\n\n### Authentication\
-    \ Flow Design\n\nConstant Contact employs OAuth 2.0 authorization code flow for\
-    \ secure API access. Your Odoo module initiates the process by redirecting users\
-    \ to Constant Contact's authorization endpoint. Users grant permissions through\
-    \ Constant Contact's consent screen. The authorization server returns an authorization\
-    \ code to your specified callback URL. Odoo exchanges this code for access and\
-    \ refresh tokens, storing them securely in encrypted fields. The module automatically\
-    \ refreshes tokens before expiration, maintaining continuous API access without\
-    \ manual intervention.\n\n### Data Synchronization Patterns\n\nThe integration\
-    \ implements bidirectional synchronization with conflict resolution rules. Contact\
-    \ creation in Odoo triggers immediate propagation to Constant Contact if the contact\
-    \ opts into marketing. Updates to contact fields in either system sync based on\
-    \ configurable priority rules. Odoo typically owns core contact data like name\
-    \ and email address. Constant Contact controls email-specific fields like subscription\
-    \ status and campaign engagement. A timestamp-based comparison prevents unnecessary\
-    \ API calls for unchanged records.\n\n### Webhook Implementation Strategy\n\n\
-    Constant Contact webhooks provide real-time notifications for contact activities.\
-    \ Your Odoo module registers webhooks for key events like contact subscriptions,\
-    \ unsubscribes, and email opens. When Constant Contact detects these events, it\
-    \ sends HTTP POST requests to your Odoo webhook endpoint. The module processes\
-    \ these payloads and updates corresponding Odoo records. This approach ensures\
-    \ immediate synchronization of engagement data without polling delays. Webhook\
-    \ security employs signature verification to validate request authenticity.\n\n\
-    ### Batch Processing for Large Datasets\n\nThe integration handles large contact\
-    \ lists through batched API operations. Odoo's job queue processes synchronization\
-    \ tasks in configurable batch sizes, typically 50-100 records per API call. This\
-    \ strategy prevents API rate limit exhaustion and maintains system performance.\
-    \ Failed batches enter a retry queue with exponential backoff. The module logs\
-    \ detailed synchronization metrics for monitoring and troubleshooting. Batch processing\
-    \ occurs during off-peak hours by default, minimizing impact on system performance.\n\
-    \n## Step-by-Step Configuration\n\n### Odoo Module Foundation\n\n\
-    Begin by creating a new Odoo module for the Constant Contact integration. Create\
-    \ the module directory structure with `__manifest__.py`, `__init__.py`, and core\
-    \ model files. Define the module metadata in the manifest file, specifying Odoo\
-    \ version 18.0 and dependencies on base, contacts, and queue_job. Implement the\
-    \ main configuration model that stores API credentials and synchronization settings.\
-    \ This model uses Odoo's singleton pattern to ensure system-wide configuration\
-    \ consistency.\n\n```python\n# __manifest__.py\n{\n    'name': 'Constant Contact\
-    \ Integration',\n    'version': '18.0.1.0.0',\n    'category': 'Marketing',\n\
-    \    'summary': 'Integrate Constant Contact with Odoo 18',\n    'depends': ['base',\
-    \ 'contacts', 'queue_job'],\n    'data': [\n        'security/ir.model.access.csv',\n\
-    \        'views/constant_contact_config_views.xml',\n        'views/res_partner_views.xml',\n\
-    \    ],\n    'installable': True,\n    'application': True,\n}\n```\n\n### Constant\
-    \ Contact App Registration\n\nNavigate to Constant Contact's Developer Portal\
-    \ and create a new application. Select OAuth 2.0 as your authentication method\
-    \ and provide your application details. Configure the redirect URI to point to\
-    \ your Odoo instance's authentication callback endpoint. Constant Contact generates\
-    \ your client ID and client secret upon app creation. Store these credentials\
-    \ securely as they authenticate all API requests. Enable the required API scopes\
-    \ for contact management, campaign reporting, and webhook registration.\n\n###\
-    \ OAuth 2.0 Implementation\n\nImplement the OAuth 2.0 authorization flow in your\
-    \ Odoo module. Create a controller that handles the initial redirect to Constant\
-    \ Contact's authorization endpoint. Implement the callback endpoint that processes\
-    \ the authorization response and exchanges the code for tokens. Store the access\
-    \ token, refresh token, and expiration timestamp in your configuration model.\
-    \ Create a method that automatically refreshes tokens before they expire, ensuring\
-    \ uninterrupted API access.\n\n```python\n# controllers/auth.py\nfrom odoo import\
-    \ http\nfrom odoo.http import request\nimport requests\nimport json\n\nclass ConstantContactAuth(http.Controller):\n\
-    \    \n    @http.route('/constant_contact/auth', type='http', auth='user')\n \
-    \   def initiate_auth(self, **kwargs):\n        config = request.env['constant.contact.config'].get_config()\n\
-    \        auth_url = config._get_auth_url()\n        return request.redirect(auth_url)\n\
-    \    \n    @http.route('/constant_contact/callback', type='http', auth='none')\n\
-    \    def oauth_callback(self, **kwargs):\n        code = kwargs.get('code')\n\
-    \        if code:\n            config = request.env['constant.contact.config'].get_config()\n\
+  main_content: "## Integration Architecture and Data Flow\n\n### Core Integration\
+    \ Components\n\nThe Constant Contact to Odoo 18 integration employs a distributed\
+    \ architecture with three main components. Odoo 18 acts as the central data hub,\
+    \ managing contact records and triggering synchronization events. Constant Contact\
+    \ serves as the email marketing engine, processing campaigns and tracking engagement\
+    \ metrics. A custom Odoo module implements the synchronization logic, handling\
+    \ API communication and data transformation. This module uses Odoo's server actions\
+    \ framework and scheduled jobs for automation.\n\n### Authentication Flow Design\n\
+    \nConstant Contact employs OAuth 2.0 authorization code flow for secure API access.\
+    \ Your Odoo module initiates the process by redirecting users to Constant Contact's\
+    \ authorization endpoint. Users grant permissions through Constant Contact's consent\
+    \ screen. The authorization server returns an authorization code to your specified\
+    \ callback URL. Odoo exchanges this code for access and refresh tokens, storing\
+    \ them securely in encrypted fields. The module automatically refreshes tokens\
+    \ before expiration, maintaining continuous API access without manual intervention.\n\
+    \n### Data Synchronization Patterns\n\nThe integration implements bidirectional\
+    \ synchronization with conflict resolution rules. Contact creation in Odoo triggers\
+    \ immediate propagation to Constant Contact if the contact opts into marketing.\
+    \ Updates to contact fields in either system sync based on configurable priority\
+    \ rules. Odoo typically owns core contact data like name and email address. Constant\
+    \ Contact controls email-specific fields like subscription status and campaign\
+    \ engagement. A timestamp-based comparison prevents unnecessary API calls for\
+    \ unchanged records.\n\n### Webhook Implementation Strategy\n\nConstant Contact\
+    \ webhooks provide real-time notifications for contact activities. Your Odoo module\
+    \ registers webhooks for key events like contact subscriptions, unsubscribes,\
+    \ and email opens. When Constant Contact detects these events, it sends HTTP POST\
+    \ requests to your Odoo webhook endpoint. The module processes these payloads\
+    \ and updates corresponding Odoo records. This approach ensures immediate synchronization\
+    \ of engagement data without polling delays. Webhook security employs signature\
+    \ verification to validate request authenticity.\n\n### Batch Processing for Large\
+    \ Datasets\n\nThe integration handles large contact lists through batched API\
+    \ operations. Odoo's job queue processes synchronization tasks in configurable\
+    \ batch sizes, typically 50-100 records per API call. This strategy prevents API\
+    \ rate limit exhaustion and maintains system performance. Failed batches enter\
+    \ a retry queue with exponential backoff. The module logs detailed synchronization\
+    \ metrics for monitoring and troubleshooting. Batch processing occurs during off-peak\
+    \ hours by default, minimizing impact on system performance.\n\n## Step-by-Step\
+    \ Configuration\n\n### Odoo Module Foundation\n\nBegin by creating a new Odoo\
+    \ module for the Constant Contact integration. Create the module directory structure\
+    \ with `__manifest__.py`, `__init__.py`, and core model files. Define the module\
+    \ metadata in the manifest file, specifying Odoo version 18.0 and dependencies\
+    \ on base, contacts, and queue_job. Implement the main configuration model that\
+    \ stores API credentials and synchronization settings. This model uses Odoo's\
+    \ singleton pattern to ensure system-wide configuration consistency.\n\n```python\n\
+    # __manifest__.py\n{\n    'name': 'Constant Contact Integration',\n    'version':\
+    \ '18.0.1.0.0',\n    'category': 'Marketing',\n    'summary': 'Integrate Constant\
+    \ Contact with Odoo 18',\n    'depends': ['base', 'contacts', 'queue_job'],\n\
+    \    'data': [\n        'security/ir.model.access.csv',\n        'views/constant_contact_config_views.xml',\n\
+    \        'views/res_partner_views.xml',\n    ],\n    'installable': True,\n  \
+    \  'application': True,\n}\n```\n\n### Constant Contact App Registration\n\nNavigate\
+    \ to Constant Contact's Developer Portal and create a new application. Select\
+    \ OAuth 2.0 as your authentication method and provide your application details.\
+    \ Configure the redirect URI to point to your Odoo instance's authentication callback\
+    \ endpoint. Constant Contact generates your client ID and client secret upon app\
+    \ creation. Store these credentials securely as they authenticate all API requests.\
+    \ Enable the required API scopes for contact management, campaign reporting, and\
+    \ webhook registration.\n\n### OAuth 2.0 Implementation\n\nImplement the OAuth\
+    \ 2.0 authorization flow in your Odoo module. Create a controller that handles\
+    \ the initial redirect to Constant Contact's authorization endpoint. Implement\
+    \ the callback endpoint that processes the authorization response and exchanges\
+    \ the code for tokens. Store the access token, refresh token, and expiration timestamp\
+    \ in your configuration model. Create a method that automatically refreshes tokens\
+    \ before they expire, ensuring uninterrupted API access.\n\n```python\n# controllers/auth.py\n\
+    from odoo import http\nfrom odoo.http import request\nimport requests\nimport\
+    \ json\n\nclass ConstantContactAuth(http.Controller):\n    \n    @http.route('/constant_contact/auth',\
+    \ type='http', auth='user')\n    def initiate_auth(self, **kwargs):\n        config\
+    \ = request.env['constant.contact.config'].get_config()\n        auth_url = config._get_auth_url()\n\
+    \        return request.redirect(auth_url)\n    \n    @http.route('/constant_contact/callback',\
+    \ type='http', auth='none')\n    def oauth_callback(self, **kwargs):\n       \
+    \ code = kwargs.get('code')\n        if code:\n            config = request.env['constant.contact.config'].get_config()\n\
     \            tokens = config._exchange_code_for_tokens(code)\n            # Store\
     \ tokens in configuration\n        return request.redirect('/web')\n```\n\n###\
     \ Contact Synchronization Setup\n\nConfigure the contact synchronization logic\
@@ -173,8 +172,8 @@ ai_generated_content:
     \ synchronization for accurate OAuth token expiration handling. Test network connectivity\
     \ between your Odoo instance and Constant Contact's API endpoints. Validate that\
     \ your Odoo user has sufficient permissions to create and modify contact records.\n\
-    \n## Data Mapping and Transformation\n\n### Core Contact Field Mapping\n\
-    \nThe integration maps Odoo partner fields to Constant Contact contact properties\
+    \n## Data Mapping and Transformation\n\n### Core Contact Field Mapping\n\nThe\
+    \ integration maps Odoo partner fields to Constant Contact contact properties\
     \ with specific transformation rules. Odoo's `name` field maps to Constant Contact's\
     \ `first_name` and `last_name` fields, splitting on the first space character.\
     \ The `email` field maps directly with validation to ensure format compatibility.\
@@ -260,117 +259,117 @@ ai_generated_content:
     \ backlogs develop. Measure data freshness metrics that show how quickly changes\
     \ propagate between systems. Create dashboard visualizations that display integration\
     \ health indicators at a glance. Set up automated alerts for critical failures\
-    \ that require immediate intervention.\n\n## Testing and Validation\n\
-    \n### Development Environment Setup\n\nEstablish a dedicated testing environment\
-    \ that mirrors your production configuration. Create a Constant Contact developer\
-    \ sandbox account for testing without affecting live data. Set up a staging Odoo\
-    \ instance with sample data that represents your production environment. Configure\
-    \ the integration in your development environment with test API credentials. Implement\
-    \ data isolation measures that prevent test activities from affecting production\
-    \ systems. Develop a testing protocol that team members follow before deployment.\n\
-    \n### Unit Test Implementation\n\nCreate comprehensive unit tests that validate\
-    \ individual integration components. Test the OAuth 2.0 flow with mock authentication\
-    \ servers and simulated responses. Validate field mapping logic with edge case\
-    \ data that tests transformation boundaries. Verify error handling routines with\
-    \ simulated API failures and network issues. Test webhook handlers with payloads\
-    \ that represent all supported event types. Implement continuous integration that\
-    \ runs unit tests automatically with each code change.\n\n```python\n# test_contact_sync.py\n\
-    def test_contact_field_mapping(self):\n    partner = self.env['res.partner'].create({\n\
-    \        'name': 'Test User',\n        'email': 'test@example.com',\n        'phone':\
-    \ '+1-555-0123',\n    })\n    mapper = self.env['constant.contact.mapper']\n \
-    \   contact_data = mapper._map_partner_to_contact(partner)\n    self.assertEqual(contact_data['first_name'],\
-    \ 'Test')\n    self.assertEqual(contact_data['last_name'], 'User')\n    self.assertEqual(contact_data['email_address'],\
-    \ 'test@example.com')\n```\n\n### Integration Test Scenarios\n\nDesign end-to-end\
-    \ tests that validate complete synchronization workflows. Test the contact creation\
-    \ flow by creating partners in Odoo and verifying Constant Contact synchronization.\
-    \ Validate contact update scenarios by modifying records in both systems and confirming\
-    \ bidirectional sync. Test subscription status changes by opting contacts in and\
-    \ out of marketing in both platforms. Verify list membership synchronization by\
-    \ adding tags in Odoo and checking Constant Contact list assignments. Test error\
-    \ conditions by simulating API outages and validating recovery procedures.\n\n\
-    ### Performance Testing\n\nMeasure integration performance under various load\
-    \ conditions. Test synchronization speed with small batches (10-50 contacts) to\
-    \ establish baseline performance metrics. Validate system behavior with large\
-    \ data volumes (1,000+ contacts) to identify scaling limitations. Measure API\
-    \ rate limit handling by generating high-frequency synchronization requests. Test\
-    \ concurrent user scenarios with multiple operators making simultaneous changes.\
-    \ Establish performance benchmarks that trigger alerts when metrics deviate from\
-    \ expected ranges.\n\n### User Acceptance Testing\n\nDevelop real-world test scenarios\
-    \ that represent actual business workflows. Create test cases that mirror your\
-    \ marketing team's campaign preparation processes. Validate sales team workflows\
-    \ that involve new lead creation and contact updates. Test administrative functions\
-    \ like configuration changes and synchronization monitoring. Involve actual users\
-    \ from different departments in the testing process to identify usability issues.\
-    \ Document testing outcomes and obtain formal sign-off before production deployment.\n\
-    \n### Production Validation Checklist\n\nImplement a pre-deployment validation\
-    \ checklist for production readiness. Verify all API credentials point to production\
-    \ Constant Contact accounts with appropriate permissions. Confirm webhook endpoints\
-    \ use production URLs with valid SSL certificates. Validate that scheduled jobs\
-    \ have appropriate timing for your business hours. Test the integration with a\
-    \ small subset of production data before full activation. Establish rollback procedures\
-    \ in case critical issues emerge after deployment.\n\n## Security Considerations\
-    \\n\n### Authentication Security\n\nImplement robust authentication\
-    \ security for API access. Store OAuth tokens in Odoo's encrypted fields to prevent\
-    \ plaintext exposure. Implement token rotation by refreshing access tokens regularly,\
-    \ even before expiration. Create authentication monitoring that detects abnormal\
-    \ token usage patterns. Implement multi-factor authentication for Odoo users with\
-    \ integration configuration access. Log all authentication events for security\
-    \ auditing and anomaly detection.\n\n### Data Protection Measures\n\nApply comprehensive\
-    \ data protection throughout the integration. Encrypt sensitive contact data in\
-    \ transit using TLS 1.2+ for all API communications. Implement data minimization\
-    \ by synchronizing only necessary fields between systems. Create access controls\
-    \ that restrict integration configuration to authorized administrators. Apply\
-    \ field-level security in Odoo that aligns with Constant Contact's data visibility\
-    \ rules. Establish data retention policies that automatically purge synchronization\
-    \ logs after specified periods.\n\n### API Security Practices\n\nFollow API security\
-    \ best practices for integration reliability. Validate all incoming webhook requests\
-    \ using Constant Contact's signature verification. Implement API rate limiting\
-    \ in your Odoo module to prevent excessive outgoing requests. Sanitize all data\
-    \ exchanged with Constant Contact to prevent injection attacks. Use API version\
-    \ pinning to ensure compatibility despite Constant Contact API updates. Monitor\
-    \ API usage metrics to detect potential security breaches or misuse patterns.\n\
-    \n### Compliance Requirements\n\nAddress regulatory compliance requirements for\
-    \ data handling. Document the data flow between systems for GDPR compliance and\
-    \ data protection impact assessments. Implement consent management that tracks\
-    \ marketing permission changes across both platforms. Create data subject access\
-    \ procedures that extract contact information from both systems. Establish data\
-    \ breach response plans that include integration-specific notification procedures.\
-    \ Maintain audit trails that log all synchronization activities for compliance\
-    \ verification.\n\n## Performance Optimization\n\n### API Call Efficiency\n\
-    \nOptimize API usage to maximize performance within rate limits. Implement contact\
-    \ batching that groups multiple operations into single API calls where supported.\
-    \ Use field masking in Constant Contact API calls to request only necessary contact\
-    \ properties. Develop conditional synchronization logic that skips unchanged records\
-    \ based on modification timestamps. Cache frequently accessed Constant Contact\
-    \ data like custom field definitions to reduce API calls. Monitor API usage metrics\
-    \ and adjust batching strategies based on actual consumption patterns.\n\n###\
-    \ Database Optimization\n\nOptimize Odoo database performance for integration\
-    \ operations. Add database indexes on fields used in synchronization queries,\
-    \ such as partner modification dates. Implement database query optimization that\
-    \ reduces locking during large synchronization jobs. Use Odoo's read_group operations\
-    \ for bulk data analysis instead of individual record queries. Schedule resource-intensive\
-    \ synchronization tasks during periods of low system usage. Implement database\
-    \ connection pooling to handle concurrent synchronization processes efficiently.\n\
-    \n### Memory Management\n\nImplement careful memory management for large-scale\
-    \ synchronization. Use Odoo's batch processing capabilities to handle large record\
-    \ sets in manageable chunks. Implement streaming processing for very large data\
-    \ exports to prevent memory exhaustion. Clear Odoo's environment cache periodically\
-    \ during extended synchronization operations. Monitor memory usage during synchronization\
-    \ and adjust batch sizes based on available resources. Implement garbage collection\
-    \ triggers that clean up temporary data structures after synchronization completion.\n\
-    \n### Network Optimization\n\nReduce network latency impact on integration performance.\
-    \ Implement HTTP connection keep-alive to reuse connections for multiple API requests.\
-    \ Compress large API payloads using gzip encoding where supported by the Constant\
-    \ Contact API. Configure DNS caching to reduce lookup times for Constant Contact\
-    \ API endpoints. Use CDN endpoints where available for faster webhook delivery\
-    \ from Constant Contact. Monitor network latency between your Odoo instance and\
-    \ Constant Contact's data centers.\n\n### Monitoring and Adjustment\n\nEstablish\
-    \ continuous performance monitoring and optimization. Track synchronization completion\
-    \ times and set alerts for performance degradation. Monitor API rate limit usage\
-    \ and adjust batching strategies to stay within limits. Measure end-to-end data\
-    \ freshness to ensure timely synchronization between systems. Create performance\
-    \ dashboards that visualize key integration metrics for quick assessment. Implement\
-    \ automated scaling of synchronization resources based on system load patterns."
+    \ that require immediate intervention.\n\n## Testing and Validation\n\n### Development\
+    \ Environment Setup\n\nEstablish a dedicated testing environment that mirrors\
+    \ your production configuration. Create a Constant Contact developer sandbox account\
+    \ for testing without affecting live data. Set up a staging Odoo instance with\
+    \ sample data that represents your production environment. Configure the integration\
+    \ in your development environment with test API credentials. Implement data isolation\
+    \ measures that prevent test activities from affecting production systems. Develop\
+    \ a testing protocol that team members follow before deployment.\n\n### Unit Test\
+    \ Implementation\n\nCreate comprehensive unit tests that validate individual integration\
+    \ components. Test the OAuth 2.0 flow with mock authentication servers and simulated\
+    \ responses. Validate field mapping logic with edge case data that tests transformation\
+    \ boundaries. Verify error handling routines with simulated API failures and network\
+    \ issues. Test webhook handlers with payloads that represent all supported event\
+    \ types. Implement continuous integration that runs unit tests automatically with\
+    \ each code change.\n\n```python\n# test_contact_sync.py\ndef test_contact_field_mapping(self):\n\
+    \    partner = self.env['res.partner'].create({\n        'name': 'Test User',\n\
+    \        'email': 'test@example.com',\n        'phone': '+1-555-0123',\n    })\n\
+    \    mapper = self.env['constant.contact.mapper']\n    contact_data = mapper._map_partner_to_contact(partner)\n\
+    \    self.assertEqual(contact_data['first_name'], 'Test')\n    self.assertEqual(contact_data['last_name'],\
+    \ 'User')\n    self.assertEqual(contact_data['email_address'], 'test@example.com')\n\
+    ```\n\n### Integration Test Scenarios\n\nDesign end-to-end tests that validate\
+    \ complete synchronization workflows. Test the contact creation flow by creating\
+    \ partners in Odoo and verifying Constant Contact synchronization. Validate contact\
+    \ update scenarios by modifying records in both systems and confirming bidirectional\
+    \ sync. Test subscription status changes by opting contacts in and out of marketing\
+    \ in both platforms. Verify list membership synchronization by adding tags in\
+    \ Odoo and checking Constant Contact list assignments. Test error conditions by\
+    \ simulating API outages and validating recovery procedures.\n\n### Performance\
+    \ Testing\n\nMeasure integration performance under various load conditions. Test\
+    \ synchronization speed with small batches (10-50 contacts) to establish baseline\
+    \ performance metrics. Validate system behavior with large data volumes (1,000+\
+    \ contacts) to identify scaling limitations. Measure API rate limit handling by\
+    \ generating high-frequency synchronization requests. Test concurrent user scenarios\
+    \ with multiple operators making simultaneous changes. Establish performance benchmarks\
+    \ that trigger alerts when metrics deviate from expected ranges.\n\n### User Acceptance\
+    \ Testing\n\nDevelop real-world test scenarios that represent actual business\
+    \ workflows. Create test cases that mirror your marketing team's campaign preparation\
+    \ processes. Validate sales team workflows that involve new lead creation and\
+    \ contact updates. Test administrative functions like configuration changes and\
+    \ synchronization monitoring. Involve actual users from different departments\
+    \ in the testing process to identify usability issues. Document testing outcomes\
+    \ and obtain formal sign-off before production deployment.\n\n### Production Validation\
+    \ Checklist\n\nImplement a pre-deployment validation checklist for production\
+    \ readiness. Verify all API credentials point to production Constant Contact accounts\
+    \ with appropriate permissions. Confirm webhook endpoints use production URLs\
+    \ with valid SSL certificates. Validate that scheduled jobs have appropriate timing\
+    \ for your business hours. Test the integration with a small subset of production\
+    \ data before full activation. Establish rollback procedures in case critical\
+    \ issues emerge after deployment.\n\n## Security Considerations\\n\n### Authentication\
+    \ Security\n\nImplement robust authentication security for API access. Store OAuth\
+    \ tokens in Odoo's encrypted fields to prevent plaintext exposure. Implement token\
+    \ rotation by refreshing access tokens regularly, even before expiration. Create\
+    \ authentication monitoring that detects abnormal token usage patterns. Implement\
+    \ multi-factor authentication for Odoo users with integration configuration access.\
+    \ Log all authentication events for security auditing and anomaly detection.\n\
+    \n### Data Protection Measures\n\nApply comprehensive data protection throughout\
+    \ the integration. Encrypt sensitive contact data in transit using TLS 1.2+ for\
+    \ all API communications. Implement data minimization by synchronizing only necessary\
+    \ fields between systems. Create access controls that restrict integration configuration\
+    \ to authorized administrators. Apply field-level security in Odoo that aligns\
+    \ with Constant Contact's data visibility rules. Establish data retention policies\
+    \ that automatically purge synchronization logs after specified periods.\n\n###\
+    \ API Security Practices\n\nFollow API security best practices for integration\
+    \ reliability. Validate all incoming webhook requests using Constant Contact's\
+    \ signature verification. Implement API rate limiting in your Odoo module to prevent\
+    \ excessive outgoing requests. Sanitize all data exchanged with Constant Contact\
+    \ to prevent injection attacks. Use API version pinning to ensure compatibility\
+    \ despite Constant Contact API updates. Monitor API usage metrics to detect potential\
+    \ security breaches or misuse patterns.\n\n### Compliance Requirements\n\nAddress\
+    \ regulatory compliance requirements for data handling. Document the data flow\
+    \ between systems for GDPR compliance and data protection impact assessments.\
+    \ Implement consent management that tracks marketing permission changes across\
+    \ both platforms. Create data subject access procedures that extract contact information\
+    \ from both systems. Establish data breach response plans that include integration-specific\
+    \ notification procedures. Maintain audit trails that log all synchronization\
+    \ activities for compliance verification.\n\n## Performance Optimization\n\n###\
+    \ API Call Efficiency\n\nOptimize API usage to maximize performance within rate\
+    \ limits. Implement contact batching that groups multiple operations into single\
+    \ API calls where supported. Use field masking in Constant Contact API calls to\
+    \ request only necessary contact properties. Develop conditional synchronization\
+    \ logic that skips unchanged records based on modification timestamps. Cache frequently\
+    \ accessed Constant Contact data like custom field definitions to reduce API calls.\
+    \ Monitor API usage metrics and adjust batching strategies based on actual consumption\
+    \ patterns.\n\n### Database Optimization\n\nOptimize Odoo database performance\
+    \ for integration operations. Add database indexes on fields used in synchronization\
+    \ queries, such as partner modification dates. Implement database query optimization\
+    \ that reduces locking during large synchronization jobs. Use Odoo's read_group\
+    \ operations for bulk data analysis instead of individual record queries. Schedule\
+    \ resource-intensive synchronization tasks during periods of low system usage.\
+    \ Implement database connection pooling to handle concurrent synchronization processes\
+    \ efficiently.\n\n### Memory Management\n\nImplement careful memory management\
+    \ for large-scale synchronization. Use Odoo's batch processing capabilities to\
+    \ handle large record sets in manageable chunks. Implement streaming processing\
+    \ for very large data exports to prevent memory exhaustion. Clear Odoo's environment\
+    \ cache periodically during extended synchronization operations. Monitor memory\
+    \ usage during synchronization and adjust batch sizes based on available resources.\
+    \ Implement garbage collection triggers that clean up temporary data structures\
+    \ after synchronization completion.\n\n### Network Optimization\n\nReduce network\
+    \ latency impact on integration performance. Implement HTTP connection keep-alive\
+    \ to reuse connections for multiple API requests. Compress large API payloads\
+    \ using gzip encoding where supported by the Constant Contact API. Configure DNS\
+    \ caching to reduce lookup times for Constant Contact API endpoints. Use CDN endpoints\
+    \ where available for faster webhook delivery from Constant Contact. Monitor network\
+    \ latency between your Odoo instance and Constant Contact's data centers.\n\n\
+    ### Monitoring and Adjustment\n\nEstablish continuous performance monitoring and\
+    \ optimization. Track synchronization completion times and set alerts for performance\
+    \ degradation. Monitor API rate limit usage and adjust batching strategies to\
+    \ stay within limits. Measure end-to-end data freshness to ensure timely synchronization\
+    \ between systems. Create performance dashboards that visualize key integration\
+    \ metrics for quick assessment. Implement automated scaling of synchronization\
+    \ resources based on system load patterns."
   conclusion: 'Your Constant Contact and Odoo 18 integration now operates as a unified
     marketing automation engine. Contact data flows seamlessly between your CRM and
     email marketing platform without manual intervention. New Odoo leads automatically
@@ -470,13 +469,15 @@ visualizations:
   placement_hint: after_conclusion
   data_context: learning path and knowledge graph
   mermaid_chart_syntax: "flowchart TB\n\n    Current[\"[CURRENT] Constant Contact\
-    \ to Odoo Integration: Complete 2025 Guide\"]\n\n    %% Related Topics - Cross-References\n\
-    \    Current -.-> Rel0[\"Cloudflare to Odoo Integration: Complete 2025 Guide\"\
-    ]\n    Current -.-> Rel1[\"Facebook Pixel to Odoo Integration: Complete 2025 Guide\"\
-    ]\n\n    %% Professional Styling\n    classDef current fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n\
+    \ to Odoo Integration: Complete 2025 Guide\"]\n\n    %% Next Steps - Learning\
+    \ Progression\n    Current --> Next0(\"Complete Implementation Guide\")\n\n  \
+    \  %% Related Topics - Cross-References\n    Current -.-> Rel0[\"Cloudflare to\
+    \ Odoo Integration: Complete 2025 Guide\"]\n    Current -.-> Rel1[\"Facebook Pixel\
+    \ to Odoo Integration: Complete 2025 Guide\"]\n\n    %% Professional Styling\n\
+    \    classDef current fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n\
     \    classDef prereq fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000\n\
     \    classDef next fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000\n \
     \   classDef related fill:#f5f5f5,stroke:#616161,stroke-width:1px,color:#000\n\
     \    classDef trouble fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000\n\
     \    classDef support fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#000\n\
-    \n    class Current current\n    class Rel0,Rel1 related"
+    \n    class Current current\n    class Next0 next\n    class Rel0,Rel1 related"

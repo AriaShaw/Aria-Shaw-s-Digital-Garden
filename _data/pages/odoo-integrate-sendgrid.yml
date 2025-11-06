@@ -72,85 +72,85 @@ ai_generated_content:
     tickets. Sales teams automate lead scoring based on actual email interaction data.
     This technical foundation supports scalable growth with reliable, automated data
     synchronization.'
-  main_content: "## Integration Architecture and Data Flow\n\n### SendGrid\
-    \ and Odoo 18 Communication Patterns\n\nSendGrid integration with Odoo 18 follows\
-    \ an event-driven architecture centered around webhooks and API calls. Odoo initiates\
-    \ outbound communication to SendGrid's SMTP API or Web API for sending transactional\
-    \ and marketing emails. SendGrid employs webhooks to push email event data back\
-    \ to Odoo, creating a bidirectional data flow. This pattern ensures real-time\
-    \ synchronization of email engagement metrics while maintaining system autonomy.\n\
-    \nThe architecture employs Odoo's module system to extend native mail functionality\
-    \ with SendGrid-specific capabilities. Custom models store SendGrid configuration\
-    \ parameters, template mappings, and authentication tokens. The integration layer\
-    \ intercepts outgoing Odoo emails and reroutes them through SendGrid's delivery\
-    \ infrastructure. Incoming webhook events update Odoo records with delivery status,\
-    \ opens, clicks, and bounce information.\n\n### Data Flow Sequence for Email Operations\n\
-    \nOutbound email flow begins when a user or automated process triggers an email\
-    \ send within Odoo. The SendGrid integration module captures the outgoing message\
-    \ and transforms it into SendGrid's API format. The system attaches tracking parameters,\
-    \ custom arguments, and categorization metadata before transmission. SendGrid\
-    \ processes the email through its delivery infrastructure while generating unique\
-    \ identifiers for tracking.\n\nInbound event flow starts when SendGrid detects\
-    \ email engagement activities. SendGrid's Event Webhook POSTs JSON payloads to\
-    \ a dedicated Odoo endpoint containing event data. The integration parses these\
-    \ events, matches them to original Odoo records using tracking identifiers, and\
-    \ updates corresponding mail.message records. This closed-loop system maintains\
-    \ perfect synchronization between sent messages and their engagement metrics.\n\
-    \n### System Components and Their Responsibilities\n\nOdoo hosts the integration\
-    \ module containing models, controllers, and cron jobs. The mail.mail model extends\
-    \ with SendGrid-specific fields like message_id, template_id, and tracking parameters.\
-    \ Custom controllers handle incoming webhook requests from SendGrid with proper\
-    \ authentication and validation. Scheduled actions process failed webhook events\
-    \ and maintain data consistency between systems.\n\nSendGrid provides the email\
-    \ delivery infrastructure, template management, and event tracking systems. SendGrid's\
-    \ SMTP API and Web API v3 handle outbound email delivery with advanced features\
-    \ like template rendering and personalization. The Event Webhook system pushes\
-    \ real-time engagement data to Odoo, while Statistics API offers supplemental\
-    \ data for reporting and analytics.\n\n## Step-by-Step Configuration\n\
-    \n### SendGrid Account Preparation and API Key Generation\n\nBegin with SendGrid\
-    \ account configuration to establish the foundation for integration. Log into\
-    \ your SendGrid account and navigate to Settings > API Keys in the dashboard.\
-    \ Create a new API Key with \"Full Access\" permissions to ensure all required\
-    \ endpoints remain available. Copy and securely store this key, as SendGrid will\
-    \ not display it again.\n\nConfigure SendGrid's Event Webhook to enable engagement\
-    \ data flow to Odoo. Access Mail Settings > Event Webhook in your SendGrid dashboard.\
-    \ Specify your Odoo instance's webhook URL, typically following the pattern https://your-odoo-domain.com/sendgrid/event.\
-    \ Enable all engagement events including processed, delivered, open, click, bounce,\
-    \ and spam report. SendGrid will POST event data to this endpoint as emails progress\
-    \ through their lifecycle.\n\nPrepare SendGrid templates if you plan to use dynamic\
-    \ content rendering. Create or upload templates in SendGrid's Template Engine,\
-    \ noting each template's unique identifier. Configure substitution tags that align\
-    \ with Odoo's field structure for personalized content. Test template rendering\
-    \ with sample data to verify variable substitution works before integration.\n\
-    \n### Odoo Module Creation and Dependency Setup\n\nCreate a new Odoo module to\
-    \ contain the SendGrid integration logic. Define your module's manifest file with\
-    \ dependencies on Odoo's mail, contacts, and website modules. These dependencies\
-    \ provide the foundational models and controllers your integration will extend.\
-    \ Structure your module with clear separation between models, controllers, and\
-    \ data files.\n\nImplement the configuration model to store SendGrid connection\
-    \ parameters. Create a new Odoo model called sendgrid.configuration with fields\
-    \ for api_key, default_from_email, and webhook_signature_verification_key. Add\
-    \ a company_id field to support multi-company environments where each entity maintains\
-    \ separate SendGrid accounts. Implement methods to test API connectivity and validate\
-    \ configuration parameters.\n\n```python\nclass SendGridConfiguration(models.Model):\n\
-    \    _name = 'sendgrid.configuration'\n    \n    name = fields.Char(required=True)\n\
-    \    company_id = fields.Many2one('res.company', required=True)\n    api_key =\
-    \ fields.Char(required=True)\n    default_from_email = fields.Char(required=True)\n\
-    \    webhook_signature_key = fields.Char()\n    active = fields.Boolean(default=True)\n\
-    \    \n    def test_connection(self):\n        headers = {\n            'Authorization':\
-    \ f'Bearer {self.api_key}',\n            'Content-Type': 'application/json'\n\
-    \        }\n        response = requests.get(\n            'https://api.sendgrid.com/v3/user/account',\n\
-    \            headers=headers\n        )\n        return response.status_code ==\
-    \ 200\n```\n\n### Authentication Implementation and Security Hardening\n\nImplement\
-    \ secure API key storage using Odoo's encrypted fields functionality. Modify your\
-    \ api_key field declaration to use fields.Char with password=True, preventing\
-    \ clear text display in the Odoo interface. Create a dedicated SendGrid API utility\
-    \ class that handles authentication header generation and request signing for\
-    \ all outbound API calls.\n\nConfigure webhook signature verification to validate\
-    \ incoming SendGrid events. Generate a unique verification key in your SendGrid\
-    \ Event Webhook settings and store it in your Odoo configuration model. Implement\
-    \ signature validation in your webhook controller to reject unauthorized requests,\
-    \ protecting your system from malicious event injection.\n\n```python\nclass SendGridWebhook(http.Controller):\n\
+  main_content: "## Integration Architecture and Data Flow\n\n### SendGrid and Odoo\
+    \ 18 Communication Patterns\n\nSendGrid integration with Odoo 18 follows an event-driven\
+    \ architecture centered around webhooks and API calls. Odoo initiates outbound\
+    \ communication to SendGrid's SMTP API or Web API for sending transactional and\
+    \ marketing emails. SendGrid employs webhooks to push email event data back to\
+    \ Odoo, creating a bidirectional data flow. This pattern ensures real-time synchronization\
+    \ of email engagement metrics while maintaining system autonomy.\n\nThe architecture\
+    \ employs Odoo's module system to extend native mail functionality with SendGrid-specific\
+    \ capabilities. Custom models store SendGrid configuration parameters, template\
+    \ mappings, and authentication tokens. The integration layer intercepts outgoing\
+    \ Odoo emails and reroutes them through SendGrid's delivery infrastructure. Incoming\
+    \ webhook events update Odoo records with delivery status, opens, clicks, and\
+    \ bounce information.\n\n### Data Flow Sequence for Email Operations\n\nOutbound\
+    \ email flow begins when a user or automated process triggers an email send within\
+    \ Odoo. The SendGrid integration module captures the outgoing message and transforms\
+    \ it into SendGrid's API format. The system attaches tracking parameters, custom\
+    \ arguments, and categorization metadata before transmission. SendGrid processes\
+    \ the email through its delivery infrastructure while generating unique identifiers\
+    \ for tracking.\n\nInbound event flow starts when SendGrid detects email engagement\
+    \ activities. SendGrid's Event Webhook POSTs JSON payloads to a dedicated Odoo\
+    \ endpoint containing event data. The integration parses these events, matches\
+    \ them to original Odoo records using tracking identifiers, and updates corresponding\
+    \ mail.message records. This closed-loop system maintains perfect synchronization\
+    \ between sent messages and their engagement metrics.\n\n### System Components\
+    \ and Their Responsibilities\n\nOdoo hosts the integration module containing models,\
+    \ controllers, and cron jobs. The mail.mail model extends with SendGrid-specific\
+    \ fields like message_id, template_id, and tracking parameters. Custom controllers\
+    \ handle incoming webhook requests from SendGrid with proper authentication and\
+    \ validation. Scheduled actions process failed webhook events and maintain data\
+    \ consistency between systems.\n\nSendGrid provides the email delivery infrastructure,\
+    \ template management, and event tracking systems. SendGrid's SMTP API and Web\
+    \ API v3 handle outbound email delivery with advanced features like template rendering\
+    \ and personalization. The Event Webhook system pushes real-time engagement data\
+    \ to Odoo, while Statistics API offers supplemental data for reporting and analytics.\n\
+    \n## Step-by-Step Configuration\n\n### SendGrid Account Preparation and API Key\
+    \ Generation\n\nBegin with SendGrid account configuration to establish the foundation\
+    \ for integration. Log into your SendGrid account and navigate to Settings > API\
+    \ Keys in the dashboard. Create a new API Key with \"Full Access\" permissions\
+    \ to ensure all required endpoints remain available. Copy and securely store this\
+    \ key, as SendGrid will not display it again.\n\nConfigure SendGrid's Event Webhook\
+    \ to enable engagement data flow to Odoo. Access Mail Settings > Event Webhook\
+    \ in your SendGrid dashboard. Specify your Odoo instance's webhook URL, typically\
+    \ following the pattern https://your-odoo-domain.com/sendgrid/event. Enable all\
+    \ engagement events including processed, delivered, open, click, bounce, and spam\
+    \ report. SendGrid will POST event data to this endpoint as emails progress through\
+    \ their lifecycle.\n\nPrepare SendGrid templates if you plan to use dynamic content\
+    \ rendering. Create or upload templates in SendGrid's Template Engine, noting\
+    \ each template's unique identifier. Configure substitution tags that align with\
+    \ Odoo's field structure for personalized content. Test template rendering with\
+    \ sample data to verify variable substitution works before integration.\n\n###\
+    \ Odoo Module Creation and Dependency Setup\n\nCreate a new Odoo module to contain\
+    \ the SendGrid integration logic. Define your module's manifest file with dependencies\
+    \ on Odoo's mail, contacts, and website modules. These dependencies provide the\
+    \ foundational models and controllers your integration will extend. Structure\
+    \ your module with clear separation between models, controllers, and data files.\n\
+    \nImplement the configuration model to store SendGrid connection parameters. Create\
+    \ a new Odoo model called sendgrid.configuration with fields for api_key, default_from_email,\
+    \ and webhook_signature_verification_key. Add a company_id field to support multi-company\
+    \ environments where each entity maintains separate SendGrid accounts. Implement\
+    \ methods to test API connectivity and validate configuration parameters.\n\n\
+    ```python\nclass SendGridConfiguration(models.Model):\n    _name = 'sendgrid.configuration'\n\
+    \    \n    name = fields.Char(required=True)\n    company_id = fields.Many2one('res.company',\
+    \ required=True)\n    api_key = fields.Char(required=True)\n    default_from_email\
+    \ = fields.Char(required=True)\n    webhook_signature_key = fields.Char()\n  \
+    \  active = fields.Boolean(default=True)\n    \n    def test_connection(self):\n\
+    \        headers = {\n            'Authorization': f'Bearer {self.api_key}',\n\
+    \            'Content-Type': 'application/json'\n        }\n        response =\
+    \ requests.get(\n            'https://api.sendgrid.com/v3/user/account',\n   \
+    \         headers=headers\n        )\n        return response.status_code == 200\n\
+    ```\n\n### Authentication Implementation and Security Hardening\n\nImplement secure\
+    \ API key storage using Odoo's encrypted fields functionality. Modify your api_key\
+    \ field declaration to use fields.Char with password=True, preventing clear text\
+    \ display in the Odoo interface. Create a dedicated SendGrid API utility class\
+    \ that handles authentication header generation and request signing for all outbound\
+    \ API calls.\n\nConfigure webhook signature verification to validate incoming\
+    \ SendGrid events. Generate a unique verification key in your SendGrid Event Webhook\
+    \ settings and store it in your Odoo configuration model. Implement signature\
+    \ validation in your webhook controller to reject unauthorized requests, protecting\
+    \ your system from malicious event injection.\n\n```python\nclass SendGridWebhook(http.Controller):\n\
     \    \n    @http.route('/sendgrid/event', type='json', auth='public', csrf=False)\n\
     \    def handle_sendgrid_event(self):\n        request_data = request.httprequest.get_data()\n\
     \        signature = request.httpheaders.get('X-Twilio-Email-Event-Webhook-Signature')\n\
@@ -178,138 +178,138 @@ ai_generated_content:
     \            return self._send_sendgrid_email(message)\n        else:\n      \
     \      return super().send_email(message, mail_server_id, smtp_server, smtp_port,\n\
     \                                    smtp_user, smtp_password, smtp_encryption,\
-    \ smtp_debug)\n```\n\n## Data Mapping and Transformation\n\n### Email\
-    \ Message Field Mapping Between Systems\n\nOdoo's mail.message model fields require\
-    \ precise mapping to SendGrid's API parameters. Map Odoo's email_from to SendGrid's\
-    \ from.email parameter, preserving both display name and email address. Transform\
-    \ Odoo's email_to recipients into SendGrid's personalizations.to array, handling\
-    \ multiple recipient scenarios. Convert Odoo's subject field to SendGrid's subject\
-    \ with encoding preservation for international characters.\n\nHandle email body\
-    \ content transformation between HTML and plain text formats. SendGrid expects\
-    \ separate HTML and plain text content in the content array, while Odoo stores\
-    \ body content in body_html and body_plaintext fields. Implement content type\
-    \ detection to ensure proper formatting, and apply encoding conversion for special\
-    \ characters and emojis.\n\nMap Odoo's partner and record references to SendGrid's\
-    \ custom_args for event correlation. Store Odoo's res_id and model parameters\
-    \ in SendGrid's custom_args to enable accurate event matching in webhook responses.\
-    \ These custom arguments travel with the email through SendGrid's system and return\
-    \ with webhook events.\n\n### Template Variable Substitution Mapping\n\nEstablish\
-    \ variable substitution mapping between Odoo's template language and SendGrid's\
-    \ handlebars syntax. Odoo uses ${object.field_name} notation, while SendGrid employs\
-    \ {{field_name}} handlebars. Create a transformation layer that converts Odoo\
-    \ template variables to SendGrid-compatible format during email rendering.\n\n\
-    Map Odoo record field values to SendGrid substitution variables. For contact-based\
-    \ emails, transform partner fields like name, email, and phone into SendGrid's\
-    \ substitution dictionary. For document-based emails, extract field values from\
-    \ the related model and map them to corresponding SendGrid template variables.\n\
-    \nImplement dynamic content blocks for complex template elements. Convert Odoo's\
-    \ t-foreach loops to SendGrid's handlebars iteration syntax for repeating content\
-    \ sections. Transform Odoo's conditional t-if blocks to SendGrid's handlebars\
-    \ conditionals, preserving business logic in translated templates.\n\n### Engagement\
-    \ Event Data Model Transformation\n\nTransform SendGrid webhook event data to\
-    \ Odoo's mail.tracking.event model structure. Map SendGrid's timestamp to Odoo's\
-    \ timestamp field, converting from UNIX epoch to Odoo's datetime format. Correlate\
-    \ SendGrid's sg_message_id to Odoo's mail_message using stored custom_args containing\
-    \ original Odoo message identifiers.\n\nCategorize SendGrid event types to Odoo's\
-    \ tracking event classifications. Map SendGrid's 'delivered' events to Odoo's\
-    \ 'delivered' status, 'open' to 'opened', and 'click' to 'clicked'. Handle bounce\
-    \ events by extracting bounce type and reason from SendGrid's response, mapping\
-    \ to Odoo's bounce categories with appropriate severity levels.\n\nProcess engagement\
-    \ metadata for analytical reporting. Extract geographic data from SendGrid events\
-    \ and store in Odoo's tracking events for geographic reporting. Capture user agent\
-    \ information from open and click events to enable device and client analysis\
-    \ within Odoo's reporting dashboard.\n\n## Error Handling and Resilience (500\
-    \ words)\n\n### API Failure Scenarios and Retry Mechanisms\n\nSendGrid's API imposes\
-    \ rate limits that trigger HTTP 429 responses during high-volume sending. Implement\
-    \ exponential backoff with jitter for rate limit responses, gradually increasing\
-    \ wait times between retry attempts. Track rate limit headers to anticipate limits\
-    \ before hitting them, adjusting sending patterns to stay within allowed thresholds.\n\
-    \nHandle SendGrid API authentication failures with automatic credential validation.\
-    \ Monitor for HTTP 401 responses indicating invalid API keys, and trigger configuration\
-    \ validation workflows. Implement fallback to Odoo's native SMTP server when SendGrid\
-    \ availability degrades, maintaining business continuity during service disruptions.\n\
-    \nProcess temporary network failures with circuit breaker patterns. Detect connection\
-    \ timeouts and DNS resolution errors, marking SendGrid as temporarily unavailable.\
-    \ Implement dead letter queues for emails that fail after maximum retry attempts,\
-    \ with administrative alerts for manual intervention.\n\n### Webhook Event Processing\
-    \ Failures\n\nValidate webhook event data structure before processing to prevent\
-    \ system crashes. Implement schema validation for incoming webhook payloads, rejecting\
-    \ malformed JSON or missing required fields. Log validation failures for security\
-    \ analysis while returning appropriate HTTP status codes to SendGrid.\n\nHandle\
-    \ event correlation failures when Odoo cannot match webhook events to original\
-    \ messages. Create an orphaned events queue for messages with missing correlation\
-    \ data, with administrative interface for manual resolution. Implement periodic\
-    \ reconciliation jobs that query SendGrid's Events API to recover missing engagement\
-    \ data.\n\nProcess duplicate webhook events through idempotent operation design.\
-    \ Store processed event identifiers to prevent duplicate updates from retried\
-    \ webhook deliveries. Implement conditional updates based on event timestamps\
-    \ to ensure latest event data persists when duplicates occur.\n\n### Data Synchronization\
-    \ and Consistency Maintenance\n\nMonitor for data drift between Odoo and SendGrid\
-    \ systems. Implement scheduled synchronization jobs that compare Odoo's sent message\
-    \ records with SendGrid's Events API. Flag discrepancies for administrative review\
-    \ and create automated correction workflows for common inconsistency patterns.\n\
-    \nHandle template version mismatches during email sending operations. Detect when\
-    \ SendGrid templates modify without corresponding Odoo template updates, triggering\
-    \ alert notifications. Implement version tracking for templates to maintain consistency\
-    \ between design changes in both systems.\n\nRecover from partial integration\
-    \ failures with comprehensive reconciliation procedures. Develop audit reports\
-    \ that identify messages sent through SendGrid but lacking corresponding engagement\
-    \ events in Odoo. Create data repair tools that fetch missing events from SendGrid's\
-    \ API and reconstruct tracking history.\n\n## Testing and Validation\n\
-    \n### Integration Test Scenarios and Data Preparation\n\nDevelop comprehensive\
-    \ test scenarios that cover all integration data flows. Create test cases for\
-    \ successful email delivery with valid templates and recipient addresses. Prepare\
-    \ failure scenario tests for invalid recipients, template rendering errors, and\
-    \ API authentication failures. Design edge case tests for large attachments, international\
-    \ character sets, and high-volume sending.\n\nPrepare test data that mirrors production\
-    \ environment characteristics. Generate representative contact lists with varied\
-    \ email domains to test deliverability across different providers. Create email\
-    \ templates with complex variable substitution and dynamic content blocks. Prepare\
-    \ sample attachments of different types and sizes to validate SendGrid's attachment\
-    \ handling.\n\nImplement environment-specific test configurations to prevent accidental\
-    \ production impacts. Configure test mode in SendGrid that disables actual email\
-    \ delivery while maintaining full API functionality. Develop test data isolation\
-    \ mechanisms that prevent test emails from reaching real customers during validation\
-    \ cycles.\n\n### End-to-End Workflow Validation\n\nValidate the complete email\
-    \ sending workflow from Odoo interface to SendGrid delivery. Compose test emails\
-    \ through Odoo's standard mail composition interface and verify they route through\
-    \ SendGrid. Confirm SendGrid receives properly formatted API requests with all\
-    \ required headers and parameters. Verify SendGrid processes emails completely\
-    \ and returns accepted status to Odoo.\n\nTest webhook event processing by simulating\
-    \ engagement scenarios. Use SendGrid's Event Webhook testing tool to generate\
-    \ synthetic events for delivered, opened, and clicked scenarios. Verify Odoo processes\
-    \ these events and updates corresponding mail.message records with appropriate\
-    \ tracking status. Validate tracking email functionality displays engagement data\
-    \ in Odoo's interface.\n\nPerform integration stress testing with concurrent email\
-    \ operations. Simulate bulk email campaigns with hundreds of recipients to identify\
-    \ performance bottlenecks. Test webhook endpoint capacity under high-volume event\
-    \ scenarios to ensure event processing maintains stability. Validate system behavior\
-    \ during SendGrid API degradation or temporary unavailability.\n\n### Performance\
-    \ Benchmarking and Quality Metrics\n\nEstablish performance baselines for key\
-    \ integration operations. Measure email sending latency from Odoo initiation to\
-    \ SendGrid acceptance across different message sizes and recipient counts. Benchmark\
-    \ webhook event processing throughput to determine maximum sustainable event volume.\
-    \ Track system resource utilization during peak loads to identify optimization\
-    \ opportunities.\n\nMonitor integration quality metrics throughout the testing\
-    \ lifecycle. Track email delivery rates across different ISPs and geographic regions.\
-    \ Measure engagement data accuracy by comparing SendGrid analytics with Odoo tracking\
-    \ records. Validate data consistency through automated checks that compare Odoo\
-    \ and SendGrid data states.\n\nDocument performance characteristics and operational\
-    \ limits for production planning. Establish thresholds for normal operation and\
-    \ define alert conditions for degraded performance. Create capacity planning guidelines\
-    \ based on tested performance metrics and scalability observations.\n\n## Security\
-    \ Considerations\n\n### Authentication and Access Control Implementation\n\
-    \nSecure API key management follows principle of least access throughout the integration.\
-    \ Store SendGrid API keys in Odoo's encrypted configuration with access restricted\
-    \ to authorized administrators. Implement key rotation procedures that generate\
-    \ new API keys periodically while maintaining service continuity. Audit API key\
-    \ usage to detect anomalous patterns that might indicate security breaches.\n\n\
-    Protect webhook endpoints from unauthorized access with multiple verification\
-    \ layers. Implement SendGrid's signed webhook verification to ensure only SendGrid\
-    \ can post events to your endpoint. Restrict webhook endpoint access to SendGrid's\
-    \ documented IP ranges, rejecting connections from other sources. Rate limit webhook\
-    \ requests to prevent denial-of-service attacks against the event processing system.\n\
-    \nControl internal access to SendGrid integration features through Odoo's permission\
+    \ smtp_debug)\n```\n\n## Data Mapping and Transformation\n\n### Email Message\
+    \ Field Mapping Between Systems\n\nOdoo's mail.message model fields require precise\
+    \ mapping to SendGrid's API parameters. Map Odoo's email_from to SendGrid's from.email\
+    \ parameter, preserving both display name and email address. Transform Odoo's\
+    \ email_to recipients into SendGrid's personalizations.to array, handling multiple\
+    \ recipient scenarios. Convert Odoo's subject field to SendGrid's subject with\
+    \ encoding preservation for international characters.\n\nHandle email body content\
+    \ transformation between HTML and plain text formats. SendGrid expects separate\
+    \ HTML and plain text content in the content array, while Odoo stores body content\
+    \ in body_html and body_plaintext fields. Implement content type detection to\
+    \ ensure proper formatting, and apply encoding conversion for special characters\
+    \ and emojis.\n\nMap Odoo's partner and record references to SendGrid's custom_args\
+    \ for event correlation. Store Odoo's res_id and model parameters in SendGrid's\
+    \ custom_args to enable accurate event matching in webhook responses. These custom\
+    \ arguments travel with the email through SendGrid's system and return with webhook\
+    \ events.\n\n### Template Variable Substitution Mapping\n\nEstablish variable\
+    \ substitution mapping between Odoo's template language and SendGrid's handlebars\
+    \ syntax. Odoo uses ${object.field_name} notation, while SendGrid employs {{field_name}}\
+    \ handlebars. Create a transformation layer that converts Odoo template variables\
+    \ to SendGrid-compatible format during email rendering.\n\nMap Odoo record field\
+    \ values to SendGrid substitution variables. For contact-based emails, transform\
+    \ partner fields like name, email, and phone into SendGrid's substitution dictionary.\
+    \ For document-based emails, extract field values from the related model and map\
+    \ them to corresponding SendGrid template variables.\n\nImplement dynamic content\
+    \ blocks for complex template elements. Convert Odoo's t-foreach loops to SendGrid's\
+    \ handlebars iteration syntax for repeating content sections. Transform Odoo's\
+    \ conditional t-if blocks to SendGrid's handlebars conditionals, preserving business\
+    \ logic in translated templates.\n\n### Engagement Event Data Model Transformation\n\
+    \nTransform SendGrid webhook event data to Odoo's mail.tracking.event model structure.\
+    \ Map SendGrid's timestamp to Odoo's timestamp field, converting from UNIX epoch\
+    \ to Odoo's datetime format. Correlate SendGrid's sg_message_id to Odoo's mail_message\
+    \ using stored custom_args containing original Odoo message identifiers.\n\nCategorize\
+    \ SendGrid event types to Odoo's tracking event classifications. Map SendGrid's\
+    \ 'delivered' events to Odoo's 'delivered' status, 'open' to 'opened', and 'click'\
+    \ to 'clicked'. Handle bounce events by extracting bounce type and reason from\
+    \ SendGrid's response, mapping to Odoo's bounce categories with appropriate severity\
+    \ levels.\n\nProcess engagement metadata for analytical reporting. Extract geographic\
+    \ data from SendGrid events and store in Odoo's tracking events for geographic\
+    \ reporting. Capture user agent information from open and click events to enable\
+    \ device and client analysis within Odoo's reporting dashboard.\n\n## Error Handling\
+    \ and Resilience (500 words)\n\n### API Failure Scenarios and Retry Mechanisms\n\
+    \nSendGrid's API imposes rate limits that trigger HTTP 429 responses during high-volume\
+    \ sending. Implement exponential backoff with jitter for rate limit responses,\
+    \ gradually increasing wait times between retry attempts. Track rate limit headers\
+    \ to anticipate limits before hitting them, adjusting sending patterns to stay\
+    \ within allowed thresholds.\n\nHandle SendGrid API authentication failures with\
+    \ automatic credential validation. Monitor for HTTP 401 responses indicating invalid\
+    \ API keys, and trigger configuration validation workflows. Implement fallback\
+    \ to Odoo's native SMTP server when SendGrid availability degrades, maintaining\
+    \ business continuity during service disruptions.\n\nProcess temporary network\
+    \ failures with circuit breaker patterns. Detect connection timeouts and DNS resolution\
+    \ errors, marking SendGrid as temporarily unavailable. Implement dead letter queues\
+    \ for emails that fail after maximum retry attempts, with administrative alerts\
+    \ for manual intervention.\n\n### Webhook Event Processing Failures\n\nValidate\
+    \ webhook event data structure before processing to prevent system crashes. Implement\
+    \ schema validation for incoming webhook payloads, rejecting malformed JSON or\
+    \ missing required fields. Log validation failures for security analysis while\
+    \ returning appropriate HTTP status codes to SendGrid.\n\nHandle event correlation\
+    \ failures when Odoo cannot match webhook events to original messages. Create\
+    \ an orphaned events queue for messages with missing correlation data, with administrative\
+    \ interface for manual resolution. Implement periodic reconciliation jobs that\
+    \ query SendGrid's Events API to recover missing engagement data.\n\nProcess duplicate\
+    \ webhook events through idempotent operation design. Store processed event identifiers\
+    \ to prevent duplicate updates from retried webhook deliveries. Implement conditional\
+    \ updates based on event timestamps to ensure latest event data persists when\
+    \ duplicates occur.\n\n### Data Synchronization and Consistency Maintenance\n\n\
+    Monitor for data drift between Odoo and SendGrid systems. Implement scheduled\
+    \ synchronization jobs that compare Odoo's sent message records with SendGrid's\
+    \ Events API. Flag discrepancies for administrative review and create automated\
+    \ correction workflows for common inconsistency patterns.\n\nHandle template version\
+    \ mismatches during email sending operations. Detect when SendGrid templates modify\
+    \ without corresponding Odoo template updates, triggering alert notifications.\
+    \ Implement version tracking for templates to maintain consistency between design\
+    \ changes in both systems.\n\nRecover from partial integration failures with comprehensive\
+    \ reconciliation procedures. Develop audit reports that identify messages sent\
+    \ through SendGrid but lacking corresponding engagement events in Odoo. Create\
+    \ data repair tools that fetch missing events from SendGrid's API and reconstruct\
+    \ tracking history.\n\n## Testing and Validation\n\n### Integration Test Scenarios\
+    \ and Data Preparation\n\nDevelop comprehensive test scenarios that cover all\
+    \ integration data flows. Create test cases for successful email delivery with\
+    \ valid templates and recipient addresses. Prepare failure scenario tests for\
+    \ invalid recipients, template rendering errors, and API authentication failures.\
+    \ Design edge case tests for large attachments, international character sets,\
+    \ and high-volume sending.\n\nPrepare test data that mirrors production environment\
+    \ characteristics. Generate representative contact lists with varied email domains\
+    \ to test deliverability across different providers. Create email templates with\
+    \ complex variable substitution and dynamic content blocks. Prepare sample attachments\
+    \ of different types and sizes to validate SendGrid's attachment handling.\n\n\
+    Implement environment-specific test configurations to prevent accidental production\
+    \ impacts. Configure test mode in SendGrid that disables actual email delivery\
+    \ while maintaining full API functionality. Develop test data isolation mechanisms\
+    \ that prevent test emails from reaching real customers during validation cycles.\n\
+    \n### End-to-End Workflow Validation\n\nValidate the complete email sending workflow\
+    \ from Odoo interface to SendGrid delivery. Compose test emails through Odoo's\
+    \ standard mail composition interface and verify they route through SendGrid.\
+    \ Confirm SendGrid receives properly formatted API requests with all required\
+    \ headers and parameters. Verify SendGrid processes emails completely and returns\
+    \ accepted status to Odoo.\n\nTest webhook event processing by simulating engagement\
+    \ scenarios. Use SendGrid's Event Webhook testing tool to generate synthetic events\
+    \ for delivered, opened, and clicked scenarios. Verify Odoo processes these events\
+    \ and updates corresponding mail.message records with appropriate tracking status.\
+    \ Validate tracking email functionality displays engagement data in Odoo's interface.\n\
+    \nPerform integration stress testing with concurrent email operations. Simulate\
+    \ bulk email campaigns with hundreds of recipients to identify performance bottlenecks.\
+    \ Test webhook endpoint capacity under high-volume event scenarios to ensure event\
+    \ processing maintains stability. Validate system behavior during SendGrid API\
+    \ degradation or temporary unavailability.\n\n### Performance Benchmarking and\
+    \ Quality Metrics\n\nEstablish performance baselines for key integration operations.\
+    \ Measure email sending latency from Odoo initiation to SendGrid acceptance across\
+    \ different message sizes and recipient counts. Benchmark webhook event processing\
+    \ throughput to determine maximum sustainable event volume. Track system resource\
+    \ utilization during peak loads to identify optimization opportunities.\n\nMonitor\
+    \ integration quality metrics throughout the testing lifecycle. Track email delivery\
+    \ rates across different ISPs and geographic regions. Measure engagement data\
+    \ accuracy by comparing SendGrid analytics with Odoo tracking records. Validate\
+    \ data consistency through automated checks that compare Odoo and SendGrid data\
+    \ states.\n\nDocument performance characteristics and operational limits for production\
+    \ planning. Establish thresholds for normal operation and define alert conditions\
+    \ for degraded performance. Create capacity planning guidelines based on tested\
+    \ performance metrics and scalability observations.\n\n## Security Considerations\n\
+    \n### Authentication and Access Control Implementation\n\nSecure API key management\
+    \ follows principle of least access throughout the integration. Store SendGrid\
+    \ API keys in Odoo's encrypted configuration with access restricted to authorized\
+    \ administrators. Implement key rotation procedures that generate new API keys\
+    \ periodically while maintaining service continuity. Audit API key usage to detect\
+    \ anomalous patterns that might indicate security breaches.\n\nProtect webhook\
+    \ endpoints from unauthorized access with multiple verification layers. Implement\
+    \ SendGrid's signed webhook verification to ensure only SendGrid can post events\
+    \ to your endpoint. Restrict webhook endpoint access to SendGrid's documented\
+    \ IP ranges, rejecting connections from other sources. Rate limit webhook requests\
+    \ to prevent denial-of-service attacks against the event processing system.\n\n\
+    Control internal access to SendGrid integration features through Odoo's permission\
     \ system. Create specific security groups for SendGrid configuration management,\
     \ separating administrative and operational privileges. Implement audit trails\
     \ that log all configuration changes and access to sensitive integration functionality.\n\
@@ -328,36 +328,36 @@ ai_generated_content:
     \ on incoming webhook events to prevent event spoofing. Implement content security\
     \ policies for email templates to prevent injection attacks. Scan outgoing email\
     \ content for sensitive information using pattern matching before transmission\
-    \ to SendGrid.\n\n## Performance Optimization\n\n### API Call Efficiency\
-    \ and Batch Processing\n\nReduce SendGrid API calls through intelligent batching\
-    \ of email operations. Combine multiple recipient emails into single API calls\
-    \ using SendGrid's personalizations array when sending identical content. Implement\
-    \ request pooling that aggregates individual email sends into batch requests during\
-    \ high-volume periods. Schedule non-urgent emails for off-peak processing to smooth\
-    \ API utilization.\n\nOptimize webhook event processing with bulk database operations.\
-    \ Buffer incoming webhook events and process them in batches to reduce database\
-    \ transaction overhead. Implement bulk update operations for modifying multiple\
-    \ mail.message records simultaneously during event processing. Use database cursor\
-    \ optimizations for high-volume event scenarios to maintain processing performance.\n\
-    \nCache frequently accessed SendGrid template content to reduce API calls. Store\
-    \ rendered template previews in Odoo's filestore when templates remain unchanged.\
-    \ Implement template change detection that invalidates caches when SendGrid templates\
-    \ receive updates. Cache SendGrid account statistics and reputation metrics to\
-    \ avoid repeated API queries for dashboard displays.\n\n### Database Optimization\
-    \ and Query Performance\n\nOptimize Odoo database schema for SendGrid integration\
-    \ data patterns. Add database indexes to mail.message fields used in SendGrid\
-    \ event correlation queries. Implement partial indexes for webhook event processing\
-    \ that focus on unprocessed events. Use database partitioning for mail.tracking.event\
-    \ records to maintain query performance as data volume grows.\n\nTune Odoo server\
-    \ configuration for integration workload characteristics. Increase worker processes\
-    \ for webhook endpoint controllers to handle concurrent event processing. Adjust\
-    \ Odoo's database connection pool size to accommodate increased database activity\
-    \ during bulk email operations. Configure appropriate timeout values for SendGrid\
-    \ API calls based on network latency observations.\n\nMonitor integration performance\
-    \ with dedicated metrics and alerting. Track email queue processing times to detect\
-    \ performance degradation early. Measure webhook event processing latency to ensure\
-    \ real-time engagement data updates. Monitor database query performance for SendGrid-related\
-    \ operations and create alerts for slow queries."
+    \ to SendGrid.\n\n## Performance Optimization\n\n### API Call Efficiency and Batch\
+    \ Processing\n\nReduce SendGrid API calls through intelligent batching of email\
+    \ operations. Combine multiple recipient emails into single API calls using SendGrid's\
+    \ personalizations array when sending identical content. Implement request pooling\
+    \ that aggregates individual email sends into batch requests during high-volume\
+    \ periods. Schedule non-urgent emails for off-peak processing to smooth API utilization.\n\
+    \nOptimize webhook event processing with bulk database operations. Buffer incoming\
+    \ webhook events and process them in batches to reduce database transaction overhead.\
+    \ Implement bulk update operations for modifying multiple mail.message records\
+    \ simultaneously during event processing. Use database cursor optimizations for\
+    \ high-volume event scenarios to maintain processing performance.\n\nCache frequently\
+    \ accessed SendGrid template content to reduce API calls. Store rendered template\
+    \ previews in Odoo's filestore when templates remain unchanged. Implement template\
+    \ change detection that invalidates caches when SendGrid templates receive updates.\
+    \ Cache SendGrid account statistics and reputation metrics to avoid repeated API\
+    \ queries for dashboard displays.\n\n### Database Optimization and Query Performance\n\
+    \nOptimize Odoo database schema for SendGrid integration data patterns. Add database\
+    \ indexes to mail.message fields used in SendGrid event correlation queries. Implement\
+    \ partial indexes for webhook event processing that focus on unprocessed events.\
+    \ Use database partitioning for mail.tracking.event records to maintain query\
+    \ performance as data volume grows.\n\nTune Odoo server configuration for integration\
+    \ workload characteristics. Increase worker processes for webhook endpoint controllers\
+    \ to handle concurrent event processing. Adjust Odoo's database connection pool\
+    \ size to accommodate increased database activity during bulk email operations.\
+    \ Configure appropriate timeout values for SendGrid API calls based on network\
+    \ latency observations.\n\nMonitor integration performance with dedicated metrics\
+    \ and alerting. Track email queue processing times to detect performance degradation\
+    \ early. Measure webhook event processing latency to ensure real-time engagement\
+    \ data updates. Monitor database query performance for SendGrid-related operations\
+    \ and create alerts for slow queries."
   conclusion: 'Your SendGrid and Odoo 18 integration establishes a robust technical
     foundation for customer communication management. The implementation eliminates
     manual data transfers between systems, creating automated workflows that synchronize
@@ -454,13 +454,14 @@ visualizations:
   placement_hint: after_conclusion
   data_context: learning path and knowledge graph
   mermaid_chart_syntax: "flowchart TB\n\n    Current[\"[CURRENT] Sendgrid to Odoo\
-    \ Integration: Complete 2025 Guide\"]\n\n    %% Related Topics - Cross-References\n\
-    \    Current -.-> Rel0[\"Cloudflare to Odoo Integration: Complete 2025 Guide\"\
-    ]\n    Current -.-> Rel1[\"Facebook Pixel to Odoo Integration: Complete 2025 Guide\"\
-    ]\n\n    %% Professional Styling\n    classDef current fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n\
-    \    classDef prereq fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000\n\
-    \    classDef next fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000\n \
-    \   classDef related fill:#f5f5f5,stroke:#616161,stroke-width:1px,color:#000\n\
+    \ Integration: Complete 2025 Guide\"]\n\n    %% Next Steps - Learning Progression\n\
+    \    Current --> Next0(\"Complete Implementation Guide\")\n\n    %% Related Topics\
+    \ - Cross-References\n    Current -.-> Rel0[\"Cloudflare to Odoo Integration:\
+    \ Complete 2025 Guide\"]\n    Current -.-> Rel1[\"Facebook Pixel to Odoo Integration:\
+    \ Complete 2025 Guide\"]\n\n    %% Professional Styling\n    classDef current\
+    \ fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n    classDef prereq\
+    \ fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000\n    classDef next fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000\n\
+    \    classDef related fill:#f5f5f5,stroke:#616161,stroke-width:1px,color:#000\n\
     \    classDef trouble fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000\n\
     \    classDef support fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#000\n\
-    \n    class Current current\n    class Rel0,Rel1 related"
+    \n    class Current current\n    class Next0 next\n    class Rel0,Rel1 related"

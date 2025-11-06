@@ -56,87 +56,86 @@ ai_generated_content:
     Follow each step with precision, and you will transform your CentOS server into
     a high-performance Odoo application host. Let''s build a foundation that scales
     with your business needs and operates with enterprise-grade reliability.'
-  main_content: "## System Architecture and Component Flow\n\nA production\
-    \ Odoo 18 deployment on CentOS 9 requires a clear understanding of its multi-tier\
-    \ architecture. This design separates concerns, enhances security, and enables\
-    \ scaling. The core components form a chain where each service handles a specific\
-    \ task, passing requests to the next layer in a structured flow. Visualize this\
-    \ as a stack where user interactions enter at the top and descend to the data\
-    \ persistence layer.\n\nThe user experience starts at the Nginx reverse proxy.\
-    \ This component acts as the public gateway, terminating SSL/TLS connections and\
-    \ serving static files with high efficiency. It forwards dynamic requests to the\
-    \ Odoo application server, which operates via the WSGI protocol. Nginx shields\
-    \ the Python application from direct internet exposure, providing a critical security\
-    \ buffer and performance boost for static content like images, CSS, and JavaScript.\n\
-    \nThe Odoo application server, running in a dedicated Python virtual environment,\
-    \ constitutes the business logic engine. It processes all dynamic requests, executes\
-    \ Python code, and renders QWeb templates. This environment, built with specific\
-    \ library versions, ensures absolute dependency isolation from the underlying\
-    \ CentOS system. The application layer communicates with the PostgreSQL database\
-    \ using pure Python drivers, executing complex queries and transactions.\n\nPostgreSQL\
-    \ serves as the persistent data store, managing all structured information from\
-    \ customer records to product inventories. A dedicated system user owns this database\
-    \ cluster, enforcing strict access controls. The entire data flow follows a strict\
-    \ unidirectional pattern for requests, with responses traveling back through the\
-    \ same layers to the end-user's browser. This architecture creates a secure, performant,\
-    \ and maintainable deployment foundation.\n\n## Prerequisites and Initial System\
-    \ Configuration\n\nA properly prepared CentOS 9 server forms the bedrock\
-    \ of a stable Odoo installation. Begin with a minimal server installation, which\
-    \ reduces the attack surface and resource overhead. Your system requires at least\
-    \ 2 CPU cores, 4 GB of RAM, and 20 GB of free disk space for a production workload.\
-    \ A sudo-privileged user account must execute all administrative commands throughout\
-    \ this process.\n\nFirst, update the entire system to incorporate the latest security\
-    \ patches and bug fixes. The `dnf update` command fetches and installs all available\
-    \ package updates. A system reboot ensures the server runs the newest kernel and\
-    \ core libraries. This step eliminates potential conflicts with outdated software\
-    \ packages.\n\n`sudo dnf update -y`\n`sudo reboot`\n\nInstall the Essential Packages\
-    \ and Development Tools required for compiling Python modules and managing software.\
-    \ This group includes compilers, header files, and critical libraries that Odoo's\
-    \ dependencies need. The `@development` group provides a comprehensive set of\
-    \ tools for building software from source code.\n\n`sudo dnf install -y python3-pip\
-    \ python3-devel git wget @development`\n`sudo dnf install -y openldap-devel libxml2-devel\
-    \ libxslt-devel libjpeg-devel libffi-devel`\n\nCreate the System User and Groups\
-    \ that will manage the Odoo service and database. Running Odoo under a dedicated\
-    \ user account enhances security by following the principle of least privilege.\
-    \ This user owns the application code and executes the server process with minimal\
-    \ system permissions.\n\n`sudo useradd -m -U -r -d /opt/odoo -s /bin/bash odoo`\n\
-    \nThis command creates the `odoo` user with a home directory at `/opt/odoo`. The\
-    \ system will run the Odoo application and related processes under this isolated\
-    \ account. You now have a secure, updated base system ready for the database and\
-    \ application installation.\n\n## PostgreSQL Database Installation and Configuration\
-    \\n\nOdoo requires a robust relational database, and PostgreSQL delivers\
-    \ the performance and reliability needed for enterprise applications. Install\
-    \ the PostgreSQL server and client packages from the standard CentOS repositories.\
-    \ This provides a stable, well-tested database environment for your Odoo instance.\n\
-    \n`sudo dnf install -y postgresql-server postgresql-contrib`\n\nInitialize the\
-    \ PostgreSQL database cluster using the `postgresql-setup` command. This script\
-    \ creates the necessary data directory structure and configuration files. The\
-    \ initialization process sets up the default database locale and encoding, which\
-    \ must align with your Odoo deployment's requirements.\n\n`sudo postgresql-setup\
-    \ --initdb --unit postgresql`\n\nStart and enable the PostgreSQL service to ensure\
-    \ it launches automatically upon system boot. The `enable` command links the service\
-    \ to the system's init system, while `start` activates it immediately. Verify\
-    \ the database server accepts connections on the standard port.\n\n`sudo systemctl\
-    \ enable --now postgresql`\n`sudo systemctl status postgresql`\n\nCreate a Dedicated\
-    \ PostgreSQL User for Odoo. This user matches the name of the system account you\
-    \ created earlier, which simplifies authentication. Switch to the `postgres` system\
-    \ user to execute database administration commands with the correct privileges.\n\
-    \n`sudo -u postgres createuser --createdb --username postgres --no-createrole\
-    \ --no-superuser --pwprompt odoo`\n`sudo -u postgres createdb --owner=odoo odoo`\n\
-    \nThis sequence creates the `odoo` database user with limited privileges and a\
-    \ corresponding database owned by that user. The `--pwprompt` flag triggers a\
-    \ password creation dialog; record this password in a secure location. Your Odoo\
-    \ application will use these credentials to connect to its dedicated database,\
-    \ ensuring data isolation and security.\n\n## Python Environment and Odoo 18 Installation\
-    \\n\nA controlled Python environment prevents dependency conflicts\
-    \ and ensures consistent application behavior. CentOS 9 includes Python 3.9 by\
-    \ default, which meets Odoo 18's requirements. We will create a virtual environment\
-    \ to house all Odoo's Python dependencies, separate from the system's Python packages.\n\
-    \nInstall the `virtualenv` package using pip3. This tool constructs isolated Python\
-    \ environments with their own package directories. Isolation prevents conflicts\
-    \ between Odoo's requirements and other Python applications on the same system.\n\
-    \n`sudo pip3 install virtualenv`\n\nSwitch to the `odoo` user and navigate to\
-    \ its home directory. All subsequent Odoo installation steps occur within this\
+  main_content: "## System Architecture and Component Flow\n\nA production Odoo 18\
+    \ deployment on CentOS 9 requires a clear understanding of its multi-tier architecture.\
+    \ This design separates concerns, enhances security, and enables scaling. The\
+    \ core components form a chain where each service handles a specific task, passing\
+    \ requests to the next layer in a structured flow. Visualize this as a stack where\
+    \ user interactions enter at the top and descend to the data persistence layer.\n\
+    \nThe user experience starts at the Nginx reverse proxy. This component acts as\
+    \ the public gateway, terminating SSL/TLS connections and serving static files\
+    \ with high efficiency. It forwards dynamic requests to the Odoo application server,\
+    \ which operates via the WSGI protocol. Nginx shields the Python application from\
+    \ direct internet exposure, providing a critical security buffer and performance\
+    \ boost for static content like images, CSS, and JavaScript.\n\nThe Odoo application\
+    \ server, running in a dedicated Python virtual environment, constitutes the business\
+    \ logic engine. It processes all dynamic requests, executes Python code, and renders\
+    \ QWeb templates. This environment, built with specific library versions, ensures\
+    \ absolute dependency isolation from the underlying CentOS system. The application\
+    \ layer communicates with the PostgreSQL database using pure Python drivers, executing\
+    \ complex queries and transactions.\n\nPostgreSQL serves as the persistent data\
+    \ store, managing all structured information from customer records to product\
+    \ inventories. A dedicated system user owns this database cluster, enforcing strict\
+    \ access controls. The entire data flow follows a strict unidirectional pattern\
+    \ for requests, with responses traveling back through the same layers to the end-user's\
+    \ browser. This architecture creates a secure, performant, and maintainable deployment\
+    \ foundation.\n\n## Prerequisites and Initial System Configuration\n\nA properly\
+    \ prepared CentOS 9 server forms the bedrock of a stable Odoo installation. Begin\
+    \ with a minimal server installation, which reduces the attack surface and resource\
+    \ overhead. Your system requires at least 2 CPU cores, 4 GB of RAM, and 20 GB\
+    \ of free disk space for a production workload. A sudo-privileged user account\
+    \ must execute all administrative commands throughout this process.\n\nFirst,\
+    \ update the entire system to incorporate the latest security patches and bug\
+    \ fixes. The `dnf update` command fetches and installs all available package updates.\
+    \ A system reboot ensures the server runs the newest kernel and core libraries.\
+    \ This step eliminates potential conflicts with outdated software packages.\n\n\
+    `sudo dnf update -y`\n`sudo reboot`\n\nInstall the Essential Packages and Development\
+    \ Tools required for compiling Python modules and managing software. This group\
+    \ includes compilers, header files, and critical libraries that Odoo's dependencies\
+    \ need. The `@development` group provides a comprehensive set of tools for building\
+    \ software from source code.\n\n`sudo dnf install -y python3-pip python3-devel\
+    \ git wget @development`\n`sudo dnf install -y openldap-devel libxml2-devel libxslt-devel\
+    \ libjpeg-devel libffi-devel`\n\nCreate the System User and Groups that will manage\
+    \ the Odoo service and database. Running Odoo under a dedicated user account enhances\
+    \ security by following the principle of least privilege. This user owns the application\
+    \ code and executes the server process with minimal system permissions.\n\n`sudo\
+    \ useradd -m -U -r -d /opt/odoo -s /bin/bash odoo`\n\nThis command creates the\
+    \ `odoo` user with a home directory at `/opt/odoo`. The system will run the Odoo\
+    \ application and related processes under this isolated account. You now have\
+    \ a secure, updated base system ready for the database and application installation.\n\
+    \n## PostgreSQL Database Installation and Configuration\\n\nOdoo requires a robust\
+    \ relational database, and PostgreSQL delivers the performance and reliability\
+    \ needed for enterprise applications. Install the PostgreSQL server and client\
+    \ packages from the standard CentOS repositories. This provides a stable, well-tested\
+    \ database environment for your Odoo instance.\n\n`sudo dnf install -y postgresql-server\
+    \ postgresql-contrib`\n\nInitialize the PostgreSQL database cluster using the\
+    \ `postgresql-setup` command. This script creates the necessary data directory\
+    \ structure and configuration files. The initialization process sets up the default\
+    \ database locale and encoding, which must align with your Odoo deployment's requirements.\n\
+    \n`sudo postgresql-setup --initdb --unit postgresql`\n\nStart and enable the PostgreSQL\
+    \ service to ensure it launches automatically upon system boot. The `enable` command\
+    \ links the service to the system's init system, while `start` activates it immediately.\
+    \ Verify the database server accepts connections on the standard port.\n\n`sudo\
+    \ systemctl enable --now postgresql`\n`sudo systemctl status postgresql`\n\nCreate\
+    \ a Dedicated PostgreSQL User for Odoo. This user matches the name of the system\
+    \ account you created earlier, which simplifies authentication. Switch to the\
+    \ `postgres` system user to execute database administration commands with the\
+    \ correct privileges.\n\n`sudo -u postgres createuser --createdb --username postgres\
+    \ --no-createrole --no-superuser --pwprompt odoo`\n`sudo -u postgres createdb\
+    \ --owner=odoo odoo`\n\nThis sequence creates the `odoo` database user with limited\
+    \ privileges and a corresponding database owned by that user. The `--pwprompt`\
+    \ flag triggers a password creation dialog; record this password in a secure location.\
+    \ Your Odoo application will use these credentials to connect to its dedicated\
+    \ database, ensuring data isolation and security.\n\n## Python Environment and\
+    \ Odoo 18 Installation\\n\nA controlled Python environment prevents dependency\
+    \ conflicts and ensures consistent application behavior. CentOS 9 includes Python\
+    \ 3.9 by default, which meets Odoo 18's requirements. We will create a virtual\
+    \ environment to house all Odoo's Python dependencies, separate from the system's\
+    \ Python packages.\n\nInstall the `virtualenv` package using pip3. This tool constructs\
+    \ isolated Python environments with their own package directories. Isolation prevents\
+    \ conflicts between Odoo's requirements and other Python applications on the same\
+    \ system.\n\n`sudo pip3 install virtualenv`\n\nSwitch to the `odoo` user and navigate\
+    \ to its home directory. All subsequent Odoo installation steps occur within this\
     \ user's context, which enforces proper file ownership and security boundaries.\n\
     \n`sudo su - odoo`\n\nCreate and activate a Python virtual environment within\
     \ the odoo user's home directory. This environment will contain the exact Python\
@@ -155,35 +154,35 @@ ai_generated_content:
     \n`odoo --version`\n\nExit the odoo user session and return to your sudo-privileged\
     \ account. The core Odoo application now resides in the virtual environment, ready\
     \ for configuration.\n\n`exit`\n\n## Odoo Application Configuration and Service\
-    \ Setup\n\nA proper configuration file centralizes all Odoo settings\
-    \ and simplifies management. Create the main Odoo configuration directory and\
-    \ generate a default configuration file. This file controls database connections,\
-    \ server ports, file paths, and security settings.\n\n`sudo mkdir /etc/odoo`\n\
-    `sudo touch /etc/odoo/odoo.conf`\n\nGenerate a base configuration using the `odoo`\
-    \ command with the `--save` flag. This creates a template with all default settings,\
-    \ which you can then customize for your specific deployment.\n\n`sudo su - odoo\
-    \ -c \"cd /opt/odoo && source odoo-venv/bin/activate && odoo --stop-after-init\
-    \ --save --config /etc/odoo/odoo.conf --db_host=127.0.0.1 --db_port=5432 --db_user=odoo\
-    \ --db_password=your_db_password\"`\n\nReplace `your_db_password` with the actual\
-    \ password you set for the PostgreSQL `odoo` user. This command initializes the\
-    \ configuration file with the correct database connection parameters.\n\nEdit\
-    \ the Odoo configuration file to fine-tune the deployment settings. Use a text\
-    \ editor to modify the file, ensuring it contains the essential parameters for\
-    \ a production environment.\n\n`sudo nano /etc/odoo/odoo.conf`\n\nA production-ready\
-    \ configuration file should include these core parameters:\n\n```\n[options]\n\
-    admin_passwd = your_master_admin_password\ndb_host = 127.0.0.1\ndb_port = 5432\n\
-    db_user = odoo\ndb_password = your_db_password\naddons_path = /opt/odoo/odoo-venv/lib/python3.9/site-packages/odoo/addons\n\
-    data_dir = /var/lib/odoo\nlogfile = /var/log/odoo/odoo.log\nlog_level = warn\n\
-    ```\n\nSet a strong master admin password to control database creation and restoration\
-    \ operations. The `addons_path` directs Odoo to its standard module directory,\
-    \ while `data_dir` defines where attachments and session data reside. Configure\
-    \ proper log file location and logging level for operational visibility.\n\nCreate\
-    \ the necessary directories for Odoo's operational data and log files. Assign\
-    \ correct ownership to the `odoo` user so the application can write to these locations.\n\
-    \n`sudo mkdir /var/lib/odoo`\n`sudo mkdir /var/log/odoo`\n`sudo chown odoo:odoo\
-    \ /var/lib/odoo /var/log/odoo`\n\nConfigure Odoo as a Systemd Service for automatic\
-    \ management and high availability. Create a service unit file that defines how\
-    \ the system should start, stop, and monitor the Odoo process.\n\n`sudo nano /etc/systemd/system/odoo.service`\n\
+    \ Setup\n\nA proper configuration file centralizes all Odoo settings and simplifies\
+    \ management. Create the main Odoo configuration directory and generate a default\
+    \ configuration file. This file controls database connections, server ports, file\
+    \ paths, and security settings.\n\n`sudo mkdir /etc/odoo`\n`sudo touch /etc/odoo/odoo.conf`\n\
+    \nGenerate a base configuration using the `odoo` command with the `--save` flag.\
+    \ This creates a template with all default settings, which you can then customize\
+    \ for your specific deployment.\n\n`sudo su - odoo -c \"cd /opt/odoo && source\
+    \ odoo-venv/bin/activate && odoo --stop-after-init --save --config /etc/odoo/odoo.conf\
+    \ --db_host=127.0.0.1 --db_port=5432 --db_user=odoo --db_password=your_db_password\"\
+    `\n\nReplace `your_db_password` with the actual password you set for the PostgreSQL\
+    \ `odoo` user. This command initializes the configuration file with the correct\
+    \ database connection parameters.\n\nEdit the Odoo configuration file to fine-tune\
+    \ the deployment settings. Use a text editor to modify the file, ensuring it contains\
+    \ the essential parameters for a production environment.\n\n`sudo nano /etc/odoo/odoo.conf`\n\
+    \nA production-ready configuration file should include these core parameters:\n\
+    \n```\n[options]\nadmin_passwd = your_master_admin_password\ndb_host = 127.0.0.1\n\
+    db_port = 5432\ndb_user = odoo\ndb_password = your_db_password\naddons_path =\
+    \ /opt/odoo/odoo-venv/lib/python3.9/site-packages/odoo/addons\ndata_dir = /var/lib/odoo\n\
+    logfile = /var/log/odoo/odoo.log\nlog_level = warn\n```\n\nSet a strong master\
+    \ admin password to control database creation and restoration operations. The\
+    \ `addons_path` directs Odoo to its standard module directory, while `data_dir`\
+    \ defines where attachments and session data reside. Configure proper log file\
+    \ location and logging level for operational visibility.\n\nCreate the necessary\
+    \ directories for Odoo's operational data and log files. Assign correct ownership\
+    \ to the `odoo` user so the application can write to these locations.\n\n`sudo\
+    \ mkdir /var/lib/odoo`\n`sudo mkdir /var/log/odoo`\n`sudo chown odoo:odoo /var/lib/odoo\
+    \ /var/log/odoo`\n\nConfigure Odoo as a Systemd Service for automatic management\
+    \ and high availability. Create a service unit file that defines how the system\
+    \ should start, stop, and monitor the Odoo process.\n\n`sudo nano /etc/systemd/system/odoo.service`\n\
     \nThe service file should contain this configuration:\n\n```\n[Unit]\nDescription=Odoo\
     \ 18\nRequires=postgresql.service\nAfter=network.target postgresql.service\n\n\
     [Service]\nType=simple\nSyslogIdentifier=odoo\nUser=odoo\nGroup=odoo\nExecStart=/opt/odoo/odoo-venv/bin/odoo\
@@ -197,9 +196,9 @@ ai_generated_content:
     \ status odoo`\n\nThe Odoo application server now runs as a managed system service,\
     \ accessible on port 8069. The system will automatically restart the service if\
     \ it fails and maintain it across server reboots.\n\n## Nginx Reverse Proxy and\
-    \ SSL Configuration\n\nA reverse proxy server handles client connections,\
-    \ offloads SSL processing, and serves static content efficiently. Install Nginx\
-    \ from the CentOS repositories to act as this front-end proxy for your Odoo application.\n\
+    \ SSL Configuration\n\nA reverse proxy server handles client connections, offloads\
+    \ SSL processing, and serves static content efficiently. Install Nginx from the\
+    \ CentOS repositories to act as this front-end proxy for your Odoo application.\n\
     \n`sudo dnf install -y nginx`\n\nCreate a new Nginx server block configuration\
     \ specifically for Odoo. This configuration defines how Nginx handles incoming\
     \ HTTP and HTTPS requests and proxies them to the Odoo backend.\n\n`sudo nano\
@@ -234,9 +233,9 @@ ai_generated_content:
     \ --now nginx`\n`sudo systemctl reload nginx`\n\nNginx now acts as a secure reverse\
     \ proxy, handling SSL termination and static content delivery while forwarding\
     \ dynamic requests to the Odoo application server.\n\n## Security Hardening and\
-    \ Firewall Configuration\n\nA secure Odoo deployment requires multiple\
-    \ defense layers at the network, application, and system levels. Begin with the\
-    \ CentOS firewall, which controls network access to your server's services. Configure\
+    \ Firewall Configuration\n\nA secure Odoo deployment requires multiple defense\
+    \ layers at the network, application, and system levels. Begin with the CentOS\
+    \ firewall, which controls network access to your server's services. Configure\
     \ `firewalld` to permit only essential traffic while blocking all other connections.\n\
     \n`sudo firewall-cmd --permanent --add-service=http`\n`sudo firewall-cmd --permanent\
     \ --add-service=https`\n`sudo firewall-cmd --permanent --remove-service=ssh --remove-port=8069/tcp`\n\
@@ -269,36 +268,35 @@ ai_generated_content:
     \ to apply these authentication changes.\n\n`sudo systemctl restart postgresql`\n\
     \nYour Odoo installation now operates behind multiple security layers, with controlled\
     \ network access, application-level protections, and filesystem permissions that\
-    \ follow security best practices.\n\n## Performance Optimization and Monitoring\
-    \\n\nA well-tuned Odoo instance delivers responsive user experiences\
-    \ and handles concurrent operations efficiently. Begin with Database Performance\
-    \ optimizations by adjusting PostgreSQL configuration parameters. Edit the main\
-    \ PostgreSQL configuration file to allocate resources based on your server's capacity.\n\
-    \n`sudo nano /var/lib/pgsql/data/postgresql.conf`\n\nModify these key performance\
-    \ parameters:\n\n```\nshared_buffers = 1GB\nwork_mem = 10MB\nmaintenance_work_mem\
-    \ = 256MB\neffective_cache_size = 3GB\nrandom_page_cost = 1.1\n```\n\nThe `shared_buffers`\
-    \ setting controls how much memory PostgreSQL dedicates to caching data. Allocate\
-    \ approximately 25% of your system RAM for this parameter. `work_mem` determines\
-    \ the amount of memory available for sort operations and hash tables. Increase\
-    \ `maintenance_work_mem` for faster database vacuuming and index creation.\n\n\
-    Optimize Odoo's Worker Processes to handle concurrent requests efficiently. The\
-    \ default Odoo configuration uses a single process, which limits performance under\
-    \ load. Edit the Odoo configuration file to enable multiprocessing mode.\n\n`sudo\
-    \ nano /etc/odoo/odoo.conf`\n\nAdd these worker configuration parameters:\n\n\
-    ```\nworkers = 4\nlimit_memory_hard = 2684354560\nlimit_memory_soft = 2147483648\n\
-    limit_request = 8192\nlimit_time_cpu = 600\nlimit_time_real = 1200\nmax_cron_threads\
-    \ = 1\n```\n\nThe `workers` parameter defines the number of simultaneous request\
-    \ handlers. A good starting point calculates workers based on CPU cores: (CPU\
-    \ cores * 2) + 1. Memory limits prevent worker processes from consuming excessive\
-    \ system resources. Adjust these values based on your server's available RAM and\
-    \ typical workload patterns.\n\nImplement Caching Strategies to reduce database\
-    \ load. Odoo supports in-memory caching for frequently accessed data. Configure\
-    \ the Odoo cache parameters to optimize response times for common operations.\n\
-    \n```\ncache_timeout = 3600\ncache_size = 16777216\n```\n\nThe `cache_timeout`\
-    \ sets how long cached data remains valid, while `cache_size` defines the memory\
-    \ allocated for caching. These settings work with the worker processes to serve\
-    \ repeated requests from memory instead of querying the database.\n\nConfigure\
-    \ Logging and Monitoring to track system performance and identify bottlenecks.\
+    \ follow security best practices.\n\n## Performance Optimization and Monitoring\\\
+    n\nA well-tuned Odoo instance delivers responsive user experiences and handles\
+    \ concurrent operations efficiently. Begin with Database Performance optimizations\
+    \ by adjusting PostgreSQL configuration parameters. Edit the main PostgreSQL configuration\
+    \ file to allocate resources based on your server's capacity.\n\n`sudo nano /var/lib/pgsql/data/postgresql.conf`\n\
+    \nModify these key performance parameters:\n\n```\nshared_buffers = 1GB\nwork_mem\
+    \ = 10MB\nmaintenance_work_mem = 256MB\neffective_cache_size = 3GB\nrandom_page_cost\
+    \ = 1.1\n```\n\nThe `shared_buffers` setting controls how much memory PostgreSQL\
+    \ dedicates to caching data. Allocate approximately 25% of your system RAM for\
+    \ this parameter. `work_mem` determines the amount of memory available for sort\
+    \ operations and hash tables. Increase `maintenance_work_mem` for faster database\
+    \ vacuuming and index creation.\n\nOptimize Odoo's Worker Processes to handle\
+    \ concurrent requests efficiently. The default Odoo configuration uses a single\
+    \ process, which limits performance under load. Edit the Odoo configuration file\
+    \ to enable multiprocessing mode.\n\n`sudo nano /etc/odoo/odoo.conf`\n\nAdd these\
+    \ worker configuration parameters:\n\n```\nworkers = 4\nlimit_memory_hard = 2684354560\n\
+    limit_memory_soft = 2147483648\nlimit_request = 8192\nlimit_time_cpu = 600\nlimit_time_real\
+    \ = 1200\nmax_cron_threads = 1\n```\n\nThe `workers` parameter defines the number\
+    \ of simultaneous request handlers. A good starting point calculates workers based\
+    \ on CPU cores: (CPU cores * 2) + 1. Memory limits prevent worker processes from\
+    \ consuming excessive system resources. Adjust these values based on your server's\
+    \ available RAM and typical workload patterns.\n\nImplement Caching Strategies\
+    \ to reduce database load. Odoo supports in-memory caching for frequently accessed\
+    \ data. Configure the Odoo cache parameters to optimize response times for common\
+    \ operations.\n\n```\ncache_timeout = 3600\ncache_size = 16777216\n```\n\nThe\
+    \ `cache_timeout` sets how long cached data remains valid, while `cache_size`\
+    \ defines the memory allocated for caching. These settings work with the worker\
+    \ processes to serve repeated requests from memory instead of querying the database.\n\
+    \nConfigure Logging and Monitoring to track system performance and identify bottlenecks.\
     \ The Odoo log file provides insights into application behavior, while system\
     \ monitoring tools track resource utilization.\n\n`sudo nano /etc/odoo/odoo.conf`\n\
     \nSet appropriate log levels and enable specific log handlers:\n\n```\nlog_level\
@@ -411,69 +409,35 @@ visualizations:
 - chart_type: mermaid
   placement_hint: after_steps
   data_context: installation workflow visualization (semantic variant)
-  mermaid_chart_syntax: "flowchart LR\n    Start([CentOS Server]) --> Update[Update\
-    \ System Packages]\n    Update --> Postgres[Install PostgreSQL 15]\n    Postgres\
-    \ --> Python[Install Python 3.11]\n    Python --> Deps[Install Dependencies]\n\
-    \    Deps --> Odoo[Install Odoo 18]\n    Odoo --> Config[Configure systemd Service]\n\
-    \    Config --> Nginx[Setup Nginx Reverse Proxy]\n    Nginx --> SSL[Configure\
-    \ SSL/TLS]\n    SSL --> End([Production Ready])\n\n    classDef step fill:#f8f9fa,stroke:#6c757d,stroke-width:1px\n\
-    \    classDef database fill:#d1ecf1,stroke:#17a2b8,stroke-width:2px\n    classDef\
-    \ milestone fill:#d4edda,stroke:#28a745,stroke-width:2px\n\n    class Update,Deps,Config,Nginx,SSL\
-    \ step\n    class Postgres,Python database\n    class Start,Odoo,End milestone\n"
-  variant_id: install_chart_001
-- chart_type: mermaid
-  placement_hint: after_prerequisites
-  data_context: 'Phase 1: Infrastructure Preparation'
-  mermaid_chart_syntax: "flowchart TB\n    Start([Server Provisioning]) --> Hardware[Verify\
-    \ Hardware Requirements]\n    Hardware --> Network[Configure Network Settings]\n\
-    \    Network --> DNS[Setup DNS Records]\n    DNS --> Firewall[Configure Firewall\
-    \ Rules]\n    Firewall --> Users[Create System Users]\n    Users --> Dirs[Setup\
-    \ Directory Structure]\n    Dirs --> End([Infrastructure Ready])\n\n    classDef\
-    \ prep fill:#fff3cd,stroke:#ffc107,stroke-width:2px\n    classDef network fill:#e1f5fe,stroke:#0277bd,stroke-width:1px\n\
-    \    classDef success fill:#d4edda,stroke:#28a745,stroke-width:2px\n\n    class\
-    \ Hardware,Users,Dirs prep\n    class Network,DNS,Firewall network\n    class\
-    \ Start,End success\n"
-  variant_id: install_chart_001_prep
-- chart_type: mermaid
-  placement_hint: after_configuration
-  data_context: 'Phase 3: Security Hardening & Configuration'
-  mermaid_chart_syntax: "flowchart LR\n    Start([Post-Installation]) --> SSH[Harden\
-    \ SSH Config]\n    SSH --> Fail2ban[Install Fail2ban]\n    Fail2ban --> UFW[Configure\
-    \ UFW/iptables]\n    UFW --> Perms[Set File Permissions]\n    Perms --> Backup[Setup\
-    \ Automated Backups]\n    Backup --> Monitor[Configure Monitoring]\n    Monitor\
-    \ --> End([Security Hardened])\n\n    classDef security fill:#f44336,stroke:#d32f2f,stroke-width:2px,color:#fff\n\
-    \    classDef ops fill:#9c27b0,stroke:#7b1fa2,stroke-width:2px,color:#fff\n  \
-    \  classDef success fill:#d4edda,stroke:#28a745,stroke-width:2px\n\n    class\
-    \ SSH,Fail2ban,UFW,Perms security\n    class Backup,Monitor ops\n    class Start,End\
-    \ success\n"
-  variant_id: install_chart_001_security
-- chart_type: mermaid
-  placement_hint: before_troubleshooting
-  data_context: 'Phase 4: Testing & Validation'
-  mermaid_chart_syntax: "flowchart LR\n    Start([Deployment Complete]) --> Health[Health\
-    \ Check API]\n    Health --> Database[Database Connectivity Test]\n    Database\
-    \ --> Login[Admin Login Test]\n    Login --> Module[Module Installation Test]\n\
-    \    Module --> Load[Basic Load Test]\n    Load --> SSL[SSL Certificate Validation]\n\
-    \    SSL --> End([Validated & Production Ready])\n\n    classDef test fill:#e3f2fd,stroke:#1976d2,stroke-width:2px\n\
-    \    classDef critical fill:#fff3cd,stroke:#ffc107,stroke-width:2px\n    classDef\
-    \ success fill:#d4edda,stroke:#28a745,stroke-width:2px\n\n    class Health,Database,Login,Module,Load\
-    \ test\n    class SSL critical\n    class Start,End success\n"
-  variant_id: install_chart_001_testing
+  mermaid_chart_syntax: "flowchart TB\n    Start([Enterprise Infrastructure]) -->\
+    \ LB[Load Balancer Setup]\n    LB --> App1[Application Server 1]\n    LB --> App2[Application\
+    \ Server 2]\n    LB --> App3[Application Server N]\n    App1 --> DB[PostgreSQL\
+    \ Primary]\n    App2 --> DB\n    App3 --> DB\n    DB --> Replica[PostgreSQL Replicas]\n\
+    \    Replica --> NFS[Shared NFS Storage]\n    NFS --> Monitor[Monitoring & Alerting]\n\
+    \    Monitor --> Backup[Automated Backups]\n    Backup --> End([High Availability\
+    \ Ready])\n\n    classDef lb fill:#ff9800,stroke:#f57c00,stroke-width:2px,color:#fff\n\
+    \    classDef app fill:#2196f3,stroke:#1976d2,stroke-width:2px,color:#fff\n  \
+    \  classDef database fill:#4caf50,stroke:#388e3c,stroke-width:2px,color:#fff\n\
+    \    classDef ops fill:#9c27b0,stroke:#7b1fa2,stroke-width:2px,color:#fff\n\n\
+    \    class LB lb\n    class App1,App2,App3 app\n    class DB,Replica database\n\
+    \    class NFS,Monitor,Backup ops\n"
+  variant_id: install_chart_008
 - chart_type: mermaid
   placement_hint: after_conclusion
   data_context: learning path and knowledge graph
   mermaid_chart_syntax: "flowchart TB\n\n    Current[\"[CURRENT] Install Odoo 18 on\
     \ CentOS 9: Complete 2025 Guide\"]\n\n    %% Next Steps - Learning Progression\n\
-    \    Current --> Next0(\"Upgrade from Odoo 11 to 18\")\n    Current --> Next1(\"\
-    Optimize PostgreSQL Performance: Improve Performance by 50%\")\n\n    %% Related\
-    \ Topics - Cross-References\n    Current -.-> Rel0[\"Install Odoo 18 on Windows\
-    \ 2022: Complete 2025 Guide\"]\n    Current -.-> Rel1[\"Install Odoo 18 on Rocky\
-    \ Linux 9: Complete 2025 Guide\"]\n    Current -.-> Rel2[\"Install Odoo 18 on\
-    \ Fedora 39: Complete 2025 Guide\"]\n\n    %% Professional Styling\n    classDef\
-    \ current fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n    classDef\
-    \ prereq fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000\n    classDef\
-    \ next fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000\n    classDef related\
-    \ fill:#f5f5f5,stroke:#616161,stroke-width:1px,color:#000\n    classDef trouble\
-    \ fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000\n    classDef support\
-    \ fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#000\n\n    class Current\
-    \ current\n    class Next0,Next1 next\n    class Rel0,Rel1,Rel2 related"
+    \    Current --> Next0(\"Complete Self-Hosting Guide\")\n    Current --> Next1(\"\
+    Deployment Requirements Guide\")\n    Current --> Next2(\"Backup & Restore Guide\"\
+    )\n\n    %% Related Topics - Cross-References\n    Current -.-> Rel0[\"Install\
+    \ Odoo 18 on Windows 2022: Complete 2025 Guide\"]\n    Current -.-> Rel1[\"Install\
+    \ Odoo 18 on Rocky Linux 9: Complete 2025 Guide\"]\n    Current -.-> Rel2[\"Install\
+    \ Odoo 18 on Fedora 39: Complete 2025 Guide\"]\n\n    %% Professional Styling\n\
+    \    classDef current fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n\
+    \    classDef prereq fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000\n\
+    \    classDef next fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000\n \
+    \   classDef related fill:#f5f5f5,stroke:#616161,stroke-width:1px,color:#000\n\
+    \    classDef trouble fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000\n\
+    \    classDef support fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#000\n\
+    \n    class Current current\n    class Next0,Next1,Next2 next\n    class Rel0,Rel1,Rel2\
+    \ related"

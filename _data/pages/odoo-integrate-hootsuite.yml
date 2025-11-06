@@ -70,75 +70,74 @@ ai_generated_content:
     value when executed with precision. Your investment will unify social media operations
     with business processes, creating a seamless data flow that eliminates manual
     work and provides complete customer journey visibility.'
-  main_content: "## Integration Architecture and Data Flow\n\n### Hootsuite-Odoo\
-    \ Connection Models\n\nThe integration architecture centers on Odoo as the data\
-    \ orchestration hub. Hootsuite pushes social media interactions to Odoo through\
-    \ webhook notifications, while Odoo pulls comprehensive analytics and scheduled\
-    \ content through API calls. This hybrid approach balances real-time responsiveness\
-    \ with scheduled data consolidation. Odoo's web controllers receive Hootsuite\
-    \ webhook payloads containing message events, while background jobs fetch additional\
-    \ context from Hootsuite's APIs. This architecture prevents data loss during service\
-    \ interruptions and maintains synchronization consistency.\n\nOdoo modules handle\
-    \ the core integration logic through dedicated models that mirror Hootsuite's\
-    \ entities. The `social.media.post` model extends to store Hootsuite-specific\
-    \ identifiers and metadata. A new `hootsuite.integration` model manages configuration\
-    \ settings, authentication tokens, and synchronization status. These custom models\
-    \ work alongside standard Odoo CRM and helpdesk modules, creating a seamless bridge\
-    \ between social media interactions and business processes. The data flow maintains\
-    \ referential integrity while preserving the distinct characteristics of each\
-    \ platform.\n\n### Authentication Flow and Security\n\nHootsuite employs OAuth\
-    \ 2.0 with specific scope requirements for social media management integrations.\
-    \ Your Odoo instance acts as the client application, requesting authorization\
-    \ for `offline_access`, `social_media_read`, `social_media_write`, and `social_media_monitor`\
-    \ scopes. The authentication process begins with Odoo redirecting users to Hootsuite's\
-    \ authorization endpoint. After consent, Hootsuite issues an authorization code\
-    \ that Odoo exchanges for access and refresh tokens. These tokens authenticate\
-    \ all subsequent API calls, with Odoo automatically handling token refresh operations\
-    \ before expiration.\n\nThe data synchronization follows a multi-stage pipeline\
-    \ that transforms social media interactions into business records. Inbound webhooks\
-    \ trigger immediate processing for urgent customer messages, converting them into\
-    \ Odoo CRM activities or helpdesk tickets. Scheduled jobs run at regular intervals\
-    \ to sync performance metrics, converting Hootsuite engagement data into Odoo\
-    \ marketing analytics. This dual-speed approach ensures timely response to customer\
-    \ interactions while maintaining efficient batch processing for analytical data.\n\
-    \n### Data Flow Patterns and Error Handling\n\nThe integration implements specific\
-    \ data flow patterns for different Hootsuite entity types. For social media messages,\
-    \ the flow starts with webhook receipt, moves through message enrichment via Hootsuite's\
-    \ API, then transforms into Odoo records based on content type and urgency. Scheduled\
-    \ posts follow a different path, with Odoo creating draft social media content\
-    \ that syncs to Hootsuite for publication. Performance metrics flow from Hootsuite's\
-    \ analytics API into Odoo's reporting modules, where they combine with sales and\
-    \ service data for comprehensive business intelligence.\n\nError handling incorporates\
-    \ retry mechanisms with exponential backoff for transient Hootsuite API failures.\
-    \ The system logs detailed synchronization events in Odoo's `ir.logging` table,\
-    \ capturing request payloads, response data, and transformation errors. For data\
-    \ consistency, the integration uses Hootsuite's native identifiers as external\
-    \ references in Odoo, preventing duplicate record creation during retry operations.\
-    \ This architectural approach ensures reliable data exchange while maintaining\
-    \ audit trails for troubleshooting.\n\n## Step-by-Step Configuration\n\
-    \n### Odoo Module Foundation\n\nBegin by creating a new Odoo module with the essential\
-    \ manifest file structure. Define your module as dependent on `crm`, `helpdesk`,\
-    \ `social_media`, and `web` to access the required Odoo frameworks. The manifest\
-    \ must declare `data` files for security rules, `demo` data for testing, and `assets`\
-    \ for any custom JavaScript components. This foundation ensures your integration\
-    \ leverages Odoo's built-in social media capabilities while extending them with\
-    \ Hootsuite-specific functionality.\n\nCreate the module directory structure with\
-    \ `models` for Hootsuite entities, `controllers` for webhook endpoints, `security`\
-    \ for access rules, and `views` for configuration interfaces. Implement the core\
-    \ `hootsuite_integration` model with fields for API credentials, synchronization\
-    \ settings, and operational status. This model serves as the central configuration\
-    \ point for the entire integration, storing tokens, webhook secrets, and system\
-    \ preferences that control integration behavior.\n\n### OAuth 2.0 Configuration\n\
-    \nConfigure Odoo as an OAuth 2.0 client in your Hootsuite developer portal. Create\
-    \ a new application with authorization code grant type and set the redirect URI\
-    \ to `https://your-odoo-instance.com/hootsuite/auth/callback`. Note your client\
-    \ ID and secret for Odoo configuration. In Hootsuite's application settings, enable\
-    \ the required API permissions: `social_media_read` for retrieving posts and messages,\
-    \ `social_media_write` for publishing content, `social_media_monitor` for accessing\
-    \ streams, and `offline_access` for refresh tokens.\n\nImplement the OAuth 2.0\
-    \ authorization flow in an Odoo controller. Create a route that redirects users\
-    \ to Hootsuite's authorization endpoint with your client ID, requested scopes,\
-    \ and state parameter for security. Build a callback controller that exchanges\
+  main_content: "## Integration Architecture and Data Flow\n\n### Hootsuite-Odoo Connection\
+    \ Models\n\nThe integration architecture centers on Odoo as the data orchestration\
+    \ hub. Hootsuite pushes social media interactions to Odoo through webhook notifications,\
+    \ while Odoo pulls comprehensive analytics and scheduled content through API calls.\
+    \ This hybrid approach balances real-time responsiveness with scheduled data consolidation.\
+    \ Odoo's web controllers receive Hootsuite webhook payloads containing message\
+    \ events, while background jobs fetch additional context from Hootsuite's APIs.\
+    \ This architecture prevents data loss during service interruptions and maintains\
+    \ synchronization consistency.\n\nOdoo modules handle the core integration logic\
+    \ through dedicated models that mirror Hootsuite's entities. The `social.media.post`\
+    \ model extends to store Hootsuite-specific identifiers and metadata. A new `hootsuite.integration`\
+    \ model manages configuration settings, authentication tokens, and synchronization\
+    \ status. These custom models work alongside standard Odoo CRM and helpdesk modules,\
+    \ creating a seamless bridge between social media interactions and business processes.\
+    \ The data flow maintains referential integrity while preserving the distinct\
+    \ characteristics of each platform.\n\n### Authentication Flow and Security\n\n\
+    Hootsuite employs OAuth 2.0 with specific scope requirements for social media\
+    \ management integrations. Your Odoo instance acts as the client application,\
+    \ requesting authorization for `offline_access`, `social_media_read`, `social_media_write`,\
+    \ and `social_media_monitor` scopes. The authentication process begins with Odoo\
+    \ redirecting users to Hootsuite's authorization endpoint. After consent, Hootsuite\
+    \ issues an authorization code that Odoo exchanges for access and refresh tokens.\
+    \ These tokens authenticate all subsequent API calls, with Odoo automatically\
+    \ handling token refresh operations before expiration.\n\nThe data synchronization\
+    \ follows a multi-stage pipeline that transforms social media interactions into\
+    \ business records. Inbound webhooks trigger immediate processing for urgent customer\
+    \ messages, converting them into Odoo CRM activities or helpdesk tickets. Scheduled\
+    \ jobs run at regular intervals to sync performance metrics, converting Hootsuite\
+    \ engagement data into Odoo marketing analytics. This dual-speed approach ensures\
+    \ timely response to customer interactions while maintaining efficient batch processing\
+    \ for analytical data.\n\n### Data Flow Patterns and Error Handling\n\nThe integration\
+    \ implements specific data flow patterns for different Hootsuite entity types.\
+    \ For social media messages, the flow starts with webhook receipt, moves through\
+    \ message enrichment via Hootsuite's API, then transforms into Odoo records based\
+    \ on content type and urgency. Scheduled posts follow a different path, with Odoo\
+    \ creating draft social media content that syncs to Hootsuite for publication.\
+    \ Performance metrics flow from Hootsuite's analytics API into Odoo's reporting\
+    \ modules, where they combine with sales and service data for comprehensive business\
+    \ intelligence.\n\nError handling incorporates retry mechanisms with exponential\
+    \ backoff for transient Hootsuite API failures. The system logs detailed synchronization\
+    \ events in Odoo's `ir.logging` table, capturing request payloads, response data,\
+    \ and transformation errors. For data consistency, the integration uses Hootsuite's\
+    \ native identifiers as external references in Odoo, preventing duplicate record\
+    \ creation during retry operations. This architectural approach ensures reliable\
+    \ data exchange while maintaining audit trails for troubleshooting.\n\n## Step-by-Step\
+    \ Configuration\n\n### Odoo Module Foundation\n\nBegin by creating a new Odoo\
+    \ module with the essential manifest file structure. Define your module as dependent\
+    \ on `crm`, `helpdesk`, `social_media`, and `web` to access the required Odoo\
+    \ frameworks. The manifest must declare `data` files for security rules, `demo`\
+    \ data for testing, and `assets` for any custom JavaScript components. This foundation\
+    \ ensures your integration leverages Odoo's built-in social media capabilities\
+    \ while extending them with Hootsuite-specific functionality.\n\nCreate the module\
+    \ directory structure with `models` for Hootsuite entities, `controllers` for\
+    \ webhook endpoints, `security` for access rules, and `views` for configuration\
+    \ interfaces. Implement the core `hootsuite_integration` model with fields for\
+    \ API credentials, synchronization settings, and operational status. This model\
+    \ serves as the central configuration point for the entire integration, storing\
+    \ tokens, webhook secrets, and system preferences that control integration behavior.\n\
+    \n### OAuth 2.0 Configuration\n\nConfigure Odoo as an OAuth 2.0 client in your\
+    \ Hootsuite developer portal. Create a new application with authorization code\
+    \ grant type and set the redirect URI to `https://your-odoo-instance.com/hootsuite/auth/callback`.\
+    \ Note your client ID and secret for Odoo configuration. In Hootsuite's application\
+    \ settings, enable the required API permissions: `social_media_read` for retrieving\
+    \ posts and messages, `social_media_write` for publishing content, `social_media_monitor`\
+    \ for accessing streams, and `offline_access` for refresh tokens.\n\nImplement\
+    \ the OAuth 2.0 authorization flow in an Odoo controller. Create a route that\
+    \ redirects users to Hootsuite's authorization endpoint with your client ID, requested\
+    \ scopes, and state parameter for security. Build a callback controller that exchanges\
     \ the authorization code for tokens by posting to Hootsuite's token endpoint.\
     \ Store the received access token, refresh token, and expiration timestamp in\
     \ your integration model, encrypting sensitive values using Odoo's `crypt` library.\n\
@@ -198,34 +197,34 @@ ai_generated_content:
     \ views showing recent social media interactions, list views displaying synchronization\
     \ history, and graph views analyzing data flow performance. These visualizations\
     \ help administrators monitor integration health and identify issues before they\
-    \ impact business operations.\n\n## Data Mapping and Transformation\n\
-    \n### Social Media Message Mapping\n\nHootsuite messages transform into multiple\
-    \ Odoo record types based on content and context. Direct customer messages become\
-    \ CRM activities assigned to sales teams, while public posts mentioning your brand\
-    \ convert into lead opportunities. Customer service inquiries transform into helpdesk\
-    \ tickets with priority based on sentiment analysis. This intelligent routing\
-    \ ensures social media interactions reach the appropriate teams with the correct\
-    \ urgency levels.\n\nThe mapping logic analyzes message content, sender information,\
-    \ and conversation history to determine the optimal Odoo record type. Messages\
-    \ from existing customers route to their CRM records, while messages from new\
-    \ contacts create leads. The system extracts product mentions and converts them\
-    \ into sales opportunities, while support questions generate helpdesk tickets.\
-    \ This transformation turns social media noise into structured business processes.\n\
-    \n### Field-Level Mapping Specifications\n\nMap Hootsuite message fields to specific\
-    \ Odoo model attributes with transformation rules. The Hootsuite message ID becomes\
-    \ an external reference in Odoo, while the message text populates the description\
-    \ field. Sender profile information maps to customer records, with social media\
-    \ handles storing in partner-specific fields. Engagement metrics like likes and\
-    \ shares convert into Odoo marketing analytics for campaign performance tracking.\n\
-    \nHandle complex field transformations with custom logic that maintains data integrity.\
-    \ Hootsuite's rich media attachments convert into Odoo attachment records linked\
-    \ to the appropriate business documents. Geographic location data from social\
-    \ media posts maps to Odoo partner addresses when sufficient detail exists. Timestamps\
-    \ transform from Hootsuite's ISO format to Odoo's datetime fields with proper\
-    \ timezone handling.\n\n```python\ndef transform_message_to_lead(self, hootsuite_message):\n\
-    \    lead_vals = {\n        'name': self._extract_opportunity_name(hootsuite_message),\n\
-    \        'partner_id': self._find_or_create_partner(hootsuite_message).id,\n \
-    \       'description': hootsuite_message.get('text'),\n        'source_id': self._get_social_media_source().id,\n\
+    \ impact business operations.\n\n## Data Mapping and Transformation\n\n### Social\
+    \ Media Message Mapping\n\nHootsuite messages transform into multiple Odoo record\
+    \ types based on content and context. Direct customer messages become CRM activities\
+    \ assigned to sales teams, while public posts mentioning your brand convert into\
+    \ lead opportunities. Customer service inquiries transform into helpdesk tickets\
+    \ with priority based on sentiment analysis. This intelligent routing ensures\
+    \ social media interactions reach the appropriate teams with the correct urgency\
+    \ levels.\n\nThe mapping logic analyzes message content, sender information, and\
+    \ conversation history to determine the optimal Odoo record type. Messages from\
+    \ existing customers route to their CRM records, while messages from new contacts\
+    \ create leads. The system extracts product mentions and converts them into sales\
+    \ opportunities, while support questions generate helpdesk tickets. This transformation\
+    \ turns social media noise into structured business processes.\n\n### Field-Level\
+    \ Mapping Specifications\n\nMap Hootsuite message fields to specific Odoo model\
+    \ attributes with transformation rules. The Hootsuite message ID becomes an external\
+    \ reference in Odoo, while the message text populates the description field. Sender\
+    \ profile information maps to customer records, with social media handles storing\
+    \ in partner-specific fields. Engagement metrics like likes and shares convert\
+    \ into Odoo marketing analytics for campaign performance tracking.\n\nHandle complex\
+    \ field transformations with custom logic that maintains data integrity. Hootsuite's\
+    \ rich media attachments convert into Odoo attachment records linked to the appropriate\
+    \ business documents. Geographic location data from social media posts maps to\
+    \ Odoo partner addresses when sufficient detail exists. Timestamps transform from\
+    \ Hootsuite's ISO format to Odoo's datetime fields with proper timezone handling.\n\
+    \n```python\ndef transform_message_to_lead(self, hootsuite_message):\n    lead_vals\
+    \ = {\n        'name': self._extract_opportunity_name(hootsuite_message),\n  \
+    \      'partner_id': self._find_or_create_partner(hootsuite_message).id,\n   \
+    \     'description': hootsuite_message.get('text'),\n        'source_id': self._get_social_media_source().id,\n\
     \        'user_id': self._assign_sales_team_member(hootsuite_message).id,\n  \
     \      'date_open': self._parse_hootsuite_timestamp(hootsuite_message['createdAt']),\n\
     \        'hootsuite_message_id': hootsuite_message['id'],\n        'social_media_engagement':\
@@ -252,8 +251,8 @@ ai_generated_content:
     \ from Hootsuite store in Odoo's filestore with appropriate access rights and\
     \ linking to relevant business records. This approach maintains media availability\
     \ while integrating social content into broader business processes.\n\n## Error\
-    \ Handling and Resilience\n\n### Common Hootsuite API Errors\n\nThe\
-    \ Hootsuite API returns specific error codes that require tailored handling strategies.\
+    \ Handling and Resilience\n\n### Common Hootsuite API Errors\n\nThe Hootsuite\
+    \ API returns specific error codes that require tailored handling strategies.\
     \ Authentication errors like `invalid_token` or `expired_token` trigger automatic\
     \ token refresh procedures. Rate limit errors (`too_many_requests`) activate exponential\
     \ backoff algorithms with jitter to prevent synchronized retries. Data validation\
@@ -292,9 +291,9 @@ ai_generated_content:
     \ integration status, recent errors, and synchronization performance. Include\
     \ historical trends that help identify degradation patterns and capacity requirements.\
     \ These monitoring capabilities provide operational visibility and enable proactive\
-    \ maintenance of the integration.\n\n## Testing and Validation\n\n\
-    ### Connection Testing Procedures\n\nValidate the Hootsuite connection with comprehensive\
-    \ test scenarios that verify each integration component. Test OAuth 2.0 authentication\
+    \ maintenance of the integration.\n\n## Testing and Validation\n\n### Connection\
+    \ Testing Procedures\n\nValidate the Hootsuite connection with comprehensive test\
+    \ scenarios that verify each integration component. Test OAuth 2.0 authentication\
     \ flows with both successful and error cases, ensuring proper handling of authorization\
     \ failures and token refresh operations. Verify webhook configuration by sending\
     \ test payloads from Hootsuite's developer tools and confirming Odoo processing.\n\
@@ -331,18 +330,18 @@ ai_generated_content:
     \ content publishing. Monitor resource utilization during peak loads to ensure\
     \ the integration does not negatively impact other Odoo functions. These performance\
     \ tests guarantee the integration meets operational requirements under production\
-    \ conditions.\n\n## Security Considerations\n\n### Authentication\
-    \ Security\n\nImplement secure token management that protects Hootsuite OAuth\
-    \ 2.0 credentials throughout their lifecycle. Store access and refresh tokens\
-    \ in encrypted fields using Odoo's cryptographic libraries, with proper key rotation\
-    \ procedures. Implement token invalidation that immediately revokes credentials\
-    \ when administrators disconnect the integration or detect suspicious activity.\n\
-    \nSecure the OAuth 2.0 callback process with state parameter validation that prevents\
-    \ CSRF attacks. Verify redirect URIs match registered patterns to prevent authorization\
-    \ code interception. Implement token refresh with secure storage that maintains\
-    \ confidentiality while ensuring continuous operation without manual reauthentication.\n\
-    \n### Data Protection and Privacy\n\nProtect social media data in transit and\
-    \ at rest with appropriate encryption measures. Use TLS 1.2+ for all API communications\
+    \ conditions.\n\n## Security Considerations\n\n### Authentication Security\n\n\
+    Implement secure token management that protects Hootsuite OAuth 2.0 credentials\
+    \ throughout their lifecycle. Store access and refresh tokens in encrypted fields\
+    \ using Odoo's cryptographic libraries, with proper key rotation procedures. Implement\
+    \ token invalidation that immediately revokes credentials when administrators\
+    \ disconnect the integration or detect suspicious activity.\n\nSecure the OAuth\
+    \ 2.0 callback process with state parameter validation that prevents CSRF attacks.\
+    \ Verify redirect URIs match registered patterns to prevent authorization code\
+    \ interception. Implement token refresh with secure storage that maintains confidentiality\
+    \ while ensuring continuous operation without manual reauthentication.\n\n###\
+    \ Data Protection and Privacy\n\nProtect social media data in transit and at rest\
+    \ with appropriate encryption measures. Use TLS 1.2+ for all API communications\
     \ between Odoo and Hootsuite, verifying certificate validity to prevent man-in-the-middle\
     \ attacks. Encrypt sensitive social media data in Odoo's database, particularly\
     \ personal information covered by privacy regulations.\n\nImplement data retention\
@@ -359,9 +358,9 @@ ai_generated_content:
     \ detailed records of synchronization activities, API calls, and data modifications\
     \ for security monitoring and compliance reporting. These controls provide visibility\
     \ into integration usage while preventing unauthorized access.\n\n## Performance\
-    \ Optimization\n\n### API Call Efficiency\n\nOptimize Hootsuite API\
-    \ usage with strategic batching and careful rate limit management. Combine multiple\
-    \ data requests into single API calls where Hootsuite's API supports batch operations.\
+    \ Optimization\n\n### API Call Efficiency\n\nOptimize Hootsuite API usage with\
+    \ strategic batching and careful rate limit management. Combine multiple data\
+    \ requests into single API calls where Hootsuite's API supports batch operations.\
     \ Implement response caching for relatively static data like social media profiles\
     \ and team structures, reducing redundant API calls.\n\nSchedule synchronization\
     \ jobs during off-peak hours when possible, balancing freshness requirements with\
@@ -484,13 +483,14 @@ visualizations:
   placement_hint: after_conclusion
   data_context: learning path and knowledge graph
   mermaid_chart_syntax: "flowchart TB\n\n    Current[\"[CURRENT] Hootsuite to Odoo\
-    \ Integration: Complete 2025 Guide\"]\n\n    %% Related Topics - Cross-References\n\
-    \    Current -.-> Rel0[\"Cloudflare to Odoo Integration: Complete 2025 Guide\"\
-    ]\n    Current -.-> Rel1[\"Facebook Pixel to Odoo Integration: Complete 2025 Guide\"\
-    ]\n\n    %% Professional Styling\n    classDef current fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n\
-    \    classDef prereq fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000\n\
-    \    classDef next fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000\n \
-    \   classDef related fill:#f5f5f5,stroke:#616161,stroke-width:1px,color:#000\n\
+    \ Integration: Complete 2025 Guide\"]\n\n    %% Next Steps - Learning Progression\n\
+    \    Current --> Next0(\"Complete Implementation Guide\")\n\n    %% Related Topics\
+    \ - Cross-References\n    Current -.-> Rel0[\"Cloudflare to Odoo Integration:\
+    \ Complete 2025 Guide\"]\n    Current -.-> Rel1[\"Facebook Pixel to Odoo Integration:\
+    \ Complete 2025 Guide\"]\n\n    %% Professional Styling\n    classDef current\
+    \ fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n    classDef prereq\
+    \ fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000\n    classDef next fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000\n\
+    \    classDef related fill:#f5f5f5,stroke:#616161,stroke-width:1px,color:#000\n\
     \    classDef trouble fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000\n\
     \    classDef support fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#000\n\
-    \n    class Current current\n    class Rel0,Rel1 related"
+    \n    class Current current\n    class Next0 next\n    class Rel0,Rel1 related"

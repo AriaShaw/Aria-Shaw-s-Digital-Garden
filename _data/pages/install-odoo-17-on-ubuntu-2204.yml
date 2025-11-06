@@ -62,98 +62,98 @@ ai_generated_content:
     failures before they impact your operations. Follow each step with precision to
     build a foundation that supports business growth. The result delivers a robust
     platform capable of handling your most demanding workloads.'
-  main_content: "## System Architecture and Component Integration\n\n\
-    Odoo 18 operates as a multi-tier application with distinct layers that require\
-    \ precise coordination. The architecture separates presentation, application logic,\
-    \ and data persistence into specialized components. Each layer communicates through\
-    \ defined protocols with specific security and performance requirements. Understanding\
-    \ this structure prevents configuration errors that compromise system integrity.\n\
-    \nThe web interface layer handles HTTP requests through Nginx, which acts as a\
-    \ reverse proxy and SSL terminator. Nginx distributes incoming traffic across\
-    \ multiple Odoo worker processes while serving static content directly. This separation\
-    \ reduces load on the Python application layer and improves response times. Proper\
-    \ Nginx configuration ensures optimal resource utilization and prevents worker\
-    \ exhaustion.\n\nThe application layer runs Odoo as a WSGI application under Python\
-    \ 3.10+ with dedicated system user isolation. This layer processes business logic,\
-    \ manages sessions, and generates dynamic content. Worker processes handle requests\
-    \ concurrently, with each worker consuming significant memory resources. Correct\
-    \ worker count configuration balances performance against available system memory.\n\
-    \nThe data persistence layer utilizes PostgreSQL 15+ for all operational data\
-    \ storage. Odoo establishes persistent database connections that require proper\
-    \ connection pooling configuration. PostgreSQL handles complex queries, transaction\
-    \ management, and data integrity enforcement. Proper indexing and vacuum configuration\
-    \ maintains database performance under heavy loads.\n\nComponent integration relies\
-    \ on secure socket communication and proper firewall configuration. Nginx connects\
-    \ to Odoo through Unix sockets or local network ports with strict access controls.\
-    \ Odoo connects to PostgreSQL through peer authentication or encrypted network\
-    \ connections. Each connection point represents a potential security vulnerability\
-    \ that requires specific hardening measures.\n\n## Prerequisites and System Preparation\
-    \\n\nUbuntu 22.04 LTS provides the foundation with its long-term support\
-    \ and security maintenance guarantees. Start with a minimal installation to reduce\
-    \ attack surface and resource consumption. Ensure your system has at least 2GB\
-    \ RAM and 20GB disk space for basic operation. Production deployments typically\
-    \ require 4GB RAM and 40GB disk space minimum.\n\nSystem updates eliminate known\
-    \ vulnerabilities in core packages. Execute `apt update && apt upgrade -y` to\
-    \ apply all security patches and bug fixes. Reboot the system if the kernel receives\
-    \ updates to activate the new version. This baseline establishes a secure foundation\
-    \ for subsequent software installation.\n\nCreate a dedicated system user account\
-    \ that isolates Odoo processes from other services. Run `adduser --system --group\
-    \ --home /opt/odoo odoo` to establish the user with proper system account attributes.\
-    \ This user owns all Odoo files and executes the application with minimal privileges.\
-    \ Isolated execution contains potential security breaches within a constrained\
-    \ environment.\n\nInstall Python 3.10+ development tools and essential build dependencies.\
-    \ Execute `apt install -y python3-pip python3-dev build-essential` to prepare\
-    \ the Python environment. Add `libxml2-dev libxslt1-dev libsasl2-dev libldap2-dev\
-    \ libssl-dev` for XML processing and authentication support. These packages enable\
-    \ compilation of Python extensions that lack binary distributions.\n\nConfigure\
-    \ the system firewall to expose only necessary services. UFW provides a simplified\
-    \ interface for iptables management. Run `ufw allow ssh` to maintain remote access,\
-    \ then `ufw allow 80/tcp` and `ufw allow 443/tcp` for web traffic. Enable the\
-    \ firewall with `ufw enable` to block all other incoming connections. This basic\
-    \ hardening prevents unauthorized access to non-essential services.\n\n## PostgreSQL\
-    \ Database Configuration\n\nPostgreSQL serves as Odoo's primary data\
-    \ store with specific configuration requirements. Install PostgreSQL 15+ using\
-    \ `apt install -y postgresql postgresql-contrib` to get the latest version. The\
-    \ package manager ensures proper integration with system security policies and\
-    \ service management. PostgreSQL runs under its own dedicated user account with\
-    \ strict access controls.\n\nCreate a database user that matches your Odoo system\
-    \ account name for peer authentication. Execute `su - postgres -c \"createuser\
-    \ --createdb --username postgres --no-createrole --no-superuser --no-password\
-    \ odoo\"` as the postgres system user. This command establishes a database role\
-    \ with appropriate privileges for Odoo operations. Peer authentication allows\
-    \ passwordless connections when the system user matches the database role.\n\n\
-    Verify the connection method in PostgreSQL's pg_hba.conf file located in /etc/postgresql/15/main/.\
-    \ Ensure the line `local all all peer` appears for local socket connections. This\
-    \ configuration enables the odoo system user to connect as the odoo database role\
-    \ without password authentication. Restart PostgreSQL with `systemctl restart\
-    \ postgresql` to apply changes.\n\nTest the database connection using `sudo -u\
-    \ odoo psql -d postgres` to verify proper authentication setup. The command should\
-    \ connect without password prompts and present a PostgreSQL command prompt. Execute\
-    \ `\\conninfo` to confirm connection details show the odoo user. This verification\
-    \ prevents authentication errors during Odoo initialization.\n\nConfigure PostgreSQL\
-    \ performance parameters based on your available system resources. Modify /etc/postgresql/15/main/postgresql.conf\
-    \ to set shared_buffers = 256MB for systems with 2GB RAM. Set effective_cache_size\
-    \ = 1GB to help the query planner make better index usage decisions. Adjust max_connections\
-    \ = 80 to accommodate Odoo worker processes and maintenance connections.\n\n##\
-    \ Odoo Application Installation and Configuration\n\nDownload Odoo\
-    \ 18 source code from the official repository using Git for version control. Execute\
-    \ `git clone https://github.com/odoo/odoo.git /opt/odoo/odoo-server -b 18.0 --depth=1`\
-    \ to retrieve the stable branch. This approach ensures you receive official releases\
-    \ with security patches rather than development snapshots. Git management simplifies\
-    \ future updates through pull operations.\n\nCreate a Python virtual environment\
-    \ to isolate Odoo dependencies from system packages. Run `python3 -m venv /opt/odoo/odoo-venv`\
-    \ to establish an independent Python environment. Activate the environment with\
-    \ `source /opt/odoo/odoo-venv/bin/activate` before installing packages. Virtual\
-    \ environments prevent conflicts between Odoo requirements and system Python packages.\n\
-    \nInstall Odoo Python dependencies using the requirements.txt file from the source\
-    \ code. Execute `/opt/odoo/odoo-venv/bin/pip3 install -r /opt/odoo/odoo-server/requirements.txt`\
-    \ to install all necessary packages. The virtual environment contains these dependencies\
-    \ without affecting system-wide Python packages. This isolation maintains system\
-    \ stability while allowing Odoo-specific package versions.\n\nInstall additional\
-    \ system packages for full functionality including wkhtmltopdf for report generation.\
-    \ Use `apt install -y wkhtmltopdf` to get the package from Ubuntu repositories.\
-    \ Wkhtmltopdf converts HTML pages to PDF documents for invoices and other business\
-    \ reports. Some Odoo modules require this component for proper reporting functionality.\n\
+  main_content: "## System Architecture and Component Integration\n\nOdoo 18 operates\
+    \ as a multi-tier application with distinct layers that require precise coordination.\
+    \ The architecture separates presentation, application logic, and data persistence\
+    \ into specialized components. Each layer communicates through defined protocols\
+    \ with specific security and performance requirements. Understanding this structure\
+    \ prevents configuration errors that compromise system integrity.\n\nThe web interface\
+    \ layer handles HTTP requests through Nginx, which acts as a reverse proxy and\
+    \ SSL terminator. Nginx distributes incoming traffic across multiple Odoo worker\
+    \ processes while serving static content directly. This separation reduces load\
+    \ on the Python application layer and improves response times. Proper Nginx configuration\
+    \ ensures optimal resource utilization and prevents worker exhaustion.\n\nThe\
+    \ application layer runs Odoo as a WSGI application under Python 3.10+ with dedicated\
+    \ system user isolation. This layer processes business logic, manages sessions,\
+    \ and generates dynamic content. Worker processes handle requests concurrently,\
+    \ with each worker consuming significant memory resources. Correct worker count\
+    \ configuration balances performance against available system memory.\n\nThe data\
+    \ persistence layer utilizes PostgreSQL 15+ for all operational data storage.\
+    \ Odoo establishes persistent database connections that require proper connection\
+    \ pooling configuration. PostgreSQL handles complex queries, transaction management,\
+    \ and data integrity enforcement. Proper indexing and vacuum configuration maintains\
+    \ database performance under heavy loads.\n\nComponent integration relies on secure\
+    \ socket communication and proper firewall configuration. Nginx connects to Odoo\
+    \ through Unix sockets or local network ports with strict access controls. Odoo\
+    \ connects to PostgreSQL through peer authentication or encrypted network connections.\
+    \ Each connection point represents a potential security vulnerability that requires\
+    \ specific hardening measures.\n\n## Prerequisites and System Preparation\\n\n\
+    Ubuntu 22.04 LTS provides the foundation with its long-term support and security\
+    \ maintenance guarantees. Start with a minimal installation to reduce attack surface\
+    \ and resource consumption. Ensure your system has at least 2GB RAM and 20GB disk\
+    \ space for basic operation. Production deployments typically require 4GB RAM\
+    \ and 40GB disk space minimum.\n\nSystem updates eliminate known vulnerabilities\
+    \ in core packages. Execute `apt update && apt upgrade -y` to apply all security\
+    \ patches and bug fixes. Reboot the system if the kernel receives updates to activate\
+    \ the new version. This baseline establishes a secure foundation for subsequent\
+    \ software installation.\n\nCreate a dedicated system user account that isolates\
+    \ Odoo processes from other services. Run `adduser --system --group --home /opt/odoo\
+    \ odoo` to establish the user with proper system account attributes. This user\
+    \ owns all Odoo files and executes the application with minimal privileges. Isolated\
+    \ execution contains potential security breaches within a constrained environment.\n\
+    \nInstall Python 3.10+ development tools and essential build dependencies. Execute\
+    \ `apt install -y python3-pip python3-dev build-essential` to prepare the Python\
+    \ environment. Add `libxml2-dev libxslt1-dev libsasl2-dev libldap2-dev libssl-dev`\
+    \ for XML processing and authentication support. These packages enable compilation\
+    \ of Python extensions that lack binary distributions.\n\nConfigure the system\
+    \ firewall to expose only necessary services. UFW provides a simplified interface\
+    \ for iptables management. Run `ufw allow ssh` to maintain remote access, then\
+    \ `ufw allow 80/tcp` and `ufw allow 443/tcp` for web traffic. Enable the firewall\
+    \ with `ufw enable` to block all other incoming connections. This basic hardening\
+    \ prevents unauthorized access to non-essential services.\n\n## PostgreSQL Database\
+    \ Configuration\n\nPostgreSQL serves as Odoo's primary data store with specific\
+    \ configuration requirements. Install PostgreSQL 15+ using `apt install -y postgresql\
+    \ postgresql-contrib` to get the latest version. The package manager ensures proper\
+    \ integration with system security policies and service management. PostgreSQL\
+    \ runs under its own dedicated user account with strict access controls.\n\nCreate\
+    \ a database user that matches your Odoo system account name for peer authentication.\
+    \ Execute `su - postgres -c \"createuser --createdb --username postgres --no-createrole\
+    \ --no-superuser --no-password odoo\"` as the postgres system user. This command\
+    \ establishes a database role with appropriate privileges for Odoo operations.\
+    \ Peer authentication allows passwordless connections when the system user matches\
+    \ the database role.\n\nVerify the connection method in PostgreSQL's pg_hba.conf\
+    \ file located in /etc/postgresql/15/main/. Ensure the line `local all all peer`\
+    \ appears for local socket connections. This configuration enables the odoo system\
+    \ user to connect as the odoo database role without password authentication. Restart\
+    \ PostgreSQL with `systemctl restart postgresql` to apply changes.\n\nTest the\
+    \ database connection using `sudo -u odoo psql -d postgres` to verify proper authentication\
+    \ setup. The command should connect without password prompts and present a PostgreSQL\
+    \ command prompt. Execute `\\conninfo` to confirm connection details show the\
+    \ odoo user. This verification prevents authentication errors during Odoo initialization.\n\
+    \nConfigure PostgreSQL performance parameters based on your available system resources.\
+    \ Modify /etc/postgresql/15/main/postgresql.conf to set shared_buffers = 256MB\
+    \ for systems with 2GB RAM. Set effective_cache_size = 1GB to help the query planner\
+    \ make better index usage decisions. Adjust max_connections = 80 to accommodate\
+    \ Odoo worker processes and maintenance connections.\n\n## Odoo Application Installation\
+    \ and Configuration\n\nDownload Odoo 18 source code from the official repository\
+    \ using Git for version control. Execute `git clone https://github.com/odoo/odoo.git\
+    \ /opt/odoo/odoo-server -b 18.0 --depth=1` to retrieve the stable branch. This\
+    \ approach ensures you receive official releases with security patches rather\
+    \ than development snapshots. Git management simplifies future updates through\
+    \ pull operations.\n\nCreate a Python virtual environment to isolate Odoo dependencies\
+    \ from system packages. Run `python3 -m venv /opt/odoo/odoo-venv` to establish\
+    \ an independent Python environment. Activate the environment with `source /opt/odoo/odoo-venv/bin/activate`\
+    \ before installing packages. Virtual environments prevent conflicts between Odoo\
+    \ requirements and system Python packages.\n\nInstall Odoo Python dependencies\
+    \ using the requirements.txt file from the source code. Execute `/opt/odoo/odoo-venv/bin/pip3\
+    \ install -r /opt/odoo/odoo-server/requirements.txt` to install all necessary\
+    \ packages. The virtual environment contains these dependencies without affecting\
+    \ system-wide Python packages. This isolation maintains system stability while\
+    \ allowing Odoo-specific package versions.\n\nInstall additional system packages\
+    \ for full functionality including wkhtmltopdf for report generation. Use `apt\
+    \ install -y wkhtmltopdf` to get the package from Ubuntu repositories. Wkhtmltopdf\
+    \ converts HTML pages to PDF documents for invoices and other business reports.\
+    \ Some Odoo modules require this component for proper reporting functionality.\n\
     \nCreate the Odoo configuration file at /etc/odoo.conf with appropriate permissions.\
     \ Use `mkdir -p /etc/odoo` and `touch /etc/odoo.conf` then `chown odoo:odoo /etc/odoo.conf`.\
     \ This configuration file controls all aspects of Odoo behavior from database\
@@ -168,12 +168,12 @@ ai_generated_content:
     \ with proper permissions using `mkdir -p /var/log/odoo` and `chown odoo:odoo\
     \ /var/log/odoo`. Odoo requires write access to this directory for application\
     \ logging and debugging information. Proper log management facilitates troubleshooting\
-    \ and security auditing.\n\n## Systemd Service Configuration and Process Management\
-    \\n\nSystemd provides reliable process supervision and automatic service\
-    \ recovery. Create the service file at /etc/systemd/system/odoo.service with root\
-    \ ownership. This service definition controls how systemd starts, stops, and monitors\
-    \ the Odoo application. Proper service configuration ensures automatic restart\
-    \ after system reboots or process failures.\n\nDefine the service with these essential\
+    \ and security auditing.\n\n## Systemd Service Configuration and Process Management\\\
+    n\nSystemd provides reliable process supervision and automatic service recovery.\
+    \ Create the service file at /etc/systemd/system/odoo.service with root ownership.\
+    \ This service definition controls how systemd starts, stops, and monitors the\
+    \ Odoo application. Proper service configuration ensures automatic restart after\
+    \ system reboots or process failures.\n\nDefine the service with these essential\
     \ parameters:\n[Unit]\nDescription=Odoo 18\nAfter=postgresql.service\n\n[Service]\n\
     Type=simple\nUser=odoo\nGroup=odoo\nExecStart=/opt/odoo/odoo-venv/bin/python3\
     \ /opt/odoo/odoo-server/odoo-bin -c /etc/odoo.conf\nKillMode=mixed\nRestart=on-failure\n\
@@ -199,15 +199,15 @@ ai_generated_content:
     \  rotate 7\n    compress\n    delaycompress\n    notifempty\n    create 644 odoo\
     \ odoo\n}\nThis configuration preserves one week of logs with daily rotation and\
     \ Gzip compression. Log management maintains system performance while retaining\
-    \ sufficient history for troubleshooting.\n\n## Nginx Reverse Proxy and SSL Configuration\
-    \\n\nNginx handles HTTP requests efficiently while terminating SSL\
-    \ encryption before traffic reaches Odoo. Install Nginx using `apt install -y\
-    \ nginx` to get the latest stable version from Ubuntu repositories. The web server\
-    \ operates on port 80 and 443 with superior performance for static content delivery.\
-    \ Reverse proxy configuration separates web server concerns from application logic.\n\
-    \nCreate a server block configuration at /etc/nginx/sites-available/odoo with\
-    \ these core directives:\nserver {\n    listen 80;\n    server_name your-domain.com;\n\
-    \    \n    location / {\n        proxy_pass http://127.0.0.1:8069;\n        proxy_set_header\
+    \ sufficient history for troubleshooting.\n\n## Nginx Reverse Proxy and SSL Configuration\\\
+    n\nNginx handles HTTP requests efficiently while terminating SSL encryption before\
+    \ traffic reaches Odoo. Install Nginx using `apt install -y nginx` to get the\
+    \ latest stable version from Ubuntu repositories. The web server operates on port\
+    \ 80 and 443 with superior performance for static content delivery. Reverse proxy\
+    \ configuration separates web server concerns from application logic.\n\nCreate\
+    \ a server block configuration at /etc/nginx/sites-available/odoo with these core\
+    \ directives:\nserver {\n    listen 80;\n    server_name your-domain.com;\n  \
+    \  \n    location / {\n        proxy_pass http://127.0.0.1:8069;\n        proxy_set_header\
     \ Host $host;\n        proxy_set_header X-Real-IP $remote_addr;\n        proxy_set_header\
     \ X-Forwarded-For $proxy_add_x_forwarded_for;\n        proxy_set_header X-Forwarded-Proto\
     \ $scheme;\n    }\n    \n    location /longpolling {\n        proxy_pass http://127.0.0.1:8072;\n\
@@ -237,16 +237,16 @@ ai_generated_content:
     \ with a secure padlock icon. Test both normal navigation and real-time features\
     \ like messaging to confirm proper long-polling configuration. Full functionality\
     \ verification ensures all components integrate correctly.\n\n## Security Hardening\
-    \ and Access Controls\n\nSystem security requires multiple layers\
-    \ of protection from network to application level. Configure Odoo to listen only\
-    \ on localhost interfaces by adding `xmlrpc_interface = 127.0.0.1` to /etc/odoo.conf.\
-    \ This restriction prevents direct external access to the application server,\
-    \ forcing all traffic through the Nginx proxy. Interface binding contains potential\
-    \ vulnerabilities within the local system.\n\nImplement strong database master\
-    \ passwords that differ from your admin password. Odoo uses the admin_passwd parameter\
-    \ to secure database creation and deletion operations. Generate a complex password\
-    \ with 16+ characters mixing uppercase, lowercase, numbers, and symbols. Store\
-    \ this password securely separate from the configuration file for production deployments.\n\
+    \ and Access Controls\n\nSystem security requires multiple layers of protection\
+    \ from network to application level. Configure Odoo to listen only on localhost\
+    \ interfaces by adding `xmlrpc_interface = 127.0.0.1` to /etc/odoo.conf. This\
+    \ restriction prevents direct external access to the application server, forcing\
+    \ all traffic through the Nginx proxy. Interface binding contains potential vulnerabilities\
+    \ within the local system.\n\nImplement strong database master passwords that\
+    \ differ from your admin password. Odoo uses the admin_passwd parameter to secure\
+    \ database creation and deletion operations. Generate a complex password with\
+    \ 16+ characters mixing uppercase, lowercase, numbers, and symbols. Store this\
+    \ password securely separate from the configuration file for production deployments.\n\
     \nConfigure PostgreSQL to reject network connections from unauthorized sources.\
     \ Modify /etc/postgresql/15/main/pg_hba.conf to comment out any `host all all`\
     \ lines that allow external connections. Use `local all all peer` for socket connections\
@@ -272,39 +272,38 @@ ai_generated_content:
     \ security updates with `apt install -y unattended-upgrades` and enable automatic\
     \ reboots for kernel updates. Schedule weekly security audits that review user\
     \ accounts, file permissions, and login attempts. Proactive maintenance prevents\
-    \ exploitation of known security issues.\n\n## Performance Optimization and Scaling\
-    \\n\nOdoo performance depends on proper resource allocation across\
-    \ multiple system components. Configure Odoo workers based on available CPU cores\
-    \ and system memory. Add these parameters to /etc/odoo.conf for a system with\
-    \ 4GB RAM and 2 CPU cores:\nworkers = 4\nlimit_memory_hard = 2684354560\nlimit_memory_soft\
-    \ = 2147483648\nlimit_request = 8192\nlimit_time_cpu = 60\nlimit_time_real = 120\n\
-    Worker count should equal CPU cores * 2 + 1, while memory limits prevent worker\
-    \ exhaustion. These settings balance concurrent request handling with system resource\
-    \ constraints.\n\nOptimize PostgreSQL for better query performance with specific\
-    \ configuration adjustments. Modify /etc/postgresql/15/main/postgresql.conf with\
-    \ these key parameters:\nshared_buffers = 512MB\neffective_cache_size = 2GB\n\
-    work_mem = 10MB\nmaintenance_work_mem = 128MB\nThese values assume a system with\
-    \ 4GB RAM dedicated to database operations. shared_buffers controls memory for\
-    \ caching data, while work_mem improves sort performance.\n\nImplement Redis for\
-    \ caching session data and frequently accessed information. Install Redis with\
-    \ `apt install -y redis-server` then add these lines to /etc/odoo.conf:\ncache_timeout\
-    \ = 3600\nredis = True\nredis_host = localhost\nredis_port = 6379\nredis_db =\
-    \ 1\nRedis caching reduces database load for common operations like menu rendering\
-    \ and translation lookups. Session storage in Redis enables horizontal scaling\
-    \ across multiple Odoo instances.\n\nConfigure Nginx caching for static assets\
-    \ to reduce application server load. Add these directives to your Nginx server\
-    \ block:\nlocation /web/static/ {\n    proxy_cache_valid 200 60m;\n    proxy_buffering\
-    \ on;\n    expires 864000;\n    proxy_pass http://127.0.0.1:8069;\n}\nStatic content\
-    \ caching eliminates redundant requests for CSS, JavaScript, and image files.\
-    \ Browser caching headers reduce bandwidth consumption for repeat visitors.\n\n\
-    Monitor system performance using built-in Odoo metrics and system monitoring tools.\
-    \ Enable Odoo statistics with `log_level = info_rpc` in the configuration file.\
-    \ Install and configure htop for real-time process monitoring and nethogs for\
-    \ network usage analysis. Performance monitoring identifies bottlenecks before\
-    \ they impact user experience.\n\n## Backup Strategies and Disaster Recovery (350\
-    \ words)\n\nComprehensive backup strategies protect against data loss from hardware\
-    \ failure or human error. Implement automated PostgreSQL database dumps using\
-    \ pg_dump with custom scripts. Create /opt/odoo/backup.sh with these contents:\n\
+    \ exploitation of known security issues.\n\n## Performance Optimization and Scaling\\\
+    n\nOdoo performance depends on proper resource allocation across multiple system\
+    \ components. Configure Odoo workers based on available CPU cores and system memory.\
+    \ Add these parameters to /etc/odoo.conf for a system with 4GB RAM and 2 CPU cores:\n\
+    workers = 4\nlimit_memory_hard = 2684354560\nlimit_memory_soft = 2147483648\n\
+    limit_request = 8192\nlimit_time_cpu = 60\nlimit_time_real = 120\nWorker count\
+    \ should equal CPU cores * 2 + 1, while memory limits prevent worker exhaustion.\
+    \ These settings balance concurrent request handling with system resource constraints.\n\
+    \nOptimize PostgreSQL for better query performance with specific configuration\
+    \ adjustments. Modify /etc/postgresql/15/main/postgresql.conf with these key parameters:\n\
+    shared_buffers = 512MB\neffective_cache_size = 2GB\nwork_mem = 10MB\nmaintenance_work_mem\
+    \ = 128MB\nThese values assume a system with 4GB RAM dedicated to database operations.\
+    \ shared_buffers controls memory for caching data, while work_mem improves sort\
+    \ performance.\n\nImplement Redis for caching session data and frequently accessed\
+    \ information. Install Redis with `apt install -y redis-server` then add these\
+    \ lines to /etc/odoo.conf:\ncache_timeout = 3600\nredis = True\nredis_host = localhost\n\
+    redis_port = 6379\nredis_db = 1\nRedis caching reduces database load for common\
+    \ operations like menu rendering and translation lookups. Session storage in Redis\
+    \ enables horizontal scaling across multiple Odoo instances.\n\nConfigure Nginx\
+    \ caching for static assets to reduce application server load. Add these directives\
+    \ to your Nginx server block:\nlocation /web/static/ {\n    proxy_cache_valid\
+    \ 200 60m;\n    proxy_buffering on;\n    expires 864000;\n    proxy_pass http://127.0.0.1:8069;\n\
+    }\nStatic content caching eliminates redundant requests for CSS, JavaScript, and\
+    \ image files. Browser caching headers reduce bandwidth consumption for repeat\
+    \ visitors.\n\nMonitor system performance using built-in Odoo metrics and system\
+    \ monitoring tools. Enable Odoo statistics with `log_level = info_rpc` in the\
+    \ configuration file. Install and configure htop for real-time process monitoring\
+    \ and nethogs for network usage analysis. Performance monitoring identifies bottlenecks\
+    \ before they impact user experience.\n\n## Backup Strategies and Disaster Recovery\
+    \ (350 words)\n\nComprehensive backup strategies protect against data loss from\
+    \ hardware failure or human error. Implement automated PostgreSQL database dumps\
+    \ using pg_dump with custom scripts. Create /opt/odoo/backup.sh with these contents:\n\
     #!/bin/bash\nBACKUP_DIR=\"/opt/odoo/backups\"\nDATE=$(date +%Y%m%d_%H%M%S)\nsudo\
     \ -u odoo pg_dump odoo_prod > $BACKUP_DIR/odoo_backup_$DATE.sql\nfind $BACKUP_DIR\
     \ -name \"*.sql\" -mtime +7 -delete\nThis script creates timestamped backups and\
@@ -489,15 +488,16 @@ visualizations:
   data_context: learning path and knowledge graph
   mermaid_chart_syntax: "flowchart TB\n\n    Current[\"[CURRENT] Install Odoo 17 on\
     \ Ubuntu 22.04: Complete 2025 Guide\"]\n\n    %% Next Steps - Learning Progression\n\
-    \    Current --> Next0(\"Upgrade from Odoo 11 to 18\")\n    Current --> Next1(\"\
-    Optimize PostgreSQL Performance: Improve Performance by 50%\")\n\n    %% Related\
-    \ Topics - Cross-References\n    Current -.-> Rel0[\"Deploy on Ubuntu 2204\"]\n\
-    \    Current -.-> Rel1[\"Deploy on Rocky Linux 9\"]\n    Current -.-> Rel2[\"\
-    Install on AWS ECS Fargate\"]\n\n    %% Professional Styling\n    classDef current\
-    \ fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n    classDef prereq\
-    \ fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000\n    classDef next fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000\n\
-    \    classDef related fill:#f5f5f5,stroke:#616161,stroke-width:1px,color:#000\n\
+    \    Current --> Next0(\"Complete Self-Hosting Guide\")\n    Current --> Next1(\"\
+    Deployment Requirements Guide\")\n    Current --> Next2(\"Backup & Restore Guide\"\
+    )\n\n    %% Related Topics - Cross-References\n    Current -.-> Rel0[\"Deploy\
+    \ on Ubuntu 2204\"]\n    Current -.-> Rel1[\"Deploy on Rocky Linux 9\"]\n    Current\
+    \ -.-> Rel2[\"Install on AWS ECS Fargate\"]\n\n    %% Professional Styling\n \
+    \   classDef current fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n\
+    \    classDef prereq fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000\n\
+    \    classDef next fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000\n \
+    \   classDef related fill:#f5f5f5,stroke:#616161,stroke-width:1px,color:#000\n\
     \    classDef trouble fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000\n\
     \    classDef support fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#000\n\
-    \n    class Current current\n    class Next0,Next1 next\n    class Rel0,Rel1,Rel2\
+    \n    class Current current\n    class Next0,Next1,Next2 next\n    class Rel0,Rel1,Rel2\
     \ related"

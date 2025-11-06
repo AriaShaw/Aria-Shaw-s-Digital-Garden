@@ -73,11 +73,11 @@ ai_generated_content:
     You need about six hours for the complete implementation, with the configuration
     steps demanding precise attention to authentication details and webhook endpoints.
     Let''s build a system that eliminates manual meeting management forever.'
-  main_content: "## Integration Architecture and Data Flow\n\nGoogle Meet\
-    \ integration with Odoo 18 operates through a distributed event-driven architecture\
-    \ that connects Odoo's ORM with Google's Calendar API and Meet services. The system\
-    \ employs OAuth 2.0 authentication flows to establish secure communication channels\
-    \ between your Odoo instance and Google Workspace. This architecture ensures bidirectional\
+  main_content: "## Integration Architecture and Data Flow\n\nGoogle Meet integration\
+    \ with Odoo 18 operates through a distributed event-driven architecture that connects\
+    \ Odoo's ORM with Google's Calendar API and Meet services. The system employs\
+    \ OAuth 2.0 authentication flows to establish secure communication channels between\
+    \ your Odoo instance and Google Workspace. This architecture ensures bidirectional\
     \ data synchronization while maintaining security compliance across both platforms.\n\
     \nThe core integration relies on three primary Google APIs: Calendar API for event\
     \ management, Meet API for conference room operations, and People API for participant\
@@ -106,29 +106,29 @@ ai_generated_content:
     \ preserving critical data elements. The system uses etags from Google API responses\
     \ to detect version conflicts and implements custom merge logic for participant\
     \ lists and meeting descriptions. This approach prevents data loss during concurrent\
-    \ multi-platform edits.\n\n## Step-by-Step Configuration\n\nBegin\
-    \ the configuration process by enabling the Google Calendar API through your Google\
-    \ Cloud Console. Navigate to the API Library, search for \"Google Calendar API,\"\
-    \ and activate the service for your project. Create OAuth 2.0 credentials that\
-    \ specify your Odoo instance as the authorized redirect URI. Configure the consent\
-    \ screen with precise scopes that request calendar and meet permissions without\
-    \ excessive data access.\n\nInstall the base calendar module in Odoo 18 if not\
-    \ already active. Verify the module functions through standard calendar event\
-    \ creation tests. Install the Google Calendar integration module from Odoo's app\
-    \ store, which provides the foundational framework for API communications. This\
-    \ module establishes the basic data models and authentication infrastructure that\
-    \ our custom integration extends.\n\nCreate a system parameter for Google OAuth\
-    \ configuration through Odoo's technical menu. Access Settings > Technical > Parameters\
-    \ > System Parameters and create a new record with key \"google_calendar_client_id\"\
-    \ and value containing your Google Cloud client ID. Repeat this process for the\
-    \ client secret, storing it with key \"google_calendar_client_secret.\" These\
-    \ parameters secure authentication details outside source code.\n\nImplement custom\
-    \ server actions that handle the OAuth token exchange process. Develop a Python\
-    \ class that extends the default Google calendar service with Meet-specific functionality.\
-    \ This class manages token refresh operations and implements exponential backoff\
-    \ for API rate limit handling. The code establishes the core connection between\
-    \ Odoo and Google's infrastructure.\n\n```python\nclass GoogleMeetService:\n \
-    \   def __init__(self, google_calendar_service):\n        self.service = google_calendar_service\n\
+    \ multi-platform edits.\n\n## Step-by-Step Configuration\n\nBegin the configuration\
+    \ process by enabling the Google Calendar API through your Google Cloud Console.\
+    \ Navigate to the API Library, search for \"Google Calendar API,\" and activate\
+    \ the service for your project. Create OAuth 2.0 credentials that specify your\
+    \ Odoo instance as the authorized redirect URI. Configure the consent screen with\
+    \ precise scopes that request calendar and meet permissions without excessive\
+    \ data access.\n\nInstall the base calendar module in Odoo 18 if not already active.\
+    \ Verify the module functions through standard calendar event creation tests.\
+    \ Install the Google Calendar integration module from Odoo's app store, which\
+    \ provides the foundational framework for API communications. This module establishes\
+    \ the basic data models and authentication infrastructure that our custom integration\
+    \ extends.\n\nCreate a system parameter for Google OAuth configuration through\
+    \ Odoo's technical menu. Access Settings > Technical > Parameters > System Parameters\
+    \ and create a new record with key \"google_calendar_client_id\" and value containing\
+    \ your Google Cloud client ID. Repeat this process for the client secret, storing\
+    \ it with key \"google_calendar_client_secret.\" These parameters secure authentication\
+    \ details outside source code.\n\nImplement custom server actions that handle\
+    \ the OAuth token exchange process. Develop a Python class that extends the default\
+    \ Google calendar service with Meet-specific functionality. This class manages\
+    \ token refresh operations and implements exponential backoff for API rate limit\
+    \ handling. The code establishes the core connection between Odoo and Google's\
+    \ infrastructure.\n\n```python\nclass GoogleMeetService:\n    def __init__(self,\
+    \ google_calendar_service):\n        self.service = google_calendar_service\n\
     \        self.meet_features = {\n            'conferenceDataVersion': 1,\n   \
     \         'conferenceSolutionKey': {'type': 'hangoutsMeet'}\n        }\n    \n\
     \    def create_meet_event(self, event_data):\n        conference_request = {\n\
@@ -175,74 +175,74 @@ ai_generated_content:
     \ processing notification payloads. Google transmits verification tokens during\
     \ webhook setup that must persist in your system parameters for ongoing request\
     \ validation. Missing or incorrect tokens cause silent notification failures that\
-    \ break synchronization.\n\n## Data Mapping and Transformation\n\n\
-    The integration maps Odoo calendar event fields to Google Calendar API resources\
-    \ with specific transformation rules. Odoo's event name becomes the Google event\
-    \ summary, while the description field transfers directly with HTML preservation.\
-    \ Date and time values require timezone conversion since Odoo stores timestamps\
-    \ in UTC while Google Calendar uses localized time representations.\n\nParticipant\
-    \ data follows complex mapping logic that reconciles Odoo partner records with\
-    \ Google contact profiles. The system matches email addresses between Odoo's partner\
-    \ model and Google's People API, assigning appropriate participation roles based\
-    \ on Odoo's attendee status fields. Unmatched email addresses trigger invitation\
-    \ processes that maintain participant lists across both systems.\n\nConference\
-    \ data transformation represents the most critical mapping operation. Google Meet\
-    \ links embed within Odoo events through the conferenceData field in API responses.\
-    \ The integration extracts the entryPoints array from Google's conferenceData\
-    \ payload, filters for video entry points, and stores the URI in a custom Odoo\
-    \ field dedicated to Meet links.\n\nRecurrence pattern translation requires special\
-    \ handling due to format differences between the systems. Odoo uses a simplified\
-    \ recurrence model while Google Calendar supports complex RFC5545 recurrence rules.\
-    \ The integration implements bidirectional transformation functions that convert\
-    \ between these formats, prioritizing Google's richer rule set during synchronization\
-    \ conflicts.\n\n### Field Mapping Specifications\n\nThe core field mapping follows\
-    \ this transformation pattern:\n- Odoo event.name → Google event.summary (direct\
-    \ mapping)\n- Odoo event.description → Google event.description (HTML sanitized)\n\
-    - Odoo event.start → Google event.start.dateTime (with timezone conversion)\n\
-    - Odoo event.stop → Google event.end.dateTime (with timezone conversion)\n- Odoo\
-    \ event.allday → Google event.start.date & event.end.date (date objects)\n- Google\
-    \ event.conferenceData.entryPoints[0].uri → Odoo event.google_meet_url\n\n###\
-    \ Participant Synchronization Logic\n\nAttendee synchronization employs a multi-stage\
-    \ matching algorithm that first attempts exact email address matches between Odoo\
-    \ partners and Google contacts. Partial matches trigger manual resolution workflows\
-    \ that present users with synchronization options. The system preserves response\
-    \ status across platforms, translating Google's acceptance states to Odoo's attendance\
-    \ options.\n\n### Edge Case Handling\n\nThe integration addresses timezone edge\
-    \ cases through coordinated universal time conversion before API transmission.\
-    \ Events spanning daylight saving time boundaries require special handling to\
-    \ prevent schedule shifts during synchronization. The system stores original timezone\
-    \ information alongside UTC timestamps to maintain temporal accuracy across platform\
-    \ boundaries.\n\nRecurring event modifications demand sophisticated conflict resolution.\
-    \ The integration distinguishes between instance edits and pattern changes, applying\
-    \ appropriate Google API methods for each scenario. Single instance updates use\
-    \ the events.patch method with instance-specific identifiers, while pattern modifications\
-    \ employ events.update with expanded recurrence parameters.\n\n## Error Handling\
-    \ and Resilience\n\nGoogle Meet integration encounters specific error\
-    \ conditions that require structured handling strategies. API rate limiting represents\
-    \ the most common issue, with Google enforcing strict quotas per user and per\
-    \ project. The integration implements token bucket algorithms that track request\
-    \ rates and inject strategic delays that prevent quota exhaustion while maintaining\
-    \ synchronization throughput.\n\nAuthentication errors typically stem from expired\
-    \ refresh tokens or revoked OAuth permissions. The system detects 401 and 403\
-    \ status codes from API responses, then triggers reauthentication workflows that\
-    \ guide users through the consent process without data loss. Failed authentication\
-    \ attempts queue synchronization tasks for retry after successful reauthorization.\n\
-    \nConference creation failures often relate to permission issues or resource constraints.\
-    \ The integration differentiates between transient errors (server timeouts, rate\
-    \ limits) and permanent failures (insufficient permissions, disabled Meet service).\
-    \ Transient errors trigger exponential backoff retry mechanisms, while permanent\
-    \ failures generate specific error messages that guide administrators toward resolution.\n\
-    \nData validation errors occur during field mapping operations, particularly with\
-    \ complex recurrence patterns or participant lists. The integration employs schema\
-    \ validation for outgoing API requests, catching format violations before transmission.\
-    \ Incoming data undergoes sanitization that removes incompatible HTML elements\
-    \ while preserving essential formatting.\n\n### Common Error Codes and Resolutions\n\
-    \n- Error 403 \"rateLimitExceeded\": Implement request pacing with jittered retry\
-    \ delays\n- Error 401 \"invalidCredentials\": Initiate OAuth refresh flow; fallback\
-    \ to reauthentication\n- Error 409 \"conferenceDataRequired\": Ensure conferenceDataVersion\
-    \ parameter inclusion in API calls\n- Error 412 \"preconditionFailed\": Verify\
-    \ etag values match current resource state before updates\n\n### Debugging Techniques\n\
-    \nEnable detailed logging for Google API interactions through Odoo's debug mode\
+    \ break synchronization.\n\n## Data Mapping and Transformation\n\nThe integration\
+    \ maps Odoo calendar event fields to Google Calendar API resources with specific\
+    \ transformation rules. Odoo's event name becomes the Google event summary, while\
+    \ the description field transfers directly with HTML preservation. Date and time\
+    \ values require timezone conversion since Odoo stores timestamps in UTC while\
+    \ Google Calendar uses localized time representations.\n\nParticipant data follows\
+    \ complex mapping logic that reconciles Odoo partner records with Google contact\
+    \ profiles. The system matches email addresses between Odoo's partner model and\
+    \ Google's People API, assigning appropriate participation roles based on Odoo's\
+    \ attendee status fields. Unmatched email addresses trigger invitation processes\
+    \ that maintain participant lists across both systems.\n\nConference data transformation\
+    \ represents the most critical mapping operation. Google Meet links embed within\
+    \ Odoo events through the conferenceData field in API responses. The integration\
+    \ extracts the entryPoints array from Google's conferenceData payload, filters\
+    \ for video entry points, and stores the URI in a custom Odoo field dedicated\
+    \ to Meet links.\n\nRecurrence pattern translation requires special handling due\
+    \ to format differences between the systems. Odoo uses a simplified recurrence\
+    \ model while Google Calendar supports complex RFC5545 recurrence rules. The integration\
+    \ implements bidirectional transformation functions that convert between these\
+    \ formats, prioritizing Google's richer rule set during synchronization conflicts.\n\
+    \n### Field Mapping Specifications\n\nThe core field mapping follows this transformation\
+    \ pattern:\n- Odoo event.name → Google event.summary (direct mapping)\n- Odoo\
+    \ event.description → Google event.description (HTML sanitized)\n- Odoo event.start\
+    \ → Google event.start.dateTime (with timezone conversion)\n- Odoo event.stop\
+    \ → Google event.end.dateTime (with timezone conversion)\n- Odoo event.allday\
+    \ → Google event.start.date & event.end.date (date objects)\n- Google event.conferenceData.entryPoints[0].uri\
+    \ → Odoo event.google_meet_url\n\n### Participant Synchronization Logic\n\nAttendee\
+    \ synchronization employs a multi-stage matching algorithm that first attempts\
+    \ exact email address matches between Odoo partners and Google contacts. Partial\
+    \ matches trigger manual resolution workflows that present users with synchronization\
+    \ options. The system preserves response status across platforms, translating\
+    \ Google's acceptance states to Odoo's attendance options.\n\n### Edge Case Handling\n\
+    \nThe integration addresses timezone edge cases through coordinated universal\
+    \ time conversion before API transmission. Events spanning daylight saving time\
+    \ boundaries require special handling to prevent schedule shifts during synchronization.\
+    \ The system stores original timezone information alongside UTC timestamps to\
+    \ maintain temporal accuracy across platform boundaries.\n\nRecurring event modifications\
+    \ demand sophisticated conflict resolution. The integration distinguishes between\
+    \ instance edits and pattern changes, applying appropriate Google API methods\
+    \ for each scenario. Single instance updates use the events.patch method with\
+    \ instance-specific identifiers, while pattern modifications employ events.update\
+    \ with expanded recurrence parameters.\n\n## Error Handling and Resilience\n\n\
+    Google Meet integration encounters specific error conditions that require structured\
+    \ handling strategies. API rate limiting represents the most common issue, with\
+    \ Google enforcing strict quotas per user and per project. The integration implements\
+    \ token bucket algorithms that track request rates and inject strategic delays\
+    \ that prevent quota exhaustion while maintaining synchronization throughput.\n\
+    \nAuthentication errors typically stem from expired refresh tokens or revoked\
+    \ OAuth permissions. The system detects 401 and 403 status codes from API responses,\
+    \ then triggers reauthentication workflows that guide users through the consent\
+    \ process without data loss. Failed authentication attempts queue synchronization\
+    \ tasks for retry after successful reauthorization.\n\nConference creation failures\
+    \ often relate to permission issues or resource constraints. The integration differentiates\
+    \ between transient errors (server timeouts, rate limits) and permanent failures\
+    \ (insufficient permissions, disabled Meet service). Transient errors trigger\
+    \ exponential backoff retry mechanisms, while permanent failures generate specific\
+    \ error messages that guide administrators toward resolution.\n\nData validation\
+    \ errors occur during field mapping operations, particularly with complex recurrence\
+    \ patterns or participant lists. The integration employs schema validation for\
+    \ outgoing API requests, catching format violations before transmission. Incoming\
+    \ data undergoes sanitization that removes incompatible HTML elements while preserving\
+    \ essential formatting.\n\n### Common Error Codes and Resolutions\n\n- Error 403\
+    \ \"rateLimitExceeded\": Implement request pacing with jittered retry delays\n\
+    - Error 401 \"invalidCredentials\": Initiate OAuth refresh flow; fallback to reauthentication\n\
+    - Error 409 \"conferenceDataRequired\": Ensure conferenceDataVersion parameter\
+    \ inclusion in API calls\n- Error 412 \"preconditionFailed\": Verify etag values\
+    \ match current resource state before updates\n\n### Debugging Techniques\n\n\
+    Enable detailed logging for Google API interactions through Odoo's debug mode\
     \ configuration. The integration captures full request and response payloads during\
     \ error conditions, storing them in diagnostic fields for technical analysis.\
     \ These logs preserve the complete context of synchronization failures without\
@@ -260,20 +260,20 @@ ai_generated_content:
     \ reports compare event counts, participant lists, and meeting links across both\
     \ systems, flagging inconsistencies for administrative review. Scheduled reconciliation\
     \ ensures ongoing data accuracy without manual audit processes.\n\n## Testing\
-    \ and Validation\n\nComprehensive testing demands a structured approach\
-    \ that covers integration points across the entire data flow. Begin with unit\
-    \ tests that validate field transformation logic independent of API dependencies.\
-    \ These tests verify date conversion accuracy, participant mapping correctness,\
-    \ and HTML sanitization effectiveness using mock data samples.\n\nProgress to\
-    \ integration tests that exercise the complete synchronization pipeline with a\
-    \ dedicated Google test account. Create events in Odoo and verify Meet link generation,\
-    \ then modify those events in Google Calendar and confirm changes propagate back\
-    \ to Odoo. Test edge cases like recurring event exceptions and multi-timezone\
-    \ meetings to validate complex scenario handling.\n\nPerformance testing establishes\
-    \ baseline metrics for synchronization throughput and API responsiveness. Measure\
-    \ the time required to create meetings with varying participant counts, assessing\
-    \ system behavior under realistic load conditions. Identify performance degradation\
-    \ points that might necessitate architectural adjustments for high-volume implementations.\n\
+    \ and Validation\n\nComprehensive testing demands a structured approach that covers\
+    \ integration points across the entire data flow. Begin with unit tests that validate\
+    \ field transformation logic independent of API dependencies. These tests verify\
+    \ date conversion accuracy, participant mapping correctness, and HTML sanitization\
+    \ effectiveness using mock data samples.\n\nProgress to integration tests that\
+    \ exercise the complete synchronization pipeline with a dedicated Google test\
+    \ account. Create events in Odoo and verify Meet link generation, then modify\
+    \ those events in Google Calendar and confirm changes propagate back to Odoo.\
+    \ Test edge cases like recurring event exceptions and multi-timezone meetings\
+    \ to validate complex scenario handling.\n\nPerformance testing establishes baseline\
+    \ metrics for synchronization throughput and API responsiveness. Measure the time\
+    \ required to create meetings with varying participant counts, assessing system\
+    \ behavior under realistic load conditions. Identify performance degradation points\
+    \ that might necessitate architectural adjustments for high-volume implementations.\n\
     \n### Test Scenario Catalog\n\nDevelop a comprehensive test catalog that covers\
     \ these critical scenarios:\n- Single event creation with automatic Meet link\
     \ generation\n- Event update synchronization in both directions\n- Recurring event\
@@ -296,8 +296,8 @@ ai_generated_content:
     \ how sales teams schedule customer meetings, how project managers coordinate\
     \ team check-ins, and how executives manage board communications. This testing\
     \ uncovers usability issues that technical testing might miss.\n\n## Security\
-    \ Considerations\n\nGoogle Meet integration introduces specific security\
-    \ requirements that protect sensitive calendar data and meeting content. The implementation\
+    \ Considerations\n\nGoogle Meet integration introduces specific security requirements\
+    \ that protect sensitive calendar data and meeting content. The implementation\
     \ follows the principle of least privilege, requesting only essential OAuth scopes\
     \ for calendar event management and Meet link creation. Avoid broad permissions\
     \ that grant unnecessary data access beyond integration requirements.\n\nData\
@@ -324,38 +324,38 @@ ai_generated_content:
     \ defense mechanisms. Conduct penetration testing that attempts to intercept OAuth\
     \ tokens, manipulate webhook payloads, or escalate privileges through API endpoints.\
     \ These tests identify vulnerabilities before malicious actors exploit them in\
-    \ production environments.\n\n## Performance Optimization\n\nGoogle\
-    \ Meet integration performance hinges on efficient API utilization and intelligent\
-    \ caching strategies. The system implements request batching for participant synchronization,\
-    \ combining multiple attendee operations into single API calls where possible.\
-    \ This approach reduces network overhead and minimizes the impact of API rate\
-    \ limiting on synchronization throughput.\n\nDatabase optimization focuses on\
-    \ calendar event queries that power synchronization processes. Add strategic indexes\
-    \ to Odoo's calendar event model for common filter conditions like date ranges,\
-    \ organizer assignments, and synchronization status flags. These indexes prevent\
-    \ full table scans during large-scale synchronization operations.\n\nCaching strategies\
-    \ reduce redundant API calls for static data like user profiles and calendar metadata.\
-    \ Implement Redis-based caching for Google user information that persists between\
-    \ synchronization cycles, eliminating repetitive People API queries for the same\
-    \ participant data. Set appropriate TTL values that balance cache freshness with\
-    \ performance gains.\n\n### Bottleneck Identification\n\nMonitor these critical\
-    \ performance indicators to identify optimization opportunities:\n- API response\
-    \ times for event insertion and modification\n- Database query execution times\
-    \ during synchronization\n- Background job queue depth and processing latency\n\
-    - Memory consumption during bulk synchronization operations\n- Network throughput\
-    \ between Odoo instances and Google APIs\n\n### Optimization Techniques\n\nImplement\
-    \ lazy synchronization for historical data, prioritizing recent events over older\
-    \ records. This approach accelerates initial synchronization by deferring historical\
-    \ data processing until system resources permit. Users gain immediate value from\
-    \ current meetings while the system gradually backfills historical data.\n\nUse\
-    \ connection pooling for HTTP clients that communicate with Google APIs. Reusing\
-    \ established connections eliminates TCP handshake overhead and SSL negotiation\
-    \ latency, particularly beneficial for frequent small API calls. Configure appropriate\
-    \ pool sizes based on concurrent user counts and synchronization volume.\n\nDevelop\
-    \ selective synchronization filters that exclude non-essential events from bidirectional\
-    \ sync. Allow organizations to define rules based on event categories, participant\
-    \ domains, or meeting titles. This filtering reduces synchronization load by omitting\
-    \ personal events or low-priority meetings from processing pipelines."
+    \ production environments.\n\n## Performance Optimization\n\nGoogle Meet integration\
+    \ performance hinges on efficient API utilization and intelligent caching strategies.\
+    \ The system implements request batching for participant synchronization, combining\
+    \ multiple attendee operations into single API calls where possible. This approach\
+    \ reduces network overhead and minimizes the impact of API rate limiting on synchronization\
+    \ throughput.\n\nDatabase optimization focuses on calendar event queries that\
+    \ power synchronization processes. Add strategic indexes to Odoo's calendar event\
+    \ model for common filter conditions like date ranges, organizer assignments,\
+    \ and synchronization status flags. These indexes prevent full table scans during\
+    \ large-scale synchronization operations.\n\nCaching strategies reduce redundant\
+    \ API calls for static data like user profiles and calendar metadata. Implement\
+    \ Redis-based caching for Google user information that persists between synchronization\
+    \ cycles, eliminating repetitive People API queries for the same participant data.\
+    \ Set appropriate TTL values that balance cache freshness with performance gains.\n\
+    \n### Bottleneck Identification\n\nMonitor these critical performance indicators\
+    \ to identify optimization opportunities:\n- API response times for event insertion\
+    \ and modification\n- Database query execution times during synchronization\n\
+    - Background job queue depth and processing latency\n- Memory consumption during\
+    \ bulk synchronization operations\n- Network throughput between Odoo instances\
+    \ and Google APIs\n\n### Optimization Techniques\n\nImplement lazy synchronization\
+    \ for historical data, prioritizing recent events over older records. This approach\
+    \ accelerates initial synchronization by deferring historical data processing\
+    \ until system resources permit. Users gain immediate value from current meetings\
+    \ while the system gradually backfills historical data.\n\nUse connection pooling\
+    \ for HTTP clients that communicate with Google APIs. Reusing established connections\
+    \ eliminates TCP handshake overhead and SSL negotiation latency, particularly\
+    \ beneficial for frequent small API calls. Configure appropriate pool sizes based\
+    \ on concurrent user counts and synchronization volume.\n\nDevelop selective synchronization\
+    \ filters that exclude non-essential events from bidirectional sync. Allow organizations\
+    \ to define rules based on event categories, participant domains, or meeting titles.\
+    \ This filtering reduces synchronization load by omitting personal events or low-priority\
+    \ meetings from processing pipelines."
   conclusion: 'Your Google Meet integration now transforms how your organization manages
     virtual collaboration. The technical implementation you completed automates the
     entire meeting lifecycle, from initial scheduling through participant management
@@ -454,13 +454,14 @@ visualizations:
   placement_hint: after_conclusion
   data_context: learning path and knowledge graph
   mermaid_chart_syntax: "flowchart TB\n\n    Current[\"[CURRENT] Google Meet to Odoo\
-    \ Integration: Complete 2025 Guide\"]\n\n    %% Related Topics - Cross-References\n\
-    \    Current -.-> Rel0[\"Cloudflare to Odoo Integration: Complete 2025 Guide\"\
-    ]\n    Current -.-> Rel1[\"Facebook Pixel to Odoo Integration: Complete 2025 Guide\"\
-    ]\n\n    %% Professional Styling\n    classDef current fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n\
-    \    classDef prereq fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000\n\
-    \    classDef next fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000\n \
-    \   classDef related fill:#f5f5f5,stroke:#616161,stroke-width:1px,color:#000\n\
+    \ Integration: Complete 2025 Guide\"]\n\n    %% Next Steps - Learning Progression\n\
+    \    Current --> Next0(\"Complete Implementation Guide\")\n\n    %% Related Topics\
+    \ - Cross-References\n    Current -.-> Rel0[\"Cloudflare to Odoo Integration:\
+    \ Complete 2025 Guide\"]\n    Current -.-> Rel1[\"Facebook Pixel to Odoo Integration:\
+    \ Complete 2025 Guide\"]\n\n    %% Professional Styling\n    classDef current\
+    \ fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n    classDef prereq\
+    \ fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000\n    classDef next fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000\n\
+    \    classDef related fill:#f5f5f5,stroke:#616161,stroke-width:1px,color:#000\n\
     \    classDef trouble fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000\n\
     \    classDef support fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#000\n\
-    \n    class Current current\n    class Rel0,Rel1 related"
+    \n    class Current current\n    class Next0 next\n    class Rel0,Rel1 related"

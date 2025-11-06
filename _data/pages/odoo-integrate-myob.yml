@@ -68,31 +68,31 @@ ai_generated_content:
     data integrity and system reliability over speed. You will construct an integration
     that handles real-world exceptions and scales with your business growth. Let''s
     eliminate those data silos and build a cohesive operational backbone.'
-  main_content: "## Integration Architecture and Data Flow\n\n### Core\
-    \ Integration Patterns\n\nYou must choose an integration pattern that matches\
-    \ your data synchronization needs. A real-time API push suits scenarios requiring\
-    \ immediate data consistency, like order creation in Odoo triggering an invoice\
-    \ in MYOB. This pattern uses webhooks or instant API calls. It ensures both systems\
-    \ reflect the current state but introduces latency dependencies. Batch processing\
-    \ handles high-volume, less time-sensitive data like historical customer records\
-    \ or product catalogs.\n\nA hybrid approach often delivers the best balance. You\
-    \ process transactional data in real-time while synchronizing master data on a\
-    \ scheduled basis. This design reduces API load during peak business hours. It\
-    \ also provides a fallback mechanism if real-time connections experience temporary\
-    \ failure. Your architecture must define clear boundaries between these synchronization\
-    \ types.\n\n### Data Flow Direction and Master-Slave Relationships\n\nEstablish\
-    \ clear master-slave relationships for each data entity to prevent update conflicts.\
-    \ Odoo 18 typically acts as the master for sales orders, inventory adjustments,\
-    \ and customer service interactions. MYOB maintains authority over general ledger\
-    \ accounts, tax codes, and finalized financial transactions. This separation preserves\
-    \ the integrity of your financial records while empowering operational flexibility.\n\
-    \nThe data flow follows a bidirectional but asymmetric pattern. Odoo pushes new\
-    \ sales orders, inventory receipts, and customer updates to MYOB. MYOB sends payment\
-    \ allocations, updated product costs, and chart of accounts changes to Odoo. You\
-    \ implement logic to handle merge conflicts, usually favoring the system designated\
-    \ as the master for that specific data type.\n\n### Technical Components and Data\
-    \ Pipeline\n\nThe integration relies on several key technical components. Odoo\
-    \ 18's external API layer exposes models like sale.order, account.move, and product.product.\
+  main_content: "## Integration Architecture and Data Flow\n\n### Core Integration\
+    \ Patterns\n\nYou must choose an integration pattern that matches your data synchronization\
+    \ needs. A real-time API push suits scenarios requiring immediate data consistency,\
+    \ like order creation in Odoo triggering an invoice in MYOB. This pattern uses\
+    \ webhooks or instant API calls. It ensures both systems reflect the current state\
+    \ but introduces latency dependencies. Batch processing handles high-volume, less\
+    \ time-sensitive data like historical customer records or product catalogs.\n\n\
+    A hybrid approach often delivers the best balance. You process transactional data\
+    \ in real-time while synchronizing master data on a scheduled basis. This design\
+    \ reduces API load during peak business hours. It also provides a fallback mechanism\
+    \ if real-time connections experience temporary failure. Your architecture must\
+    \ define clear boundaries between these synchronization types.\n\n### Data Flow\
+    \ Direction and Master-Slave Relationships\n\nEstablish clear master-slave relationships\
+    \ for each data entity to prevent update conflicts. Odoo 18 typically acts as\
+    \ the master for sales orders, inventory adjustments, and customer service interactions.\
+    \ MYOB maintains authority over general ledger accounts, tax codes, and finalized\
+    \ financial transactions. This separation preserves the integrity of your financial\
+    \ records while empowering operational flexibility.\n\nThe data flow follows a\
+    \ bidirectional but asymmetric pattern. Odoo pushes new sales orders, inventory\
+    \ receipts, and customer updates to MYOB. MYOB sends payment allocations, updated\
+    \ product costs, and chart of accounts changes to Odoo. You implement logic to\
+    \ handle merge conflicts, usually favoring the system designated as the master\
+    \ for that specific data type.\n\n### Technical Components and Data Pipeline\n\
+    \nThe integration relies on several key technical components. Odoo 18's external\
+    \ API layer exposes models like sale.order, account.move, and product.product.\
     \ MYOB's AccountRight API provides endpoints for invoices, contacts, and inventory\
     \ items. A middleware layer, often implemented as a custom Odoo module or separate\
     \ service, orchestrates the communication between these systems.\n\nYour data\
@@ -110,60 +110,59 @@ ai_generated_content:
     \ systems with permissions limited to the specific data entities and operations\
     \ your integration requires. This containment strategy reduces risk if credentials\
     \ become compromised. Audit logs in both systems should track all integration\
-    \ activities.\n\n## Step-by-Step Configuration\n\n### MYOB API Application\
-    \ Registration\n\nBegin the configuration in the MYOB Developer Portal. Create\
-    \ a new application profile that specifies the integration scope. Select the API\
-    \ endpoints your integration requires: Company, Contact, Inventory, and Sale.\
-    \ Note your application's Client ID and Client Secret immediately; you need these\
-    \ for the OAuth flow. Configure the redirect URI to point to your Odoo instance's\
-    \ authentication callback endpoint.\n\nSet the application type based on your\
-    \ deployment model. A public application suits integrations requiring access across\
-    \ multiple MYOB company files. A private application works for internal use with\
-    \ a single company file. Private applications simplify the authentication process\
-    \ but limit deployment flexibility. Save all configuration changes before proceeding\
-    \ to the Odoo setup.\n\n### Odoo 18 Integration Module Installation\n\nAccess\
-    \ your Odoo 18 instance with administrator privileges. Navigate to the Apps menu\
-    \ and search for MYOB integration modules. The Odoo App Store contains several\
-    \ community and enterprise options. Evaluate modules based on their compatibility\
-    \ with your Odoo version and support for the specific MYOB endpoints you need.\
-    \ Install the selected module, or choose to develop a custom module if existing\
-    \ solutions lack required features.\n\nAfter installation, activate the MYOB integration\
-    \ features in Odoo's Settings. Locate the External Integrations section and enable\
-    \ the MYOB connector. This action creates the necessary database tables and exposes\
-    \ the configuration interface. Set the base configuration parameters, including\
-    \ the MYOB API base URL and your default synchronization preferences.\n\n### OAuth\
-    \ 2.0 Authentication Setup\n\nImplement the OAuth 2.0 authorization code flow\
-    \ between Odoo and MYOB. Create an Odoo configuration page that stores the MYOB\
-    \ Client ID and Client Secret. Generate the initial authorization URL by combining\
-    \ the MYOB authorization endpoint with your client credentials and redirect URI.\
-    \ When users access this URL, they authenticate with MYOB and grant permissions\
-    \ to your application.\n\nMYOB redirects back to your Odoo instance with an authorization\
-    \ code. Your integration code exchanges this code for an access token and refresh\
-    \ token. Implement secure token storage within Odoo, preferably using its built-in\
-    \ credential management system. Here's a Python code example for the token exchange\
-    \ process:\n\n```python\ndef get_myob_tokens(authorization_code):\n    token_url\
-    \ = \"https://api.myob.com/identity/connect/token\"\n    payload = {\n       \
-    \ 'client_id': MYOB_CLIENT_ID,\n        'client_secret': MYOB_CLIENT_SECRET,\n\
-    \        'code': authorization_code,\n        'redirect_uri': REDIRECT_URI,\n\
-    \        'grant_type': 'authorization_code'\n    }\n    response = requests.post(token_url,\
-    \ data=payload)\n    return response.json()\n```\n\n### Company File Selection\
-    \ and Connection\n\nMYOB users typically manage multiple company files. Your integration\
-    \ must provide a interface for selecting the specific company file for synchronization.\
-    \ After obtaining the access token, call the MYOB Company endpoint to retrieve\
-    \ a list of accessible company files. Present this list to the administrator within\
-    \ the Odoo configuration interface.\n\nStore the selected company file ID alongside\
-    \ the authentication tokens. All subsequent API calls must include this company\
-    \ file identifier in their headers. Test the connection with a simple API call\
-    \ to verify permissions and network connectivity. Implement error handling for\
-    \ scenarios where the company file becomes inaccessible due to permission changes\
-    \ or archiving.\n\n### Synchronization Configuration and Mapping Tables\n\nDefine\
-    \ the synchronization scope and schedule for each data entity. Configure which\
-    \ Odoo models synchronize with which MYOB endpoints. Set the synchronization direction\
-    \ (unidirectional or bidirectional) and conflict resolution rules. Create mapping\
-    \ tables that correlate Odoo records with their MYOB counterparts, essential for\
-    \ update operations rather than duplicate creation.\n\nImplement these mapping\
-    \ tables as additional models in your Odoo module. Here's a simplified example\
-    \ of a product mapping model:\n\n```python\nclass MyobProductMapping(models.Model):\n\
+    \ activities.\n\n## Step-by-Step Configuration\n\n### MYOB API Application Registration\n\
+    \nBegin the configuration in the MYOB Developer Portal. Create a new application\
+    \ profile that specifies the integration scope. Select the API endpoints your\
+    \ integration requires: Company, Contact, Inventory, and Sale. Note your application's\
+    \ Client ID and Client Secret immediately; you need these for the OAuth flow.\
+    \ Configure the redirect URI to point to your Odoo instance's authentication callback\
+    \ endpoint.\n\nSet the application type based on your deployment model. A public\
+    \ application suits integrations requiring access across multiple MYOB company\
+    \ files. A private application works for internal use with a single company file.\
+    \ Private applications simplify the authentication process but limit deployment\
+    \ flexibility. Save all configuration changes before proceeding to the Odoo setup.\n\
+    \n### Odoo 18 Integration Module Installation\n\nAccess your Odoo 18 instance\
+    \ with administrator privileges. Navigate to the Apps menu and search for MYOB\
+    \ integration modules. The Odoo App Store contains several community and enterprise\
+    \ options. Evaluate modules based on their compatibility with your Odoo version\
+    \ and support for the specific MYOB endpoints you need. Install the selected module,\
+    \ or choose to develop a custom module if existing solutions lack required features.\n\
+    \nAfter installation, activate the MYOB integration features in Odoo's Settings.\
+    \ Locate the External Integrations section and enable the MYOB connector. This\
+    \ action creates the necessary database tables and exposes the configuration interface.\
+    \ Set the base configuration parameters, including the MYOB API base URL and your\
+    \ default synchronization preferences.\n\n### OAuth 2.0 Authentication Setup\n\
+    \nImplement the OAuth 2.0 authorization code flow between Odoo and MYOB. Create\
+    \ an Odoo configuration page that stores the MYOB Client ID and Client Secret.\
+    \ Generate the initial authorization URL by combining the MYOB authorization endpoint\
+    \ with your client credentials and redirect URI. When users access this URL, they\
+    \ authenticate with MYOB and grant permissions to your application.\n\nMYOB redirects\
+    \ back to your Odoo instance with an authorization code. Your integration code\
+    \ exchanges this code for an access token and refresh token. Implement secure\
+    \ token storage within Odoo, preferably using its built-in credential management\
+    \ system. Here's a Python code example for the token exchange process:\n\n```python\n\
+    def get_myob_tokens(authorization_code):\n    token_url = \"https://api.myob.com/identity/connect/token\"\
+    \n    payload = {\n        'client_id': MYOB_CLIENT_ID,\n        'client_secret':\
+    \ MYOB_CLIENT_SECRET,\n        'code': authorization_code,\n        'redirect_uri':\
+    \ REDIRECT_URI,\n        'grant_type': 'authorization_code'\n    }\n    response\
+    \ = requests.post(token_url, data=payload)\n    return response.json()\n```\n\n\
+    ### Company File Selection and Connection\n\nMYOB users typically manage multiple\
+    \ company files. Your integration must provide a interface for selecting the specific\
+    \ company file for synchronization. After obtaining the access token, call the\
+    \ MYOB Company endpoint to retrieve a list of accessible company files. Present\
+    \ this list to the administrator within the Odoo configuration interface.\n\n\
+    Store the selected company file ID alongside the authentication tokens. All subsequent\
+    \ API calls must include this company file identifier in their headers. Test the\
+    \ connection with a simple API call to verify permissions and network connectivity.\
+    \ Implement error handling for scenarios where the company file becomes inaccessible\
+    \ due to permission changes or archiving.\n\n### Synchronization Configuration\
+    \ and Mapping Tables\n\nDefine the synchronization scope and schedule for each\
+    \ data entity. Configure which Odoo models synchronize with which MYOB endpoints.\
+    \ Set the synchronization direction (unidirectional or bidirectional) and conflict\
+    \ resolution rules. Create mapping tables that correlate Odoo records with their\
+    \ MYOB counterparts, essential for update operations rather than duplicate creation.\n\
+    \nImplement these mapping tables as additional models in your Odoo module. Here's\
+    \ a simplified example of a product mapping model:\n\n```python\nclass MyobProductMapping(models.Model):\n\
     \    _name = 'myob.product.mapping'\n    \n    odoo_product_id = fields.Many2one('product.product',\
     \ string='Odoo Product')\n    myob_item_uid = fields.Char(string='MYOB Item UID')\n\
     \    last_sync_date = fields.Datetime(string='Last Synchronization')\n    sync_active\
@@ -185,19 +184,19 @@ ai_generated_content:
     \ when relevant records change. Use Odoo's built-in automation tools or implement\
     \ model overwrites to catch create, write, and delete operations. This bidirectional\
     \ event-driven architecture maintains synchronization without relying solely on\
-    \ scheduled jobs.\n\n## Data Mapping and Transformation\n\n### Customer\
-    \ and Contact Mapping\n\nMYOB contacts map to Odoo partners, but field structures\
-    \ differ significantly. MYOB uses a flat contact structure with CompanyName and\
-    \ IndividualName fields, while Odoo distinguishes between companies and individuals.\
-    \ Implement logic that analyzes both fields to determine the partner type in Odoo.\
-    \ MYOB's CardIdentifier becomes the external reference in Odoo's partner model.\n\
-    \nAddress mapping requires careful transformation. MYOB stores addresses in multiple\
-    \ sets (Street, City, State, PostCode), while Odoo uses a structured address model\
-    \ with countries and states. Implement country code translation between the systems,\
-    \ as MYOB uses full country names and Odoo uses ISO codes. Phone number formatting\
-    \ often needs standardization during the transfer process.\n\n### Product and\
-    \ Inventory Item Mapping\n\nMYOB inventory items align with Odoo's product.product\
-    \ model, but with important distinctions. MYOB's ItemNumber becomes the Odoo default\
+    \ scheduled jobs.\n\n## Data Mapping and Transformation\n\n### Customer and Contact\
+    \ Mapping\n\nMYOB contacts map to Odoo partners, but field structures differ significantly.\
+    \ MYOB uses a flat contact structure with CompanyName and IndividualName fields,\
+    \ while Odoo distinguishes between companies and individuals. Implement logic\
+    \ that analyzes both fields to determine the partner type in Odoo. MYOB's CardIdentifier\
+    \ becomes the external reference in Odoo's partner model.\n\nAddress mapping requires\
+    \ careful transformation. MYOB stores addresses in multiple sets (Street, City,\
+    \ State, PostCode), while Odoo uses a structured address model with countries\
+    \ and states. Implement country code translation between the systems, as MYOB\
+    \ uses full country names and Odoo uses ISO codes. Phone number formatting often\
+    \ needs standardization during the transfer process.\n\n### Product and Inventory\
+    \ Item Mapping\n\nMYOB inventory items align with Odoo's product.product model,\
+    \ but with important distinctions. MYOB's ItemNumber becomes the Odoo default\
     \ code, while the ItemDescription maps to the product name. MYOB supports two\
     \ inventory tracking methods (None, Serial), while Odoo offers more granular control\
     \ (None, Serial, Lot). Implement logic that translates between these tracking\
@@ -235,10 +234,10 @@ ai_generated_content:
     \ fields into a single destination field, or split a source field across multiple\
     \ destinations. Document these transformation rules thoroughly for future maintenance.\
     \ Consider storing unmappable data in a notes field or custom attribute for manual\
-    \ review.\n\n## Error Handling and Resilience\n\n### Common API Error\
-    \ Patterns and Solutions\n\nMYOB API responses include specific error codes that\
-    \ guide your troubleshooting. The 400 Bad Request error often indicates malformed\
-    \ data or validation failures. Extract the detailed error message from the response\
+    \ review.\n\n## Error Handling and Resilience\n\n### Common API Error Patterns\
+    \ and Solutions\n\nMYOB API responses include specific error codes that guide\
+    \ your troubleshooting. The 400 Bad Request error often indicates malformed data\
+    \ or validation failures. Extract the detailed error message from the response\
     \ body to identify the specific field causing the issue. The 401 Unauthorized\
     \ error signals token expiration—implement automatic token refresh logic to handle\
     \ this scenario.\n\nThe 429 Too Many Requests error requires careful handling.\
@@ -284,97 +283,97 @@ ai_generated_content:
     \ errors, repeated synchronization failures, and data integrity issues. Establish\
     \ different severity levels for alerts to prevent notification fatigue. Regular\
     \ log reviews help identify patterns that indicate underlying system issues.\n\
-    \n## Testing and Validation\n\n### Development Environment Configuration\n\
-    \nEstablish isolated development instances of both MYOB and Odoo for integration\
-    \ testing. Populate these environments with representative data that mirrors your\
-    \ production environment's complexity. Include edge cases like special characters\
-    \ in names, extreme numeric values, and unusual business scenarios. This test\
-    \ data foundation supports comprehensive validation.\n\nImplement data snapshot\
-    \ capabilities to reset environments to a known state between test cycles. For\
-    \ MYOB, use company file backups. For Odoo, use database backups or automated\
-    \ test data factories. Quick environment resetting accelerates the testing iteration\
-    \ cycle and ensures consistent starting conditions for each test scenario.\n\n\
-    ### Unit and Integration Test Scenarios\n\nDevelop unit tests that verify individual\
-    \ components of your integration code. Test data transformation functions with\
-    \ various input combinations, including invalid data that should trigger errors.\
-    \ Verify authentication logic handles token expiration and renewal correctly.\
-    \ Mock API responses to simulate both successful operations and various error\
-    \ conditions.\n\nCreate integration tests that execute complete synchronization\
-    \ workflows. Test each major data entity: customers, products, invoices, and inventory\
-    \ movements. Verify that records created in one system appear correctly in the\
-    \ other with all attributes properly mapped. Include tests for update and delete\
-    \ operations, not just creation.\n\n### Data Integrity Validation Procedures\n\
-    \nAfter each test synchronization, execute validation scripts that compare data\
-    \ between the systems. Check record counts for each entity type to ensure no records\
-    \ were missed. Sample individual records and verify field-level accuracy. Pay\
-    \ special attention to calculated values like totals, taxes, and balances that\
-    \ might derive from multiple source fields.\n\nImplement reconciliation reports\
-    \ that highlight discrepancies between the systems. These reports should identify\
-    \ missing records, field value mismatches, and relationship inconsistencies. Run\
-    \ these reports after each significant test to catch regression issues early in\
-    \ the development process.\n\n### Performance and Load Testing\n\nTest synchronization\
-    \ performance with datasets of various sizes. Measure processing time for initial\
-    \ full synchronizations with thousands of records. Establish performance benchmarks\
-    \ for common operations like daily customer and invoice syncs. Identify any linear\
-    \ or exponential performance degradation as data volumes increase.\n\nSimulate\
-    \ peak load conditions by generating simultaneous synchronization requests. Test\
-    \ how the integration handles concurrent operations on different data entities.\
-    \ Verify that rate limiting and queuing mechanisms function correctly under load.\
-    \ Performance testing ensures the integration remains responsive during business\
-    \ hours.\n\n### User Acceptance Testing Framework\n\nInvolve business users in\
-    \ the testing process, particularly for data mapping validation. Create test scenarios\
-    \ that mirror real business processes: creating a sale in Odoo and verifying the\
-    \ invoice appears in MYOB, receiving payment in MYOB and checking the allocation\
-    \ in Odoo. Document these test cases with clear pass/fail criteria.\n\nCollect\
-    \ user feedback on data presentation and usability. Sometimes technical correctness\
-    \ doesn't align with user expectations, particularly for calculated fields or\
-    \ formatted outputs. Incorporate this feedback into refinement cycles before moving\
-    \ to production deployment.\n\n## Security Considerations\n\n### Authentication\
-    \ Credential Management\n\nSecure storage of API credentials demands careful implementation.\
-    \ Never hardcode Client ID and Client Secret values in your source code. Use Odoo's\
-    \ configuration parameter system or a dedicated secrets management solution. Encrypt\
-    \ sensitive values in the database, and implement access controls that limit which\
-    \ users can view or modify integration settings.\n\nOAuth token handling requires\
-    \ special attention. Store access tokens and refresh tokens securely, and implement\
-    \ automatic token rotation. Monitor token expiration times and refresh them proactively\
-    \ to avoid service interruptions. Audit token usage to detect anomalous patterns\
-    \ that might indicate security breaches.\n\n### API Security and Access Controls\n\
-    \nApply the principle of least privilege to API permissions in both systems. In\
-    \ MYOB, create a dedicated user account for the integration with precisely defined\
-    \ rights. Limit access to only the API endpoints and data entities necessary for\
-    \ the integration. Similarly, in Odoo, create a specific user with permissions\
-    \ restricted to the required models and operations.\n\nImplement IP whitelisting\
-    \ where supported by both platforms. Restrict API access to specific server IP\
-    \ addresses to prevent unauthorized access attempts. Regularly review access logs\
-    \ for both systems to identify suspicious activities. Rotate API keys periodically\
-    \ as part of your security maintenance routine.\n\n### Data Encryption and Transmission\
-    \ Security\n\nEnsure all data transmission occurs over encrypted channels. Both\
-    \ MYOB and Odoo APIs require HTTPS connections. Verify certificate validity in\
-    \ your integration code to prevent man-in-the-middle attacks. For sensitive data\
-    \ stored within Odoo, consider additional field-level encryption, particularly\
-    \ for financial information or personal customer data.\n\nImplement data masking\
-    \ in non-production environments. Use anonymized test data that preserves format\
-    \ and characteristics without exposing real customer information or financial\
-    \ records. This practice reduces risk during development and testing phases while\
-    \ maintaining data utility for validation purposes.\n\n### Compliance and Audit\
-    \ Requirements\n\nMaintain detailed audit trails of all integration activities.\
-    \ Log synchronization events, including record counts, timestamps, and any errors\
-    \ encountered. These logs support compliance requirements and facilitate troubleshooting.\
-    \ Implement log retention policies that balance operational needs with storage\
-    \ constraints.\n\nUnderstand the regulatory implications of data transfer between\
-    \ systems. If you handle personal data subject to GDPR, CCPA, or other privacy\
-    \ regulations, ensure your integration complies with data processing and transfer\
-    \ requirements. Document the data flow between systems as part of your compliance\
-    \ documentation.\n\n## Performance Optimization\n\n### API Call Optimization\
-    \ Strategies\n\nMinimize API calls through intelligent batching and caching. MYOB's\
-    \ API supports batch operations for certain endpoints—group related create and\
-    \ update operations into single requests where possible. Implement request deduplication\
-    \ to prevent multiple updates for the same record within short timeframes. These\
-    \ techniques reduce API load and improve synchronization speed.\n\nImplement strategic\
-    \ caching for reference data that changes infrequently. Cache MYOB tax codes,\
-    \ account structures, and unit of measure definitions in Odoo to avoid repeated\
-    \ API calls. Establish cache invalidation rules that refresh this data when changes\
-    \ occur. Proper caching can reduce API calls by 30-40% for typical business operations.\n\
+    \n## Testing and Validation\n\n### Development Environment Configuration\n\nEstablish\
+    \ isolated development instances of both MYOB and Odoo for integration testing.\
+    \ Populate these environments with representative data that mirrors your production\
+    \ environment's complexity. Include edge cases like special characters in names,\
+    \ extreme numeric values, and unusual business scenarios. This test data foundation\
+    \ supports comprehensive validation.\n\nImplement data snapshot capabilities to\
+    \ reset environments to a known state between test cycles. For MYOB, use company\
+    \ file backups. For Odoo, use database backups or automated test data factories.\
+    \ Quick environment resetting accelerates the testing iteration cycle and ensures\
+    \ consistent starting conditions for each test scenario.\n\n### Unit and Integration\
+    \ Test Scenarios\n\nDevelop unit tests that verify individual components of your\
+    \ integration code. Test data transformation functions with various input combinations,\
+    \ including invalid data that should trigger errors. Verify authentication logic\
+    \ handles token expiration and renewal correctly. Mock API responses to simulate\
+    \ both successful operations and various error conditions.\n\nCreate integration\
+    \ tests that execute complete synchronization workflows. Test each major data\
+    \ entity: customers, products, invoices, and inventory movements. Verify that\
+    \ records created in one system appear correctly in the other with all attributes\
+    \ properly mapped. Include tests for update and delete operations, not just creation.\n\
+    \n### Data Integrity Validation Procedures\n\nAfter each test synchronization,\
+    \ execute validation scripts that compare data between the systems. Check record\
+    \ counts for each entity type to ensure no records were missed. Sample individual\
+    \ records and verify field-level accuracy. Pay special attention to calculated\
+    \ values like totals, taxes, and balances that might derive from multiple source\
+    \ fields.\n\nImplement reconciliation reports that highlight discrepancies between\
+    \ the systems. These reports should identify missing records, field value mismatches,\
+    \ and relationship inconsistencies. Run these reports after each significant test\
+    \ to catch regression issues early in the development process.\n\n### Performance\
+    \ and Load Testing\n\nTest synchronization performance with datasets of various\
+    \ sizes. Measure processing time for initial full synchronizations with thousands\
+    \ of records. Establish performance benchmarks for common operations like daily\
+    \ customer and invoice syncs. Identify any linear or exponential performance degradation\
+    \ as data volumes increase.\n\nSimulate peak load conditions by generating simultaneous\
+    \ synchronization requests. Test how the integration handles concurrent operations\
+    \ on different data entities. Verify that rate limiting and queuing mechanisms\
+    \ function correctly under load. Performance testing ensures the integration remains\
+    \ responsive during business hours.\n\n### User Acceptance Testing Framework\n\
+    \nInvolve business users in the testing process, particularly for data mapping\
+    \ validation. Create test scenarios that mirror real business processes: creating\
+    \ a sale in Odoo and verifying the invoice appears in MYOB, receiving payment\
+    \ in MYOB and checking the allocation in Odoo. Document these test cases with\
+    \ clear pass/fail criteria.\n\nCollect user feedback on data presentation and\
+    \ usability. Sometimes technical correctness doesn't align with user expectations,\
+    \ particularly for calculated fields or formatted outputs. Incorporate this feedback\
+    \ into refinement cycles before moving to production deployment.\n\n## Security\
+    \ Considerations\n\n### Authentication Credential Management\n\nSecure storage\
+    \ of API credentials demands careful implementation. Never hardcode Client ID\
+    \ and Client Secret values in your source code. Use Odoo's configuration parameter\
+    \ system or a dedicated secrets management solution. Encrypt sensitive values\
+    \ in the database, and implement access controls that limit which users can view\
+    \ or modify integration settings.\n\nOAuth token handling requires special attention.\
+    \ Store access tokens and refresh tokens securely, and implement automatic token\
+    \ rotation. Monitor token expiration times and refresh them proactively to avoid\
+    \ service interruptions. Audit token usage to detect anomalous patterns that might\
+    \ indicate security breaches.\n\n### API Security and Access Controls\n\nApply\
+    \ the principle of least privilege to API permissions in both systems. In MYOB,\
+    \ create a dedicated user account for the integration with precisely defined rights.\
+    \ Limit access to only the API endpoints and data entities necessary for the integration.\
+    \ Similarly, in Odoo, create a specific user with permissions restricted to the\
+    \ required models and operations.\n\nImplement IP whitelisting where supported\
+    \ by both platforms. Restrict API access to specific server IP addresses to prevent\
+    \ unauthorized access attempts. Regularly review access logs for both systems\
+    \ to identify suspicious activities. Rotate API keys periodically as part of your\
+    \ security maintenance routine.\n\n### Data Encryption and Transmission Security\n\
+    \nEnsure all data transmission occurs over encrypted channels. Both MYOB and Odoo\
+    \ APIs require HTTPS connections. Verify certificate validity in your integration\
+    \ code to prevent man-in-the-middle attacks. For sensitive data stored within\
+    \ Odoo, consider additional field-level encryption, particularly for financial\
+    \ information or personal customer data.\n\nImplement data masking in non-production\
+    \ environments. Use anonymized test data that preserves format and characteristics\
+    \ without exposing real customer information or financial records. This practice\
+    \ reduces risk during development and testing phases while maintaining data utility\
+    \ for validation purposes.\n\n### Compliance and Audit Requirements\n\nMaintain\
+    \ detailed audit trails of all integration activities. Log synchronization events,\
+    \ including record counts, timestamps, and any errors encountered. These logs\
+    \ support compliance requirements and facilitate troubleshooting. Implement log\
+    \ retention policies that balance operational needs with storage constraints.\n\
+    \nUnderstand the regulatory implications of data transfer between systems. If\
+    \ you handle personal data subject to GDPR, CCPA, or other privacy regulations,\
+    \ ensure your integration complies with data processing and transfer requirements.\
+    \ Document the data flow between systems as part of your compliance documentation.\n\
+    \n## Performance Optimization\n\n### API Call Optimization Strategies\n\nMinimize\
+    \ API calls through intelligent batching and caching. MYOB's API supports batch\
+    \ operations for certain endpoints—group related create and update operations\
+    \ into single requests where possible. Implement request deduplication to prevent\
+    \ multiple updates for the same record within short timeframes. These techniques\
+    \ reduce API load and improve synchronization speed.\n\nImplement strategic caching\
+    \ for reference data that changes infrequently. Cache MYOB tax codes, account\
+    \ structures, and unit of measure definitions in Odoo to avoid repeated API calls.\
+    \ Establish cache invalidation rules that refresh this data when changes occur.\
+    \ Proper caching can reduce API calls by 30-40% for typical business operations.\n\
     \n### Database Optimization for Mapping Tables\n\nOptimize database performance\
     \ for mapping tables that grow with your business. Implement proper indexing on\
     \ foreign key relationships and frequently queried fields like external identifiers.\
@@ -484,13 +483,14 @@ visualizations:
   placement_hint: after_conclusion
   data_context: learning path and knowledge graph
   mermaid_chart_syntax: "flowchart TB\n\n    Current[\"[CURRENT] Myob to Odoo Integration:\
-    \ Complete 2025 Guide\"]\n\n    %% Related Topics - Cross-References\n    Current\
-    \ -.-> Rel0[\"Cloudflare to Odoo Integration: Complete 2025 Guide\"]\n    Current\
-    \ -.-> Rel1[\"Facebook Pixel to Odoo Integration: Complete 2025 Guide\"]\n\n \
-    \   %% Professional Styling\n    classDef current fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n\
+    \ Complete 2025 Guide\"]\n\n    %% Next Steps - Learning Progression\n    Current\
+    \ --> Next0(\"Complete Implementation Guide\")\n\n    %% Related Topics - Cross-References\n\
+    \    Current -.-> Rel0[\"Cloudflare to Odoo Integration: Complete 2025 Guide\"\
+    ]\n    Current -.-> Rel1[\"Facebook Pixel to Odoo Integration: Complete 2025 Guide\"\
+    ]\n\n    %% Professional Styling\n    classDef current fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n\
     \    classDef prereq fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000\n\
     \    classDef next fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000\n \
     \   classDef related fill:#f5f5f5,stroke:#616161,stroke-width:1px,color:#000\n\
     \    classDef trouble fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000\n\
     \    classDef support fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#000\n\
-    \n    class Current current\n    class Rel0,Rel1 related"
+    \n    class Current current\n    class Next0 next\n    class Rel0,Rel1 related"

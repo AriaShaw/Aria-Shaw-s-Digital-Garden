@@ -74,69 +74,68 @@ ai_generated_content:
     details you need for production-ready deployment. We focus on real-world implementation
     challenges rather than theoretical concepts, ensuring your integration delivers
     immediate operational value from day one.'
-  main_content: "## Integration Architecture and Data Flow\n\n### Core\
-    \ Integration Patterns\n\nWorldpay integration with Odoo 18 follows two primary\
-    \ architectural patterns—synchronous payment capture and asynchronous webhook\
-    \ notifications. The synchronous pattern handles immediate payment processing\
-    \ during customer checkout, while the asynchronous pattern manages payment status\
-    \ updates, refund confirmations, and dispute notifications. Your implementation\
-    \ must support both patterns to achieve complete payment lifecycle management.\n\
-    \nThe synchronous flow begins when a customer initiates checkout in your Odoo\
-    \ ecommerce store. Odoo constructs a payment request containing order details,\
-    \ customer information, and transaction amount. This request redirects the customer\
-    \ to Worldpay's hosted payment page using secure tokenization. Worldpay processes\
-    \ the card payment and returns an immediate success or failure response to Odoo\
-    \ through a return URL.\n\n### Webhook Notification System\n\nWorldpay sends asynchronous\
-    \ webhook notifications for payment events that occur after the initial transaction.\
-    \ These events include captured payments, refunds, chargebacks, and settlement\
-    \ updates. Your integration must expose a secure endpoint within Odoo to receive\
-    \ these POST requests. The webhook handler processes each event and updates the\
-    \ corresponding Odoo sale order and accounting entries.\n\nThe data flow architecture\
-    \ requires careful security consideration. All communication between Worldpay\
-    \ and Odoo must use TLS 1.2 encryption. Worldpay sends requests signed with HMAC\
-    \ signatures that your webhook handler must verify before processing. Implement\
-    \ request validation to prevent replay attacks and ensure data integrity throughout\
-    \ the payment lifecycle.\n\n### Database Synchronization Strategy\n\nYour integration\
-    \ must maintain consistency between Worldpay transaction records and Odoo payment\
-    \ objects. Create a dedicated database table to store Worldpay transaction references\
-    \ alongside Odoo payment IDs. This mapping table enables efficient reconciliation\
-    \ and provides audit trails for dispute resolution. Implement idempotent processing\
-    \ in your webhook handlers to handle duplicate notifications without creating\
-    \ duplicate accounting entries.\n\nThe architecture should separate concerns between\
-    \ payment processing and accounting synchronization. Design your integration with\
-    \ discrete modules for payment capture, webhook handling, reconciliation, and\
-    \ reporting. This modular approach simplifies maintenance and enables targeted\
-    \ troubleshooting when issues arise. Use Odoo's queue job system to process webhook\
-    \ notifications asynchronously and prevent blocking during high-volume periods.\n\
-    \n## Step-by-Step Configuration\n\n### Worldpay Merchant Account Setup\n\
-    \nBegin with Worldpay merchant account configuration. Log into your Worldpay business\
-    \ portal and navigate to the integration settings section. Generate dedicated\
-    \ API keys for your Odoo integration—create separate keys for test and production\
-    \ environments. Configure your merchant account to accept payments in your required\
-    \ currencies and payment methods. Enable webhook notifications for all relevant\
-    \ payment events including captures, refunds, and chargebacks.\n\nConfigure your\
-    \ Worldpay test environment with sandbox credentials. Worldpay provides test card\
-    \ numbers for simulating successful payments, declines, and various error conditions.\
-    \ Set the notification URL in your Worldpay dashboard to point to your Odoo instance's\
-    \ webhook endpoint. Use ngrok or similar tunneling services during development\
-    \ to expose your local Odoo instance to Worldpay's notification servers.\n\n###\
-    \ Odoo Payment Acquirer Configuration\n\nInstall the payment module in your Odoo\
-    \ 18 instance if not already present. Navigate to Accounting > Settings > Payment\
-    \ Acquirers and create a new custom payment acquirer. Select the \"Custom\" provider\
-    \ type and name it \"Worldpay\". Configure the base settings including your company\
-    \ information, supported currencies, and payment methods. Set the redirect form\
-    \ submission URL to Worldpay's payment endpoint.\n\nImplement the payment form\
-    \ rendering method in your custom acquirer. This method generates the HTML form\
-    \ that redirects customers to Worldpay's hosted payment page. Include all required\
-    \ parameters such as merchant code, order code, amount, currency code, and signature.\
-    \ Generate the HMAC signature using your Worldpay secret key to ensure request\
-    \ authenticity.\n\n```python\ndef worldpay_form_generate(self, values):\n    base_url\
-    \ = self.env['ir.config_parameter'].get_param('web.base.url')\n    worldpay_values\
-    \ = {\n        'instId': self.worldpay_merchant_code,\n        'cartId': values['reference'],\n\
-    \        'amount': values['amount'],\n        'currency': values['currency'],\n\
-    \        'desc': values['reference'],\n        'email': values.get('partner_email',\
-    \ ''),\n        'MC_callback': base_url + '/payment/worldpay/return',\n    }\n\
-    \    worldpay_values['signature'] = self._generate_signature(worldpay_values)\n\
+  main_content: "## Integration Architecture and Data Flow\n\n### Core Integration\
+    \ Patterns\n\nWorldpay integration with Odoo 18 follows two primary architectural\
+    \ patterns—synchronous payment capture and asynchronous webhook notifications.\
+    \ The synchronous pattern handles immediate payment processing during customer\
+    \ checkout, while the asynchronous pattern manages payment status updates, refund\
+    \ confirmations, and dispute notifications. Your implementation must support both\
+    \ patterns to achieve complete payment lifecycle management.\n\nThe synchronous\
+    \ flow begins when a customer initiates checkout in your Odoo ecommerce store.\
+    \ Odoo constructs a payment request containing order details, customer information,\
+    \ and transaction amount. This request redirects the customer to Worldpay's hosted\
+    \ payment page using secure tokenization. Worldpay processes the card payment\
+    \ and returns an immediate success or failure response to Odoo through a return\
+    \ URL.\n\n### Webhook Notification System\n\nWorldpay sends asynchronous webhook\
+    \ notifications for payment events that occur after the initial transaction. These\
+    \ events include captured payments, refunds, chargebacks, and settlement updates.\
+    \ Your integration must expose a secure endpoint within Odoo to receive these\
+    \ POST requests. The webhook handler processes each event and updates the corresponding\
+    \ Odoo sale order and accounting entries.\n\nThe data flow architecture requires\
+    \ careful security consideration. All communication between Worldpay and Odoo\
+    \ must use TLS 1.2 encryption. Worldpay sends requests signed with HMAC signatures\
+    \ that your webhook handler must verify before processing. Implement request validation\
+    \ to prevent replay attacks and ensure data integrity throughout the payment lifecycle.\n\
+    \n### Database Synchronization Strategy\n\nYour integration must maintain consistency\
+    \ between Worldpay transaction records and Odoo payment objects. Create a dedicated\
+    \ database table to store Worldpay transaction references alongside Odoo payment\
+    \ IDs. This mapping table enables efficient reconciliation and provides audit\
+    \ trails for dispute resolution. Implement idempotent processing in your webhook\
+    \ handlers to handle duplicate notifications without creating duplicate accounting\
+    \ entries.\n\nThe architecture should separate concerns between payment processing\
+    \ and accounting synchronization. Design your integration with discrete modules\
+    \ for payment capture, webhook handling, reconciliation, and reporting. This modular\
+    \ approach simplifies maintenance and enables targeted troubleshooting when issues\
+    \ arise. Use Odoo's queue job system to process webhook notifications asynchronously\
+    \ and prevent blocking during high-volume periods.\n\n## Step-by-Step Configuration\n\
+    \n### Worldpay Merchant Account Setup\n\nBegin with Worldpay merchant account\
+    \ configuration. Log into your Worldpay business portal and navigate to the integration\
+    \ settings section. Generate dedicated API keys for your Odoo integration—create\
+    \ separate keys for test and production environments. Configure your merchant\
+    \ account to accept payments in your required currencies and payment methods.\
+    \ Enable webhook notifications for all relevant payment events including captures,\
+    \ refunds, and chargebacks.\n\nConfigure your Worldpay test environment with sandbox\
+    \ credentials. Worldpay provides test card numbers for simulating successful payments,\
+    \ declines, and various error conditions. Set the notification URL in your Worldpay\
+    \ dashboard to point to your Odoo instance's webhook endpoint. Use ngrok or similar\
+    \ tunneling services during development to expose your local Odoo instance to\
+    \ Worldpay's notification servers.\n\n### Odoo Payment Acquirer Configuration\n\
+    \nInstall the payment module in your Odoo 18 instance if not already present.\
+    \ Navigate to Accounting > Settings > Payment Acquirers and create a new custom\
+    \ payment acquirer. Select the \"Custom\" provider type and name it \"Worldpay\"\
+    . Configure the base settings including your company information, supported currencies,\
+    \ and payment methods. Set the redirect form submission URL to Worldpay's payment\
+    \ endpoint.\n\nImplement the payment form rendering method in your custom acquirer.\
+    \ This method generates the HTML form that redirects customers to Worldpay's hosted\
+    \ payment page. Include all required parameters such as merchant code, order code,\
+    \ amount, currency code, and signature. Generate the HMAC signature using your\
+    \ Worldpay secret key to ensure request authenticity.\n\n```python\ndef worldpay_form_generate(self,\
+    \ values):\n    base_url = self.env['ir.config_parameter'].get_param('web.base.url')\n\
+    \    worldpay_values = {\n        'instId': self.worldpay_merchant_code,\n   \
+    \     'cartId': values['reference'],\n        'amount': values['amount'],\n  \
+    \      'currency': values['currency'],\n        'desc': values['reference'],\n\
+    \        'email': values.get('partner_email', ''),\n        'MC_callback': base_url\
+    \ + '/payment/worldpay/return',\n    }\n    worldpay_values['signature'] = self._generate_signature(worldpay_values)\n\
     \    return self.worldpay_payment_url, 'post', worldpay_values\n```\n\n### Webhook\
     \ Endpoint Implementation\n\nCreate a new controller in Odoo to handle Worldpay\
     \ webhook notifications. This controller exposes a public endpoint that accepts\
@@ -218,11 +217,11 @@ ai_generated_content:
     \ transactions for audit trail purposes. Implement settlement reporting that reconciles\
     \ Worldpay settlement amounts with your Odoo accounting records. Identify and\
     \ investigate discrepancies between expected and actual settlement amounts.\n\n\
-    ## Error Handling and Resilience\n\n### Common Worldpay Error Codes\n\
-    \nWorldpay returns specific error codes that your integration must handle gracefully.\
-    \ The \"5\" series errors indicate payment declines from card issuers. Map these\
-    \ to user-friendly messages that guide customers toward successful payment. The\
-    \ \"3\" series errors represent configuration issues that require merchant intervention.\
+    ## Error Handling and Resilience\n\n### Common Worldpay Error Codes\n\nWorldpay\
+    \ returns specific error codes that your integration must handle gracefully. The\
+    \ \"5\" series errors indicate payment declines from card issuers. Map these to\
+    \ user-friendly messages that guide customers toward successful payment. The \"\
+    3\" series errors represent configuration issues that require merchant intervention.\
     \ Log these errors with full context for troubleshooting.\n\nHandle timeout errors\
     \ from Worldpay APIs with automatic retry mechanisms. Implement exponential backoff\
     \ for retries to prevent overwhelming Worldpay systems during outages. Distinguish\
@@ -266,87 +265,86 @@ ai_generated_content:
     \ backup strategies that capture payment transaction state regularly. Develop\
     \ data repair scripts for common corruption scenarios. Document escalation procedures\
     \ for critical payment processing failures that impact customer checkout experiences.\n\
-    \n## Testing and Validation\n\n### Test Environment Configuration\n\
-    \nEstablish a dedicated testing environment that mirrors your production Odoo\
-    \ instance. Configure a separate Worldpay sandbox account for integration testing.\
-    \ Use test card numbers from Worldpay to simulate various payment scenarios without\
-    \ processing real transactions. Isolate test data from production records to prevent\
-    \ accidental contamination.\n\nImplement database restoration procedures that\
-    \ reset your test environment to a clean state between test cycles. Create synthetic\
-    \ test data that covers all your business scenarios including different product\
-    \ types, customer locations, and payment methods. Automate environment setup to\
-    \ enable rapid testing iteration and continuous integration pipelines.\n\n###\
-    \ Payment Scenario Testing\n\nTest all possible payment flows including successful\
-    \ payments, failed payments, and abandoned transactions. Verify that customers\
-    \ receive proper order confirmations for successful payments. Confirm that failed\
-    \ payments display appropriate error messages and allow retry attempts. Test partial\
-    \ payment scenarios for orders with multiple payment methods.\n\nValidate the\
-    \ complete refund workflow including partial and full refunds. Verify that refunds\
-    \ process through Worldpay and create proper accounting entries in Odoo. Test\
-    \ chargeback scenarios to ensure dispute information flows correctly into Odoo.\
-    \ Validate that payment status updates propagate to related objects like sale\
-    \ orders and invoices.\n\n### Webhook Testing Methodology\n\nTest webhook delivery\
-    \ under various network conditions. Simulate delayed notifications to verify your\
-    \ system handles out-of-order events correctly. Test duplicate webhook delivery\
-    \ to confirm idempotent processing. Verify that your webhook handler validates\
-    \ signatures and rejects tampered requests.\n\nCreate webhook simulation tools\
-    \ that generate test notifications with controlled payloads. Test edge cases like\
-    \ malformed XML, missing required fields, and extreme values. Verify that your\
-    \ error handling provides meaningful logging for troubleshooting webhook processing\
-    \ issues. Monitor webhook response times to ensure they meet Worldpay's timeout\
-    \ requirements.\n\n### Performance and Load Testing\n\nMeasure system performance\
-    \ under realistic transaction volumes. Test checkout completion times with simultaneous\
-    \ users to identify bottlenecks. Verify that webhook processing maintains acceptable\
-    \ latency during peak loads. Monitor system resources during load tests to identify\
-    \ capacity constraints.\n\nEstablish performance benchmarks for key integration\
-    \ metrics including payment processing time, webhook handling throughput, and\
-    \ reconciliation job duration. Test system behavior under failure conditions including\
-    \ Worldpay API outages and database connection issues. Verify that your system\
-    \ degrades gracefully without data loss when components fail.\n\n### Security\
-    \ Validation\n\nConduct comprehensive security testing of your integration. Verify\
-    \ that all communication with Worldpay uses strong encryption protocols. Test\
-    \ for common vulnerabilities like SQL injection, cross-site scripting, and authentication\
-    \ bypass. Validate that sensitive payment data never persists in logs or unencrypted\
-    \ storage.\n\nPerform penetration testing on your webhook endpoint to identify\
-    \ potential attack vectors. Verify that signature validation prevents unauthorized\
-    \ access to payment processing functions. Test access controls to ensure only\
-    \ authorized users can access payment configuration and reporting. Validate that\
-    \ audit trails capture all critical payment events for compliance requirements.\n\
-    \n## Security Considerations\n\n### Authentication and Access Control\n\
-    \nImplement strong authentication for all Worldpay API interactions. Use dedicated\
-    \ API keys rather than shared merchant credentials. Restrict API key permissions\
-    \ to the minimum required for your integration. Rotate API keys regularly and\
-    \ implement key expiration policies to limit exposure from potential leaks.\n\n\
-    Control access to payment configuration within Odoo. Limit payment acquirer configuration\
-    \ to authorized administrators only. Implement role-based access control that\
-    \ separates duties between payment processing, accounting, and system administration.\
-    \ Audit configuration changes to detect unauthorized modifications promptly.\n\
-    \n### Data Encryption Standards\n\nEncrypt all sensitive data in transit and at\
-    \ rest. Use TLS 1.2 or higher for all communication between Odoo and Worldpay.\
-    \ Implement certificate pinning to prevent man-in-the-middle attacks. Encrypt\
-    \ payment tokens and customer payment information in your Odoo database using\
-    \ strong encryption algorithms.\n\nSecure your webhook endpoint with additional\
-    \ protection layers. Validate HMAC signatures on all incoming webhook requests\
-    \ to ensure they originate from Worldpay. Implement rate limiting to prevent brute\
-    \ force attacks. Use intrusion detection systems to monitor for suspicious patterns\
-    \ in webhook traffic.\n\n### PCI Compliance Requirements\n\nDesign your integration\
-    \ to minimize PCI DSS scope. Use Worldpay's hosted payment page to avoid handling\
-    \ raw card data in your Odoo environment. Never store card numbers, security codes,\
-    \ or track data in your systems. Implement secure redirects that prevent manipulation\
-    \ of payment parameters.\n\nMaintain proper logging for compliance and audit purposes.\
-    \ Log all payment transactions with sufficient detail to reconstruct events without\
-    \ capturing sensitive authentication data. Implement log monitoring to detect\
-    \ suspicious patterns that may indicate security breaches. Regularly review and\
-    \ purge logs according to your data retention policy.\n\n### Security Monitoring\
-    \ and Incident Response\n\nImplement continuous security monitoring for your payment\
-    \ integration. Monitor for unusual transaction patterns that may indicate fraud.\
-    \ Set up alerts for failed authentication attempts and security rule violations.\
-    \ Monitor system access logs for unauthorized configuration changes.\n\nDevelop\
-    \ incident response procedures for security breaches. Define escalation paths\
-    \ for suspected payment data compromises. Maintain contact information for Worldpay\
-    \ security support. Test your incident response plan regularly to ensure prompt\
-    \ and effective action during security events.\n\n## Performance Optimization\
-    \\n\n### Database Optimization Strategies\n\nOptimize database performance\
+    \n## Testing and Validation\n\n### Test Environment Configuration\n\nEstablish\
+    \ a dedicated testing environment that mirrors your production Odoo instance.\
+    \ Configure a separate Worldpay sandbox account for integration testing. Use test\
+    \ card numbers from Worldpay to simulate various payment scenarios without processing\
+    \ real transactions. Isolate test data from production records to prevent accidental\
+    \ contamination.\n\nImplement database restoration procedures that reset your\
+    \ test environment to a clean state between test cycles. Create synthetic test\
+    \ data that covers all your business scenarios including different product types,\
+    \ customer locations, and payment methods. Automate environment setup to enable\
+    \ rapid testing iteration and continuous integration pipelines.\n\n### Payment\
+    \ Scenario Testing\n\nTest all possible payment flows including successful payments,\
+    \ failed payments, and abandoned transactions. Verify that customers receive proper\
+    \ order confirmations for successful payments. Confirm that failed payments display\
+    \ appropriate error messages and allow retry attempts. Test partial payment scenarios\
+    \ for orders with multiple payment methods.\n\nValidate the complete refund workflow\
+    \ including partial and full refunds. Verify that refunds process through Worldpay\
+    \ and create proper accounting entries in Odoo. Test chargeback scenarios to ensure\
+    \ dispute information flows correctly into Odoo. Validate that payment status\
+    \ updates propagate to related objects like sale orders and invoices.\n\n### Webhook\
+    \ Testing Methodology\n\nTest webhook delivery under various network conditions.\
+    \ Simulate delayed notifications to verify your system handles out-of-order events\
+    \ correctly. Test duplicate webhook delivery to confirm idempotent processing.\
+    \ Verify that your webhook handler validates signatures and rejects tampered requests.\n\
+    \nCreate webhook simulation tools that generate test notifications with controlled\
+    \ payloads. Test edge cases like malformed XML, missing required fields, and extreme\
+    \ values. Verify that your error handling provides meaningful logging for troubleshooting\
+    \ webhook processing issues. Monitor webhook response times to ensure they meet\
+    \ Worldpay's timeout requirements.\n\n### Performance and Load Testing\n\nMeasure\
+    \ system performance under realistic transaction volumes. Test checkout completion\
+    \ times with simultaneous users to identify bottlenecks. Verify that webhook processing\
+    \ maintains acceptable latency during peak loads. Monitor system resources during\
+    \ load tests to identify capacity constraints.\n\nEstablish performance benchmarks\
+    \ for key integration metrics including payment processing time, webhook handling\
+    \ throughput, and reconciliation job duration. Test system behavior under failure\
+    \ conditions including Worldpay API outages and database connection issues. Verify\
+    \ that your system degrades gracefully without data loss when components fail.\n\
+    \n### Security Validation\n\nConduct comprehensive security testing of your integration.\
+    \ Verify that all communication with Worldpay uses strong encryption protocols.\
+    \ Test for common vulnerabilities like SQL injection, cross-site scripting, and\
+    \ authentication bypass. Validate that sensitive payment data never persists in\
+    \ logs or unencrypted storage.\n\nPerform penetration testing on your webhook\
+    \ endpoint to identify potential attack vectors. Verify that signature validation\
+    \ prevents unauthorized access to payment processing functions. Test access controls\
+    \ to ensure only authorized users can access payment configuration and reporting.\
+    \ Validate that audit trails capture all critical payment events for compliance\
+    \ requirements.\n\n## Security Considerations\n\n### Authentication and Access\
+    \ Control\n\nImplement strong authentication for all Worldpay API interactions.\
+    \ Use dedicated API keys rather than shared merchant credentials. Restrict API\
+    \ key permissions to the minimum required for your integration. Rotate API keys\
+    \ regularly and implement key expiration policies to limit exposure from potential\
+    \ leaks.\n\nControl access to payment configuration within Odoo. Limit payment\
+    \ acquirer configuration to authorized administrators only. Implement role-based\
+    \ access control that separates duties between payment processing, accounting,\
+    \ and system administration. Audit configuration changes to detect unauthorized\
+    \ modifications promptly.\n\n### Data Encryption Standards\n\nEncrypt all sensitive\
+    \ data in transit and at rest. Use TLS 1.2 or higher for all communication between\
+    \ Odoo and Worldpay. Implement certificate pinning to prevent man-in-the-middle\
+    \ attacks. Encrypt payment tokens and customer payment information in your Odoo\
+    \ database using strong encryption algorithms.\n\nSecure your webhook endpoint\
+    \ with additional protection layers. Validate HMAC signatures on all incoming\
+    \ webhook requests to ensure they originate from Worldpay. Implement rate limiting\
+    \ to prevent brute force attacks. Use intrusion detection systems to monitor for\
+    \ suspicious patterns in webhook traffic.\n\n### PCI Compliance Requirements\n\
+    \nDesign your integration to minimize PCI DSS scope. Use Worldpay's hosted payment\
+    \ page to avoid handling raw card data in your Odoo environment. Never store card\
+    \ numbers, security codes, or track data in your systems. Implement secure redirects\
+    \ that prevent manipulation of payment parameters.\n\nMaintain proper logging\
+    \ for compliance and audit purposes. Log all payment transactions with sufficient\
+    \ detail to reconstruct events without capturing sensitive authentication data.\
+    \ Implement log monitoring to detect suspicious patterns that may indicate security\
+    \ breaches. Regularly review and purge logs according to your data retention policy.\n\
+    \n### Security Monitoring and Incident Response\n\nImplement continuous security\
+    \ monitoring for your payment integration. Monitor for unusual transaction patterns\
+    \ that may indicate fraud. Set up alerts for failed authentication attempts and\
+    \ security rule violations. Monitor system access logs for unauthorized configuration\
+    \ changes.\n\nDevelop incident response procedures for security breaches. Define\
+    \ escalation paths for suspected payment data compromises. Maintain contact information\
+    \ for Worldpay security support. Test your incident response plan regularly to\
+    \ ensure prompt and effective action during security events.\n\n## Performance\
+    \ Optimization\\n\n### Database Optimization Strategies\n\nOptimize database performance\
     \ for payment transaction processing. Create appropriate indexes on Worldpay reference\
     \ fields to speed up transaction lookups. Implement database partitioning for\
     \ large payment transaction tables to maintain query performance. Regularly analyze\
@@ -473,13 +471,14 @@ visualizations:
   placement_hint: after_conclusion
   data_context: learning path and knowledge graph
   mermaid_chart_syntax: "flowchart TB\n\n    Current[\"[CURRENT] Worldpay to Odoo\
-    \ Integration: Complete 2025 Guide\"]\n\n    %% Related Topics - Cross-References\n\
-    \    Current -.-> Rel0[\"Cloudflare to Odoo Integration: Complete 2025 Guide\"\
-    ]\n    Current -.-> Rel1[\"Facebook Pixel to Odoo Integration: Complete 2025 Guide\"\
-    ]\n\n    %% Professional Styling\n    classDef current fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n\
-    \    classDef prereq fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000\n\
-    \    classDef next fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000\n \
-    \   classDef related fill:#f5f5f5,stroke:#616161,stroke-width:1px,color:#000\n\
+    \ Integration: Complete 2025 Guide\"]\n\n    %% Next Steps - Learning Progression\n\
+    \    Current --> Next0(\"Complete Implementation Guide\")\n\n    %% Related Topics\
+    \ - Cross-References\n    Current -.-> Rel0[\"Cloudflare to Odoo Integration:\
+    \ Complete 2025 Guide\"]\n    Current -.-> Rel1[\"Facebook Pixel to Odoo Integration:\
+    \ Complete 2025 Guide\"]\n\n    %% Professional Styling\n    classDef current\
+    \ fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n    classDef prereq\
+    \ fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000\n    classDef next fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000\n\
+    \    classDef related fill:#f5f5f5,stroke:#616161,stroke-width:1px,color:#000\n\
     \    classDef trouble fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000\n\
     \    classDef support fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#000\n\
-    \n    class Current current\n    class Rel0,Rel1 related"
+    \n    class Current current\n    class Next0 next\n    class Rel0,Rel1 related"

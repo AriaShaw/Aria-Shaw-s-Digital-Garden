@@ -67,12 +67,12 @@ ai_generated_content:
     without human intervention. The system will capture transaction details and update
     order statuses automatically. Your team gains a unified view of customer financial
     interactions across both platforms.'
-  main_content: "## Integration Architecture and Data Flow\n\n### Core\
-    \ Integration Components\n\nThe Braintree-Odoo integration relies on three primary\
-    \ components that work in concert. Odoo's payment acquisition module handles the\
-    \ frontend payment form rendering and tokenization process. The Braintree JavaScript\
-    \ SDK secures sensitive payment data through client-side encryption. Your custom\
-    \ Odoo module bridges these systems with API communication and data transformation\
+  main_content: "## Integration Architecture and Data Flow\n\n### Core Integration\
+    \ Components\n\nThe Braintree-Odoo integration relies on three primary components\
+    \ that work in concert. Odoo's payment acquisition module handles the frontend\
+    \ payment form rendering and tokenization process. The Braintree JavaScript SDK\
+    \ secures sensitive payment data through client-side encryption. Your custom Odoo\
+    \ module bridges these systems with API communication and data transformation\
     \ logic.\n\nPayment flows initiate when customers select Braintree as their payment\
     \ method during checkout. The Odoo website injects the Braintree JavaScript SDK\
     \ into the payment page. This SDK generates a secure payment method nonce that\
@@ -98,58 +98,58 @@ ai_generated_content:
     \ Braintree using the vault API. Payment method tokens store securely in Braintree's\
     \ vault while Odoo maintains token references. This architecture supports recurring\
     \ billing scenarios without storing sensitive payment data in Odoo.\n\n## Step-by-Step\
-    \ Configuration\n\n### Braintree Account Configuration\n\nBegin with\
-    \ Braintree account configuration in the sandbox environment. Log into the Braintree\
-    \ Control Panel and navigate to the API Keys section. Generate new API keys with\
-    \ permissions for transactions, customers, and payment methods. Note the merchant\
-    \ ID, public key, and private key values for Odoo configuration.\n\nConfigure\
-    \ webhook endpoints in your Braintree sandbox account before Odoo development.\
-    \ Access the Webhooks section under Settings in your control panel. Create endpoints\
-    \ pointing to your Odoo instance's webhook URL path. Subscribe to essential webhook\
-    \ notifications for transaction settlement, dispute creation, and subscription\
-    \ events.\n\n### Odoo Payment Acquirer Setup\n\nInstall the payment_braintree\
-    \ module from Odoo's app store or develop a custom payment acquirer. Extend the\
-    \ PaymentAcquirer class with Braintree-specific configuration fields. Add merchant_id,\
-    \ public_key, and private_key fields to store your Braintree credentials. Implement\
-    \ proper security measures for credential storage using Odoo's configuration parameters.\n\
-    \nCreate the payment form template that integrates the Braintree JavaScript SDK.\
-    \ Override the payment acquirer's render method to inject the Braintree client\
-    \ library. Implement the drop-in UI integration for a streamlined customer payment\
-    \ experience. Ensure the form includes proper error handling for declined payments\
-    \ and processing errors.\n\n```python\nclass PaymentBraintree(models.Model):\n\
-    \    _inherit = 'payment.acquirer'\n    \n    provider = fields.Selection(\n \
-    \       selection_add=[('braintree', 'Braintree')],\n        ondelete={'braintree':\
-    \ 'set default'}\n    )\n    \n    braintree_merchant_id = fields.Char(\n    \
-    \    string='Merchant ID',\n        required_if_provider='braintree'\n    )\n\
-    \    \n    braintree_public_key = fields.Char(\n        string='Public Key',\n\
-    \        required_if_provider='braintree'\n    )\n    \n    braintree_private_key\
-    \ = fields.Char(\n        string='Private Key',\n        required_if_provider='braintree'\n\
-    \    )\n```\n\n### Braintree SDK Integration\n\nInstall the Braintree Python SDK\
-    \ using Odoo's requirements.txt mechanism. Add 'braintree>=4.0.0' to your module's\
-    \ external dependencies. Initialize the Braintree configuration with your API\
-    \ credentials in the payment acquirer's initialization method. Configure the environment\
-    \ setting to switch between sandbox and production based on Odoo's environment.\n\
-    \nImplement the server-side payment processing method that creates Braintree transactions.\
-    \ This method receives the payment method nonce from the client-side form. It\
-    \ constructs a transaction request with amount, currency, and order reference\
-    \ details. The method handles API responses and maps Braintree status codes to\
-    \ Odoo payment states.\n\n```python\ndef braintree_s2s_form_process(self, data):\n\
-    \    braintree.configure(\n        environment=self._get_braintree_environment(),\n\
-    \        merchant_id=self.braintree_merchant_id,\n        public_key=self.braintree_public_key,\n\
-    \        private_key=self.braintree_private_key\n    )\n    \n    result = braintree.Transaction.sale({\n\
-    \        'amount': str(data['amount']),\n        'payment_method_nonce': data['payment_method_nonce'],\n\
-    \        'options': {\n            'submit_for_settlement': True\n        }\n\
-    \    })\n    \n    return self._handle_braintree_response(result, data)\n```\n\
-    \n### Webhook Endpoint Implementation\n\nCreate webhook controller endpoints in\
-    \ your Odoo module to handle Braintree notifications. Implement signature verification\
-    \ to validate webhook authenticity. Parse the webhook payload and extract relevant\
-    \ transaction or subscription identifiers. Route different webhook kinds to appropriate\
-    \ handler methods for processing.\n\nDevelop webhook handlers for critical payment\
-    \ events that require Odoo updates. The dispute created webhook should generate\
-    \ customer complaint records in Odoo. The subscription charged webhook needs to\
-    \ update related sales orders with payment confirmation. Implement idempotent\
-    \ processing to handle duplicate webhook deliveries safely.\n\n```python\n@http.route('/payment/braintree/webhook',\
-    \ type='json', auth='public', csrf=False)\ndef braintree_webhook(self):\n    webhook_notification\
+    \ Configuration\n\n### Braintree Account Configuration\n\nBegin with Braintree\
+    \ account configuration in the sandbox environment. Log into the Braintree Control\
+    \ Panel and navigate to the API Keys section. Generate new API keys with permissions\
+    \ for transactions, customers, and payment methods. Note the merchant ID, public\
+    \ key, and private key values for Odoo configuration.\n\nConfigure webhook endpoints\
+    \ in your Braintree sandbox account before Odoo development. Access the Webhooks\
+    \ section under Settings in your control panel. Create endpoints pointing to your\
+    \ Odoo instance's webhook URL path. Subscribe to essential webhook notifications\
+    \ for transaction settlement, dispute creation, and subscription events.\n\n###\
+    \ Odoo Payment Acquirer Setup\n\nInstall the payment_braintree module from Odoo's\
+    \ app store or develop a custom payment acquirer. Extend the PaymentAcquirer class\
+    \ with Braintree-specific configuration fields. Add merchant_id, public_key, and\
+    \ private_key fields to store your Braintree credentials. Implement proper security\
+    \ measures for credential storage using Odoo's configuration parameters.\n\nCreate\
+    \ the payment form template that integrates the Braintree JavaScript SDK. Override\
+    \ the payment acquirer's render method to inject the Braintree client library.\
+    \ Implement the drop-in UI integration for a streamlined customer payment experience.\
+    \ Ensure the form includes proper error handling for declined payments and processing\
+    \ errors.\n\n```python\nclass PaymentBraintree(models.Model):\n    _inherit =\
+    \ 'payment.acquirer'\n    \n    provider = fields.Selection(\n        selection_add=[('braintree',\
+    \ 'Braintree')],\n        ondelete={'braintree': 'set default'}\n    )\n    \n\
+    \    braintree_merchant_id = fields.Char(\n        string='Merchant ID',\n   \
+    \     required_if_provider='braintree'\n    )\n    \n    braintree_public_key\
+    \ = fields.Char(\n        string='Public Key',\n        required_if_provider='braintree'\n\
+    \    )\n    \n    braintree_private_key = fields.Char(\n        string='Private\
+    \ Key',\n        required_if_provider='braintree'\n    )\n```\n\n### Braintree\
+    \ SDK Integration\n\nInstall the Braintree Python SDK using Odoo's requirements.txt\
+    \ mechanism. Add 'braintree>=4.0.0' to your module's external dependencies. Initialize\
+    \ the Braintree configuration with your API credentials in the payment acquirer's\
+    \ initialization method. Configure the environment setting to switch between sandbox\
+    \ and production based on Odoo's environment.\n\nImplement the server-side payment\
+    \ processing method that creates Braintree transactions. This method receives\
+    \ the payment method nonce from the client-side form. It constructs a transaction\
+    \ request with amount, currency, and order reference details. The method handles\
+    \ API responses and maps Braintree status codes to Odoo payment states.\n\n```python\n\
+    def braintree_s2s_form_process(self, data):\n    braintree.configure(\n      \
+    \  environment=self._get_braintree_environment(),\n        merchant_id=self.braintree_merchant_id,\n\
+    \        public_key=self.braintree_public_key,\n        private_key=self.braintree_private_key\n\
+    \    )\n    \n    result = braintree.Transaction.sale({\n        'amount': str(data['amount']),\n\
+    \        'payment_method_nonce': data['payment_method_nonce'],\n        'options':\
+    \ {\n            'submit_for_settlement': True\n        }\n    })\n    \n    return\
+    \ self._handle_braintree_response(result, data)\n```\n\n### Webhook Endpoint Implementation\n\
+    \nCreate webhook controller endpoints in your Odoo module to handle Braintree\
+    \ notifications. Implement signature verification to validate webhook authenticity.\
+    \ Parse the webhook payload and extract relevant transaction or subscription identifiers.\
+    \ Route different webhook kinds to appropriate handler methods for processing.\n\
+    \nDevelop webhook handlers for critical payment events that require Odoo updates.\
+    \ The dispute created webhook should generate customer complaint records in Odoo.\
+    \ The subscription charged webhook needs to update related sales orders with payment\
+    \ confirmation. Implement idempotent processing to handle duplicate webhook deliveries\
+    \ safely.\n\n```python\n@http.route('/payment/braintree/webhook', type='json',\
+    \ auth='public', csrf=False)\ndef braintree_webhook(self):\n    webhook_notification\
     \ = braintree.WebhookNotification.verify(\n        http.request.httprequest.args.get('bt_signature'),\n\
     \        http.request.httprequest.args.get('bt_payload')\n    )\n    \n    if\
     \ webhook_notification.kind == 'subscription_charged_successfully':\n        self._handle_subscription_charge(webhook_notification)\n\
@@ -163,8 +163,8 @@ ai_generated_content:
     \ and responses without storing sensitive payment data. Create dashboard views\
     \ in Odoo that display payment processing metrics and error rates. Monitor webhook\
     \ delivery success rates and implement retry mechanisms for failed processing.\n\
-    \n## Data Mapping and Transformation\n\n### Customer Data Model Alignment\n\
-    \nOdoo's res.partner model contains comprehensive customer information that maps\
+    \n## Data Mapping and Transformation\n\n### Customer Data Model Alignment\n\n\
+    Odoo's res.partner model contains comprehensive customer information that maps\
     \ to Braintree's customer objects. Transform Odoo partner records into Braintree\
     \ customer creation requests during the payment process. Map the partner name\
     \ field to Braintree's first_name and last_name fields. Use the partner's email\
@@ -212,73 +212,73 @@ ai_generated_content:
     \ relevant transaction details and evidence deadlines. Generate Odoo tasks with\
     \ due dates that align with dispute response timelines. Map dispute status changes\
     \ to update Odoo task states throughout the resolution process.\n\n## Error Handling\
-    \ and Resilience\n\n### API Communication Failures\n\nBraintree API\
-    \ requests encounter network timeouts, rate limiting, and service unavailability.\
-    \ Implement retry mechanisms with exponential backoff for transient network failures.\
-    \ Use circuit breaker patterns to prevent cascading failures during Braintree\
-    \ service disruptions. Log API communication errors with sufficient context for\
-    \ debugging without exposing sensitive data.\n\nHandle Braintree's rate limiting\
-    \ responses with proper backoff and retry logic. Monitor response headers for\
-    \ rate limit information and adjust request timing accordingly. Implement request\
-    \ queuing for high-volume payment processing scenarios. Use Odoo's queue job system\
-    \ to process payments asynchronously during peak loads.\n\n### Payment Processing\
-    \ Errors\n\nBraintree returns specific processor response codes that indicate\
-    \ payment failures. Map processor decline codes to user-friendly error messages\
-    \ in the Odoo checkout flow. Handle soft declines (insufficient funds) differently\
-    \ from hard declines (stolen card). Implement retry logic for soft declines while\
-    \ showing permanent errors for hard declines.\n\nCapture gateway rejection reasons\
-    \ from Braintree responses for operational analysis. Categorize rejections by\
-    \ type (application, AVS, CVV, fraud) for reporting and process improvement. Update\
-    \ Odoo payment records with specific failure reasons to assist customer service\
-    \ teams. Implement automated follow-up actions based on rejection categories.\n\
-    \n### Data Validation and Sanitization\n\nValidate all data passed to Braintree\
-    \ APIs to prevent rejected requests. Sanitize customer names to remove special\
-    \ characters that Braintree's API rejects. Validate address information against\
-    \ Braintree's requirements before submitting transactions. Implement comprehensive\
-    \ input validation in both client-side and server-side code.\n\nHandle webhook\
-    \ payload validation and verification to ensure data integrity. Verify webhook\
-    \ signatures to confirm Braintree originated each notification. Validate payload\
-    \ structure before processing to prevent runtime exceptions. Implement schema\
-    \ validation for critical webhook data fields to catch format issues early.\n\n\
-    ### Reconciliation and Recovery Procedures\n\nDevelop reconciliation procedures\
-    \ that identify mismatched data between Odoo and Braintree. Create scheduled actions\
-    \ that compare Odoo payment records with Braintree transaction searches. Identify\
-    \ payments marked successful in Odoo but failed in Braintree, and vice versa.\
-    \ Implement manual correction workflows for reconciliation discrepancies.\n\n\
-    Build data recovery mechanisms for scenarios where webhook delivery fails. Create\
-    \ idempotent synchronization routines that fetch recent Braintree transactions\
-    \ and update Odoo records. Implement gap detection that identifies missing webhook\
-    \ notifications through periodic data comparison. Design repair workflows that\
-    \ restore data consistency without duplicate processing.\n\n## Testing and Validation\
-    \\n\n### Test Environment Configuration\n\nEstablish a dedicated Odoo\
-    \ testing instance with Braintree sandbox credentials. Configure test-specific\
-    \ payment acquirer records with sandbox API keys. Use Braintree's test card numbers\
-    \ and nonces to simulate various payment scenarios. Create test customer records\
-    \ that mirror your production data structure without exposing real customer information.\n\
-    \nImplement test data factories that generate realistic order and payment scenarios.\
-    \ Create partner records with different address formats to test data transformation\
-    \ logic. Generate sales orders with varying amounts, currencies, and product combinations.\
-    \ Develop test cases that cover edge cases like partial refunds and subscription\
-    \ modifications.\n\n### Payment Scenario Testing\n\nTest successful payment flows\
-    \ with different payment methods and customer types. Use Braintree's test credit\
-    \ card numbers to simulate Visa, Mastercard, and American Express transactions.\
-    \ Test PayPal payment flows using Braintree's fake PayPal nonce generation. Verify\
-    \ that payment confirmations update Odoo sales orders with correct statuses and\
-    \ transaction references.\n\nExecute failure scenario testing to validate error\
-    \ handling and user experience. Use specific test card numbers that trigger processor\
-    \ declines (insufficient funds, stolen card). Test invalid payment method nonces\
-    \ to verify proper error messaging. Simulate network timeouts and service unavailability\
-    \ to ensure graceful degradation.\n\n### Webhook Testing Strategy\n\nTest webhook\
-    \ handling with Braintree's webhook testing tool and simulated payloads. Create\
-    \ test cases for each webhook type your integration processes. Verify that subscription\
-    \ webhooks update corresponding Odoo sales orders correctly. Confirm that dispute\
-    \ webhooks generate appropriate customer service tasks in Odoo.\n\nImplement webhook\
-    \ replay protection to handle duplicate notifications safely. Test webhook endpoint\
-    \ behavior when receiving the same notification multiple times. Verify that duplicate\
-    \ webhooks do not create duplicate records or duplicate actions. Validate idempotent\
-    \ processing through comprehensive webhook repetition testing.\n\n### Integration\
-    \ Validation Checklist\n\nDevelop a comprehensive validation checklist that verifies\
-    \ every integration component. Test payment form rendering across different browsers\
+    \ and Resilience\n\n### API Communication Failures\n\nBraintree API requests encounter\
+    \ network timeouts, rate limiting, and service unavailability. Implement retry\
+    \ mechanisms with exponential backoff for transient network failures. Use circuit\
+    \ breaker patterns to prevent cascading failures during Braintree service disruptions.\
+    \ Log API communication errors with sufficient context for debugging without exposing\
+    \ sensitive data.\n\nHandle Braintree's rate limiting responses with proper backoff\
+    \ and retry logic. Monitor response headers for rate limit information and adjust\
+    \ request timing accordingly. Implement request queuing for high-volume payment\
+    \ processing scenarios. Use Odoo's queue job system to process payments asynchronously\
+    \ during peak loads.\n\n### Payment Processing Errors\n\nBraintree returns specific\
+    \ processor response codes that indicate payment failures. Map processor decline\
+    \ codes to user-friendly error messages in the Odoo checkout flow. Handle soft\
+    \ declines (insufficient funds) differently from hard declines (stolen card).\
+    \ Implement retry logic for soft declines while showing permanent errors for hard\
+    \ declines.\n\nCapture gateway rejection reasons from Braintree responses for\
+    \ operational analysis. Categorize rejections by type (application, AVS, CVV,\
+    \ fraud) for reporting and process improvement. Update Odoo payment records with\
+    \ specific failure reasons to assist customer service teams. Implement automated\
+    \ follow-up actions based on rejection categories.\n\n### Data Validation and\
+    \ Sanitization\n\nValidate all data passed to Braintree APIs to prevent rejected\
+    \ requests. Sanitize customer names to remove special characters that Braintree's\
+    \ API rejects. Validate address information against Braintree's requirements before\
+    \ submitting transactions. Implement comprehensive input validation in both client-side\
+    \ and server-side code.\n\nHandle webhook payload validation and verification\
+    \ to ensure data integrity. Verify webhook signatures to confirm Braintree originated\
+    \ each notification. Validate payload structure before processing to prevent runtime\
+    \ exceptions. Implement schema validation for critical webhook data fields to\
+    \ catch format issues early.\n\n### Reconciliation and Recovery Procedures\n\n\
+    Develop reconciliation procedures that identify mismatched data between Odoo and\
+    \ Braintree. Create scheduled actions that compare Odoo payment records with Braintree\
+    \ transaction searches. Identify payments marked successful in Odoo but failed\
+    \ in Braintree, and vice versa. Implement manual correction workflows for reconciliation\
+    \ discrepancies.\n\nBuild data recovery mechanisms for scenarios where webhook\
+    \ delivery fails. Create idempotent synchronization routines that fetch recent\
+    \ Braintree transactions and update Odoo records. Implement gap detection that\
+    \ identifies missing webhook notifications through periodic data comparison. Design\
+    \ repair workflows that restore data consistency without duplicate processing.\n\
+    \n## Testing and Validation\\n\n### Test Environment Configuration\n\nEstablish\
+    \ a dedicated Odoo testing instance with Braintree sandbox credentials. Configure\
+    \ test-specific payment acquirer records with sandbox API keys. Use Braintree's\
+    \ test card numbers and nonces to simulate various payment scenarios. Create test\
+    \ customer records that mirror your production data structure without exposing\
+    \ real customer information.\n\nImplement test data factories that generate realistic\
+    \ order and payment scenarios. Create partner records with different address formats\
+    \ to test data transformation logic. Generate sales orders with varying amounts,\
+    \ currencies, and product combinations. Develop test cases that cover edge cases\
+    \ like partial refunds and subscription modifications.\n\n### Payment Scenario\
+    \ Testing\n\nTest successful payment flows with different payment methods and\
+    \ customer types. Use Braintree's test credit card numbers to simulate Visa, Mastercard,\
+    \ and American Express transactions. Test PayPal payment flows using Braintree's\
+    \ fake PayPal nonce generation. Verify that payment confirmations update Odoo\
+    \ sales orders with correct statuses and transaction references.\n\nExecute failure\
+    \ scenario testing to validate error handling and user experience. Use specific\
+    \ test card numbers that trigger processor declines (insufficient funds, stolen\
+    \ card). Test invalid payment method nonces to verify proper error messaging.\
+    \ Simulate network timeouts and service unavailability to ensure graceful degradation.\n\
+    \n### Webhook Testing Strategy\n\nTest webhook handling with Braintree's webhook\
+    \ testing tool and simulated payloads. Create test cases for each webhook type\
+    \ your integration processes. Verify that subscription webhooks update corresponding\
+    \ Odoo sales orders correctly. Confirm that dispute webhooks generate appropriate\
+    \ customer service tasks in Odoo.\n\nImplement webhook replay protection to handle\
+    \ duplicate notifications safely. Test webhook endpoint behavior when receiving\
+    \ the same notification multiple times. Verify that duplicate webhooks do not\
+    \ create duplicate records or duplicate actions. Validate idempotent processing\
+    \ through comprehensive webhook repetition testing.\n\n### Integration Validation\
+    \ Checklist\n\nDevelop a comprehensive validation checklist that verifies every\
+    \ integration component. Test payment form rendering across different browsers\
     \ and mobile devices. Validate that payment method tokens create properly in Braintree's\
     \ vault. Confirm that customer records synchronize correctly between Odoo and\
     \ Braintree.\n\nVerify data consistency through end-to-end transaction lifecycle\
@@ -293,12 +293,12 @@ ai_generated_content:
     \ payment events. Verify that your webhook endpoints process notifications without\
     \ queue buildup. Monitor system resources during load testing to identify scaling\
     \ requirements. Establish performance baselines for ongoing monitoring and optimization.\n\
-    \n## Security Considerations\n\n### Payment Card Industry Compliance\n\
-    \nMaintain PCI DSS compliance by implementing proper data handling practices.\
-    \ Never store sensitive authentication data (CVV codes) in Odoo databases. Use\
-    \ Braintree's tokenization system to avoid handling raw payment card numbers.\
-    \ Ensure your Odoo instance meets PCI requirements for network security and access\
-    \ controls.\n\nImplement secure communication channels for all Braintree API interactions.\
+    \n## Security Considerations\n\n### Payment Card Industry Compliance\n\nMaintain\
+    \ PCI DSS compliance by implementing proper data handling practices. Never store\
+    \ sensitive authentication data (CVV codes) in Odoo databases. Use Braintree's\
+    \ tokenization system to avoid handling raw payment card numbers. Ensure your\
+    \ Odoo instance meets PCI requirements for network security and access controls.\n\
+    \nImplement secure communication channels for all Braintree API interactions.\
     \ Use TLS 1.2 or higher for all data transmission between Odoo and Braintree.\
     \ Validate SSL certificates during API requests to prevent man-in-the-middle attacks.\
     \ Encrypt sensitive configuration data like API keys in Odoo's database.\n\n###\
@@ -436,13 +436,14 @@ visualizations:
   placement_hint: after_conclusion
   data_context: learning path and knowledge graph
   mermaid_chart_syntax: "flowchart TB\n\n    Current[\"[CURRENT] Braintree to Odoo\
-    \ Integration: Complete 2025 Guide\"]\n\n    %% Related Topics - Cross-References\n\
-    \    Current -.-> Rel0[\"Cloudflare to Odoo Integration: Complete 2025 Guide\"\
-    ]\n    Current -.-> Rel1[\"Facebook Pixel to Odoo Integration: Complete 2025 Guide\"\
-    ]\n\n    %% Professional Styling\n    classDef current fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n\
-    \    classDef prereq fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000\n\
-    \    classDef next fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000\n \
-    \   classDef related fill:#f5f5f5,stroke:#616161,stroke-width:1px,color:#000\n\
+    \ Integration: Complete 2025 Guide\"]\n\n    %% Next Steps - Learning Progression\n\
+    \    Current --> Next0(\"Complete Implementation Guide\")\n\n    %% Related Topics\
+    \ - Cross-References\n    Current -.-> Rel0[\"Cloudflare to Odoo Integration:\
+    \ Complete 2025 Guide\"]\n    Current -.-> Rel1[\"Facebook Pixel to Odoo Integration:\
+    \ Complete 2025 Guide\"]\n\n    %% Professional Styling\n    classDef current\
+    \ fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n    classDef prereq\
+    \ fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000\n    classDef next fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000\n\
+    \    classDef related fill:#f5f5f5,stroke:#616161,stroke-width:1px,color:#000\n\
     \    classDef trouble fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000\n\
     \    classDef support fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#000\n\
-    \n    class Current current\n    class Rel0,Rel1 related"
+    \n    class Current current\n    class Next0 next\n    class Rel0,Rel1 related"

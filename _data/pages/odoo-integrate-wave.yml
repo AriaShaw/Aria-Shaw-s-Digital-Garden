@@ -67,11 +67,11 @@ ai_generated_content:
     effort is a unified financial and operational dataset that eliminates manual work
     and provides a single source of truth. You will transform two separate systems
     into one cohesive business management engine.'
-  main_content: "## Integration Architecture and Data Flow\n\nA successful\
-    \ Wave to Odoo 18 integration hinges on a well-defined architectural pattern.\
-    \ The design must account for the distinct data models and authentication methods\
-    \ of each system. Wave operates with a REST API, while Odoo 18 uses both its XML-RPC\
-    \ and JSON-RPC interfaces. The core architecture employs a middleware layer, often\
+  main_content: "## Integration Architecture and Data Flow\n\nA successful Wave to\
+    \ Odoo 18 integration hinges on a well-defined architectural pattern. The design\
+    \ must account for the distinct data models and authentication methods of each\
+    \ system. Wave operates with a REST API, while Odoo 18 uses both its XML-RPC and\
+    \ JSON-RPC interfaces. The core architecture employs a middleware layer, often\
     \ a custom Odoo module or a dedicated service, that acts as the orchestration\
     \ engine. This component manages the bidirectional data flow, handles authentication,\
     \ and executes the transformation logic between the two platforms.\n\n### Core\
@@ -96,37 +96,36 @@ ai_generated_content:
     \ the Wave payment fields to an Odoo account.move record with a type of 'entry'.\
     \ It creates the journal entry, posts it, and reconciles it against the corresponding\
     \ invoice. The system logs the Wave transaction ID in a custom Odoo field to prevent\
-    \ duplicate processing.\n\n## Step-by-Step Configuration\n\nBegin\
-    \ the configuration by establishing API access in both systems. In Wave, navigate\
-    \ to the Settings section and access the \"Integrations\" area. Create a new application\
-    \ to receive your Client ID and Client Secret. These credentials authenticate\
-    \ your Odoo instance with the Wave API. In Odoo 18, you must enable developer\
-    \ mode. Navigate to Settings > General Settings and activate the developer options.\
-    \ This step grants you access to the underlying App creation and module development\
-    \ tools.\n\n### Building the Odoo Integration Module\n\nCreate a new custom Odoo\
-    \ module to house the integration logic. Define your module's manifest file with\
-    \ the necessary dependencies. You must declare dependencies on the `account`,\
-    \ `sale`, and `purchase` Odoo applications. Your `__manifest__.py` file should\
-    \ resemble this code block.\n\n```python\n{\n    'name': 'Wave Accounting Integration',\n\
-    \    'version': '18.0.1.0.0',\n    'category': 'Accounting',\n    'summary': 'Bidirectional\
-    \ sync with Wave',\n    'depends': ['account', 'sale', 'purchase'],\n    'data':\
-    \ [\n        'security/ir.model.access.csv',\n        'views/res_config_settings_views.xml',\n\
-    \        'views/account_move_views.xml',\n        'data/ir_cron_data.xml',\n \
-    \   ],\n    'installable': True,\n    'application': True,\n}\n```\n\nCreate the\
-    \ configuration model to store Wave API credentials securely. Use Odoo's `res.config.settings`\
-    \ model to add fields for the Client ID and Client Secret. This method stores\
-    \ sensitive data encrypted within the Odoo database. It also provides a user-friendly\
-    \ interface for system administrators to enter the connection details without\
-    \ touching code.\n\n### Implementing the Authentication Handler\n\nYour module\
-    \ needs a dedicated class to manage Wave API authentication. The Wave API uses\
-    \ the OAuth 2.0 protocol. Your authentication handler must obtain and refresh\
-    \ access tokens. Implement a method that requests a new token using the client\
-    \ credentials grant. Store the token and its expiration timestamp in Odoo's key-value\
-    \ store, `ir.config_parameter`. This storage mechanism keeps the token persistent\
-    \ across server restarts.\n\n```python\nimport requests\nfrom odoo import models,\
-    \ fields, api\n\nclass WaveAPI(models.AbstractModel):\n    _name = 'wave.api'\n\
-    \n    def _get_access_token(self):\n        base_url = \"https://api.waveapps.com\"\
-    \n        client_id = self.env['ir.config_parameter'].get_param('wave.client_id')\n\
+    \ duplicate processing.\n\n## Step-by-Step Configuration\n\nBegin the configuration\
+    \ by establishing API access in both systems. In Wave, navigate to the Settings\
+    \ section and access the \"Integrations\" area. Create a new application to receive\
+    \ your Client ID and Client Secret. These credentials authenticate your Odoo instance\
+    \ with the Wave API. In Odoo 18, you must enable developer mode. Navigate to Settings\
+    \ > General Settings and activate the developer options. This step grants you\
+    \ access to the underlying App creation and module development tools.\n\n### Building\
+    \ the Odoo Integration Module\n\nCreate a new custom Odoo module to house the\
+    \ integration logic. Define your module's manifest file with the necessary dependencies.\
+    \ You must declare dependencies on the `account`, `sale`, and `purchase` Odoo\
+    \ applications. Your `__manifest__.py` file should resemble this code block.\n\
+    \n```python\n{\n    'name': 'Wave Accounting Integration',\n    'version': '18.0.1.0.0',\n\
+    \    'category': 'Accounting',\n    'summary': 'Bidirectional sync with Wave',\n\
+    \    'depends': ['account', 'sale', 'purchase'],\n    'data': [\n        'security/ir.model.access.csv',\n\
+    \        'views/res_config_settings_views.xml',\n        'views/account_move_views.xml',\n\
+    \        'data/ir_cron_data.xml',\n    ],\n    'installable': True,\n    'application':\
+    \ True,\n}\n```\n\nCreate the configuration model to store Wave API credentials\
+    \ securely. Use Odoo's `res.config.settings` model to add fields for the Client\
+    \ ID and Client Secret. This method stores sensitive data encrypted within the\
+    \ Odoo database. It also provides a user-friendly interface for system administrators\
+    \ to enter the connection details without touching code.\n\n### Implementing the\
+    \ Authentication Handler\n\nYour module needs a dedicated class to manage Wave\
+    \ API authentication. The Wave API uses the OAuth 2.0 protocol. Your authentication\
+    \ handler must obtain and refresh access tokens. Implement a method that requests\
+    \ a new token using the client credentials grant. Store the token and its expiration\
+    \ timestamp in Odoo's key-value store, `ir.config_parameter`. This storage mechanism\
+    \ keeps the token persistent across server restarts.\n\n```python\nimport requests\n\
+    from odoo import models, fields, api\n\nclass WaveAPI(models.AbstractModel):\n\
+    \    _name = 'wave.api'\n\n    def _get_access_token(self):\n        base_url\
+    \ = \"https://api.waveapps.com\"\n        client_id = self.env['ir.config_parameter'].get_param('wave.client_id')\n\
     \        client_secret = self.env['ir.config_parameter'].get_param('wave.client_secret')\n\
     \        token_url = f\"{base_url}/oauth2/token/\"\n\n        data = {\n     \
     \       'grant_type': 'client_credentials',\n            'client_id': client_id,\n\
@@ -159,8 +158,8 @@ ai_generated_content:
     />\n    <field name=\"state\">code</field>\n    <field name=\"code\">model._import_wave_transactions()</field>\n\
     \    <field name=\"interval_number\">1</field>\n    <field name=\"interval_type\"\
     >hours</field>\n    <field name=\"numbercall\">-1</field>\n</record>\n```\n\n\
-    ## Data Mapping and Transformation\n\nThe core challenge of this integration\
-    \ lies in the semantic mapping between Wave's accounting model and Odoo's operational\
+    ## Data Mapping and Transformation\n\nThe core challenge of this integration lies\
+    \ in the semantic mapping between Wave's accounting model and Odoo's operational\
     \ model. Wave centers on the `Transaction` as its primary object. Odoo 18 uses\
     \ the `Account Move` as the core document for all journal entries. A single Wave\
     \ transaction, which can represent a bank deposit or expense, often maps to a\
@@ -204,30 +203,30 @@ ai_generated_content:
     \ linking enables the payment reconciliation logic to work reliably. The system\
     \ queries Wave for payments linked to a specific invoice ID, then finds the matching\
     \ Odoo invoice using the stored Wave ID, and finally creates the reconciliation\
-    \ in Odoo.\n\n## Error Handling and Resilience\n\nThe integration\
-    \ will encounter errors. Your design must anticipate common failure points and\
-    \ handle them with specific recovery procedures. Network timeouts when calling\
-    \ the Wave API represent a frequent issue. Implement a retry mechanism with exponential\
-    \ backoff for all external API calls. The system should log each retry attempt\
-    \ and send a notification to administrators after a defined number of failures.\
-    \ This pattern prevents temporary network glitches from causing data loss.\n\n\
-    ### Handling API Rate Limits\n\nThe Wave API enforces strict rate limits. Exceeding\
-    \ these limits results in HTTP 429 errors. Your integration code must catch these\
-    \ responses and pause subsequent requests. Track the `X-RateLimit-Remaining` header\
-    \ in every API response. When the remaining requests drop below a safe threshold,\
-    \ the system should queue new requests and execute them after the rate limit window\
-    \ resets. This proactive approach avoids many rate limit errors.\n\nFor scheduled\
-    \ sync jobs, implement a leaky bucket algorithm. This algorithm controls the flow\
-    \ of API requests to maintain a steady, permissible rate. It spreads the requests\
-    \ evenly over the sync window instead of sending them in bursts. This method maximizes\
-    \ throughput without triggering rate limits. It provides a more reliable sync\
-    \ experience than simple retry logic alone.\n\n### Data Validation and Conflict\
-    \ Resolution\n\nData conflicts occur when the same record updates in both systems\
-    \ between sync cycles. The integration needs a conflict resolution strategy. We\
-    \ recommend a configurable policy, such as \"Wave wins\" for financial data or\
-    \ \"Odoo wins\" for operational data. When the system detects a conflict, it should\
-    \ log the discrepancy and follow the configured policy. It can also flag the record\
-    \ for manual review if the conflict affects a critical accounting field.\n\nValidate\
+    \ in Odoo.\n\n## Error Handling and Resilience\n\nThe integration will encounter\
+    \ errors. Your design must anticipate common failure points and handle them with\
+    \ specific recovery procedures. Network timeouts when calling the Wave API represent\
+    \ a frequent issue. Implement a retry mechanism with exponential backoff for all\
+    \ external API calls. The system should log each retry attempt and send a notification\
+    \ to administrators after a defined number of failures. This pattern prevents\
+    \ temporary network glitches from causing data loss.\n\n### Handling API Rate\
+    \ Limits\n\nThe Wave API enforces strict rate limits. Exceeding these limits results\
+    \ in HTTP 429 errors. Your integration code must catch these responses and pause\
+    \ subsequent requests. Track the `X-RateLimit-Remaining` header in every API response.\
+    \ When the remaining requests drop below a safe threshold, the system should queue\
+    \ new requests and execute them after the rate limit window resets. This proactive\
+    \ approach avoids many rate limit errors.\n\nFor scheduled sync jobs, implement\
+    \ a leaky bucket algorithm. This algorithm controls the flow of API requests to\
+    \ maintain a steady, permissible rate. It spreads the requests evenly over the\
+    \ sync window instead of sending them in bursts. This method maximizes throughput\
+    \ without triggering rate limits. It provides a more reliable sync experience\
+    \ than simple retry logic alone.\n\n### Data Validation and Conflict Resolution\n\
+    \nData conflicts occur when the same record updates in both systems between sync\
+    \ cycles. The integration needs a conflict resolution strategy. We recommend a\
+    \ configurable policy, such as \"Wave wins\" for financial data or \"Odoo wins\"\
+    \ for operational data. When the system detects a conflict, it should log the\
+    \ discrepancy and follow the configured policy. It can also flag the record for\
+    \ manual review if the conflict affects a critical accounting field.\n\nValidate\
     \ all data before writing it to either system. Check for required fields, data\
     \ formats, and logical consistency. For example, an invoice line must have both\
     \ an account and an amount. If the Wave transaction lacks a required field, the\
@@ -245,8 +244,8 @@ ai_generated_content:
     \ Wave update or, if repeated failures occur, reverse the Odoo invoice. This compensation\
     \ logic ensures the two systems remain consistent even after a partial failure.\
     \ It requires careful design but provides robust fault tolerance.\n\n## Testing\
-    \ and Validation\n\nA rigorous testing protocol separates a production-ready\
-    \ integration from a fragile prototype. Begin with unit tests for your data transformation\
+    \ and Validation\n\nA rigorous testing protocol separates a production-ready integration\
+    \ from a fragile prototype. Begin with unit tests for your data transformation\
     \ functions. Verify that your mapping logic converts Wave transaction data into\
     \ the correct Odoo journal entry structure. Mock the API calls to isolate the\
     \ transformation logic from external dependencies. These tests run fast and catch\
@@ -284,56 +283,55 @@ ai_generated_content:
     \ after deployment. A stable integration should show a high transaction volume\
     \ with a low and stable error rate. These metrics provide objective evidence that\
     \ the integration operates as intended and delivers business value.\n\n## Security\
-    \ Considerations\n\nThe integration handles sensitive financial data,\
-    \ so security requires paramount attention. All communication between Odoo and\
-    \ Wave must use TLS encryption. Verify that your Odoo server enforces HTTPS and\
-    \ uses current, secure cipher suites. The Wave API mandates HTTPS, but you must\
-    \ ensure your Odoo instance meets the same standard. Encrypt data in transit to\
-    \ prevent eavesdropping on financial information.\n\n### Credential Management\
-    \ Best Practices\n\nStore all API credentials, especially the Wave Client Secret,\
-    \ using Odoo's built-in encryption mechanisms. The `ir.config_parameter` model\
-    \ can store parameters as password fields, which obscures their values in the\
-    \ database and the user interface. Never hardcode credentials in your module's\
-    \ Python files or XML data. Restrict access to the integration configuration settings\
-    \ to authorized administrators only.\n\nImplement the principle of least privilege\
-    \ for the Wave API connection. The integration only needs specific scopes to function.\
-    \ Request only the permissions you absolutely need, such as `transaction:read`\
-    \ and `invoice:write`. Avoid overly broad scopes like `account:read` unless every\
-    \ permission within that scope serves a defined purpose. Limited scopes reduce\
-    \ the potential damage from a credential leak.\n\n### Webhook Security and Validation\n\
-    \nSecure your webhook endpoint against unauthorized calls. The Wave webhook includes\
-    \ a signature header, `X-Wave-Signature`, which is a hash of the payload using\
-    \ your webhook secret. Your endpoint must compute the same hash and verify the\
-    \ signatures match before processing any data. Reject any request with an invalid\
-    \ or missing signature. This validation prevents attackers from injecting fake\
-    \ data into your Odoo system.\n\nRegularly rotate your webhook secret and API\
-    \ credentials. Establish a procedure to update these secrets every 90 days. This\
-    \ practice limits the window of opportunity if credentials ever leak. Design the\
-    \ integration to support credential rotation without downtime. You should update\
-    \ the secrets in the Odoo configuration settings without needing to restart the\
-    \ Odoo server or pause synchronization jobs.\n\n### Data Audit and Compliance\n\
-    \nMaintain a detailed audit log of all integration activities. Record every data\
-    \ synchronization event, including the source record, the action taken, and any\
-    \ errors encountered. This log assists with troubleshooting and demonstrates compliance\
-    \ with financial controls. In the event of a data discrepancy, the audit log provides\
-    \ a complete trail for forensic analysis.\n\nConsider data residency and privacy\
-    \ regulations. If your business operates in regions with strict data protection\
-    \ laws, understand where Wave processes and stores your data. The integration\
-    \ transfers financial data between these two systems, so you must ensure this\
-    \ cross-border data flow complies with all applicable regulations like GDPR or\
-    \ CCPA. Document the data flow as part of your organization's privacy policy.\n\
-    \n## Performance Optimization\n\nThe integration's performance directly\
-    \ impacts user experience and data freshness. Identify and address common bottlenecks\
-    \ to ensure a responsive system. The most frequent performance issue involves\
-    \ excessive API calls to Wave. Each call has latency, and making calls in a sequential\
-    \ loop for hundreds of transactions creates significant delay. Minimize API calls\
-    \ by fetching data in batches where the API supports it.\n\n### Efficient Data\
-    \ Polling Strategies\n\nOptimize your scheduled synchronization jobs. Instead\
-    \ of querying Wave for all transactions every time, use incremental polling. Store\
-    \ the timestamp of the last successful sync. On subsequent runs, query only for\
-    \ transactions modified since that timestamp. This technique reduces the data\
-    \ volume each job must process and shortens the sync cycle. It puts less load\
-    \ on both the Wave API and your Odoo database.\n\nFor the initial data import,\
+    \ Considerations\n\nThe integration handles sensitive financial data, so security\
+    \ requires paramount attention. All communication between Odoo and Wave must use\
+    \ TLS encryption. Verify that your Odoo server enforces HTTPS and uses current,\
+    \ secure cipher suites. The Wave API mandates HTTPS, but you must ensure your\
+    \ Odoo instance meets the same standard. Encrypt data in transit to prevent eavesdropping\
+    \ on financial information.\n\n### Credential Management Best Practices\n\nStore\
+    \ all API credentials, especially the Wave Client Secret, using Odoo's built-in\
+    \ encryption mechanisms. The `ir.config_parameter` model can store parameters\
+    \ as password fields, which obscures their values in the database and the user\
+    \ interface. Never hardcode credentials in your module's Python files or XML data.\
+    \ Restrict access to the integration configuration settings to authorized administrators\
+    \ only.\n\nImplement the principle of least privilege for the Wave API connection.\
+    \ The integration only needs specific scopes to function. Request only the permissions\
+    \ you absolutely need, such as `transaction:read` and `invoice:write`. Avoid overly\
+    \ broad scopes like `account:read` unless every permission within that scope serves\
+    \ a defined purpose. Limited scopes reduce the potential damage from a credential\
+    \ leak.\n\n### Webhook Security and Validation\n\nSecure your webhook endpoint\
+    \ against unauthorized calls. The Wave webhook includes a signature header, `X-Wave-Signature`,\
+    \ which is a hash of the payload using your webhook secret. Your endpoint must\
+    \ compute the same hash and verify the signatures match before processing any\
+    \ data. Reject any request with an invalid or missing signature. This validation\
+    \ prevents attackers from injecting fake data into your Odoo system.\n\nRegularly\
+    \ rotate your webhook secret and API credentials. Establish a procedure to update\
+    \ these secrets every 90 days. This practice limits the window of opportunity\
+    \ if credentials ever leak. Design the integration to support credential rotation\
+    \ without downtime. You should update the secrets in the Odoo configuration settings\
+    \ without needing to restart the Odoo server or pause synchronization jobs.\n\n\
+    ### Data Audit and Compliance\n\nMaintain a detailed audit log of all integration\
+    \ activities. Record every data synchronization event, including the source record,\
+    \ the action taken, and any errors encountered. This log assists with troubleshooting\
+    \ and demonstrates compliance with financial controls. In the event of a data\
+    \ discrepancy, the audit log provides a complete trail for forensic analysis.\n\
+    \nConsider data residency and privacy regulations. If your business operates in\
+    \ regions with strict data protection laws, understand where Wave processes and\
+    \ stores your data. The integration transfers financial data between these two\
+    \ systems, so you must ensure this cross-border data flow complies with all applicable\
+    \ regulations like GDPR or CCPA. Document the data flow as part of your organization's\
+    \ privacy policy.\n\n## Performance Optimization\n\nThe integration's performance\
+    \ directly impacts user experience and data freshness. Identify and address common\
+    \ bottlenecks to ensure a responsive system. The most frequent performance issue\
+    \ involves excessive API calls to Wave. Each call has latency, and making calls\
+    \ in a sequential loop for hundreds of transactions creates significant delay.\
+    \ Minimize API calls by fetching data in batches where the API supports it.\n\n\
+    ### Efficient Data Polling Strategies\n\nOptimize your scheduled synchronization\
+    \ jobs. Instead of querying Wave for all transactions every time, use incremental\
+    \ polling. Store the timestamp of the last successful sync. On subsequent runs,\
+    \ query only for transactions modified since that timestamp. This technique reduces\
+    \ the data volume each job must process and shortens the sync cycle. It puts less\
+    \ load on both the Wave API and your Odoo database.\n\nFor the initial data import,\
     \ performance is critical. Importing years of transaction history can take many\
     \ hours. Break the initial import into chunks by date range. Process one month\
     \ or one quarter of data at a time. This approach prevents the job from timing\
@@ -446,13 +444,14 @@ visualizations:
   placement_hint: after_conclusion
   data_context: learning path and knowledge graph
   mermaid_chart_syntax: "flowchart TB\n\n    Current[\"[CURRENT] Wave to Odoo Integration:\
-    \ Complete 2025 Guide\"]\n\n    %% Related Topics - Cross-References\n    Current\
-    \ -.-> Rel0[\"Cloudflare to Odoo Integration: Complete 2025 Guide\"]\n    Current\
-    \ -.-> Rel1[\"Facebook Pixel to Odoo Integration: Complete 2025 Guide\"]\n\n \
-    \   %% Professional Styling\n    classDef current fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n\
+    \ Complete 2025 Guide\"]\n\n    %% Next Steps - Learning Progression\n    Current\
+    \ --> Next0(\"Complete Implementation Guide\")\n\n    %% Related Topics - Cross-References\n\
+    \    Current -.-> Rel0[\"Cloudflare to Odoo Integration: Complete 2025 Guide\"\
+    ]\n    Current -.-> Rel1[\"Facebook Pixel to Odoo Integration: Complete 2025 Guide\"\
+    ]\n\n    %% Professional Styling\n    classDef current fill:#ffc107,stroke:#ff9800,stroke-width:3px,color:#000\n\
     \    classDef prereq fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000\n\
     \    classDef next fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000\n \
     \   classDef related fill:#f5f5f5,stroke:#616161,stroke-width:1px,color:#000\n\
     \    classDef trouble fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000\n\
     \    classDef support fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#000\n\
-    \n    class Current current\n    class Rel0,Rel1 related"
+    \n    class Current current\n    class Next0 next\n    class Rel0,Rel1 related"
