@@ -76,26 +76,26 @@ ai_generated_content:
     \ scheduled action framework to execute synchronization jobs at defined intervals.\
     \ These jobs call eBay’s REST APIs using OAuth 2.0 authentication, fetch new data,\
     \ transform it into Odoo’s data model, and then update relevant records. The entire\
-    \ process maintains data integrity through robust error handling.\n\n**Data Flow\
-    \ from eBay to Odoo**\n\nNew eBay orders initiate the primary inbound data flow.\
+    \ process maintains data integrity through robust error handling.\n\n### Data Flow\
+    \ from eBay to Odoo\n\nNew eBay orders initiate the primary inbound data flow.\
     \ The connector polls eBay’s Order API every few minutes to retrieve recent sales.\
     \ Each order undergoes a transformation process that maps eBay-specific fields\
     \ to Odoo’s sales order structure. The system creates draft sales orders in Odoo\
     \ with complete line items, shipping addresses, and buyer notes. This automation\
     \ ensures your accounting team receives orders within minutes of the sale completion.\n\
-    \n**Data Flow from Odoo to eBay**\n\nInventory updates form the critical outbound\
+    \n### Data Flow from Odoo to eBay\n\nInventory updates form the critical outbound\
     \ data flow. When stock levels change in Odoo—whether from purchase receipts,\
     \ manufacturing, or other sales channels—the connector pushes these changes to\
     \ eBay’s Inventory Item API. The system updates quantity and price information\
     \ for your active listings, preventing oversells. This bidirectional synchronization\
     \ maintains accurate inventory counts across all sales channels in near real-time.\n\
-    \n**Webhook Implementation for Real-Time Updates**\n\nWhile polling works for\
+    \n### Webhook Implementation for Real-Time Updates\n\nWhile polling works for\
     \ most operations, webhooks provide instant notification for order creation. eBay’s\
     \ webhook system can push order notifications to your Odoo instance the moment\
     \ a sale occurs. This approach reduces the delay between sale and order processing\
     \ from minutes to seconds. The implementation requires a publicly accessible Odoo\
     \ instance with a custom controller endpoint to receive and validate these webhook\
-    \ payloads.\n\n## Step-by-Step Configuration**Prerequisites and Environment Setup**\n\
+    \ payloads.\n\n## Step-by-Step Configuration\n\n### Prerequisites and Environment Setup\n\
     \nBegin with a production-ready Odoo 18 instance that has a valid SSL certificate.\
     \ eBay’s API mandates HTTPS for all callback URLs, so a development instance without\
     \ proper SSL will fail. Install the Odoo eBay connector module from the Odoo App\
@@ -106,8 +106,8 @@ ai_generated_content:
     \ scope along with “Sell Commerce” and “Sell Fulfillment” permissions. Note your\
     \ App ID (Client ID), Cert ID (Client Secret), and RuName (eBay Redirect URL name).\
     \ These credentials form the foundation of your OAuth 2.0 authentication flow\
-    \ and must remain secure throughout the configuration process.\n\n**OAuth 2.0\
-    \ Authentication Configuration**\n\neBay’s API uses a three-legged OAuth 2.0 flow\
+    \ and must remain secure throughout the configuration process.\n\n### OAuth 2.0\
+    \ Authentication Configuration\n\neBay's API uses a three-legged OAuth 2.0 flow\
     \ that requires user consent. Implement a custom controller in Odoo that generates\
     \ the authorization URL and handles the callback. The authorization URL must include\
     \ your App ID, RuName, and the required scopes. When eBay redirects back to your\
@@ -126,7 +126,7 @@ ai_generated_content:
     \        tokens = response.json()\n        self.write({\n            'access_token':\
     \ tokens['access_token'],\n            'refresh_token': tokens['refresh_token'],\n\
     \            'token_expiry': fields.Datetime.now() + timedelta(seconds=tokens['expires_in'])\n\
-    \        })\n```\n\n**eBay Connector Module Configuration**\n\nAccess the eBay\
+    \        })\n```\n\n### eBay Connector Module Configuration\n\nAccess the eBay\
     \ configuration section within Odoo’s Sales app. Create a new eBay connection\
     \ record and input your API credentials. Set the synchronization intervals based\
     \ on your sales volume—typical configurations poll for orders every 10 minutes\
@@ -136,8 +136,8 @@ ai_generated_content:
     \ tracking. Define your payment methods to align eBay transactions with Odoo’s\
     \ accounting structure. Enable the specific eBay marketplace regions you target,\
     \ as each region may have unique API requirements or business policies. Test the\
-    \ connection with eBay’s API to verify your authentication setup works correctly.\n\
-    \n**Product and Inventory Synchronization Setup**\n\nConfigure the product export\
+    \ connection with eBay's API to verify your authentication setup works correctly.\n\
+    \n### Product and Inventory Synchronization Setup\n\nConfigure the product export\
     \ settings to determine which Odoo products sync to eBay. Set up category mappings\
     \ between Odoo’s product categories and eBay’s extensive category taxonomy. Define\
     \ pricing rules that calculate eBay selling prices from your Odoo product costs,\
@@ -147,8 +147,8 @@ ai_generated_content:
     \ variation data in its Item Specifics format, so you must map Odoo’s product\
     \ attribute values to eBay’s accepted values. This complex mapping often requires\
     \ custom development for product categories with unique requirements. Test with\
-    \ a few sample products before enabling full synchronization.\n\n**Order Import\
-    \ and Fulfillment Configuration**\n\nDefine how Odoo processes incoming eBay orders.\
+    \ a few sample products before enabling full synchronization.\n\n### Order Import\
+    \ and Fulfillment Configuration\n\nDefine how Odoo processes incoming eBay orders.\
     \ Set the default customer account for eBay sales and configure automatic partner\
     \ creation for new buyers. Establish payment method mappings that reconcile eBay’s\
     \ payment status with Odoo’s accounting workflow. Configure shipping carrier mappings\
@@ -158,7 +158,7 @@ ai_generated_content:
     \ status. Configure the fulfillment feedback system that notifies eBay when orders\
     \ ship with tracking information. This closed-loop process ensures buyers receive\
     \ timely shipment notifications and protects your seller performance metrics.\n\
-    \n## Data Mapping and Transformation**Product Data Model Alignment**\n\neBay’s\
+    \n## Data Mapping and Transformation\n\n### Product Data Model Alignment\n\neBay's\
     \ product data model differs significantly from Odoo’s simplified structure. While\
     \ Odoo stores basic product information like name, description, and SKU, eBay\
     \ requires extensive item specifics that vary by category. Map Odoo product fields\
@@ -169,7 +169,7 @@ ai_generated_content:
     \ that extracts this information from Odoo product attributes or custom fields.\
     \ Implement value normalization to convert Odoo’s internal values to eBay’s accepted\
     \ values—such as mapping “64GB” to “64 GB” per eBay’s specification. This attention\
-    \ to detail prevents listing errors.\n\n**Inventory and Pricing Transformation**\n\
+    \ to detail prevents listing errors.\n\n### Inventory and Pricing Transformation\n\
     \nOdoo manages inventory at the product variant level, while eBay tracks inventory\
     \ for each listing variation. Implement a quantity reservation system that accounts\
     \ for pending orders across all channels. Transform Odoo’s pricing structure to\
@@ -180,7 +180,7 @@ ai_generated_content:
     \ in local currencies, while Odoo typically operates in a single base currency.\
     \ Implement exchange rate APIs or use Odoo’s built-in currency rates to ensure\
     \ accurate pricing. This prevents revenue discrepancies due to currency fluctuations.\n\
-    \n**Order Data Mapping Challenges**\n\neBay order data arrives with buyer information,\
+    \n### Order Data Mapping Challenges\n\neBay order data arrives with buyer information,\
     \ shipping details, and line items that require careful mapping to Odoo’s sales\
     \ order model. Transform eBay’s combined order structure into Odoo’s separate\
     \ sales order and delivery order models. Map eBay’s order statuses to appropriate\
@@ -190,7 +190,7 @@ ai_generated_content:
     \ Implement address parsing logic that intelligently splits eBay’s address string\
     \ into Odoo’s structured format. Handle international address formats that may\
     \ not align with Odoo’s default country-specific templates to ensure accurate\
-    \ shipping labels.\n\n**Image and Media Handling**\n\neBay listings support multiple\
+    \ shipping labels.\n\n### Image and Media Handling\n\neBay listings support multiple\
     \ images, while Odoo typically stores a primary product image. Implement a system\
     \ that uploads Odoo product images to eBay’s picture service and generates hosted\
     \ image URLs. Manage eBay’s requirement for image uniformity across variations—such\
@@ -200,7 +200,7 @@ ai_generated_content:
     \ and image placement. Implement character limit validation for critical fields\
     \ like product titles to prevent listing rejection. This media handling ensures\
     \ your eBay listings maintain professional presentation standards.\n\n## Error\
-    \ Handling and Resilience**Common eBay API Errors**\n\nThe eBay API returns specific\
+    \ Handling and Resilience\n\n### Common eBay API Errors\n\nThe eBay API returns specific\
     \ error codes that require targeted handling. Error code 21919301 indicates an\
     \ invalid category ID, which occurs when your category mapping becomes outdated.\
     \ Implement periodic category sync to refresh your local category cache. Error\
@@ -210,7 +210,7 @@ ai_generated_content:
     \ with exponential backoff for rate limit errors. Create alert systems that notify\
     \ administrators when authentication failures persist beyond automatic recovery\
     \ attempts. This proactive approach prevents extended synchronization outages.\n\
-    \n**Data Validation and Conflict Resolution**\n\nEstablish validation rules that\
+    \n### Data Validation and Conflict Resolution\n\nEstablish validation rules that\
     \ catch data inconsistencies before API submission. Validate product data against\
     \ eBay’s current category requirements using their compatibility API. Check inventory\
     \ quantities to prevent listing updates with negative stock levels. Verify that\
@@ -220,7 +220,7 @@ ai_generated_content:
     \ conflict resolution to determine the correct final value. Create audit logs\
     \ that track data changes from both systems to facilitate troubleshooting when\
     \ discrepancies occur. This prevents data corruption from race conditions.\n\n\
-    **Order Synchronization Failures**\n\nOrder import failures often stem from missing\
+    ### Order Synchronization Failures\n\nOrder import failures often stem from missing\
     \ customer information or invalid shipping addresses. Implement fallback procedures\
     \ that create placeholder partners for orders with incomplete buyer data. Develop\
     \ address correction workflows that flag problematic addresses for manual review\
@@ -230,7 +230,7 @@ ai_generated_content:
     \ failed items without duplicating successful ones. Implement order reconciliation\
     \ reports that highlight synchronization gaps for manual intervention. This granular\
     \ error handling prevents complete order processing stoppage due to single-line-item\
-    \ failures.\n\n**System Resilience and Recovery**\n\nDesign the integration to\
+    \ failures.\n\n### System Resilience and Recovery\n\nDesign the integration to\
     \ withstand temporary eBay API outages. Implement retry mechanisms with increasing\
     \ delays between attempts. Store synchronization state persistently so the system\
     \ can resume from the point of failure after recovery. Create manual synchronization\
@@ -240,7 +240,7 @@ ai_generated_content:
     \ that compare eBay and Odoo data to identify gaps. Create manual import/export\
     \ tools for emergency situations where automated systems require maintenance.\
     \ This business continuity planning ensures your operations continue during system\
-    \ disruptions.\n\n## Testing and Validation**Development Sandbox Configuration**\n\
+    \ disruptions.\n\n## Testing and Validation\n\n### Development Sandbox Configuration\n\
     \nBegin testing with eBay’s Sandbox environment, which replicates the production\
     \ API without affecting live operations. Create sandbox accounts for both buyer\
     \ and seller testing. Configure a separate Odoo instance specifically for integration\
@@ -250,7 +250,7 @@ ai_generated_content:
     \ they sync correctly to eBay Sandbox. Make test purchases using the buyer sandbox\
     \ account and confirm order import into Odoo. Update inventory levels in Odoo\
     \ and verify the changes reflect on eBay listings. This end-to-end validation\
-    \ confirms all data flows work as intended.\n\n**Data Synchronization Validation**\n\
+    \ confirms all data flows work as intended.\n\n### Data Synchronization Validation\n\
     \nDevelop validation scripts that compare data between systems and report discrepancies.\
     \ Check product SKU mapping accuracy by verifying that Odoo products match the\
     \ correct eBay listings. Validate inventory synchronization by comparing available\
@@ -260,7 +260,7 @@ ai_generated_content:
     \ Create specific test cases for products with special requirements like adult\
     \ verification or geographic restrictions. Verify that product deactivations in\
     \ Odoo properly end eBay listings. This thorough testing prevents unexpected behavior\
-    \ in production environments.\n\n**Order Processing Workflow Testing**\n\nSimulate\
+    \ in production environments.\n\n### Order Processing Workflow Testing\n\nSimulate\
     \ the complete order lifecycle from multiple eBay marketplaces. Test order import\
     \ with various payment statuses to ensure proper financial accounting. Verify\
     \ that order cancellations on eBay sync correctly to Odoo and restore inventory.\
@@ -269,8 +269,8 @@ ai_generated_content:
     \ information in Odoo and confirming it appears on eBay. Test the feedback system\
     \ that marks orders as shipped in both platforms. Create high-volume order tests\
     \ to evaluate system performance under load. This workflow validation ensures\
-    \ your operational processes function smoothly after integration.\n\n**Performance\
-    \ and Load Testing**\n\nMeasure synchronization performance under realistic data\
+    \ your operational processes function smoothly after integration.\n\n### Performance\
+    \ and Load Testing\n\nMeasure synchronization performance under realistic data\
     \ volumes. Time how long product catalog exports take with hundreds of SKUs. Test\
     \ order import performance during simulated peak sales periods. Establish performance\
     \ benchmarks for each integration component and monitor for degradation over time.\
@@ -280,7 +280,7 @@ ai_generated_content:
     \ prevent account suspension due to excessive API calls. Validate that your error\
     \ handling maintains system stability during temporary performance issues. This\
     \ resilience testing ensures reliable operation under adverse conditions.\n\n\
-    ## Security Considerations**API Credential Protection**\n\nStore eBay API credentials\
+    ## Security Considerations\n\n### API Credential Protection\n\nStore eBay API credentials\
     \ using Odoo’s encrypted parameters rather than in plain text configuration files.\
     \ Implement credential rotation procedures that periodically refresh your API\
     \ keys. Restrict access to integration configuration screens to authorized administrators\
@@ -289,7 +289,7 @@ ai_generated_content:
     \ CSRF attacks. Implement proper session management for administrative users configuring\
     \ the integration. Use HTTPS for all communication with eBay’s APIs to prevent\
     \ eavesdropping on sensitive business data. These measures protect your eBay account\
-    \ from unauthorized access.\n\n**Data Privacy and Compliance**\n\neBay order data\
+    \ from unauthorized access.\n\n### Data Privacy and Compliance\n\neBay order data\
     \ contains personal buyer information that requires protection. Implement data\
     \ access controls that limit which Odoo users can view customer details. Establish\
     \ data retention policies that automatically purge sensitive information after\
@@ -298,7 +298,7 @@ ai_generated_content:
     \ regulations like GDPR or CCPA. Implement data processing agreements that govern\
     \ how buyer information transfers between systems. Create data export procedures\
     \ that fulfill subject access requests from eBay buyers. This compliance framework\
-    \ protects your business from regulatory penalties.\n\n**System Access Controls**\n\
+    \ protects your business from regulatory penalties.\n\n### System Access Controls\n\
     \nImplement role-based access control that limits integration management to authorized\
     \ personnel. Create separate user accounts for automated synchronization processes\
     \ with minimal required permissions. Audit integration activity logs regularly\
@@ -308,7 +308,7 @@ ai_generated_content:
     \ prevent man-in-the-middle attacks. Implement network security measures that\
     \ restrict incoming connections to your Odoo instance from trusted sources only.\
     \ These access controls protect your integrated system from external threats.\n\
-    \n## Performance Optimization**API Call Efficiency**\n\neBay imposes strict rate\
+    \n## Performance Optimization\n\n### API Call Efficiency\n\neBay imposes strict rate\
     \ limits that require efficient API usage. Implement batch operations for product\
     \ and inventory updates instead of individual API calls. Use eBay’s bulk inventory\
     \ update endpoints to modify multiple listings in a single request. Schedule non-critical\
@@ -317,7 +317,7 @@ ai_generated_content:
     \ structures and shipping policies. Implement conditional requests using eBay’s\
     \ metadata to avoid transferring unchanged data. Use webhooks for real-time notifications\
     \ instead of frequent polling where possible. These optimizations reduce your\
-    \ API consumption while maintaining synchronization accuracy.\n\n**Database Optimization**\n\
+    \ API consumption while maintaining synchronization accuracy.\n\n### Database Optimization\n\
     \nThe integration generates substantial database activity that can impact Odoo\
     \ performance. Implement database indexing on frequently queried fields like external\
     \ eBay IDs and synchronization timestamps. Archive old synchronization logs to\
@@ -327,7 +327,7 @@ ai_generated_content:
     \ on large datasets without proper domain filters. Implement read-only database\
     \ replicas for reporting queries that don’t require real-time data. These database\
     \ optimizations maintain system responsiveness during heavy integration activity.\n\
-    \n**Synchronization Strategy Tuning**\n\nAdjust synchronization frequency based\
+    \n### Synchronization Strategy Tuning\n\nAdjust synchronization frequency based\
     \ on data criticality and update patterns. Implement real-time synchronization\
     \ for inventory updates that prevent overselling while using less frequent updates\
     \ for product description changes. Create priority queues that process time-sensitive\
