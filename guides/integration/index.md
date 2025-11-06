@@ -32,7 +32,9 @@ All integrations follow the same proven architecture: OAuth2/API key authenticat
 {% for guide in integration_guides %}
   <article class="guide-card" data-title="{{ guide.title | downcase }}">
     <h3><a href="{{ guide.url }}">{{ guide.title }}</a></h3>
+    {% if guide.description and guide.description != "" %}
     <p>{{ guide.description | truncate: 120 }}</p>
+    {% endif %}
   </article>
 {% endfor %}
 </div>

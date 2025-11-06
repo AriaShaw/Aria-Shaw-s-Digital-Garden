@@ -24,8 +24,9 @@ All guides include infrastructure-as-code templates where applicable, ensuring r
 {% for guide in cloud_guides %}
   <article class="guide-card">
     <h3><a href="{{ guide.url }}">{{ guide.title }}</a></h3>
+    {% if guide.description and guide.description != "" %}
     <p>{{ guide.description | truncate: 120 }}</p>
-    <span class="meta">{{ guide.date | date: "%Y-%m-%d" }}</span>
+    {% endif %}
   </article>
 {% endfor %}
 </div>
@@ -40,7 +41,9 @@ All guides include infrastructure-as-code templates where applicable, ensuring r
 {% for guide in onprem_guides %}
   <article class="guide-card">
     <h3><a href="{{ guide.url }}">{{ guide.title }}</a></h3>
+    {% if guide.description and guide.description != "" %}
     <p>{{ guide.description | truncate: 120 }}</p>
+    {% endif %}
   </article>
 {% endfor %}
 </div>

@@ -28,7 +28,9 @@ All guides follow the same proven methodology: pilot migration with sample data,
 {% for guide in all_migration_guides %}
   <article class="guide-card">
     <h3><a href="{{ guide.url }}">{{ guide.title }}</a></h3>
+    {% if guide.description and guide.description != "" %}
     <p>{{ guide.description | truncate: 120 }}</p>
+    {% endif %}
   </article>
 {% endfor %}
 </div>
