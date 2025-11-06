@@ -72,7 +72,7 @@ ai_generated_content:
     \ an Odoo module or a custom Python script—orchestrating the data exchange. The\
     \ system pulls event-driven data from GA4 and pushes transformed records into\
     \ specific Odoo models. This architecture ensures data consistency and provides\
-    \ a foundation for complex data enrichment.\n\n**Core Data Flow Sequence**\nThe\
+    \ a foundation for complex data enrichment.\n\n### Core Data Flow Sequence\n\nThe\
     \ data flow initiates with a scheduled action in Odoo or an external cron job.\
     \ This trigger authenticates with the Google Cloud service account, requests a\
     \ batch of GA4 event data for a defined time window, and receives a JSON payload.\
@@ -80,14 +80,14 @@ ai_generated_content:
     \ to map GA4's nested event parameters to the flat, relational structure of Odoo’s\
     \ `sale.order` or `crm.lead` models. Finally, the script uses Odoo’s ORM methods\
     \ like `create()` and `write()` to insert or update records, logging each operation\
-    \ for audit purposes.\n\n**Key System Components**\nYour integration uses three\
+    \ for audit purposes.\n\n### Key System Components\n\nYour integration uses three\
     \ primary components. The Google Cloud Project hosts the service account and enables\
     \ the Analytics Data API. Your Odoo 18 instance contains the custom module that\
     \ executes the synchronization logic. A secure credential file, typically a JSON\
     \ key, resides on your Odoo server, granting the application server-level access\
     \ to your GA4 property. This setup avoids the security pitfalls of client-side\
     \ tokens and provides the stability necessary for automated, high-volume data\
-    \ transfers.\n\n**Data Stream Patterns**\nYou must choose between a real-time\
+    \ transfers.\n\n### Data Stream Patterns\n\nYou must choose between a real-time\
     \ stream and a batched processing model. Real-time processing uses webhooks for\
     \ immediate updates but introduces complexity with error handling and API rate\
     \ limits. Batched processing, which runs every few hours, offers greater control\
@@ -95,7 +95,7 @@ ai_generated_content:
     \ a batched approach that syncs data every 4-6 hours provides the optimal balance\
     \ between data freshness and system stability, preventing API quota exhaustion\
     \ during peak traffic events.\n\n## Step-by-Step Configuration \n\
-    \n**Google Cloud Platform Setup**\nBegin in the Google Cloud Console. Select or\
+    \n### Google Cloud Platform Setup\n\nBegin in the Google Cloud Console. Select or\
     \ create a project, then navigate to \"APIs & Services\" > \"Library.\" Search\
     \ for the \"Google Analytics Data API\" and enable it for your project. Next,\
     \ proceed to \"APIs & Services\" > \"Credentials.\" Click \"Create Credentials\"\
@@ -108,14 +108,14 @@ ai_generated_content:
     \ a directory with restricted permissions, like `/home/odoo/.ga4/credentials.json`.\
     \ Note the \"Service Account ID\" (an email address) from the GCP console; you\
     \ will need it for the next step. This service account acts as the machine identity\
-    \ for your Odoo instance.\n\n**Linking GA4 to the Service Account**\nOpen Google\
+    \ for your Odoo instance.\n\n### Linking GA4 to the Service Account\n\nOpen Google\
     \ Analytics and navigate to your GA4 property. Click \"Admin,\" then under \"\
     Property,\" select \"Property Access Management.\" Here, click the blue \"+\"\
     \ button and choose \"Add users.\" Paste the \"Service Account ID\" email from\
     \ the previous step. Assign the \"Viewer\" role to this account. This step grants\
     \ your service account permission to extract data from this specific GA4 property.\
     \ Without this explicit grant, API calls will fail with permission errors.\n\n\
-    **Odoo Module Creation and Dependency Setup**\nCreate a new custom module in Odoo,\
+    ### Odoo Module Creation and Dependency Setup\n\nCreate a new custom module in Odoo,\
     \ for example, `ga4_connector`. Define its `__manifest__.py` file with the necessary\
     \ dependencies. Your module must include the `google-analytics-data` library.\
     \ You install this Python library on your Odoo server using pip.\n\n`__manifest__.py`\
@@ -127,8 +127,8 @@ ai_generated_content:
     \        'data/ir_cron_data.xml',\n    ],\n    'installable': True,\n    'application':\
     \ True,\n}\n```\nRun `pip3 install google-analytics-data google-auth` on your\
     \ Odoo server to satisfy these external dependencies. This library provides the\
-    \ official client for interacting with the GA4 API.\n\n**Configuration Model and\
-    \ Secure Credential Storage**\nCreate a new model `ga4.config` to store your settings\
+    \ official client for interacting with the GA4 API.\n\n### Configuration Model and\
+    \ Secure Credential Storage\n\nCreate a new model `ga4.config` to store your settings\
     \ securely. This model holds the path to the JSON key file and your GA4 property\
     \ ID. Use Odoo's `fields.Char` for the property ID and a dedicated field for the\
     \ key path.\n\nPython model snippet:\n```python\nfrom odoo import models, fields,\
@@ -140,7 +140,7 @@ ai_generated_content:
     \ = fields.Boolean('Active', default=True)\n```\nCreate a corresponding view to\
     \ let administrators input the GA4 property ID (e.g., `properties/123456789`)\
     \ and verify the credential path. Never hardcode these values in your script.\n\
-    \n**Core Synchronization Logic**\nThe heart of the integration is a method that\
+    \n### Core Synchronization Logic\n\nThe heart of the integration is a method that\
     \ uses the GA4 client library to fetch data. This method reads the configuration,\
     \ builds the request, and processes the response.\n\nBasic fetch method example:\n\
     ```python\nfrom google.analytics.data_v1beta import BetaAnalyticsDataClient\n\
@@ -165,7 +165,7 @@ ai_generated_content:
     doall\" eval=\"False\"/>\n</record>\n```\nThis configuration runs the sync every\
     \ 6 hours. The `_cron_sync_ga4_data` method should search for the active configuration\
     \ and execute the data fetch and processing pipeline.\n\n## Data Mapping and Transformation\
-    \ \n\n**Understanding GA4 Ecommerce Event Schema**\nGA4 uses\
+    \ \n\n### Understanding GA4 Ecommerce Event Schema\n\nGA4 uses\
     \ a structured event-based model for ecommerce data. Key events include `purchase`,\
     \ `add_to_cart`, `begin_checkout`, and `view_item`. Each event contains parameters\
     \ like `currency`, `value`, `items`, and `transaction_id`. The `items` parameter\
@@ -176,7 +176,7 @@ ai_generated_content:
     \ total, and the `currency` maps to the order's currency field. The `items` array\
     \ requires iteration, with each item creating a separate order line. This process\
     \ demands careful extraction to maintain the relationship between the header and\
-    \ line-level data.\n\n**Mapping to Odoo Sales Order Model**\nCreate a dedicated\
+    \ line-level data.\n\n### Mapping to Odoo Sales Order Model\n\nCreate a dedicated\
     \ method, `_map_ga4_purchase_to_so_vals`, that constructs a dictionary for the\
     \ `sale.order` `create()` method. This method consumes the parsed GA4 event data.\n\
     \nExample mapping logic:\n```python\ndef _map_ga4_purchase_to_so_vals(self, ga4_event,\
@@ -189,7 +189,7 @@ ai_generated_content:
     \ array to create lines. It maps `item_id` to a product product, `price` to `price_unit`,\
     \ and `quantity` to `product_uom_qty`. You must implement product matching logic,\
     \ typically by searching Odoo's `product.product` model using the `item_id` or\
-    \ `item_name`.\n\n**Handling Customer Data and Partner Creation**\nGA4 data often\
+    \ `item_name`.\n\n### Handling Customer Data and Partner Creation\n\nGA4 data often\
     \ lacks a complete customer record. Your integration must create or update Odoo\
     \ partners (`res.partner`) using available data points. Use the `page_location`\
     \ parameter to extract a country, and use the `sessionSource` as a lead source.\
@@ -205,15 +205,15 @@ ai_generated_content:
     \            'name': email,  # Or use a first/last name if parameters exist\n\
     \            'email': email,\n            'country_id': self._get_country_id(ga4_event.get('country')),\n\
     \        }).id\n```\nThis function ensures every sales order links to a valid\
-    \ partner ID.\n\n**Transforming Complex Parameters and Custom Dimensions**\nCustom\
+    \ partner ID.\n\n### Transforming Complex Parameters and Custom Dimensions\n\nCustom\
     \ dimensions and metrics in GA4 require special handling. Map these to Odoo's\
     \ `x_studio` fields or create specific fields in your custom module. For example,\
     \ a custom dimension like `marketing_campaign` can map to a field on the sales\
     \ order for campaign tracking. Your transformation layer must parse these custom\
     \ parameters from the event and assign them to the correct Odoo field, maintaining\
     \ data type consistency between the string-heavy GA4 payload and Odoo's stricter\
-    \ field types.\n\n## Error Handling and Resilience \n\n**Common\
-    \ API and Authentication Errors**\nThe Google Analytics Data API throws specific\
+    \ field types.\n\n## Error Handling and Resilience \n\n### Common\
+    \ API and Authentication Errors\n\nThe Google Analytics Data API throws specific\
     \ HTTP error codes your integration must handle. A `401 Unauthorized` error indicates\
     \ an invalid service account or incorrect credential path. A `403 Permission Denied`\
     \ error means the service account lacks the \"Viewer\" role on the GA4 property.\
@@ -232,8 +232,8 @@ ai_generated_content:
     , wait_time)\n            time.sleep(wait_time)\n        except GoogleAPIError\
     \ as e:\n            _logger.error(\"GA4 API error: %s\", e)\n            break\n\
     \    return None\n```\nThis code retries quota errors with increasing delays,\
-    \ preventing your sync from failing during temporary usage spikes.\n\n**Data Validation\
-    \ and Schema Mismatches**\nGA4 event schemas can change, or you might encounter\
+    \ preventing your sync from failing during temporary usage spikes.\n\n### Data Validation\
+    \ and Schema Mismatches\n\nGA4 event schemas can change, or you might encounter\
     \ events missing critical parameters. Your code must validate each event before\
     \ mapping it. Check for the presence of mandatory fields like `transaction_id`\
     \ for purchases. Log a warning and skip events that fail validation instead of\
@@ -264,8 +264,8 @@ ai_generated_content:
     \ `purchase` events with known data values.\n\nPrepare a test data script that\
     \ generates events with specific `transaction_id` values you can track. This setup\
     \ allows you to verify the entire data pipeline from event generation to Odoo\
-    \ record creation without risking live data corruption.\n\n**Validation Checklists\
-    \ and Data Integrity Checks**\nAfter each test run, execute a validation checklist.\
+    \ record creation without risking live data corruption.\n\n### Validation Checklists\
+    \ and Data Integrity Checks\n\nAfter each test run, execute a validation checklist.\
     \ This list should confirm that the correct number of sales orders were created,\
     \ the order totals match the `value` parameter from GA4, all order lines correspond\
     \ to the `items` array, and partner records were created or linked correctly.\
@@ -275,16 +275,16 @@ ai_generated_content:
     \ created one sales order.\n-   [ ] Sales order `T-12345` has an amount total\
     \ of `99.99`.\n-   [ ] Sales order `T-12345` contains two order lines for products\
     \ `SKU-A` and `SKU-B`.\n-   [ ] A new partner record was created for `test@example.com`.\n\
-    -   [ ] No duplicate orders exist for `T-12345` on subsequent sync runs.\n\n**Performance\
-    \ Benchmarking and Load Testing**\nMeasure the execution time of your synchronization\
+    -   [ ] No duplicate orders exist for `T-12345` on subsequent sync runs.\n\n### Performance\
+    \ Benchmarking and Load Testing\n\nMeasure the execution time of your synchronization\
     \ script processing different volumes of data. Start with a batch of 10 events,\
     \ then 100, then 1000. Monitor your Odoo server's resource utilization (CPU, RAM)\
     \ during these tests. This benchmarking helps you identify performance bottlenecks,\
     \ such as inefficient product matching logic or N+1 query problems in your partner\
     \ lookup. Set performance targets, for example, processing 1000 events in under\
     \ 5 minutes, to ensure the integration remains efficient as your business grows.\n\
-    \n## Security Considerations \n\n**Service Account and Credential\
-    \ Management**\nThe security of your integration hinges on the protection of the\
+    \n## Security Considerations \n\n### Service Account and Credential\
+    \ Management\n\nThe security of your integration hinges on the protection of the\
     \ service account JSON key. Never commit this file to a version control system\
     \ like Git. Store it on the Odoo server in a directory with strict file permissions\
     \ (e.g., `chmod 600 credentials.json`). Odoo should run under a dedicated system\
@@ -300,22 +300,22 @@ ai_generated_content:
     \ to encrypt traffic between clients and the server. For data at rest, the primary\
     \ concern is the Odoo database itself. Implement database-level encryption or\
     \ ensure your server's disk encryption is active to protect stored sales and customer\
-    \ data.\n\n**API Scopes and Principle of Least Privilege**\nThe service account\
+    \ data.\n\n### API Scopes and Principle of Least Privilege\n\nThe service account\
     \ you create requires only the \"Viewer\" role on the Google Cloud project and\
     \ GA4 property. This role grants read-only access. Do not assign more powerful\
     \ roles like \"Editor\" or \"Owner.\" This adherence to the principle of least\
     \ privilege ensures that even if the credentials are compromised, an attacker\
     \ cannot modify or delete your GA4 data. The integration only pulls data; it never\
     \ pushes data back to Google Analytics, creating a one-way security boundary.\n\
-    \n## Performance Optimization \n\n**Batching API Requests and\
-    \ Managing Quotas**\nThe GA4 Data API enforces strict quotas on requests per minute\
+    \n## Performance Optimization \n\n### Batching API Requests and\
+    \ Managing Quotas\n\nThe GA4 Data API enforces strict quotas on requests per minute\
     \ and tokens per hour. To optimize performance, structure your report requests\
     \ to fetch the maximum amount of data per call, which is 100,000 rows. Use batching\
     \ for different date ranges or metrics if you exceed this limit. Avoid running\
     \ multiple sync jobs concurrently, as this will almost certainly trigger quota\
     \ errors. Schedule your synchronization during off-peak hours for your business\
     \ to minimize the risk of hitting these limits and to reduce the load on your\
-    \ Odoo server.\n\n**Efficient Odoo ORM Usage and Caching**\nInefficient use of\
+    \ Odoo server.\n\n### Efficient Odoo ORM Usage and Caching\n\nInefficient use of\
     \ the Odoo ORM is a common performance killer. When processing many events, use\
     \ the `create()` method with a list of dictionaries to create records in bulk,\
     \ rather than creating them one-by-one in a loop. This method reduces the number\
@@ -324,8 +324,8 @@ ai_generated_content:
     \ at the start of the sync job. For example, read all relevant products into a\
     \ dictionary keyed by their `default_code` once, and then use this dictionary\
     \ for all subsequent product matches. This technique replaces thousands of individual\
-    \ SQL queries with a single, fast in-memory lookup.\n\n**Monitoring and Logging\
-    \ for Performance**\nImplement detailed logging at each stage of the synchronization\
+    \ SQL queries with a single, fast in-memory lookup.\n\n### Monitoring and Logging\
+    \ for Performance\n\nImplement detailed logging at each stage of the synchronization\
     \ process. Log the number of events processed, the time taken for the API call,\
     \ and the time taken for database insertion. Monitor these logs over time to establish\
     \ a performance baseline. Use this data to identify degradation, such as a gradual\

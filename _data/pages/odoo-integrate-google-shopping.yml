@@ -117,7 +117,7 @@ ai_generated_content:
     \ Save the generated `client_id` and `client_secret`; you will need them for the\
     \ Odoo configuration. Finally, create a Service Account and download its JSON\
     \ key file for server-to-server authentication, which is more secure for background\
-    \ sync jobs.\n\n**Implement OAuth 2.0 Authentication in Odoo**\nOdoo's `auth_oauth`\
+    \ sync jobs.\n\n### Implement OAuth 2.0 Authentication in Odoo\n\nOdoo's `auth_oauth`\
     \ module provides the foundation for OAuth flows. Extend it to support Google.\
     \ Add a record to the `ir.config_parameter` model storing the client ID and secret.\
     \ You must create a controller that handles the OAuth callback. This controller\
@@ -145,7 +145,7 @@ ai_generated_content:
     \ record):\n        # Map name and price to Google's schema\n        return {\n\
     \            'title': record.name,\n            'price': {\n                'value':\
     \ record.list_price,\n                'currency': record.currency_id.name\n  \
-    \          }\n        }\n```\n\n**Configure Order Import Webhook**\nIn your Google\
+    \          }\n        }\n```\n\n### Configure Order Import Webhook\n\nIn your Google\
     \ Merchant Center, navigate to Settings > API Configuration. Provide your Odoo\
     \ server's webhook URL, which you will create in the next step. Odoo needs a controller\
     \ to receive the Pub/Sub messages that Google sends when a new order arrives.\n\
@@ -156,7 +156,7 @@ ai_generated_content:
     \ (omitted for brevity)\n        message_data = json.loads(base64.b64decode(request_data['message']['data']))\n\
     \        order_id = message_data.get('orderId')\n        # Create a connector\
     \ job to import the order\n        self._import_order_job.delay(order_id)\n  \
-    \      return ''\n```\n\n**Common Configuration Pitfalls**\nA frequent error involves\
+    \      return ''\n```\n\n### Common Configuration Pitfalls\n\nA frequent error involves\
     \ incorrect timezone configuration. Google APIs require UTC timestamps, while\
     \ Odoo uses the company's timezone. Always convert datetime objects to UTC before\
     \ sending them to Google. Another pitfall concerns the OAuth scope; you must request\
@@ -171,8 +171,8 @@ ai_generated_content:
     \ `product.product` and `product.template` models contain your source data, but\
     \ Google's `product` resource has over fifty required and optional attributes.\
     \ You must construct a meticulous mapping strategy that covers every field, from\
-    \ basic identifiers to complex tax and shipping information.\n\n**Core Identifier\
-    \ and Title Mapping**\nThe `offerId` field in Google must map to a unique, stable\
+    \ basic identifiers to complex tax and shipping information.\n\n### Core Identifier\
+    \ and Title Mapping\n\nThe `offerId` field in Google must map to a unique, stable\
     \ identifier in Odoo. Never use the Odoo product `id` because it can change during\
     \ database migrations. Use the product's `default_code` (SKU) for the `offerId`.\
     \ The product `name` in Odoo maps directly to Google's `title` field. However,\
@@ -189,7 +189,7 @@ ai_generated_content:
     \        return {'availability': 'out of stock'}\n    qty_available = record.qty_available\
     \ - record.outgoing_qty\n    if qty_available > 0:\n        return {'availability':\
     \ 'in stock'}\n    else:\n        return {'availability': 'out of stock'}\n```\n\
-    \n**Category and Attribute Handling**\nGoogle uses the Google Product Category\
+    \n### Category and Attribute Handling\n\nGoogle uses the Google Product Category\
     \ (GPC) taxonomy, a numerical system completely different from Odoo's product\
     \ categories. You cannot map these automatically. You must extend your Odoo product\
     \ category model to include a field for the corresponding GPC code. Your mapping\
@@ -211,21 +211,21 @@ ai_generated_content:
     \ Google, and authentication failures. The Odoo Connector framework provides a\
     \ built-in retry mechanism for jobs, which you should configure for transient\
     \ errors like `5xx` HTTP status codes from Google or temporary network timeouts.\n\
-    \n**Common Google API Error Codes**\nThe Google Content API returns specific error\
+    \n### Common Google API Error Codes\n\nThe Google Content API returns specific error\
     \ codes that dictate your response. A `401 Unauthorized` error signals an expired\
     \ or invalid access token. Your error handler must catch this, automatically use\
     \ the refresh token to obtain new credentials, and retry the job. A `429 Too Many\
     \ Requests` error indicates rate limiting. Your code must catch this, parse the\
     \ `Retry-After` header, and re-queue the job with the appropriate delay. For `400\
     \ Bad Request` errors, the API response body contains a detailed reason, such\
-    \ as `invalidValue` for a field or `missingAttribute`.\n\n**Implementing a Dead\
-    \ Letter Queue**\nNot all errors can resolve with a retry. Data validation errors,\
+    \ as `invalidValue` for a field or `missingAttribute`.\n\n### Implementing a Dead\
+    \ Letter Queue\n\nNot all errors can resolve with a retry. Data validation errors,\
     \ like an invalid GPC code or a missing required field, will persist until you\
     \ fix the underlying data in Odoo. For these, implement a dead letter queue. When\
     \ a job fails permanently, log the error message, the product ID, and the failed\
     \ operation to a dedicated `google.sync.error` model. This creates a clear dashboard\
     \ for administrators to see and rectify data problems without sifting through\
-    \ server logs.\n\n**Idempotency and Duplicate Prevention**\nThe Google APIs are\
+    \ server logs.\n\n### Idempotency and Duplicate Prevention\n\nThe Google APIs are\
     \ idempotent when you provide a unique `idempotencyKey` with your requests. Generate\
     \ this key for every insert or update operation. A good pattern combines the Odoo\
     \ product ID, the timestamp of the last update, and the operation type. This ensures\
@@ -248,7 +248,7 @@ ai_generated_content:
     \ Create test methods that feed known Odoo product records into your mappers and\
     \ assert that the output matches the expected Google product JSON structure. Mock\
     \ the Google API calls to test the synchronization logic without needing a live\
-    \ internet connection.\n\n**End-to-End Testing with a Sandbox**\nGoogle provides\
+    \ internet connection.\n\n### End-to-End Testing with a Sandbox\n\nGoogle provides\
     \ a Merchant Center sandbox environment for development and testing. Create a\
     \ sandbox account and configure your Odoo test instance to connect to it. Execute\
     \ a full product sync for a small subset of your catalog. Verify that the products\
@@ -270,8 +270,8 @@ ai_generated_content:
     \ an N+1 query problem can cripple performance. For high-volume stores, test the\
     \ impact of simultaneous stock updates—if a flash sale updates the inventory of\
     \ one hundred products at once, can your queue system handle the surge of one\
-    \ hundred sync jobs without slowing down the Odoo server?\n\n**Webhook and Order\
-    \ Flow Verification**\nTesting the order import flow presents a unique challenge\
+    \ hundred sync jobs without slowing down the Odoo server?\n\n### Webhook and Order\
+    \ Flow Verification\n\nTesting the order import flow presents a unique challenge\
     \ because you cannot easily generate real Google Pub/Sub messages. Instead, create\
     \ a utility function in Odoo that mimics the exact JSON payload structure that\
     \ Google sends. Use this to trigger your webhook endpoint directly from the Odoo\
@@ -289,7 +289,7 @@ ai_generated_content:
     \ Implement an automatic token refresh mechanism. Access tokens expire after a\
     \ short period. Your code must detect a `401` error and use the stored refresh\
     \ token to obtain a new access token without any administrator intervention.\n\
-    \n**Webhook Security and Validation**\nAn open webhook endpoint presents a severe\
+    \n### Webhook Security and Validation\n\nAn open webhook endpoint presents a severe\
     \ security risk. You must validate that every incoming webhook request originates\
     \ from Google. Google signs the Pub/Sub messages it sends. Your webhook controller\
     \ must verify this signature using the public keys provided by Google. Reject\
@@ -300,7 +300,7 @@ ai_generated_content:
     \        token = http.request.httprequest.headers.get('Authorization').split('\
     \ ')[1]\n        # Verify the token using Google's public certs\n        decoded\
     \ = jwt.decode(token, certs=GOOGLE_PUBLIC_CERTS)\n        return decoded\n```\n\
-    \n**Data Access and Permissions**\nWithin Odoo, restrict access to the Google\
+    \n### Data Access and Permissions\n\nWithin Odoo, restrict access to the Google\
     \ Merchant Account configuration models to only authorized users, such as system\
     \ administrators. Apply Odoo's record rules to ensure users can only see the sync\
     \ logs and error reports relevant to their operational purview. The service account\
@@ -311,27 +311,27 @@ ai_generated_content:
     \ Odoo instance. The primary bottleneck is usually the volume of API calls to\
     \ Google, followed by database read/write operations in Odoo during the mapping\
     \ process. Identify and mitigate these bottlenecks with a combination of batching,\
-    \ caching, and efficient querying.\n\n**API Call Batching and Quotas**\nThe Google\
+    \ caching, and efficient querying.\n\n### API Call Batching and Quotas\n\nThe Google\
     \ Shopping Content API supports batch operations. Instead of sending one HTTP\
     \ request per product, you can bundle up to 1000 product operations in a single\
     \ batch request. This reduces network overhead and speeds up the sync process\
     \ dramatically. Implement a batch scheduler in your connector jobs that groups\
     \ pending product updates into batches of the maximum allowed size. Monitor your\
     \ API usage against Google's quota limits to avoid being throttled. Spread large\
-    \ sync operations over time to stay within the per-minute quota.\n\n**Efficient\
-    \ Odoo ORM Querying**\nA common performance anti-pattern in Odoo is searching\
+    \ sync operations over time to stay within the per-minute quota.\n\n### Efficient\
+    \ Odoo ORM Querying\n\nA common performance anti-pattern in Odoo is searching\
     \ and reading records in a loop. When your mapper processes a batch of products,\
     \ pre-fetch all the necessary related data in a single query. Use `read_group`\
     \ for aggregate data and `prefetch` fields to minimize the number of database\
     \ queries. For example, if you need stock quantities for a batch of products,\
     \ query the stock quant model once for the entire batch instead of calling `product.qty_available`\
-    \ for each individual product.\n\n**Implementing a Caching Layer**\nProduct data\
+    \ for each individual product.\n\n### Implementing a Caching Layer\n\nProduct data\
     \ like category names or attribute values does not change often. Implement a simple\
     \ caching layer for this semi-static data. Store the mapped values for Google\
     \ Product Categories in a dictionary in memory, so you do not have to read the\
     \ corresponding Odoo record for every single product. Use Odoo's `tools.cache`\
     \ decorator to cache the results of expensive functions that compute shipping\
-    \ dimensions or tax categories.\n\n**Queue Management and Job Chunking**\nThe\
+    \ dimensions or tax categories.\n\n### Queue Management and Job Chunking\n\nThe\
     \ Odoo Connector queue can become overwhelmed if you create a separate job for\
     \ every product update during a mass import. Instead, create chunked jobs. A single\
     \ job should handle the synchronization of 100 or 500 products. This reduces the\
