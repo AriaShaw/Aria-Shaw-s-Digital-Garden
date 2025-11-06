@@ -33,7 +33,6 @@ All integrations follow the same proven architecture: OAuth2/API key authenticat
   <article class="guide-card" data-title="{{ guide.title | downcase }}">
     <h3><a href="{{ guide.url }}">{{ guide.title }}</a></h3>
     <p>{{ guide.description | truncate: 120 }}</p>
-    <span class="meta">{{ guide.date | date: "%Y-%m-%d" }}</span>
   </article>
 {% endfor %}
 </div>

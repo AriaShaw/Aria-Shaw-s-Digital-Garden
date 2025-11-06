@@ -41,7 +41,6 @@ All guides include infrastructure-as-code templates where applicable, ensuring r
   <article class="guide-card">
     <h3><a href="{{ guide.url }}">{{ guide.title }}</a></h3>
     <p>{{ guide.description | truncate: 120 }}</p>
-    <span class="meta">{{ guide.date | date: "%Y-%m-%d" }}</span>
   </article>
 {% endfor %}
 </div>

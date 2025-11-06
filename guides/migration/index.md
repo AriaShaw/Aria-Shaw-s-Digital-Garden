@@ -29,7 +29,6 @@ All guides follow the same proven methodology: pilot migration with sample data,
   <article class="guide-card">
     <h3><a href="{{ guide.url }}">{{ guide.title }}</a></h3>
     <p>{{ guide.description | truncate: 120 }}</p>
-    <span class="meta">{{ guide.date | date: "%Y-%m-%d" }}</span>
   </article>
 {% endfor %}
 </div>

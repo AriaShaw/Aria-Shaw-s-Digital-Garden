@@ -14,7 +14,10 @@ Definitive playbooks for every stage of your Odoo journey—from strategic plann
 
 ## Featured Picks
 
-<div class="featured-grid">
+<div class="posts-grid-section">
+<div class="posts-grid">
+{% assign post_images = "code.webp,keyboard.webp,electronic.webp,earphone.webp,digital.webp,data center.webp" | split: "," %}
+{% assign post_image_alts = "Python code editor showing colorful syntax highlighting with class methods and function definitions,Close-up of blue PCB circuit board with golden contacts and integrated circuits,Top view of electronic circuit board with colorful resistors capacitors and microchips,Black wireless headphones on vibrant yellow background,Digital network visualization with glowing blue connection lines and nodes on dark background,Data center network switches with blue ethernet cables connected to multiple ports" | split: "," %}
 {% assign featured_slugs = "odoo-implementation-guide,odoo-database-migration-guide,odoo-aws-deployment-guide,odoo-aws-security-hardening,odoo-self-hosting-guide,odoo-database-backup-restore-guide" | split: "," %}
 {% for slug in featured_slugs %}
   {% assign guide = site.posts | where: "slug", slug | first %}
@@ -22,13 +25,19 @@ Definitive playbooks for every stage of your Odoo journey—from strategic plann
     {% assign guide = site.implementations | where: "slug", slug | first %}
   {% endunless %}
   {% if guide %}
-  <article class="featured-card">
-    <h3><a href="{{ guide.url }}">{{ guide.title }}</a></h3>
-    <p>{{ guide.description | truncate: 200 }}</p>
-    <span class="meta">Updated: {{ guide.date | date: "%Y-%m-%d" }}</span>
+  {% assign index = forloop.index0 %}
+  <article class="post-card featured">
+    <img src="/assets/images/{{ post_images[index] }}" alt="{{ post_image_alts[index] }}" class="post-card-image" loading="lazy">
+    <div class="post-card-content">
+      <h3 class="post-card-title">
+        <a href="{{ guide.url | relative_url }}">{{ guide.title }}</a>
+      </h3>
+      <p class="post-card-description">{{ guide.description | truncate: 200 }}</p>
+    </div>
   </article>
   {% endif %}
 {% endfor %}
+</div>
 </div>
 
 ---
@@ -64,7 +73,6 @@ Definitive playbooks for every stage of your Odoo journey—from strategic plann
 {% for guide in all_guides %}
   <article class="guide-item">
     <h4><a href="{{ guide.url }}">{{ guide.title }}</a></h4>
-    <p class="meta">{{ guide.date | date: "%Y-%m-%d" }}</p>
   </article>
 {% endfor %}
 </div>
