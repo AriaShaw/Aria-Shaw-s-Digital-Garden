@@ -82,14 +82,14 @@ ai_generated_content:
     \ connector, handles internal event triggers. The Sendinblue API receives contact\
     \ data and triggers email campaigns. A webhook endpoint, hosted within your Odoo\
     \ instance, processes event notifications from Sendinblue. These components form\
-    \ a continuous data feedback loop.\n\n**Outbound Data Flow: Odoo to Sendinblue**\n\
-    \nWhen a contact updates in Odoo, the connector captures the change. This trigger\
+    \ a continuous data feedback loop.\n\n### Outbound Data Flow: Odoo to Sendinblue\n\
+    \n    When a contact updates in Odoo, the connector captures the change. This trigger\
     \ occurs after a partner creation, a field update, or a stage change in a sales\
     \ order. The module packages this data into a JSON payload structured for the\
     \ Sendinblue Contacts API. It then executes a POST request to `https://api.sendinblue.com/v3/contacts`\
     \ to create or update the contact record in Sendinblue. This flow keeps your marketing\
-    \ lists current with CRM changes.\n\n**Inbound Data Flow: Sendinblue to Odoo**\n\
-    \nSendinblue sends engagement data back to Odoo via configured webhooks. When\
+    \ lists current with CRM changes.\n\n### Inbound Data Flow: Sendinblue to Odoo\n\
+    \n    Sendinblue sends engagement data back to Odoo via configured webhooks. When\
     \ a recipient opens an email, clicks a link, or unsubscribes, Sendinblue generates\
     \ an event. It sends a POST request with event details to your Odoo webhook URL.\
     \ The Odoo webhook controller parses this JSON payload and updates the corresponding\
@@ -134,8 +134,8 @@ ai_generated_content:
     \        self.env['ir.config_parameter'].set_param('sendinblue.api_key', self.sendinblue_api_key)\n\
     \n    @api.model\n    def get_values(self):\n        res = super(ResConfigSettings,\
     \ self).get_values()\n        res.update(\n            sendinblue_api_key=self.env['ir.config_parameter'].get_param('sendinblue.api_key'),\n\
-    \        )\n        return res\n```\n\n**Building the Sendinblue API Client**\n\
-    \nCreate a dedicated model to handle all Sendinblue API interactions. This model\
+    \        )\n        return res\n```\n\n### Building the Sendinblue API Client\n\
+    \n    Create a dedicated model to handle all Sendinblue API interactions. This model\
     \ centralizes your API calls and implements error handling. Use the Sendinblue\
     \ Python SDK for reliable API communication.\n\n```\nimport logging\nfrom sib_api_v3_sdk\
     \ import Configuration, ApiClient, ContactsApi\nfrom sib_api_v3_sdk.rest import\
@@ -217,15 +217,15 @@ ai_generated_content:
     \    if partner.category_id:\n        tag_names = partner.category_id.mapped('name')\n\
     \        attributes['TAGS'] = ','.join(tag_names)\n    \n    # Map Odoo country\
     \ to Sendinblue country attribute\n    if partner.country_id:\n        attributes['COUNTRY']\
-    \ = partner.country_id.name\n    \n    return attributes\n```\n\n**Data Type Transformations**\n\
-    \nOdoo and Sendinblue use different data formats that require transformation.\
+    \ = partner.country_id.name\n    \n    return attributes\n```\n\n### Data Type Transformations\n\
+    \n    Odoo and Sendinblue use different data formats that require transformation.\
     \ Convert Odoo's many2one and many2many relationships into flat strings or arrays.\
     \ Handle date formatting differences between the systems, ensuring proper timezone\
     \ awareness.\n\nTransform Odoo's `date` fields like `create_date` into ISO 8601\
     \ format for Sendinblue. Convert boolean fields like `opt_out` into appropriate\
     \ Sendinblue subscription status. Process monetary fields by stripping currency\
-    \ symbols and storing pure numeric values.\n\n**Address and Geolocation Mapping**\n\
-    \nSendinblue accepts structured address data for geographic segmentation. Split\
+    \ symbols and storing pure numeric values.\n\n### Address and Geolocation Mapping\n\
+    \n    Sendinblue accepts structured address data for geographic segmentation. Split\
     \ Odoo's address fields into Sendinblue's format. Map `street` to `ADDRESS_1`,\
     \ `street2` to `ADDRESS_2`, and `city` to `CITY`. Use `state_id.name` for `STATE`\
     \ and `zip` for `POSTAL_CODE`. This structured data enables geographic targeting\
@@ -288,7 +288,7 @@ ai_generated_content:
     \ synchronization status in real-time. Display the number of pending synchronizations,\
     \ recent failures, and system throughput. These monitoring capabilities provide\
     \ operational visibility and enable proactive issue resolution.\n\n## Testing\
-    \ and Validation### Development Environment Testing\n\nBegin testing in a isolated\
+    \ and Validation\n\n### Development Environment Testing\n\nBegin testing in a isolated\
     \ development environment that mirrors your production setup. Create test Odoo\
     \ partners with varied data scenarios: partners with missing email addresses,\
     \ partners with international phone numbers, partners with special characters\
@@ -316,8 +316,8 @@ ai_generated_content:
     \"\"\n        mock_create.side_effect = ApiException(status=400)\n        \n \
     \       result = self.env['sendinblue.api'].create_contact(\n            self.test_partner.email,\n\
     \            {'FIRSTNAME': 'Test', 'LASTNAME': 'Partner'}\n        )\n       \
-    \ \n        self.assertFalse(result)\n```\n\n**Webhook Testing Methodology**\n\
-    \nTest your webhook endpoint with simulated Sendinblue events. Use tools like\
+    \ \n        self.assertFalse(result)\n```\n\n### Webhook Testing Methodology\n\
+    \n    Test your webhook endpoint with simulated Sendinblue events. Use tools like\
     \ Postman or curl to send sample payloads to your webhook URL. Test all event\
     \ types: email delivered, hard bounce, soft bounce, opened, clicked, unsubscribed,\
     \ and spam complaint. Verify that each event type updates the correct Odoo partner\
@@ -347,15 +347,15 @@ ai_generated_content:
     \ key at rest.\n\nImplement key rotation policies that mandate regular API key\
     \ updates. Create a process for immediate key revocation in case of suspected\
     \ compromise. Use separate API keys for development, testing, and production environments\
-    \ to limit blast radius during security incidents.\n\n**Webhook Security Implementation**\n\
-    \nWebhook endpoints present a significant security surface that requires hardening.\
+    \ to limit blast radius during security incidents.\n\n### Webhook Security Implementation\n\
+    \n    Webhook endpoints present a significant security surface that requires hardening.\
     \ Validate the X-Sendinblue-Signature header on every incoming webhook request.\
     \ Compute the HMAC SHA256 hash of the request payload using your webhook secret\
     \ and compare it with the provided signature.\n\nImplement replay attack protection\
     \ by checking event timestamps. Reject webhook requests with timestamps more than\
     \ five minutes old. This time window balances security with tolerance for reasonable\
-    \ delivery delays in the Sendinblue infrastructure.\n\n**Data Privacy and Compliance**\n\
-    \nRespect data privacy regulations throughout the integration. Map the personal\
+    \ delivery delays in the Sendinblue infrastructure.\n\n### Data Privacy and Compliance\n\
+    \n    Respect data privacy regulations throughout the integration. Map the personal\
     \ data flowing between systems and document the legal basis for processing. Implement\
     \ data minimization by synchronizing only necessary fields for marketing operations.\n\
     \nHonor customer consent preferences across both platforms. Synchronize opt-out\
@@ -374,8 +374,8 @@ ai_generated_content:
     \ administrative changes for audit purposes.\n\nMonitor for anomalous activities\
     \ like unexpected large data exports or configuration changes. Set up alerts for\
     \ multiple failed authentication attempts or unusual API usage patterns that might\
-    \ indicate a security breach.\n\n## Performance Optimization**API Rate Limit Management**\n\
-    \nSendinblue imposes strict rate limits on API calls that impact integration performance.\
+    \ indicate a security breach.\n\n## Performance Optimization\n\n### API Rate Limit Management\n\
+    \n    Sendinblue imposes strict rate limits on API calls that impact integration performance.\
     \ The standard plan allows three hundred requests per minute. Design your synchronization\
     \ processes to operate within these constraints while maximizing throughput.\n\
     \nImplement intelligent batching that groups multiple contact operations into\

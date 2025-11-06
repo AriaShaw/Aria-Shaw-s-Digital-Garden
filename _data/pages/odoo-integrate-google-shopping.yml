@@ -108,8 +108,8 @@ ai_generated_content:
     \ with Google-specific fields. Create a `google_merchant_account` model that stores\
     \ credentials like `merchant_id`, `auth_token`, and the `pubsub_topic` name. This\
     \ model serves as the central configuration point for connecting to each of your\
-    \ Merchant Center accounts.\n\n**Configure Google Cloud Project and API Access**\n\
-    Navigate to the Google Cloud Console and create a new project or select an existing\
+    \ Merchant Center accounts.\n\n### Configure Google Cloud Project and API Access\n\
+    \n    Navigate to the Google Cloud Console and create a new project or select an existing\
     \ one. Enable the \"Shopping Content API\" for this project. Under \"APIs & Services\
     \ > Credentials,\" create a new OAuth 2.0 Client ID. Configure the OAuth consent\
     \ screen and set the application type to \"Web application.\" You must add your\
@@ -131,8 +131,8 @@ ai_generated_content:
     \ # Store tokens in the configured account record\n        account = http.request.env['google.merchant.account'].search([],\
     \ limit=1)\n        account.write({\n            'access_token': access_token,\n\
     \            'refresh_token': refresh_token,\n        })\n        return \"Authentication\
-    \ Successful. You can close this window.\"\n```\n\n**Set Up Product Sync Infrastructure**\n\
-    Define a \"synchronizer\" class using the Odoo Connector framework. This class\
+    \ Successful. You can close this window.\"\n```\n\n### Set Up Product Sync Infrastructure\n\
+    \n    Define a \"synchronizer\" class using the Odoo Connector framework. This class\
     \ encapsulates the logic for exporting a product to Google. Create a new backend\
     \ model, `google.shopping.backend`, which links to your `google_merchant_account`.\
     \ Then, create the synchronizer that inherits from `connector.backend`.\n\n```python\n\
@@ -179,8 +179,8 @@ ai_generated_content:
     \ you must ensure the title meets Google's character limits and does not contain\
     \ promotional text like \"free shipping.\" The `description` field requires a\
     \ similar transformation, often needing a sanitized version of the Odoo product\
-    \ description with HTML tags stripped out.\n\n**Price and Availability Mapping**\n\
-    Google's price structure is an object containing `value` and `currency`. Map the\
+    \ description with HTML tags stripped out.\n\n### Price and Availability Mapping\n\
+    \n    Google's price structure is an object containing `value` and `currency`. Map the\
     \ Odoo `list_price` to `price.value` and the company currency to `price.currency`.\
     \ For availability, you must convert Odoo's stock state to Google's predefined\
     \ values. Implement logic that checks the `qty_available` against the `sale_ok`\
@@ -196,8 +196,8 @@ ai_generated_content:
     \ function then reads this value. For product attributes like size or color, you\
     \ map Odoo's attribute values to Google's `size`, `color`, and `material` fields.\
     \ This requires a configuration table in Odoo that links Odoo attribute lines\
-    \ to the correct Google schema field.\n\n**Image Link and Additional Data**\n\
-    The `image_link` field must point to a publicly accessible URL of the product's\
+    \ to the correct Google schema field.\n\n### Image Link and Additional Data\n\
+    \n    The `image_link` field must point to a publicly accessible URL of the product's\
     \ image. Odoo typically stores images as binary data. Your integration must generate\
     \ a permanent, absolute URL for each product's primary image. You can achieve\
     \ this by implementing a controller in Odoo that serves the images or, for better\
@@ -236,8 +236,8 @@ ai_generated_content:
     \n\ndef _call_google_api(self, endpoint, data, operation):\n    idempotency_key\
     \ = self._generate_idempotency_key(data['record'], operation)\n    headers = {\n\
     \        'Content-Type': 'application/json',\n        'Idempotency-Key': idempotency_key\n\
-    \    }\n    # ... make the API request ...\n```\n\n**Order Import Error Scenarios**\n\
-    Order import failures can have immediate business impact. If the webhook fails\
+    \    }\n    # ... make the API request ...\n```\n\n### Order Import Error Scenarios\n\
+    \n    Order import failures can have immediate business impact. If the webhook fails\
     \ to create an Odoo sale order, it must log a critical error and, if possible,\
     \ send an alert to the sales team. Common issues include missing customer information\
     \ in the Google order data or a product in the order that does not exist in Odoo.\
@@ -255,15 +255,15 @@ ai_generated_content:
     \ appear in the sandbox Merchant Center dashboard with the correct titles, prices,\
     \ and images. Then, simulate a test order through the Google Sandbox Orders API.\
     \ Monitor your Odoo instance to confirm the sale order creates automatically with\
-    \ the correct line items and customer details.\n\n**Data Validation Checklist**\n\
-    Create a pre-flight checklist to run before the first full product sync. This\
+    \ the correct line items and customer details.\n\n### Data Validation Checklist\n\
+    \n    Create a pre-flight checklist to run before the first full product sync. This\
     \ checklist should verify that all required fields in Odoo have valid data for\
     \ the Google mapping. Key validations include: every product has a `default_code`\
     \ (SKU), every product category has a valid Google Product Category code, all\
     \ product images are accessible via a public URL, and product weights and dimensions\
     \ populate for items that require them. Automate these checks with a script that\
-    \ reports any products failing validation.\n\n**Performance and Load Testing**\n\
-    A integration that works for ten products might fail for ten thousand. Test the\
+    \ reports any products failing validation.\n\n### Performance and Load Testing\n\
+    \n    A integration that works for ten products might fail for ten thousand. Test the\
     \ synchronization performance with a large volume of data. Use Odoo's built-in\
     \ performance profiler to monitor the execution time of your connector jobs. Pay\
     \ close attention to the number of SQL queries your mapping functions generate;\
@@ -282,8 +282,8 @@ ai_generated_content:
     \ including product catalogs, pricing, and customer orders. You must secure every\
     \ data transfer and storage point. All communication with Google APIs must use\
     \ HTTPS with TLS 1.2 or higher. Never use HTTP for any endpoint, especially the\
-    \ webhook that receives order notifications.\n\n**OAuth 2.0 and Token Management**\n\
-    Store the OAuth `client_secret` and `refresh_token` in Odoo with the highest security.\
+    \ webhook that receives order notifications.\n\n### OAuth 2.0 and Token Management\n\
+    \n    Store the OAuth `client_secret` and `refresh_token` in Odoo with the highest security.\
     \ Use Odoo's `ir.config_parameter` model with its built-in encryption for sensitive\
     \ fields. Never log these tokens to log files or display them in the user interface.\
     \ Implement an automatic token refresh mechanism. Access tokens expire after a\
