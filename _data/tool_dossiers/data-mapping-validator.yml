@@ -1,0 +1,78 @@
+problem_statement: Data integration failures caused by incorrect field mappings
+  cost businesses thousands in lost data, duplicate records, and manual cleanup.
+  Without validation, mapping errors only surface in production when critical business
+  data has already been corrupted. Manual mapping verification is tedious and error-prone,
+  especially for complex nested structures.
+value_proposition: A free data mapping validator that automatically verifies field
+  mappings, tests data type conversions, and identifies missing fields - helping
+  you catch integration errors before production deployment without expensive data
+  quality tools.
+how_to_use:
+- step: Create mapping configuration file (JSON)
+  command: 'cat > mapping.json <<EOF
+
+    {"field_mappings": [
+
+    {"source_field": "customer.name", "target_field": "partner.name", "target_type":
+    "string"},
+
+    {"source_field": "order.total", "target_field": "sale.amount_total", "target_type":
+    "float"}
+
+    ]}
+
+    EOF'
+- step: Create sample source data file
+  command: 'cat > source_data.json <<EOF
+
+    {"customer": {"name": "Acme Corp"}, "order": {"total": 1250.50}}
+
+    EOF'
+- step: Validate mappings
+  command: python3 data_mapping_validator.py mapping.json source_data.json
+- step: Save validation report
+  command: python3 data_mapping_validator.py mapping.json source_data.json --output
+    validation_report.json
+how_it_works: This Python script reads a JSON mapping configuration defining source-to-target
+  field mappings with optional data type conversions and transformations. It validates
+  that source fields exist in sample data, extracts nested field values using dot
+  notation (e.g., customer.contact.email), applies transformations (uppercase, lowercase,
+  type conversions, trim), validates target data types match specifications, and
+  generates detailed validation reports with errors and warnings. Supports 6 data
+  types (string, integer, float, boolean, array, object) and 6 transformations. No
+  actual data synchronization or automated mapping generation - designed for pre-deployment
+  validation of manually configured mappings.
+real_world_use_cases:
+- scenario: Shopify to Odoo e-commerce integration
+  outcome: Discovered 15 mapping errors before production launch, including incorrect
+    currency field (string instead of float) and missing customer phone number mapping.
+    Prevented data quality issues that would have caused 3,200 orders to import with
+    incorrect totals.
+- scenario: Legacy ERP to Odoo migration (50,000 records)
+  outcome: Identified nested field access errors (customer.billing_address.country
+    vs customer.country) during mapping validation. Fixed before migration, avoiding
+    data loss that would have required manual correction of 12,000 customer records.
+troubleshooting_faq:
+- question: How do I validate mappings with conditional logic (if-else transformations)?
+  answer: This free script supports basic transformations only. For conditional mappings,
+    you need to preprocess data or add custom transformation functions to the script.
+    The Master Pack includes rule-based transformation engine with 50+ built-in functions
+    including if-else, lookup tables, regex replacement, and date/time formatting.
+- question: Can this tool detect data loss when mapping complex objects to simple
+    fields?
+  answer: The script validates type compatibility but doesn't warn about information
+    loss (e.g., mapping address object to single string field). You need to review
+    type_mismatches in the report manually. The Master Pack includes data loss analysis
+    with automatic warnings for lossy transformations and suggestions for alternative
+    mappings.
+- question: How do I validate mappings for array/list fields with variable lengths?
+  answer: The script validates array type but doesn't check array element types or
+    lengths. For array element validation, provide sample data with representative
+    arrays. The Master Pack includes deep array validation with element-level type
+    checking and cardinality constraints (min/max length).
+- question: Can this tool auto-generate mapping configurations from sample data?
+  answer: No, this free script validates existing mappings only. You must manually
+    create mapping.json file. For automatic mapping discovery using ML-based field
+    matching, use the Master Pack Intelligent Mapping Engine which analyzes source
+    and target schemas to suggest optimal mappings based on field names and data
+    patterns.

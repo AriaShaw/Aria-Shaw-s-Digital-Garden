@@ -1,0 +1,57 @@
+problem_statement: Webhook integrations fail silently in production, causing missed
+  data synchronizations and business process disruptions. Without proper testing,
+  you only discover webhook failures when critical data is already lost. Manual webhook
+  testing is time-consuming and error-prone, especially with signature validation.
+value_proposition: A free webhook testing tool that simulates payloads, validates
+  endpoints, and logs responses - helping you catch integration issues before they
+  impact production without expensive API testing platforms.
+how_to_use:
+- step: Download and install
+  command: wget https://ariashaw.com/assets/downloads/webhook_tester.py && chmod
+    +x webhook_tester.py
+- step: Test webhook with default payload
+  command: python3 webhook_tester.py https://your-odoo.com/webhook/endpoint
+- step: Test with specific event type
+  command: python3 webhook_tester.py https://your-odoo.com/webhook/endpoint --payload-type
+    payment_received
+- step: Test with signature validation
+  command: python3 webhook_tester.py https://your-odoo.com/webhook/endpoint --secret
+    your_webhook_secret
+how_it_works: This Python script simulates webhook POST requests with customizable
+  payloads. It includes 3 built-in payload templates (order_created, customer_updated,
+  payment_received) with realistic data structures. The script generates HMAC-SHA256
+  signatures when a secret is provided, sends the payload with proper headers, measures
+  response time, and validates HTTP status codes. Supports custom timeouts and logs
+  full request/response details for debugging. No persistent logging or retry simulation
+  - designed for ad-hoc testing and debugging webhook endpoints during integration
+  development.
+real_world_use_cases:
+- scenario: E-commerce integration with payment gateway
+  outcome: Discovered webhook signature mismatch before production deployment. Testing
+    revealed incorrect HMAC algorithm implementation, preventing payment notification
+    failures that would have caused order fulfillment delays.
+- scenario: Multi-system inventory synchronization
+  outcome: Identified webhook timeout issues (endpoint taking 35s to respond) during
+    load testing. Implemented async processing and reduced response time to 2s, preventing
+    webhook retry storms that would have overwhelmed the system.
+troubleshooting_faq:
+- question: How do I test webhooks with custom payload structures?
+  answer: Edit the SAMPLE_PAYLOADS dictionary in the script to add your custom payload
+    templates. You can also pass JSON files using shell redirection. The script validates
+    JSON syntax before sending. For complex payload generation, consider the Master
+    Pack webhook testing suite with template builder.
+- question: My webhook endpoint requires authentication headers. How do I add them?
+  answer: The script supports custom headers but requires code modification (add
+    to default_headers dict). For production testing with multiple auth methods (OAuth,
+    Bearer tokens, API keys), the Master Pack includes pre-configured authentication
+    profiles for 50+ common APIs.
+- question: How can I simulate webhook retry logic?
+  answer: This free script sends single requests only. For retry simulation, wrap
+    it in a bash loop with delays. The Master Pack includes built-in retry logic
+    with exponential backoff, jitter, and failure analysis to test how your system
+    handles webhook delivery failures.
+- question: Can this tool test webhook security (signature validation)?
+  answer: Yes, use --secret flag to generate HMAC-SHA256 signatures. The script
+    adds X-Webhook-Signature header automatically. For testing other signature algorithms
+    (SHA1, SHA512) or custom security schemes, you will need to modify the generate_signature
+    function or use the Master Pack multi-algorithm validator.

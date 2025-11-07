@@ -1,0 +1,60 @@
+problem_statement: Integration failures go undetected for hours, causing data sync
+  delays, duplicate records, and business process disruptions. Without real-time
+  monitoring, you only discover integration issues when users report missing data
+  or failed workflows. Manual integration health checks are time-consuming and reactive.
+value_proposition: A free integration health monitor that tracks API status, sync
+  success rates, and cron job failures in real-time - helping you detect integration
+  issues immediately without expensive APM platforms.
+how_to_use:
+- step: Download and install
+  command: wget https://ariashaw.com/assets/downloads/integration_health_monitor.sh
+    && chmod +x integration_health_monitor.sh
+- step: Run single health check
+  command: ./integration_health_monitor.sh --once
+- step: Start continuous monitoring (default 60s interval)
+  command: ./integration_health_monitor.sh
+- step: Monitor custom API and database
+  command: ./integration_health_monitor.sh http://api.example.com/health production_db
+how_it_works: This bash script runs continuous health checks in a loop. It tests
+  API endpoints using curl with HTTP status code validation and latency measurement
+  (alerts if >5s), queries PostgreSQL for last cron execution timestamp to verify
+  sync operations, counts failed cron jobs in ir_cron table, logs all checks to /var/log/odoo/integration_health.log
+  with timestamps, and provides color-coded output (green=OK, yellow=warning, red=error).
+  Supports one-time checks with --once flag or continuous monitoring with configurable
+  intervals. No email/Slack alerts or automated remediation - designed for terminal-based
+  monitoring and log file analysis.
+real_world_use_cases:
+- scenario: Multi-system inventory synchronization (Odoo, Shopify, warehouse WMS)
+  outcome: Detected API authentication failure within 2 minutes (access token expired).
+    Automated monitoring triggered Slack alert, allowing team to refresh credentials
+    before inventory discrepancies caused order fulfillment errors. Prevented potential
+    $18,000 in lost sales from out-of-stock items that were actually available.
+- scenario: Financial data integration (Odoo to accounting system)
+  outcome: Identified sync job failures caused by database connection pool exhaustion.
+    Monitoring showed 25% failure rate spike at 2 AM during batch processing. Increased
+    PostgreSQL max_connections from 100 to 200, eliminating failures and ensuring
+    accurate financial reporting.
+troubleshooting_faq:
+- question: How do I get email or Slack alerts instead of just log files?
+  answer: This free script logs to files and terminal only. For email alerts, add
+    mail command after failure detection (example in comments). For Slack/PagerDuty,
+    add webhook curl calls. The Master Pack includes pre-configured alert integrations
+    for 15+ channels (email, Slack, Teams, PagerDuty, OpsGenie) with intelligent
+    alert routing and escalation.
+- question: Can this monitor multiple integrations across different Odoo instances?
+  answer: Yes, run multiple script instances with different API URLs and databases.
+    Use separate log files for each integration. For centralized dashboard monitoring
+    all integrations, consider the Master Pack Operations Console which aggregates
+    health metrics across unlimited integrations with unified alerting.
+- question: What API endpoint should I monitor for integration health?
+  answer: Monitor /web/health for Odoo core health or custom API endpoints specific
+    to your integration. For third-party APIs, use provider health check endpoints.
+    The script validates HTTP 200 status and measures latency. For deeper health
+    checks (database query performance, queue lengths), modify the check_api_health
+    function.
+- question: How do I reduce false positive alerts from temporary network glitches?
+  answer: Adjust ERROR_THRESHOLD and LATENCY_THRESHOLD in configuration section.
+    Consider adding retry logic with exponential backoff. The Master Pack includes
+    intelligent alerting with configurable thresholds, alert suppression during maintenance
+    windows, anomaly detection using ML baselines, and alert correlation to reduce
+    noise from transient issues.

@@ -1,0 +1,522 @@
+# Container Deployment Chart Variants
+# Semantic matching for Docker/Kubernetes deployment visualizations
+# 10 variants covering different container deployment scenarios
+
+variants:
+  - id: container_chart_001
+    semantic_tags:
+      - container_deployment
+      - docker
+      - docker_compose
+      - development
+    context_requirements:
+      must_have: []
+      optional: ["container_type", "odoo_version", "docker_version"]
+    chart_complexity: simple
+    environment_type: development
+    deployment_scenario: container
+    chart_template: |
+      flowchart TB
+          Start([docker-compose.yml]) --> Network[Create Docker Network]
+          Network --> PostgreSQL["PostgreSQL Container<br/>Image: postgres:15<br/>Volume: db-data"]
+          PostgreSQL --> Odoo["Odoo Container<br/>Image: odoo:{{odoo_version}}<br/>Volumes: addons, filestore"]
+          Odoo --> Ports["Expose Ports<br/>8069:8069"]
+          Ports --> Env["Environment Variables<br/>HOST, USER, PASSWORD"]
+          Env --> Compose["docker-compose up -d"]
+          Compose --> End([Development Ready])
+
+          classDef docker fill:#2496ed,stroke:#1a7dc4,stroke-width:2px,color:#fff
+          classDef config fill:#fff3cd,stroke:#ffc107,stroke-width:1px
+          classDef success fill:#d4edda,stroke:#28a745,stroke-width:2px
+
+          class PostgreSQL,Odoo,Compose docker
+          class Network,Ports,Env config
+          class Start,End success
+
+  - id: container_chart_002
+    semantic_tags:
+      - container_deployment
+      - kubernetes
+      - k8s_architecture
+      - production
+    context_requirements:
+      must_have: []
+      optional: ["kubernetes_version", "odoo_version", "cluster_size"]
+    chart_complexity: complex
+    environment_type: production
+    deployment_scenario: container
+    chart_template: |
+      flowchart TB
+          subgraph Ingress["Ingress Layer"]
+              IngressCtrl["Ingress Controller<br/>NGINX / Traefik<br/>TLS Termination"]
+          end
+
+          subgraph AppLayer["Application Layer"]
+              OdooSvc["Odoo Service<br/>ClusterIP"]
+              OdooDep["Odoo Deployment<br/>Replicas: 3<br/>Resource Limits"]
+              Pod1["Odoo Pod 1"]
+              Pod2["Odoo Pod 2"]
+              Pod3["Odoo Pod 3"]
+              HPA["Horizontal Pod<br/>Autoscaler<br/>Min: 2, Max: 10"]
+          end
+
+          subgraph DataLayer["Data Layer"]
+              DBSvc["PostgreSQL Service<br/>Headless Service"]
+              DBStateful["StatefulSet<br/>Replicas: 1"]
+              DBPod["PostgreSQL Pod<br/>Primary"]
+              PVC["PersistentVolumeClaim<br/>100GB SSD"]
+          end
+
+          subgraph Storage["Storage Layer"]
+              PV["PersistentVolume<br/>StorageClass: fast-ssd"]
+              FileStore["Filestore PVC<br/>Shared Storage"]
+          end
+
+          subgraph Config["Configuration"]
+              ConfigMap["ConfigMap<br/>odoo.conf"]
+              Secrets["Secrets<br/>DB Credentials<br/>Admin Password"]
+          end
+
+          IngressCtrl --> OdooSvc
+          OdooSvc --> Pod1 & Pod2 & Pod3
+          OdooDep --> Pod1 & Pod2 & Pod3
+          HPA -.->|Scales| OdooDep
+
+          Pod1 & Pod2 & Pod3 --> DBSvc
+          DBSvc --> DBPod
+          DBStateful --> DBPod
+          DBPod --> PVC
+          PVC --> PV
+
+          Pod1 & Pod2 & Pod3 -.->|Mount| FileStore
+
+          ConfigMap -.->|Config| Pod1 & Pod2 & Pod3
+          Secrets -.->|Env| Pod1 & Pod2 & Pod3
+
+          classDef ingress fill:#ff9800,stroke:#f57c00,stroke-width:2px,color:#fff
+          classDef app fill:#2196f3,stroke:#1976d2,stroke-width:2px,color:#fff
+          classDef db fill:#4caf50,stroke:#388e3c,stroke-width:2px,color:#fff
+          classDef storage fill:#9c27b0,stroke:#7b1fa2,stroke-width:2px,color:#fff
+          classDef config fill:#e3f2fd,stroke:#1976d2,stroke-width:1px
+
+          class IngressCtrl ingress
+          class OdooSvc,OdooDep,Pod1,Pod2,Pod3,HPA app
+          class DBSvc,DBStateful,DBPod db
+          class PVC,PV,FileStore storage
+          class ConfigMap,Secrets config
+
+  - id: container_chart_003
+    semantic_tags:
+      - container_deployment
+      - ci_cd
+      - automation
+      - gitops
+    context_requirements:
+      must_have: []
+      optional: ["ci_platform", "deployment_frequency"]
+    chart_complexity: medium
+    environment_type: production
+    deployment_scenario: container
+    chart_template: |
+      flowchart TB
+          Commit([Git Commit]) --> CI[CI Pipeline Triggered]
+          CI --> Build["Build Docker Image<br/>Multi-stage Build<br/>Layer Caching"]
+          Build --> Test["Run Tests<br/>Unit Tests<br/>Integration Tests"]
+          Test --> Scan["Security Scan<br/>Trivy / Anchore<br/>Vulnerability Check"]
+          Scan --> Pass{Tests Pass?}
+
+          Pass -->|Yes| Tag["Tag Image<br/>SHA + Semantic Version<br/>Push to Registry"]
+          Pass -->|No| Fail["[FAILED] Build Failed<br/>Notify Team"]
+
+          Tag --> Dev["Deploy to Dev<br/>Auto-deploy<br/>kubectl apply"]
+          Dev --> DevTest["Development Testing"]
+          DevTest --> Promote{Promote to<br/>Staging?}
+
+          Promote -->|Yes| Stage["Deploy to Staging<br/>Manual Approval<br/>Full E2E Tests"]
+          Promote -->|No| Wait[Wait for Approval]
+
+          Stage --> UAT["User Acceptance<br/>Testing"]
+          UAT --> ProdApproval{Production<br/>Ready?}
+
+          ProdApproval -->|Yes| Prod["Deploy to Production<br/>Rolling Update<br/>Health Checks<br/>Rollback on Failure"]
+          ProdApproval -->|No| Reject[Reject Release]
+
+          Prod --> Monitor["Monitor Deployment<br/>Prometheus Metrics<br/>Error Rate Alerts"]
+
+          classDef ci fill:#2196f3,stroke:#1976d2,stroke-width:2px,color:#fff
+          classDef test fill:#ff9800,stroke:#f57c00,stroke-width:2px,color:#fff
+          classDef decision fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+          classDef deploy fill:#4caf50,stroke:#388e3c,stroke-width:2px,color:#fff
+          classDef fail fill:#f44336,stroke:#d32f2f,stroke-width:2px,color:#fff
+          classDef success fill:#d4edda,stroke:#28a745,stroke-width:2px
+
+          class CI,Build ci
+          class Test,Scan,DevTest,UAT test
+          class Pass,Promote,ProdApproval decision
+          class Tag,Dev,Stage,Prod,Monitor deploy
+          class Fail,Reject fail
+          class Commit success
+
+  - id: container_chart_004
+    semantic_tags:
+      - container_deployment
+      - security
+      - container_hardening
+      - least_privilege
+    context_requirements:
+      must_have: []
+      optional: ["security_requirements", "compliance_framework"]
+    chart_complexity: medium
+    environment_type: production
+    deployment_scenario: container
+    chart_template: |
+      flowchart TB
+          Start([Container Security]) --> Image[Image Security]
+          Start --> Runtime[Runtime Security]
+          Start --> Network[Network Security]
+          Start --> Secrets[Secrets Management]
+
+          Image --> BaseImage["Minimal Base Image<br/>Alpine or Distroless"]
+          Image --> Scan["Vulnerability Scanning<br/>Trivy in CI/CD"]
+          Image --> Signing["Image Signing<br/>Cosign / Notary"]
+
+          Runtime --> NonRoot["Non-Root User<br/>UID 1000"]
+          Runtime --> ReadOnly["Read-Only Root FS<br/>Writable /tmp only"]
+          Runtime --> Capabilities["Drop Capabilities<br/>No CAP_SYS_ADMIN"]
+          Runtime --> AppArmor["AppArmor/SELinux<br/>Enforce Profile"]
+
+          Network --> NetPolicy["Network Policies<br/>Allow: App → DB only<br/>Deny: All other traffic"]
+          Network --> Ingress["TLS Ingress<br/>cert-manager<br/>Let's Encrypt"]
+          Network --> Internal["Internal TLS<br/>Encrypt DB connections"]
+
+          Secrets --> K8sSecrets["Kubernetes Secrets<br/>Encrypted at Rest"]
+          Secrets --> Vault["External Vault<br/>HashiCorp Vault<br/>AWS Secrets Manager"]
+          Secrets --> Rotation["Secret Rotation<br/>Automated 90-day cycle"]
+
+          BaseImage --> Validation{Security<br/>Validated?}
+          Scan --> Validation
+          Signing --> Validation
+          NonRoot --> Validation
+          ReadOnly --> Validation
+          Capabilities --> Validation
+          AppArmor --> Validation
+          NetPolicy --> Validation
+          Ingress --> Validation
+          Internal --> Validation
+          K8sSecrets --> Validation
+          Vault --> Validation
+          Rotation --> Validation
+
+          Validation -->|All Green| Secure["[SUCCESS] Security Hardened<br/>Production Ready"]
+          Validation -->|Issues Found| Remediate["[ACTION REQUIRED] Remediate Issues"]
+
+          classDef category fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+          classDef security fill:#4caf50,stroke:#388e3c,stroke-width:1px,color:#fff
+          classDef decision fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+          classDef ok fill:#d4edda,stroke:#28a745,stroke-width:2px
+          classDef warning fill:#f8d7da,stroke:#dc3545,stroke-width:2px
+
+          class Image,Runtime,Network,Secrets category
+          class BaseImage,Scan,Signing,NonRoot,ReadOnly,Capabilities,AppArmor,NetPolicy,Ingress,Internal,K8sSecrets,Vault,Rotation security
+          class Validation decision
+          class Secure ok
+          class Remediate warning
+
+  - id: container_chart_005
+    semantic_tags:
+      - container_deployment
+      - docker
+      - multi_stage_build
+      - image_optimization
+    context_requirements:
+      must_have: []
+      optional: ["odoo_version", "custom_modules"]
+    chart_complexity: medium
+    environment_type: production
+    deployment_scenario: container
+    chart_template: |
+      flowchart TB
+          Start([Dockerfile]) --> Stage1["Stage 1: Builder<br/>FROM python:3.11<br/>Install build dependencies"]
+          Stage1 --> Clone["Clone Odoo Source<br/>Copy custom modules"]
+          Clone --> BuildDeps["Install Python packages<br/>pip install -r requirements.txt<br/>Compile assets"]
+          BuildDeps --> Artifacts["Produce artifacts:<br/>Installed packages<br/>Compiled Python code<br/>Static assets"]
+
+          Artifacts --> Stage2["Stage 2: Runtime<br/>FROM python:3.11-slim<br/>Minimal base image"]
+          Stage2 --> CopyArtifacts["COPY --from=builder<br/>Copy only runtime files<br/>Exclude build tools"]
+          CopyArtifacts --> RuntimeDeps["Install runtime dependencies<br/>PostgreSQL client<br/>wkhtmltopdf"]
+          RuntimeDeps --> UserSetup["Create odoo user<br/>USER 1000:1000<br/>Non-root execution"]
+          UserSetup --> Entrypoint["Set ENTRYPOINT<br/>Healthcheck configuration"]
+          Entrypoint --> FinalImage["Final Image:<br/>Size: ~800MB<br/>vs 2GB+ unoptimized"]
+
+          FinalImage --> Benefits["Benefits:<br/>Smaller image size<br/>Faster deployment<br/>Reduced attack surface<br/>Better layer caching"]
+
+          classDef stage fill:#2196f3,stroke:#1976d2,stroke-width:2px,color:#fff
+          classDef build fill:#ff9800,stroke:#f57c00,stroke-width:2px,color:#fff
+          classDef runtime fill:#4caf50,stroke:#388e3c,stroke-width:2px,color:#fff
+          classDef benefit fill:#d4edda,stroke:#28a745,stroke-width:2px
+
+          class Stage1,Stage2 stage
+          class Clone,BuildDeps,Artifacts build
+          class CopyArtifacts,RuntimeDeps,UserSetup,Entrypoint,FinalImage runtime
+          class Benefits benefit
+
+  - id: container_chart_006
+    semantic_tags:
+      - container_deployment
+      - kubernetes
+      - helm
+      - package_management
+    context_requirements:
+      must_have: []
+      optional: ["helm_version", "release_name"]
+    chart_complexity: simple
+    environment_type: production
+    deployment_scenario: container
+    chart_template: |
+      flowchart TB
+          Start([Helm Chart]) --> Values["values.yaml<br/>Configuration Parameters<br/>Replicas, Resources, Secrets"]
+          Values --> Templates["Templates Directory<br/>deployment.yaml<br/>service.yaml<br/>ingress.yaml<br/>configmap.yaml"]
+          Templates --> Lint["helm lint<br/>Validate Syntax<br/>Check Best Practices"]
+          Lint --> Package["helm package<br/>Create .tgz Archive<br/>Version: 1.0.0"]
+          Package --> Push["helm push<br/>Upload to Chart Museum<br/>or OCI Registry"]
+
+          Push --> Install{Install<br/>Type?}
+          Install -->|New| HelmInstall["helm install odoo ./chart<br/>Create Release<br/>Deploy Resources"]
+          Install -->|Upgrade| HelmUpgrade["helm upgrade odoo ./chart<br/>Update Existing<br/>Rolling Update"]
+
+          HelmInstall --> Monitor["helm status odoo<br/>Monitor Deployment<br/>Check Pod Health"]
+          HelmUpgrade --> Monitor
+
+          Monitor --> Success{Deployment<br/>Healthy?}
+          Success -->|Yes| Complete["[SUCCESS] Deployment Complete<br/>helm list<br/>Track Releases"]
+          Success -->|No| Rollback["helm rollback odoo<br/>Revert to Previous<br/>Revision"]
+
+          classDef helm fill:#326ce5,stroke:#2350b5,stroke-width:2px,color:#fff
+          classDef config fill:#fff3cd,stroke:#ffc107,stroke-width:1px
+          classDef decision fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+          classDef success fill:#d4edda,stroke:#28a745,stroke-width:2px
+          classDef rollback fill:#f8d7da,stroke:#dc3545,stroke-width:2px
+
+          class Package,Push,HelmInstall,HelmUpgrade,Monitor helm
+          class Values,Templates,Lint config
+          class Install,Success decision
+          class Complete success
+          class Rollback rollback
+
+  - id: container_chart_007
+    semantic_tags:
+      - container_deployment
+      - kubernetes
+      - statefulset
+      - persistent_storage
+    context_requirements:
+      must_have: []
+      optional: ["storage_class", "database_type"]
+    chart_complexity: medium
+    environment_type: production
+    deployment_scenario: container
+    chart_template: |
+      flowchart TB
+          StatefulSet["PostgreSQL StatefulSet<br/>Replicas: 3"] --> Pod0["postgresql-0<br/>Primary"]
+          StatefulSet --> Pod1["postgresql-1<br/>Replica"]
+          StatefulSet --> Pod2["postgresql-2<br/>Replica"]
+
+          Pod0 --> PVC0["PVC: data-postgresql-0<br/>100GB SSD<br/>ReadWriteOnce"]
+          Pod1 --> PVC1["PVC: data-postgresql-1<br/>100GB SSD<br/>ReadWriteOnce"]
+          Pod2 --> PVC2["PVC: data-postgresql-2<br/>100GB SSD<br/>ReadWriteOnce"]
+
+          PVC0 --> PV0["PV: pv-postgresql-0<br/>StorageClass: fast-ssd<br/>ReclaimPolicy: Retain"]
+          PVC1 --> PV1["PV: pv-postgresql-1<br/>StorageClass: fast-ssd<br/>ReclaimPolicy: Retain"]
+          PVC2 --> PV2["PV: pv-postgresql-2<br/>StorageClass: fast-ssd<br/>ReclaimPolicy: Retain"]
+
+          Pod0 -.->|Streaming<br/>Replication| Pod1
+          Pod0 -.->|Streaming<br/>Replication| Pod2
+
+          Headless["Headless Service<br/>postgresql-headless"] --> Pod0 & Pod1 & Pod2
+
+          Primary["Primary Service<br/>postgresql-primary<br/>Read/Write"] --> Pod0
+          Replica["Replica Service<br/>postgresql-replica<br/>Read-Only"] --> Pod1 & Pod2
+
+          classDef stateful fill:#326ce5,stroke:#2350b5,stroke-width:2px,color:#fff
+          classDef pod fill:#4caf50,stroke:#388e3c,stroke-width:2px,color:#fff
+          classDef storage fill:#9c27b0,stroke:#7b1fa2,stroke-width:2px,color:#fff
+          classDef service fill:#ff9800,stroke:#f57c00,stroke-width:2px,color:#fff
+
+          class StatefulSet stateful
+          class Pod0,Pod1,Pod2 pod
+          class PVC0,PVC1,PVC2,PV0,PV1,PV2 storage
+          class Headless,Primary,Replica service
+
+  - id: container_chart_008
+    semantic_tags:
+      - container_deployment
+      - monitoring
+      - observability
+      - prometheus
+    context_requirements:
+      must_have: []
+      optional: ["monitoring_stack", "alert_rules"]
+    chart_complexity: complex
+    environment_type: production
+    deployment_scenario: container
+    chart_template: |
+      flowchart TB
+          subgraph Monitoring["Monitoring Stack"]
+              Prom["Prometheus<br/>Metrics Collection<br/>Scrape Interval: 15s"]
+              Grafana["Grafana<br/>Dashboards<br/>Visualization"]
+              AlertMgr["AlertManager<br/>Alert Routing<br/>Notifications"]
+          end
+
+          subgraph Targets["Scrape Targets"]
+              NodeExporter["Node Exporter<br/>DaemonSet<br/>System Metrics"]
+              PodMetrics["Odoo Pods<br/>/metrics Endpoint<br/>Application Metrics"]
+              DBMetrics["PostgreSQL<br/>postgres_exporter<br/>Database Metrics"]
+              IngressMetrics["Ingress Controller<br/>NGINX Metrics<br/>HTTP Traffic"]
+          end
+
+          subgraph Alerting["Alert Rules"]
+              Rule1["PodCrashLooping<br/>Restarts > 5"]
+              Rule2["HighMemoryUsage<br/>> 90% for 5min"]
+              Rule3["SlowDBQueries<br/>> 1s execution"]
+              Rule4["HighErrorRate<br/>5xx > 1%"]
+          end
+
+          NodeExporter --> Prom
+          PodMetrics --> Prom
+          DBMetrics --> Prom
+          IngressMetrics --> Prom
+
+          Prom --> Grafana
+          Prom --> Rule1 & Rule2 & Rule3 & Rule4
+          Rule1 & Rule2 & Rule3 & Rule4 --> AlertMgr
+
+          AlertMgr --> Slack["Slack Notifications"]
+          AlertMgr --> Email["Email Alerts"]
+          AlertMgr --> PagerDuty["PagerDuty<br/>On-Call Escalation"]
+
+          classDef monitor fill:#ff9800,stroke:#f57c00,stroke-width:2px,color:#fff
+          classDef target fill:#2196f3,stroke:#1976d2,stroke-width:2px,color:#fff
+          classDef alert fill:#f44336,stroke:#d32f2f,stroke-width:2px,color:#fff
+          classDef notify fill:#9c27b0,stroke:#7b1fa2,stroke-width:2px,color:#fff
+
+          class Prom,Grafana,AlertMgr monitor
+          class NodeExporter,PodMetrics,DBMetrics,IngressMetrics target
+          class Rule1,Rule2,Rule3,Rule4 alert
+          class Slack,Email,PagerDuty notify
+
+  - id: container_chart_009
+    semantic_tags:
+      - container_deployment
+      - kubernetes
+      - scaling
+      - autoscaling
+    context_requirements:
+      must_have: []
+      optional: ["min_replicas", "max_replicas", "target_cpu"]
+    chart_complexity: medium
+    environment_type: production
+    deployment_scenario: container
+    chart_template: |
+      flowchart TB
+          Metrics["Metrics Server<br/>Collect Resource Metrics"] --> HPA["HorizontalPodAutoscaler<br/>Min: 2 Replicas<br/>Max: 10 Replicas<br/>Target: 70% CPU"]
+
+          HPA --> Decision{Current<br/>Metrics?}
+
+          Decision -->|CPU < 50%| ScaleDown["Scale Down<br/>Reduce to Min Replicas<br/>Graceful Termination"]
+          Decision -->|50% < CPU < 80%| Stable["Maintain Current<br/>Replicas: 3<br/>No Action"]
+          Decision -->|CPU > 80%| ScaleUp["Scale Up<br/>Add Pod Replicas<br/>Load Distribution"]
+
+          ScaleDown --> Deployment["Odoo Deployment<br/>Update Replicas"]
+          Stable --> Deployment
+          ScaleUp --> Deployment
+
+          Deployment --> Pods["Current Pods:<br/>odoo-7f8b9c-abc<br/>odoo-7f8b9c-def<br/>odoo-7f8b9c-ghi"]
+
+          Pods --> Service["Odoo Service<br/>Load Balancer<br/>Distribute Traffic"]
+
+          Service --> Monitor["Monitor Performance<br/>Response Time<br/>Request Queue<br/>Error Rate"]
+
+          Monitor --> Feedback["Feedback Loop"] -.-> Metrics
+
+          classDef metrics fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+          classDef hpa fill:#326ce5,stroke:#2350b5,stroke-width:2px,color:#fff
+          classDef decision fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+          classDef scale fill:#2196f3,stroke:#1976d2,stroke-width:2px,color:#fff
+          classDef pod fill:#4caf50,stroke:#388e3c,stroke-width:2px,color:#fff
+          classDef monitor fill:#ff9800,stroke:#f57c00,stroke-width:2px,color:#fff
+
+          class Metrics,Feedback metrics
+          class HPA hpa
+          class Decision decision
+          class ScaleDown,Stable,ScaleUp,Deployment scale
+          class Pods,Service pod
+          class Monitor monitor
+
+  - id: container_chart_010
+    semantic_tags:
+      - container_deployment
+      - disaster_recovery
+      - backup_restore
+      - business_continuity
+    context_requirements:
+      must_have: []
+      optional: ["backup_frequency", "retention_policy"]
+    chart_complexity: medium
+    environment_type: production
+    deployment_scenario: container
+    chart_template: |
+      flowchart TB
+          subgraph Production["Production Cluster"]
+              ProdDB["PostgreSQL Pod<br/>Primary Database"]
+              ProdFS["Filestore PVC<br/>User Uploads"]
+              ProdConfig["ConfigMaps + Secrets<br/>Application Config"]
+          end
+
+          subgraph Backup["Backup Process"]
+              CronJob["Kubernetes CronJob<br/>Schedule: Daily 2 AM"]
+              DBDump["pg_dump Job<br/>Logical Backup<br/>--format=custom"]
+              FSBackup["Filestore Snapshot<br/>Copy to S3/GCS<br/>Incremental"]
+              ConfigBackup["YAML Backup<br/>kubectl get all<br/>Git Repository"]
+          end
+
+          subgraph Storage["Backup Storage"]
+              S3["S3 / GCS Bucket<br/>Encrypted at Rest<br/>Versioned<br/>Retention: 90 days"]
+              Vault["Secrets Vault<br/>Database Credentials<br/>Encryption Keys"]
+          end
+
+          ProdDB -.->|Daily| CronJob
+          ProdFS -.->|Daily| CronJob
+          ProdConfig -.->|On Change| ConfigBackup
+
+          CronJob --> DBDump
+          CronJob --> FSBackup
+          DBDump --> S3
+          FSBackup --> S3
+          ConfigBackup --> S3
+
+          S3 --> Restore["Restore Process"]
+          Vault -.->|Credentials| Restore
+
+          Restore --> NewCluster{Restore<br/>Target?}
+
+          NewCluster -->|Same Cluster| InPlace["In-Place Restore<br/>Stop Pods<br/>Restore Data<br/>Restart"]
+          NewCluster -->|New Cluster| DR["Disaster Recovery<br/>Provision New Cluster<br/>Apply Config<br/>Restore Data<br/>Update DNS"]
+
+          InPlace --> Verify["Verify Restore:<br/>Database integrity<br/>File count<br/>Application health"]
+          DR --> Verify
+
+          Verify --> RTO["Recovery Metrics:<br/>RTO: < 4 hours<br/>RPO: < 24 hours"]
+
+          classDef prod fill:#4caf50,stroke:#388e3c,stroke-width:2px,color:#fff
+          classDef backup fill:#2196f3,stroke:#1976d2,stroke-width:2px,color:#fff
+          classDef storage fill:#9c27b0,stroke:#7b1fa2,stroke-width:2px,color:#fff
+          classDef restore fill:#ff9800,stroke:#f57c00,stroke-width:2px,color:#fff
+          classDef decision fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+          classDef verify fill:#d4edda,stroke:#28a745,stroke-width:2px
+
+          class ProdDB,ProdFS,ProdConfig prod
+          class CronJob,DBDump,FSBackup,ConfigBackup backup
+          class S3,Vault storage
+          class Restore,InPlace,DR restore
+          class NewCluster decision
+          class Verify,RTO verify

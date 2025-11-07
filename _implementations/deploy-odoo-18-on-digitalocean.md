@@ -1,3 +1,3 @@
 ---
-data_key: deploy-odoo-18-on-digitalocean  
+data_key: deploy-odoo-18-on-digitalocean
 ---

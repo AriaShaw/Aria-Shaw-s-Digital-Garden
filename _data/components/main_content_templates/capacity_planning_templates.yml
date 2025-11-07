@@ -1,0 +1,76 @@
+# ============================================================================
+# CAPACITY PLANNING GUIDE MAIN CONTENT TEMPLATE
+# ============================================================================
+# Description: Generate capacity planning main content for Odoo server sizing
+# Template ID: capacity_planning
+# Version: 1.0
+# ============================================================================
+
+template_info:
+  template_id: capacity_planning
+  description: "Odoo capacity planning and hardware sizing guide main content"
+  version: "1.0"
+  variables_required:
+    - odoo_version
+    - user_count
+    - deployment_scale
+
+# Main template content
+template: |
+  Sizing an Odoo {odoo_version} server for {user_count} concurrent users requires understanding the relationship between user activity patterns, database workload, and hardware resources. {scale_context}
+
+  ## Hardware Specifications and Resource Allocation
+
+  For {user_count} users running Odoo {odoo_version}, the recommended hardware configuration includes {recommended_cpu_cores} CPU cores, {recommended_ram_gb}GB RAM, and {recommended_disk_gb}GB disk storage. These specifications account for PostgreSQL database operations (40% of resource consumption), Odoo application workers (35%), and system overhead (25%). The minimum viable configuration uses {minimum_cpu_cores} cores and {minimum_ram_gb}GB RAM, but this leaves no headroom for traffic spikes or module-intensive operations like MRP calculations or inventory revaluations.
+
+  {architecture_recommendations}
+
+  ## Database Connection Pooling and Worker Configuration
+
+  The database connection pool should maintain {database_connection_pool} connections to handle concurrent user requests without connection exhaustion. Odoo worker processes—set to {worker_processes}—determine simultaneous request handling capacity. Each worker consumes approximately {worker_memory_mb}MB RAM, so total worker memory footprint reaches {total_worker_memory_gb}GB, leaving {remaining_ram_gb}GB for PostgreSQL caching and operating system operations.
+
+  ## Performance Parameters and Scaling Triggers
+
+  {performance_context}
+
+  Monitor server performance metrics to detect when hardware becomes the bottleneck: CPU utilization consistently above 70% during business hours indicates insufficient processing power, RAM utilization above 85% causes disk swap and performance degradation, and database query times exceeding 500ms suggest either inefficient queries or inadequate PostgreSQL memory allocation.
+
+  ## Architecture Patterns for Different Scales
+
+  {deployment_architecture}
+
+  ## Vertical vs. Horizontal Scaling Strategy
+
+  {scaling_strategy}
+
+  ## Cost-Performance Optimization
+
+  {cost_optimization}
+
+  Cloud providers offer various instance types optimized for different workloads. For Odoo deployments supporting {user_count} users, compute-optimized instances provide better performance per dollar than general-purpose instances because Odoo's worker model benefits from higher CPU clock speeds rather than core count alone. Monitor actual resource utilization during peak business hours—overprovisioning costs 30-50% more than right-sized infrastructure, while underprovisioning causes user frustration and productivity loss.
+
+# =============================================================================
+# NOTE: Variable mappings and computed variables have been REMOVED
+# =============================================================================
+#
+# All variables for capacity_planning template are now provided by the
+# generator (scripts/generate_tier2_pseo.py) in the extract_capacity_planning_variables() function.
+#
+# This simplification was made because:
+# 1. The generator already calculates all hardware specifications
+# 2. The generator provides architecture-specific context text
+# 3. The generator handles smart keyword classification
+# 4. Having variable definitions in two places caused maintenance issues
+#
+# Variables provided by generator:
+# - user_count, deployment_scale (small/medium/large/enterprise)
+# - recommended_cpu_cores, recommended_ram_gb, recommended_disk_gb
+# - worker_processes, database_connection_pool
+# - architecture_type, load_balancer_required, database_replication
+# - deployment_architecture, scaling_strategy, cost_optimization
+# - architecture_recommendations, performance_context, scale_context
+# - worker_memory_mb, total_worker_memory_gb, remaining_ram_gb
+# - minimum_cpu_cores, minimum_ram_gb, minimum_disk_gb
+#
+# Template simply references these variables with {{variable_name}} syntax.
+# =============================================================================

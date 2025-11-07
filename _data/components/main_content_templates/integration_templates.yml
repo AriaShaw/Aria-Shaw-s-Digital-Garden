@@ -1,0 +1,160 @@
+template_info:
+  template_id: integration
+  description: External service integration guide main content
+  version: '1.0'
+  variables_required:
+  - service_name
+  - odoo_version
+template: 'Integrating {service_name} with Odoo {odoo_version} transforms isolated business systems into a unified operational
+  platform where data flows automatically between accounting, inventory, sales, and external services without manual CSV exports
+  or duplicate data entry. The integration eliminates the error-prone workflow of downloading {service_name} transactions,
+  reformatting spreadsheets, and manually entering data into Odoo—a process that consumes staff hours and introduces transcription
+  errors that corrupt financial records.
+
+
+  The technical implementation requires API credentials from {service_name}, configuration of Odoo''s external API module,
+  and scheduled synchronization tasks that run automatically. {integration_specific_setup}
+
+
+  ## Integration Architecture and Data Flow
+
+
+  {service_name} integration operates through {integration_method}. {method_specific_details}
+
+
+  The data synchronization follows a specific sequence because dependencies exist between record types. Customer records must
+  sync before invoices that reference those customers. Products must exist before inventory adjustments. Payment methods must
+  configure before payment transactions. Attempting to sync in the wrong order generates foreign key constraint errors and
+  partial data imports that require manual cleanup.
+
+
+  Real-time synchronization sounds appealing but creates operational problems. If {service_name} experiences API downtime
+  or rate limiting, real-time sync breaks your Odoo workflows—users cannot create invoices because payment methods won''t
+  sync, cannot fulfill orders because inventory levels won''t update. Batch synchronization every 15-30 minutes provides resilience
+  against temporary service disruptions and reduces API call volume that triggers rate limits.
+
+
+  ## Step-by-Step Integration Configuration
+
+
+  Begin with API credential generation in {service_name}''s admin panel. {credential_generation_steps}
+
+
+  Install the {service_name} connector module from Odoo''s app store or custom repository. The module installs dependencies,
+  creates database tables for sync state tracking, and adds configuration menu items under Settings > Integrations. Navigate
+  to the newly-added {service_name} section and enter your API credentials from the previous step.
+
+
+  Configure field mapping between {service_name}''s data schema and Odoo''s models. {field_mapping_specifics}
+
+
+  The synchronization scheduler requires careful configuration. Set the first sync to manual trigger—don''t enable automatic
+  scheduling until you validate data mapping with a small dataset. Click "Sync Now" and monitor the log output for errors.
+  Common issues include missing required fields, data type mismatches (attempting to store text in numeric fields), and character
+  encoding problems with customer names containing special characters.
+
+
+  ## Data Mapping and Transformation
+
+
+  {service_name}''s data structure doesn''t directly map to Odoo''s models because each system evolved with different business
+  logic assumptions. {specific_mapping_challenges}
+
+
+  Handle currency conversion explicitly if {service_name} stores amounts in different currencies than your Odoo base currency.
+  The connector module should apply exchange rates at sync time using Odoo''s currency rate tables, not store raw amounts
+  and convert during reporting—this causes discrepancies when exchange rates change after transaction sync.
+
+
+  ## Error Handling and Resilience
+
+
+  Production integrations fail regularly—network timeouts, API rate limits, service maintenance windows, SSL certificate expirations.
+  The integration must handle failures gracefully without corrupting data or requiring manual intervention for every hiccup.
+
+
+  Configure retry logic with exponential backoff. When a sync fails, wait 30 seconds before retrying. If it fails again, wait
+  2 minutes. Then 5 minutes. Cap maximum retry interval at 30 minutes. After 3 consecutive failures, send email alerts to
+  administrators rather than continuing silent retries that might indicate configuration problems requiring human diagnosis.
+
+
+  Implement transaction rollback for batch operations. If syncing 100 invoices and invoice 42 fails due to a missing customer
+  reference, the connector should roll back invoices 1-41 rather than leaving partial data. Partial syncs create reconciliation
+  nightmares—your accounting team discovers missing transactions weeks later during month-end close.
+
+
+  Log all sync operations with timestamps, record counts, and success/failure status. Store logs for 90 days minimum. When
+  users report missing data, these logs enable you to determine whether the record never existed in {service_name}, failed
+  to sync due to errors, or synced successfully but was subsequently deleted in Odoo.
+
+
+  ## Testing and Validation
+
+
+  Test integration in a staging environment with production data clones, not sanitized sample data. Sample data lacks the
+  edge cases that break integrations—customers without phone numbers, products with null descriptions, transactions with voided
+  status that the connector doesn''t handle.
+
+
+  Create validation reports comparing {service_name} record counts to Odoo record counts. Customer count should match exactly.
+  Invoice totals should reconcile within your currency''s smallest denomination (1 cent for USD). Inventory balances should
+  match for each product. Run these reports weekly after go-live to catch sync drift before it compounds.
+
+
+  ## Security Considerations
+
+
+  API credentials provide programmatic access to both {service_name} and Odoo data. {security_specific_warnings}
+
+
+  Implement IP whitelisting if both services support it. Configure {service_name} to accept API calls only from your Odoo
+  server''s IP address, and configure Odoo''s firewall to accept API callbacks only from {service_name}''s documented IP ranges.
+  This prevents credential theft from enabling remote access—stolen credentials become useless without IP match.
+
+
+  Rotate API credentials quarterly and after any staff departure where that employee had access to integration configuration.
+  Credential rotation takes 15 minutes but prevents former employees or compromised credentials from enabling unauthorized
+  data access months after security incidents.
+
+
+  ## Monitoring and Maintenance
+
+
+  {service_name} and Odoo both release updates that can break integrations through API changes, deprecated endpoints, or modified
+  authentication requirements. Subscribe to both platforms'' developer change logs and test updates in staging before applying
+  to production.
+
+
+  Monitor sync duration trends. If weekly customer sync takes 5 minutes initially but grows to 20 minutes after 6 months,
+  investigate whether the connector queries the entire dataset each sync rather than filtering for changed records. Inefficient
+  sync logic compounds exponentially as data volume grows.
+
+
+  Configure alerting for sync failures, but also for suspicious success patterns. If customer sync normally processes 20-50
+  updates daily but suddenly shows zero changes for three consecutive days, investigate whether the change detection logic
+  broke rather than assuming no customers were modified.
+
+
+  ## Common Integration Problems and Solutions
+
+
+  **Duplicate record creation**: The connector creates new Odoo customers for every {service_name} transaction instead of
+  matching existing customers. This happens when matching logic uses email addresses but {service_name} stores emails with
+  different capitalization or extra spaces. Implement case-insensitive, whitespace-trimmed matching.
+
+
+  **Currency amount discrepancies**: Reports show $1,000.00 in {service_name} but $1,000.03 in Odoo. This occurs when the
+  connector stores amounts as floating-point numbers that lose precision during arithmetic operations. Use fixed-point decimal
+  types (Python''s Decimal class, PostgreSQL''s NUMERIC type) for financial calculations.
+
+
+  **Missing historical data after go-live**: Initial sync only imports the last 90 days of {service_name} data, but your accounting
+  team needs 2-3 years for comparison reporting. Plan initial sync timeline to import sufficient historical data, acknowledging
+  this may take hours or days for large datasets. Run initial import during weekend maintenance windows.
+
+
+  **API rate limit exhaustion**: The connector hits {service_name}''s API rate limit (typically 100-500 requests per minute)
+  during bulk sync, causing failures and incomplete data imports. Implement request throttling with configurable delays between
+  API calls. Better to complete sync slowly than fail repeatedly and require manual intervention.
+
+  '

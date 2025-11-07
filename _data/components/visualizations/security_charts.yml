@@ -1,0 +1,217 @@
+# Security Chart Variants
+# Semantic matching for security hardening workflow visualizations
+# 5 variants covering different security scenarios
+
+variants:
+  - id: security_chart_001
+    semantic_tags:
+      - security
+      - ssl_tls
+      - https
+      - encryption
+    context_requirements:
+      must_have: ["odoo_version"]
+      optional: ["certificate_type", "domain"]
+    chart_complexity: simple
+    security_type: ssl_tls
+    chart_template: |
+      flowchart TB
+          Start([HTTP Server]) --> Cert[Obtain SSL Certificate]
+          Cert --> Nginx[Configure Nginx SSL]
+          Nginx --> Redirect[Setup HTTP to HTTPS Redirect]
+          Redirect --> HSTS[Enable HSTS Headers]
+          HSTS --> Test[Test SSL Configuration]
+          Test --> Grade[Verify SSL Grade A+]
+          Grade --> End([HTTPS Secured])
+
+          classDef ssl fill:#4caf50,stroke:#388e3c,stroke-width:2px,color:#fff
+          classDef config fill:#2196f3,stroke:#1976d2,stroke-width:2px,color:#fff
+          classDef success fill:#d4edda,stroke:#28a745,stroke-width:2px
+
+          class Cert,Nginx,Redirect ssl
+          class HSTS,Test,Grade config
+          class Start,End success
+    supplementary_charts:
+      - id: security_chart_001_cert
+        title: "Phase 1: Certificate Acquisition"
+        placement_hint: "after_prerequisites"
+        chart_template: |
+          flowchart TB
+              Start([Certificate Setup]) --> Choose[Choose Certificate Type]
+              Choose --> LE{Let's Encrypt?}
+              LE -->|Yes| Auto[Automated Renewal Setup]
+              LE -->|No| Purchase[Purchase Commercial Cert]
+              Auto --> Install[Install Certificate]
+              Purchase --> Install
+              Install --> Verify[Verify Certificate Chain]
+              Verify --> End([Certificate Ready])
+
+              classDef decision fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+              classDef cert fill:#4caf50,stroke:#388e3c,stroke-width:2px,color:#fff
+              classDef success fill:#d4edda,stroke:#28a745,stroke-width:2px
+
+              class LE decision
+              class Auto,Purchase,Install,Verify cert
+              class Start,End success
+
+      - id: security_chart_001_headers
+        title: "Phase 3: Security Headers Configuration"
+        placement_hint: "after_steps"
+        chart_template: |
+          flowchart TB
+              Start([Header Security]) --> HSTS[Configure HSTS]
+              HSTS --> CSP[Setup Content Security Policy]
+              CSP --> XFrame[X-Frame-Options Header]
+              XFrame --> XContent[X-Content-Type-Options]
+              XContent --> Referrer[Referrer-Policy]
+              Referrer --> Test[Test Security Headers]
+              Test --> End([Headers Hardened])
+
+              classDef headers fill:#f44336,stroke:#d32f2f,stroke-width:2px,color:#fff
+              classDef test fill:#2196f3,stroke:#1976d2,stroke-width:2px,color:#fff
+              classDef success fill:#d4edda,stroke:#28a745,stroke-width:2px
+
+              class HSTS,CSP,XFrame,XContent,Referrer headers
+              class Test test
+              class Start,End success
+
+  - id: security_chart_002
+    semantic_tags:
+      - security
+      - firewall
+      - network_security
+      - hardening
+    context_requirements:
+      must_have: ["server_type"]
+      optional: ["firewall_type"]
+    chart_complexity: medium
+    security_type: firewall
+    chart_template: |
+      flowchart TB
+          Start([Bare Server]) --> UFW[Install UFW/iptables]
+          UFW --> Default[Deny All Incoming]
+          Default --> SSH[Allow SSH (Port 22)]
+          SSH --> HTTP[Allow HTTP/HTTPS (80/443)]
+          HTTP --> DB[Block Direct DB Access]
+          DB --> Fail2ban[Install Fail2ban]
+          Fail2ban --> Monitor[Setup Log Monitoring]
+          Monitor --> End([Firewall Hardened])
+
+          classDef firewall fill:#f44336,stroke:#d32f2f,stroke-width:2px,color:#fff
+          classDef monitoring fill:#ff9800,stroke:#f57c00,stroke-width:2px,color:#fff
+          classDef success fill:#d4edda,stroke:#28a745,stroke-width:2px
+
+          class UFW,Default,SSH,HTTP,DB firewall
+          class Fail2ban,Monitor monitoring
+          class Start,End success
+    supplementary_charts:
+      - id: security_chart_002_rules
+        title: "Phase 2: Advanced Firewall Rules"
+        placement_hint: "after_steps"
+        chart_template: |
+          flowchart TB
+              Start([Rule Configuration]) --> Rate[Rate Limiting Rules]
+              Rate --> GeoIP[GeoIP Blocking]
+              GeoIP --> Whitelist[IP Whitelist for Admin]
+              Whitelist --> DDoS[DDoS Protection Rules]
+              DDoS --> Log[Logging Configuration]
+              Log --> End([Rules Active])
+
+              classDef rules fill:#f44336,stroke:#d32f2f,stroke-width:2px,color:#fff
+              classDef protection fill:#ff9800,stroke:#f57c00,stroke-width:2px,color:#fff
+              classDef success fill:#d4edda,stroke:#28a745,stroke-width:2px
+
+              class Rate,GeoIP,Whitelist rules
+              class DDoS,Log protection
+              class Start,End success
+
+  - id: security_chart_003
+    semantic_tags:
+      - security
+      - authentication
+      - access_control
+      - 2fa
+    context_requirements:
+      must_have: ["auth_method"]
+      optional: ["sso_provider"]
+    chart_complexity: medium
+    security_type: authentication
+    chart_template: |
+      flowchart TB
+          Start([Basic Auth]) --> Password[Enforce Strong Passwords]
+          Password --> MFA[Enable Multi-Factor Auth]
+          MFA --> SSO[Configure SSO Integration]
+          SSO --> Session[Session Timeout Settings]
+          Session --> Audit[Enable Login Audit]
+          Audit --> Lockout[Account Lockout Policy]
+          Lockout --> End([Auth Hardened])
+
+          classDef auth fill:#2196f3,stroke:#1976d2,stroke-width:2px,color:#fff
+          classDef policy fill:#ff9800,stroke:#f57c00,stroke-width:2px,color:#fff
+          classDef success fill:#d4edda,stroke:#28a745,stroke-width:2px
+
+          class Password,MFA,SSO auth
+          class Session,Audit,Lockout policy
+          class Start,End success
+
+  - id: security_chart_004
+    semantic_tags:
+      - security
+      - audit
+      - compliance
+      - monitoring
+    context_requirements:
+      must_have: ["compliance_standard"]
+      optional: ["audit_frequency"]
+    chart_complexity: complex
+    security_type: compliance
+    chart_template: |
+      flowchart TB
+          Start([Compliance Requirements]) --> Standards[Identify Applicable Standards]
+          Standards --> Gap[Gap Analysis]
+          Gap --> Logging[Enable Comprehensive Logging]
+          Logging --> Access[Access Control Review]
+          Access --> Encryption[Data Encryption Audit]
+          Encryption --> Backup[Backup Security Check]
+          Backup --> Report[Generate Compliance Report]
+          Report --> Remediate[Remediate Findings]
+          Remediate --> End([Compliance Achieved])
+
+          classDef compliance fill:#9c27b0,stroke:#7b1fa2,stroke-width:2px,color:#fff
+          classDef audit fill:#2196f3,stroke:#1976d2,stroke-width:2px,color:#fff
+          classDef success fill:#d4edda,stroke:#28a745,stroke-width:2px
+
+          class Standards,Gap,Report,Remediate compliance
+          class Logging,Access,Encryption,Backup audit
+          class Start,End success
+
+  - id: security_chart_005
+    semantic_tags:
+      - security
+      - penetration_testing
+      - vulnerability_scan
+      - security_audit
+    context_requirements:
+      must_have: ["scan_type"]
+      optional: ["tool_name"]
+    chart_complexity: complex
+    security_type: pentest
+    chart_template: |
+      flowchart TB
+          Start([Security Assessment]) --> Recon[Reconnaissance]
+          Recon --> Scan[Vulnerability Scanning]
+          Scan --> Manual[Manual Testing]
+          Manual --> Exploit[Exploitation Attempts]
+          Exploit --> Report[Document Findings]
+          Report --> Prioritize[Prioritize Vulnerabilities]
+          Prioritize --> Remediate[Apply Fixes]
+          Remediate --> Retest[Verification Testing]
+          Retest --> End([Security Validated])
+
+          classDef pentest fill:#f44336,stroke:#d32f2f,stroke-width:2px,color:#fff
+          classDef fix fill:#ff9800,stroke:#f57c00,stroke-width:2px,color:#fff
+          classDef success fill:#d4edda,stroke:#28a745,stroke-width:2px
+
+          class Recon,Scan,Manual,Exploit pentest
+          class Report,Prioritize,Remediate,Retest fix
+          class Start,End success

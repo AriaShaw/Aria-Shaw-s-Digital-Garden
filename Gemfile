@@ -2,13 +2,14 @@ source "https://rubygems.org"
 
 # Jekyll 4.x - Full Ruby 3.3 support, 40-60% faster builds
 gem "jekyll", "~> 4.3.4"
-gem "jekyll-theme-minimal"
+# gem "jekyll-theme-minimal"  # Disabled - using remote_theme for Vercel compatibility
 # Note: webrick no longer needed with Jekyll 4.x
 
 group :jekyll_plugins do
   gem "jekyll-sitemap"
   gem "jekyll-seo-tag"
   gem "jekyll-feed"
+  gem "jekyll-remote-theme"
 end
 
 # Windows and JRuby does not include zoneinfo files, so bundle the tzinfo-data gem

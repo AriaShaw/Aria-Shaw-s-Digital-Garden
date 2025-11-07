@@ -32,36 +32,104 @@
     <!-- Preconnect to CDN for faster resource loading -->
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 
-    <!-- Mermaid.js for visualizations - lazy loaded -->
+    <!-- Hide unrendered Mermaid diagrams to prevent code flash -->
+    <style>
+      .mermaid {
+        opacity: 0;
+        min-height: 200px;
+        max-height: 800px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        transition: opacity 0.3s ease-in;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        padding: 1rem;
+        background: #f6f8fa;
+        border-radius: 6px;
+        margin: 2rem 0;
+      }
+      .mermaid.mermaid-rendered {
+        opacity: 1;
+      }
+      /* Ensure mermaid SVG centers properly and scrolls smoothly */
+      .mermaid svg {
+        max-width: 100%;
+        height: auto;
+      }
+      /* Custom scrollbar for better UX */
+      .mermaid::-webkit-scrollbar {
+        width: 8px;
+      }
+      .mermaid::-webkit-scrollbar-track {
+        background: #e1e4e8;
+        border-radius: 4px;
+      }
+      .mermaid::-webkit-scrollbar-thumb {
+        background: #6c757d;
+        border-radius: 4px;
+      }
+      .mermaid::-webkit-scrollbar-thumb:hover {
+        background: #495057;
+      }
+    </style>
+
+    <!-- Mermaid.js for visualizations - lazy loaded with IntersectionObserver -->
     <script type="module">
-      // Lazy load Mermaid only when diagrams are near viewport
-      const mermaidContainers = document.querySelectorAll('.mermaid');
-      if (mermaidContainers.length > 0) {
-        const loadMermaid = async () => {
-          const mermaid = await import('https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs');
-          mermaid.default.initialize({ startOnLoad: true, theme: 'neutral' });
+      document.addEventListener('DOMContentLoaded', () => {
+        const mermaidContainers = document.querySelectorAll('.mermaid');
+        if (mermaidContainers.length === 0) return;
+
+        let mermaidLoaded = false;
+
+        const loadAndRenderMermaid = async () => {
+          if (mermaidLoaded) return;
+          mermaidLoaded = true;
+
+          try {
+            const mermaid = await import('https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs');
+
+            mermaid.default.initialize({
+              startOnLoad: false,
+              theme: 'neutral',
+              securityLevel: 'loose',
+              fontFamily: 'system-ui, -apple-system, sans-serif'
+            });
+
+            await mermaid.default.run({
+              querySelector: '.mermaid'
+            });
+
+            mermaidContainers.forEach(container => {
+              container.classList.add('mermaid-rendered');
+            });
+          } catch (error) {
+            console.error('Mermaid rendering failed:', error);
+            mermaidContainers.forEach(container => {
+              container.style.opacity = '1';
+              container.innerHTML = '<p style="color: #666; font-style: italic;">Diagram rendering failed. Please refresh the page.</p>';
+            });
+          }
         };
 
-        // Load immediately if first diagram is in viewport, otherwise wait
         const firstDiagram = mermaidContainers[0];
         const rect = firstDiagram.getBoundingClientRect();
         const isInViewport = rect.top < window.innerHeight && rect.bottom > 0;
 
         if (isInViewport) {
-          loadMermaid();
+          loadAndRenderMermaid();
         } else {
-          // Load when user scrolls near diagrams
           const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
               if (entry.isIntersecting) {
-                loadMermaid();
+                loadAndRenderMermaid();
                 observer.disconnect();
               }
             });
           }, { rootMargin: '200px' });
           observer.observe(firstDiagram);
         }
-      }
+      });
     </script>
 
     <!--[if lt IE 9]>
@@ -69,42 +137,8 @@
     <![endif]-->
     {% include head-custom.html %}
 
-    <!-- Schema.org JSON-LD - Intent-based -->
-    {% if page_data.metadata.intent_type == "practitioner" %}
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "HowTo",
-      "name": "{{ page_data.metadata.title }}",
-      "description": "{{ page_data.metadata.description }}",
-      "url": "{{ page.url | absolute_url }}"
-    }
-    </script>
-    {% else %}
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Article",
-      "headline": "{{ page_data.metadata.title }}",
-      "description": "{{ page_data.metadata.description }}",
-      "author": {
-        "@type": "Person",
-        "name": "{{ site.author }}",
-        "url": "{{ site.url }}"
-      },
-      "publisher": {
-        "@type": "Organization",
-        "name": "{{ site.title }}",
-        "url": "{{ site.url }}"
-      },
-      "mainEntityOfPage": {
-        "@type": "WebPage",
-        "@id": "{{ page.url | absolute_url }}"
-      },
-      "url": "{{ page.url | absolute_url }}"
-    }
-    </script>
-    {% endif %}
+    <!-- Enhanced Schema.org JSON-LD - Template-based (Google 2025 optimized) -->
+    {% include schema-pseo.html page_data=page_data %}
   </head>
   <body class="post-layout pseo-page" data-accessibility="wcag-aa">
     <!-- Reading Progress Bar -->
@@ -195,6 +229,7 @@
           </div>
         </section>
         {% endif %}
+
 
         <!-- Final CTA -->
         {% for asset in page_data.conversion_assets %}

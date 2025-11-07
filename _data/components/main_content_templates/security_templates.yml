@@ -1,0 +1,192 @@
+template_info:
+  template_id: security
+  description: Security hardening guide main content
+  version: '1.0'
+  variables_required:
+  - security_topic
+template: 'Security vulnerabilities in {security_topic} emerge continuously as attackers discover new exploitation vectors.
+  Organizations without systematic hardening procedures face data breaches, ransomware infections, and compliance violations
+  that cost millions in remediation, legal fees, and reputational damage.
+
+
+  The misconception that "we''re too small to be targeted" ignores automated attack tools scanning the entire internet for
+  vulnerable systems. Attackers don''t manually select targets—they run automated scanners finding unpatched Odoo installations,
+  weak passwords, exposed administrative interfaces, and misconfigured permissions. Your organization''s size provides no
+  protection against automated exploitation.
+
+
+  ## Threat Landscape and Attack Vectors
+
+
+  {security_context}
+
+
+  Common attack vectors targeting Odoo installations include SQL injection through improperly sanitized user inputs, XML-RPC
+  authentication brute-forcing against exposed ports, session hijacking through unencrypted HTTP connections, privilege escalation
+  via misconfigured access rights, and supply chain attacks through compromised third-party modules.
+
+
+  Defense requires layered security—multiple independent controls so single point failures don''t compromise the entire system.
+  If attackers breach the first layer (network firewall), the second layer (application authentication) still prevents access.
+  If they bypass authentication (stolen credentials), the third layer (access controls) limits damage scope.
+
+
+  ## Security Hardening Checklist
+
+
+  {security_hardening_steps}
+
+
+  **Network Security**: Close port 8069 to public internet after configuring reverse proxy—direct Odoo access bypasses SSL/TLS
+  encryption, rate limiting, and request filtering provided by NGINX or Apache. Configure firewall rules allowing only reverse
+  proxy to Odoo backend (localhost:8069 or 127.0.0.1:8069).
+
+
+  **Authentication Security**: Enforce multi-factor authentication (MFA) for all administrative accounts through the auth_totp
+  module. Configure password policies requiring minimum 12 characters, uppercase/lowercase mix, numbers, and special characters.
+  Disable default admin account after creating named administrator accounts for audit trail purposes.
+
+
+  **Access Control Security**: Review user access rights quarterly removing unnecessary permissions accumulated through role
+  changes. Apply principle of least privilege—users receive minimum permissions required for job functions. Separate administrative
+  privileges from operational access preventing accidental system modifications.
+
+
+  **Data Encryption**: Enable database encryption at rest for compliance with GDPR, HIPAA, PCI-DSS regulations. Configure
+  SSL/TLS 1.3 for transport encryption with strong cipher suites (ECDHE-RSA-AES256-GCM-SHA384 or better). Encrypt backup files
+  before uploading to cloud storage—unencrypted backups create compliance violations and data breach risks.
+
+
+  **Module Security**: Install only verified modules from trusted sources—Odoo Apps store, reputable vendors, or internally
+  developed code. Review module permissions carefully before installation—modules requesting unnecessary database access or
+  file system permissions may contain malware. Keep module inventory documenting version numbers, update dates, and security
+  patch status.
+
+
+  ## Vulnerability Management
+
+
+  {vulnerability_management_process}
+
+
+  Establish vulnerability monitoring subscribing to Odoo security advisories, CVE databases, and security researcher blogs.
+  When vulnerabilities are announced, assess impact on your installation—does the vulnerability affect modules you use? Are
+  there compensating controls already in place? Can you mitigate through configuration changes before patches become available?
+
+
+  Test security patches in staging environments before production deployment. Patches occasionally introduce regressions breaking
+  functionality—discover these in staging, not production. Document patch testing procedures: backup production data, restore
+  to staging, apply patches, execute test scripts covering critical workflows, verify no functionality breaks.
+
+
+  Implement automated vulnerability scanning using tools like Nessus, OpenVAS, or Qualys. Schedule weekly scans identifying
+  new vulnerabilities introduced through system changes. Configure alerting notifying security teams immediately when critical
+  vulnerabilities emerge.
+
+
+  ## Compliance Requirements
+
+
+  {compliance_specific_requirements}
+
+
+  **GDPR Compliance** (European Union): Implement user consent management tracking explicit permission for data collection.
+  Provide data export functionality allowing users to download their personal information. Create data deletion procedures
+  permanently removing user data on request. Document data processing activities in Records of Processing Activities (ROPA).
+
+
+  **HIPAA Compliance** (US Healthcare): Encrypt Protected Health Information (PHI) at rest and in transit. Implement comprehensive
+  audit logging recording all PHI access. Create Business Associate Agreements (BAA) with hosting providers and third-party
+  processors. Conduct annual risk assessments documenting security controls.
+
+
+  **PCI-DSS Compliance** (Payment Card Industry): Never store full credit card numbers, CVV codes, or PINs in Odoo database—use
+  tokenization through payment processors. Segment cardholder data environment (CDE) from other systems through network isolation.
+  Conduct quarterly vulnerability scans and annual penetration testing by approved scanning vendors (ASV).
+
+
+  **SOC 2 Compliance**: Document security policies covering access control, change management, incident response, and vendor
+  management. Implement security controls matching documented policies. Conduct annual SOC 2 Type II audits validating controls
+  operate effectively throughout examination period.
+
+
+  ## Incident Response Procedures
+
+
+  {incident_response_plan}
+
+
+  Security incidents follow predictable patterns: detection, containment, eradication, recovery, and post-incident analysis.
+  Document procedures for each phase before incidents occur—during active compromises, teams need clear instructions, not
+  improvisation.
+
+
+  **Detection Phase**: Monitor security logs for indicators of compromise—failed authentication attempts from unusual locations,
+  privilege escalation attempts, unauthorized data access, unusual network traffic patterns. Configure SIEM (Security Information
+  and Event Management) systems aggregating logs from firewalls, intrusion detection systems, application servers, and databases
+  for correlation analysis.
+
+
+  **Containment Phase**: Isolate compromised systems preventing lateral movement to other infrastructure. Disable compromised
+  user accounts. Block malicious IP addresses at firewall. Capture forensic evidence (memory dumps, network traffic, system
+  snapshots) before remediation destroys indicators.
+
+
+  **Eradication Phase**: Remove malware, close vulnerability exploited for initial access, reset compromised passwords, revoke
+  exposed API keys. Verify attacker access completely removed before restoring services—premature restoration allows attackers
+  to regain access through undetected backdoors.
+
+
+  **Recovery Phase**: Restore systems from known-good backups predating compromise. Verify restored systems remain uncompromised
+  through vulnerability scans and integrity checks. Gradually restore services monitoring for signs of persistent compromise.
+
+
+  **Post-Incident Analysis**: Document attack timeline, initial access vector, data accessed, vulnerabilities exploited, and
+  detection failures. Implement corrective actions preventing recurrence—patch vulnerabilities, improve monitoring, update
+  incident response procedures based on lessons learned.
+
+
+  ## Security Monitoring and Auditing
+
+
+  {security_monitoring_details}
+
+
+  Comprehensive logging captures security-relevant events for forensic analysis and compliance reporting. Configure Odoo to
+  log authentication attempts (successful and failed), authorization decisions, data exports, configuration changes, user
+  creation/deletion, and API access. Retain logs for minimum 90 days (compliance requirements often mandate 1-7 years).
+
+
+  Implement real-time alerting for high-risk events: multiple failed authentication attempts, access outside normal hours,
+  privilege escalation, mass data export, security configuration changes. Configure alert thresholds balancing sensitivity
+  (detecting actual threats) against specificity (minimizing false positives).
+
+
+  Review audit logs weekly identifying security anomalies and policy violations. Look for privilege creep (users gradually
+  accumulating unnecessary permissions), abandoned accounts (former employees retaining access), sharing credentials (multiple
+  users logging in from same account), and suspicious access patterns.
+
+
+  ## Continuous Security Improvement
+
+
+  Security requires ongoing investment—new vulnerabilities emerge, attack techniques evolve, and compliance requirements expand.
+  Schedule quarterly security reviews assessing control effectiveness and identifying gaps requiring remediation.
+
+
+  Conduct annual penetration testing simulating attacker tactics identifying vulnerabilities before exploitation. Engage professional
+  security firms providing external perspective and specialized expertise. Test both external attack surface (internet-facing
+  systems) and internal networks (compromised employee scenario).
+
+
+  Implement security training programs educating employees about phishing, social engineering, password security, and incident
+  reporting. Human vulnerabilities often prove easier to exploit than technical systems—attackers phish credentials rather
+  than brute-forcing encryption.
+
+
+  {security_conclusion}
+
+
+  The security landscape continuously evolves requiring vigilance and adaptation. Organizations treating security as one-time
+  project rather than ongoing process discover vulnerabilities only after exploitation. Invest in preventive security now
+  or pay exponentially more for incident response, regulatory fines, and reputational recovery later.'

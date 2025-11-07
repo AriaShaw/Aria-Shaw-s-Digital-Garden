@@ -1,0 +1,61 @@
+problem_statement: Integration performance degrades silently over time, causing
+  slow data sync, timeout errors, and poor user experience. Without performance profiling,
+  you only discover bottlenecks when integration failures occur. Manual API testing
+  doesn't reveal latency trends, throughput limitations, or percentile performance
+  issues.
+value_proposition: A free integration profiler that measures API latency, calculates
+  throughput, and identifies bottlenecks - helping you optimize integration performance
+  without expensive APM tools or load testing platforms.
+how_to_use:
+- step: Profile single API endpoint
+  command: python3 integration_profiler.py https://api.example.com/orders
+- step: Profile multiple endpoints
+  command: python3 integration_profiler.py https://api.example.com/orders https://api.example.com/customers
+- step: Run 50 iterations for statistical accuracy
+  command: python3 integration_profiler.py https://api.example.com/orders --iterations
+    50
+- step: Save detailed report
+  command: python3 integration_profiler.py https://api.example.com/orders --iterations
+    100 --output profiling_report.json
+how_it_works: This Python script performs load testing on API endpoints using the
+  requests library. It sends multiple HTTP requests (default 10 iterations) with
+  precise timing measurement using time.time(), calculates latency statistics (min,
+  max, avg, median, P95, P99), computes throughput as requests per second (1000ms
+  / avg_latency), tracks success/failure rates for reliability analysis, and identifies
+  bottlenecks by comparing avg latency against thresholds (>2s critical, >1s warning,
+  >500ms info). Provides recommendations for optimization (caching, async processing,
+  pagination). No distributed load testing or complex scenario simulation - designed
+  for quick performance profiling during integration development and troubleshooting.
+real_world_use_cases:
+- scenario: Payment gateway integration performance degradation
+  outcome: Profiling revealed P95 latency increased from 800ms to 3.2s over 3 months.
+    Analysis identified inefficient payment validation logic making 5 sequential
+    database queries. Optimized to single batch query, reducing P95 to 450ms and
+    preventing transaction timeout failures during peak checkout periods.
+- scenario: Multi-system inventory sync optimization
+  outcome: Profiler detected 15% failure rate on product availability API (timeouts
+    after 30s). Root cause was full table scan on 2M product records. Added database
+    index on SKU field, reducing avg latency from 22s to 1.8s and eliminating timeout
+    errors. Improved inventory accuracy from 87% to 99.2%.
+troubleshooting_faq:
+- question: How many iterations should I run for reliable performance metrics?
+  answer: Use 10 iterations for quick checks, 50 for development testing, 100+ for
+    production performance baselines. Higher iterations provide more accurate percentile
+    calculations. The Master Pack includes adaptive iteration sizing based on latency
+    variance with automatic convergence detection to minimize test time.
+- question: Can this tool simulate concurrent users or load spikes?
+  answer: This free script runs sequential requests only (single thread). For concurrent
+    load testing, use tools like Apache Bench or Locust. The Master Pack includes
+    distributed load testing with configurable concurrency (1-1000 concurrent users),
+    ramp-up scenarios, and sustained load profiles for capacity planning.
+- question: How do I profile POST requests with custom headers and body data?
+  answer: The script supports POST method but requires code modification to add headers
+    and data. Edit the profile_api_call function to include your custom headers dict
+    and JSON body. The Master Pack includes configuration-based profiling with support
+    for all HTTP methods, custom headers, authentication schemes, and payload templates.
+- question: What's the difference between P95 and P99 latency metrics?
+  answer: P95 means 95% of requests are faster than this value (5% are slower). P99
+    is 99th percentile (1% slower). P95 is good for typical performance, P99 reveals
+    worst-case tail latency. Monitor P99 for user-facing APIs to catch edge case
+    slowness. The Master Pack tracks P50/P75/P90/P95/P99/P999 for comprehensive latency
+    analysis.

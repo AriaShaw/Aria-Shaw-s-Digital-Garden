@@ -1,0 +1,96 @@
+template_info:
+  template_id: performance
+  description: Performance optimization guide main content
+  version: '1.0'
+  variables_required:
+  - performance_target
+  - odoo_version
+template: "Optimizing {performance_target} in Odoo {odoo_version} requires systematic bottleneck identification before applying\
+  \ optimizations—premature optimization wastes time fixing imaginary problems while real bottlenecks continue degrading user\
+  \ experience and operational efficiency.\n\nPerformance problems manifest gradually as data accumulates and user count grows.\
+  \ Systems handling 10 users with 10,000 records respond instantly. The same system with 100 users and 1 million records\
+  \ degrades to unusable slowness due to unindexed queries, memory exhaustion, or architectural limitations that weren't obvious\
+  \ during initial deployment.\n\n## Performance Measurement and Profiling\n\n{performance_measurement_intro}\n\nMeasure before\
+  \ optimizing to establish baseline metrics and identify actual bottlenecks rather than assumed problems. Use Odoo's built-in\
+  \ profiling through `--log-handler=odoo.sql_db:DEBUG` for database query logging and `--dev=all` for request profiling.\n\
+  \nInstall monitoring tools that track CPU usage, memory consumption, disk I/O, and database query patterns. Prometheus with\
+  \ Grafana provides historical metrics visualization. New Relic or DataDog offer application performance monitoring with\
+  \ automatic bottleneck detection. Set up monitoring before performance problems emerge—historical data enables trend analysis\
+  \ impossible with point-in-time measurements.\n\nKey performance indicators include:\n- Average page load time (target:\
+  \ <2 seconds)\n- 95th percentile response time (target: <5 seconds) \n- Database queries per request (target: <20)\n- Memory\
+  \ usage per worker (target: <512MB)\n- CPU utilization (target: <80% sustained)\n\nEstablish acceptable thresholds for your\
+  \ use case. Manufacturing operations tolerate 5-second page loads if they only access the system occasionally. E-commerce\
+  \ sites require sub-second response times because slow checkouts abandon sales.\n\n## Database Query Optimization\n\n{database_optimization_details}\n\
+  \nPostgreSQL query performance dominates Odoo's overall speed. Slow queries block worker threads, delaying all requests\
+  \ handled by that worker. A single unindexed query scanning 1 million rows stalls operations for 10-30 seconds depending\
+  \ on hardware.\n\nIdentify slow queries through PostgreSQL's pg_stat_statements extension. Enable with `CREATE EXTENSION\
+  \ pg_stat_statements;` then query for slowest operations:\n\n```sql\nSELECT query, calls, total_time, mean_time\nFROM pg_stat_statements\n\
+  ORDER BY mean_time DESC\nLIMIT 20;\n```\n\nCommon database performance issues:\n- **Missing indexes**: Queries without appropriate\
+  \ indexes scan entire tables. Add indexes on foreign key fields, frequently filtered fields, and sort columns.\n- **N+1\
+  \ query problem**: Looping over records and accessing related fields generates separate queries per iteration. Use `read()`\
+  \ or `search_read()` with field lists to prefetch data in single queries.\n- **Unoptimized domains**: Complex domain filters\
+  \ with OR operators can't use indexes efficiently. Restructure domains to enable index usage or create database views for\
+  \ common filter combinations.\n- **Dead tuples accumulation**: PostgreSQL's MVCC creates dead tuples during updates that\
+  \ waste space and slow queries. Run VACUUM ANALYZE weekly and configure autovacuum aggressively for high-traffic tables.\n\
+  \nOptimize queries systematically:\n1. Run EXPLAIN ANALYZE on slow queries to understand execution plans\n2. Add indexes\
+  \ on unindexed columns appearing in WHERE clauses\n3. Rewrite ORM queries to use more efficient methods (search_read vs\
+  \ browse)\n4. Denormalize data to avoid expensive JOIN operations in critical queries\n\n## Server Configuration and Resource\
+  \ Allocation\n\n{server_configuration_tuning}\n\nOdoo's multiprocess architecture spawns worker processes handling concurrent\
+  \ requests. Worker count follows formula: `(CPU_cores × 2) + 1` for balanced concurrency without oversubscription. Fewer\
+  \ workers creates queuing delays. Excessive workers exhaust memory causing swap thrashing that grinds performance to a halt.\n\
+  \nMemory per worker depends on data complexity and loaded modules. Typical installations require 256-512MB per worker. Monitor\
+  \ actual memory usage through `ps aux | grep odoo` and adjust worker limits accordingly:\n\n```ini\n[options]\nworkers =\
+  \ 9  # For 4-core CPU\nmax_cron_threads = 2\nlimit_memory_hard = 2684354560  # 2.5GB per worker\nlimit_memory_soft = 2147483648\
+  \  # 2GB soft limit\nlimit_time_cpu = 600  # 10 minutes CPU time\nlimit_time_real = 1200  # 20 minutes real time\n```\n\n\
+  The soft limit triggers worker recycling when exceeded—Odoo spawns fresh worker and terminates the old one after request\
+  \ completion. Hard limit kills worker immediately preventing runaway processes from consuming all system memory.\n\nPostgreSQL\
+  \ tuning parameters significantly impact query performance:\n\n```ini\nshared_buffers = 4GB  # 25% of system RAM\neffective_cache_size\
+  \ = 12GB  # 50% of system RAM  \nwork_mem = 64MB  # Memory per query operation\nmaintenance_work_mem = 1GB  # Memory for\
+  \ VACUUM/REINDEX\nrandom_page_cost = 1.1  # SSD-optimized (4.0 for HDD)\n```\n\nRestart PostgreSQL after configuration changes.\
+  \ Monitor impact through pg_stat_database views comparing query times before and after tuning.\n\n## Asset and Static Content\
+  \ Optimization\n\n{asset_optimization_details}\n\nOdoo serves JavaScript, CSS, and images through application workers competing\
+  \ with business logic for worker availability. During peak usage, static asset requests saturate workers leaving no capacity\
+  \ for actual business operations.\n\nConfigure NGINX reverse proxy to serve static content directly without invoking Odoo\
+  \ workers:\n\n```nginx\nlocation /web/static {{\n    proxy_cache_bypass $http_pragma $http_authorization;\n    proxy_cache\
+  \ static_cache;\n    proxy_cache_valid 200 60m;\n    proxy_pass http://odoo_backend;\n}}\n\nlocation ~* \\.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2)$\
+  \ {{\n    expires 30d;\n    add_header Cache-Control \"public, immutable\";\n}}\n```\n\nEnable Gzip compression for text\
+  \ assets reducing transfer size by 70-80%:\n\n```nginx\ngzip on;\ngzip_types text/css application/javascript application/json\
+  \ image/svg+xml;\ngzip_min_length 1000;\n```\n\nImplement browser caching through Cache-Control headers. Static assets (images,\
+  \ fonts) cache for 30 days. Dynamic content (HTML, API responses) caches for 5 minutes with revalidation.\n\nUse CDN for\
+  \ global deployments to serve static content from edge locations near users. CloudFlare, Fastly, or AWS CloudFront cache\
+  \ assets globally reducing latency for international users.\n\n## Module and Code Optimization\n\n{module_optimization_details}\n\
+  \nPoorly written custom modules create performance problems invisible during development with small datasets. Inefficient\
+  \ code patterns compound at scale—operations taking milliseconds with 100 records take minutes with 100,000 records.\n\n\
+  Common module performance issues:\n\n**Inefficient ORM usage**: Calling `write()` inside loops updates records one-by-one\
+  \ generating separate SQL updates. Batch operations with `write()` on recordsets update all records in single queries:\n\
+  \n```python\n# Bad: N database writes\nfor record in self.line_ids:\n    record.write({{'state': 'done'}})\n\n# Good: 1\
+  \ database write\nself.line_ids.write({{'state': 'done'}})\n```\n\n**Unnecessary database access**: Accessing record fields\
+  \ inside loops triggers SQL queries per iteration. Prefetch data outside loops using `read()` or mapped():\n\n```python\n\
+  # Bad: N+1 queries\nfor order in orders:\n    print(order.partner_id.name)  # Database query per iteration\n\n# Good: 2\
+  \ queries total\npartners = orders.mapped('partner_id')\nfor order in orders:\n    print(order.partner_id.name)  # Uses\
+  \ prefetched data\n```\n\n**Unoptimized searches**: Searching entire table then filtering in Python wastes database resources.\
+  \ Apply filters in domain expressions to leverage database indexes:\n\n```python\n# Bad: Fetches all records, filters in\
+  \ Python\nall_orders = self.env['sale.order'].search([])\nlate_orders = [o for o in all_orders if o.state == 'late']\n\n\
+  # Good: Database filters efficiently\nlate_orders = self.env['sale.order'].search([('state', '=', 'late')])\n```\n\n**Heavy\
+  \ computed fields**: Computed fields recalculate whenever dependencies change. Expensive computations (API calls, complex\
+  \ calculations) trigger on every record access. Cache computed values or replace with stored fields for expensive operations.\n\
+  \n## Caching Strategies\n\n{caching_implementation}\n\nImplement caching at multiple levels to avoid redundant calculations:\n\
+  \n**Application-level caching**: Use Python's lru_cache decorator for expensive pure functions:\n\n```python\nfrom functools\
+  \ import lru_cache\n\n@lru_cache(maxsize=1000)\ndef calculate_discount(price, tier, region):\n    # Expensive calculation\
+  \ cached for repeated calls\n    return complex_discount_logic(price, tier, region)\n```\n\n**Database query caching**:\
+  \ PostgreSQL caches query results automatically but benefits from consistent query patterns. Use parameterized queries rather\
+  \ than string concatenation for better cache hit rates.\n\n**Redis caching**: Deploy Redis for distributed caching across\
+  \ multiple Odoo workers. Cache expensive API responses, computed aggregates, and frequently accessed configuration:\n\n\
+  ```python\nimport redis\nr = redis.Redis(host='localhost', port=6379, db=0)\n\n# Cache expensive calculation\nkey = f\"\
+  price_calculation_{{product_id}}_{{pricelist_id}}\"\ncached = r.get(key)\nif cached:\n    return float(cached)\nelse:\n\
+  \    result = expensive_price_calculation()\n    r.setex(key, 300, result)  # Cache for 5 minutes\n    return result\n```\n\
+  \n**HTTP caching**: Configure Odoo to send proper cache headers for API endpoints serving relatively static data. Enable\
+  \ client-side caching reducing server load for repeated requests.\n\n## Monitoring and Continuous Optimization\n\n{monitoring_strategy}\n\
+  \nPerformance degrades gradually as data accumulates and usage patterns evolve. Establish continuous monitoring detecting\
+  \ degradation before users complain.\n\nTrack key metrics over time:\n- Average response time trends (increasing suggests\
+  \ degradation)\n- Slowest database queries (candidates for optimization)\n- Memory usage patterns (growing suggests memory\
+  \ leaks)\n- Error rates (increasing indicates capacity problems)\n\nSet up automated alerting:\n- Response time exceeds\
+  \ 5 seconds for 5 consecutive minutes\n- Database connections approach connection pool limits\n- Memory usage exceeds 80%\
+  \ for sustained periods\n- Error rates spike above baseline by 50%\n\nSchedule quarterly performance reviews analyzing trends\
+  \ and identifying optimization opportunities. Database growth, new modules, and evolving usage patterns change performance\
+  \ characteristics requiring ongoing tuning rather than one-time optimization.\n"
