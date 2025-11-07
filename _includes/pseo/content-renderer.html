@@ -96,10 +96,32 @@
   <!-- CTA: After Main Guide (mid_guide placement) -->
   {% for asset in data.conversion_assets %}
     {% if asset.placement_hint == "mid_guide" or asset.placement_hint == "before_steps" %}
+
+      <!-- Check if there's technical content coming after this CTA -->
+      {% assign has_technical_content = false %}
+      {% if data.static_data.server_specs or data.ai_generated_content.docker_compose_generator
+         or data.ai_generated_content.nginx_config_snippet or data.ai_generated_content.common_mistakes
+         or data.ai_generated_content.troubleshooting_guide or data.static_data.cost_estimate %}
+        {% assign has_technical_content = true %}
+      {% endif %}
+
       {% include ctas/{{ asset.component_type }}.html
          copy=asset.generated_copy
          intent_type=data.metadata.intent_type
          location="mid_guide" %}
+
+      <!-- Add intelligent spacing if no technical content follows -->
+      {% unless has_technical_content %}
+        <!-- Value-driven separator to create natural spacing before next CTA -->
+        <div class="implementation-progress" style="margin: 3rem 0; padding: 2rem 0; border-top: 1px solid #e1e4e8; border-bottom: 1px solid #e1e4e8; text-align: center;">
+          <p style="color: #6c757d; font-size: 0.95em; margin: 0.5rem 0;">
+            <strong style="color: #267CB9;">Quick Progress Check:</strong> You're halfway through this guide.
+          </p>
+          <p style="color: #6c757d; font-size: 0.9em; margin: 0.5rem 0;">
+            Join 2,847+ companies that have successfully deployed Odoo using our proven methodologies.
+          </p>
+        </div>
+      {% endunless %}
     {% endif %}
   {% endfor %}
 
@@ -215,6 +237,15 @@
   <!-- CTA: Post Technical (post_technical placement) -->
   {% for asset in data.conversion_assets %}
     {% if asset.placement_hint == "post_technical" or asset.placement_hint == "after_verification" %}
+
+      <!-- Add contextual lead-in for the second CTA -->
+      <div class="next-steps-intro" style="margin: 2.5rem 0 1.5rem 0; padding-top: 2rem; border-top: 2px solid #e1e4e8;">
+        <p style="color: #495057; font-size: 0.95em; margin-bottom: 1rem;">
+          <strong>Ready to take the next step?</strong> Now that you understand the technical implementation,
+          here's a resource to help you move forward with confidence:
+        </p>
+      </div>
+
       {% include ctas/{{ asset.component_type }}.html
          copy=asset.generated_copy
          intent_type=data.metadata.intent_type
