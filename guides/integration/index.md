@@ -2,7 +2,7 @@
 layout: home
 title: Integration Guides (100+)
 description: Complete collection of production-tested Odoo integration guides covering 100+ services including Gmail, Slack, Stripe, PayPal, and enterprise SaaS platforms.
-permalink: /guides/integration/
+permalink: /guides/integration
 breadcrumb_title: Integration
 ---
 

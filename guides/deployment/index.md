@@ -2,7 +2,7 @@
 layout: home
 title: Deployment Guides (22)
 description: Production-ready Odoo deployment guides for AWS, Azure, DigitalOcean, and 20+ cloud platforms, plus comprehensive on-premises installation guides for Ubuntu, Debian, and CentOS.
-permalink: /guides/deployment/
+permalink: /guides/deployment
 breadcrumb_title: Deployment
 ---
 

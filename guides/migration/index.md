@@ -2,7 +2,7 @@
 layout: home
 title: Migration Guides (11)
 description: Step-by-step Odoo migration guides for transitioning from QuickBooks, SAP, Salesforce, and other legacy systems with zero data loss and minimal downtime.
-permalink: /guides/migration/
+permalink: /guides/migration
 breadcrumb_title: Migration
 ---
 

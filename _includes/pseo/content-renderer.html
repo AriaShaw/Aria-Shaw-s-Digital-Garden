@@ -1,279 +1,44 @@
-<!-- Enhanced PSEO Content Renderer - Backward Compatible with Multiple Template Formats -->
-<!-- Supports both legacy field names and new standardized template field names -->
+<!-- Simplified PSEO Content Renderer - Unified 4-Field Structure -->
+<!-- All pages now use: introduction, main_content, conclusion (AI-generated) -->
 
 {% assign data = include.page_data %}
 
-<!-- RESEARCHER INTENT: Deep analysis, trust-building, comprehensive comparisons -->
-{% if data.metadata.intent_type == "researcher" or data.metadata.intent_type == "problem_solver" %}
-
-  <!-- Sovereignty Analysis (if present) -->
-  {% if data.ai_generated_content.sovereignty_analysis and data.ai_generated_content.sovereignty_analysis != "" %}
-  <div class="sovereignty-analysis">
-    <h2>Digital Sovereignty Analysis</h2>
-    <div class="analysis-content">
-      {{ data.ai_generated_content.sovereignty_analysis | markdownify }}
-    </div>
-  </div>
-  {% endif %}
-
-  <!-- Feature Comparison (support multiple field names) -->
-  {% assign feature_comp = data.static_data.feature_comparison | default: data.static_data.comparison_criteria %}
-  {% if feature_comp %}
-  <div class="feature-comparison">
-    <h2>Feature Comparison</h2>
-    <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0;">
-      <thead>
-        <tr style="background: #f6f8fa; border-bottom: 2px solid #d1d5da;">
-          <th style="padding: 0.75rem; text-align: left;">
-            {% if feature_comp.first.criteria %}Criteria{% else %}Feature{% endif %}
-          </th>
-          {% if feature_comp.products %}
-            {% for product in feature_comp.products %}
-            <th style="padding: 0.75rem; text-align: center;">{{ product.name }}</th>
-            {% endfor %}
-          {% elsif feature_comp.first.product_a %}
-            <th style="padding: 0.75rem; text-align: center;">{{ data.static_data.product_a | default: "Product A" }}</th>
-            <th style="padding: 0.75rem; text-align: center;">{{ data.static_data.product_b | default: "Product B" }}</th>
-          {% endif %}
-        </tr>
-      </thead>
-      <tbody>
-        {% if feature_comp.features %}
-          {% for feature in feature_comp.features %}
-          <tr style="border-bottom: 1px solid #e1e4e8;">
-            <td style="padding: 0.75rem; font-weight: 500;">{{ feature.name | default: feature.feature }}</td>
-            {% for score in feature.scores %}
-            <td style="padding: 0.75rem; text-align: center;">{{ score }}</td>
-            {% endfor %}
-          </tr>
-          {% endfor %}
-        {% elsif feature_comp.first.criteria %}
-          {% for item in feature_comp %}
-          <tr style="border-bottom: 1px solid #e1e4e8;">
-            <td style="padding: 0.75rem; font-weight: 500;">{{ item.criteria }}</td>
-            <td style="padding: 0.75rem; text-align: center;">{{ item.product_a_score | default: item.product_a }}</td>
-            <td style="padding: 0.75rem; text-align: center;">{{ item.product_b_score | default: item.product_b }}</td>
-          </tr>
-          {% endfor %}
-        {% endif %}
-      </tbody>
-    </table>
-  </div>
-  {% endif %}
-
-  <!-- Detailed Analysis Section (support multiple field names) -->
-  {% assign analysis_content = data.ai_generated_content.detailed_analysis | default: data.ai_generated_content.problem_analysis | default: data.ai_generated_content.executive_summary %}
-  {% if analysis_content and analysis_content != "" %}
-  <div class="detailed-analysis">
-    <h2>Detailed Analysis</h2>
-    {{ analysis_content | markdownify }}
-  </div>
-  {% endif %}
-
-<!-- PRACTITIONER INTENT: Step-by-step guides, actionable instructions, technical details -->
-{% elsif data.metadata.intent_type == "practitioner" or data.metadata.intent_type == "auto" %}
-
-  <!-- Step-by-Step Guide (support ALL possible field name variants) -->
-  {% assign guide_content = data.ai_generated_content.step_by_step_guide | default: data.ai_generated_content.deployment_guide | default: data.ai_generated_content.installation_guide | default: data.ai_generated_content.migration_guide | default: data.ai_generated_content.upgrade_guide | default: data.ai_generated_content.configuration_overview | default: data.ai_generated_content.development_overview | default: data.ai_generated_content.implementation_guide | default: data.ai_generated_content.integration_overview | default: data.ai_generated_content.performance_analysis | default: data.ai_generated_content.security_architecture | default: data.ai_generated_content.main_content %}
-
-  {% if guide_content and guide_content != "" %}
-
-  <!-- Opening Map: Workflow visualization (fixed position after introduction) -->
-  {% for viz in data.visualizations %}
-    {% if viz.placement_hint == "opening_map" and viz.mermaid_chart_syntax and viz.mermaid_chart_syntax != "" %}
-    <div class="mermaid">
+<!-- Opening Map: Workflow visualization (after introduction) -->
+{% for viz in data.visualizations %}
+  {% if viz.placement_hint == "opening_map" and viz.mermaid_chart_syntax and viz.mermaid_chart_syntax != "" %}
+  <div class="mermaid">
 {{ viz.mermaid_chart_syntax }}
-    </div>
-    {% endif %}
-  {% endfor %}
-
-  <div class="implementation-guide">
-    {{ guide_content | markdownify }}
-  </div>
-
-  {% endif %}
-
-  <!-- CTA: After Main Guide (mid_guide placement) -->
-  {% for asset in data.conversion_assets %}
-    {% if asset.placement_hint == "mid_guide" or asset.placement_hint == "before_steps" %}
-
-      <!-- Check if there's technical content coming after this CTA -->
-      {% assign has_technical_content = false %}
-      {% if data.static_data.server_specs or data.ai_generated_content.docker_compose_generator
-         or data.ai_generated_content.nginx_config_snippet or data.ai_generated_content.common_mistakes
-         or data.ai_generated_content.troubleshooting_guide or data.static_data.cost_estimate %}
-        {% assign has_technical_content = true %}
-      {% endif %}
-
-      {% include ctas/{{ asset.component_type }}.html
-         copy=asset.generated_copy
-         intent_type=data.metadata.intent_type
-         location="mid_guide" %}
-    {% endif %}
-  {% endfor %}
-
-  <!-- Code Snippets / Scripts (if present) -->
-  {% if data.ai_generated_content.docker_compose_generator and data.ai_generated_content.docker_compose_generator != "" %}
-  <div class="code-section">
-    <h3>Docker Compose Configuration</h3>
-    <div class="highlight"><pre style="background: #f6f8fa; padding: 1rem; border-radius: 6px; overflow-x: auto;"><code>{{ data.ai_generated_content.docker_compose_generator }}</code></pre></div>
   </div>
   {% endif %}
+{% endfor %}
 
-  {% if data.ai_generated_content.nginx_config_snippet and data.ai_generated_content.nginx_config_snippet != "" %}
-  <div class="code-section">
-    <h3>Nginx Configuration</h3>
-    <div class="highlight"><pre style="background: #f6f8fa; padding: 1rem; border-radius: 6px; overflow-x: auto;"><code>{{ data.ai_generated_content.nginx_config_snippet }}</code></pre></div>
-  </div>
-  {% endif %}
-
-  <!-- Technical Specifications (if present in static_data) -->
-  {% if data.static_data.server_specs %}
-  <div class="server-specs">
-    <h2>Server Specifications</h2>
-    <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0;">
-      <thead>
-        <tr style="background: #f6f8fa; border-bottom: 2px solid #d1d5da;">
-          <th style="padding: 0.75rem; text-align: left;">Plan</th>
-          <th style="padding: 0.75rem; text-align: center;">vCPUs</th>
-          <th style="padding: 0.75rem; text-align: center;">RAM (GB)</th>
-          <th style="padding: 0.75rem; text-align: center;">Storage (GB)</th>
-          <th style="padding: 0.75rem; text-align: right;">Price</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for spec in data.static_data.server_specs %}
-        <tr style="border-bottom: 1px solid #e1e4e8;">
-          <td style="padding: 0.75rem; font-weight: 500;">{{ spec.plan }}</td>
-          <td style="padding: 0.75rem; text-align: center;">{{ spec.vcpus }}</td>
-          <td style="padding: 0.75rem; text-align: center;">{{ spec.ram_gb }}</td>
-          <td style="padding: 0.75rem; text-align: center;">{{ spec.storage_gb }}</td>
-          <td style="padding: 0.75rem; text-align: right;">${{ spec.price_usd_monthly }}/mo</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-  {% endif %}
-
-
-  <!-- Common Mistakes / Troubleshooting -->
-  {% if data.ai_generated_content.common_mistakes and data.ai_generated_content.common_mistakes != "" %}
-  <div class="troubleshooting" style="background: #fff5f5; border-left: 4px solid #d73a49; padding: 1.5rem; margin: 2rem 0;">
-    <h3 style="margin-top: 0; color: #d73a49;">Common Mistakes to Avoid</h3>
-    {{ data.ai_generated_content.common_mistakes | markdownify }}
-  </div>
-  {% endif %}
-
-
-
-  <!-- Cost Estimate -->
-  {% if data.static_data.cost_estimate %}
-  <div class="cost-estimate" style="background: #f6f8fa; border: 1px solid #d1d5da; border-radius: 6px; padding: 1.5rem; margin: 2rem 0;">
-    <h2 style="margin-top: 0;">Cost Estimate</h2>
-    <table style="width: 100%; border-collapse: collapse;">
-      {% if data.static_data.cost_estimate.monthly_server_cost %}
-      <tr>
-        <td style="padding: 0.5rem 0; font-weight: 500;">Monthly Server Cost:</td>
-        <td style="padding: 0.5rem 0; text-align: right;">{{ data.static_data.cost_estimate.monthly_server_cost }}</td>
-      </tr>
-      {% endif %}
-      {% if data.static_data.cost_estimate.setup_cost %}
-      <tr>
-        <td style="padding: 0.5rem 0; font-weight: 500;">Setup Cost:</td>
-        <td style="padding: 0.5rem 0; text-align: right;">{{ data.static_data.cost_estimate.setup_cost }}</td>
-      </tr>
-      {% endif %}
-      {% if data.static_data.cost_estimate.ongoing_costs %}
-      <tr>
-        <td style="padding: 0.5rem 0; font-weight: 500;">Ongoing Costs:</td>
-        <td style="padding: 0.5rem 0; text-align: right;">{{ data.static_data.cost_estimate.ongoing_costs }}</td>
-      </tr>
-      {% endif %}
-    </table>
-  </div>
-  {% endif %}
-
-  <!-- Alternative Deployment Options (support multiple field names) -->
-  {% assign alternatives = data.static_data.alternative_deployment_options | default: data.static_data.alternative_options | default: data.static_data.alternatives %}
-  {% if alternatives %}
-  <div class="alternatives" style="margin: 2rem 0;">
-    <h2>Alternative Options</h2>
-    {% for alt in alternatives %}
-    <div class="alternative-option" style="background: #f6f8fa; border-radius: 6px; padding: 1.25rem; margin: 1rem 0;">
-      <h3 style="margin-top: 0; color: #267CB9;">{{ alt.option | default: alt.name }}</h3>
-      <p style="margin: 0.5rem 0;"><strong>Pros:</strong> {{ alt.pros | default: alt.advantages }}</p>
-      <p style="margin: 0.5rem 0;"><strong>Cons:</strong> {{ alt.cons | default: alt.disadvantages }}</p>
-      {% if alt.link %}
-      <p style="margin: 0.5rem 0;"><a href="/guides/{{ alt.link }}/" style="color: #0969da;">Learn more →</a></p>
-      {% endif %}
-    </div>
-    {% endfor %}
-  </div>
-  {% endif %}
-
-  <!-- Troubleshooting Guide (support multiple field names) -->
-  {% assign troubleshooting = data.ai_generated_content.troubleshooting_guide | default: data.ai_generated_content.troubleshooting_tips | default: data.ai_generated_content.prevention_guide %}
-  {% if troubleshooting and troubleshooting != "" %}
-  <div class="troubleshooting-guide">
-    <h2>Troubleshooting</h2>
-    {{ troubleshooting | markdownify }}
-  </div>
-  {% endif %}
-
-  <!-- CTA: Post Technical (post_technical placement) -->
-  {% for asset in data.conversion_assets %}
-    {% if asset.placement_hint == "post_technical" or asset.placement_hint == "after_verification" %}
-      {% include ctas/{{ asset.component_type }}.html
-         copy=asset.generated_copy
-         intent_type=data.metadata.intent_type
-         location="post_technical" %}
-    {% endif %}
-  {% endfor %}
-
-<!-- DECIDER INTENT: ROI focus, business outcomes, calculator tools -->
-{% elsif data.metadata.intent_type == "decider" %}
-
-  <!-- TCO Analysis -->
-  {% if data.ai_generated_content.cost_analysis_text and data.ai_generated_content.cost_analysis_text != "" %}
-  <div class="tco-analysis">
-    <h2>Total Cost of Ownership Analysis</h2>
-    {{ data.ai_generated_content.cost_analysis_text | markdownify }}
-  </div>
-  {% endif %}
-
-  <!-- ROI Calculator (if present in static_data) -->
-  {% if data.static_data.tco_breakdown %}
-  <div class="tco-breakdown">
-    <h2>Cost Breakdown</h2>
-    <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0; background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-      <thead>
-        <tr style="background: #267CB9; color: white;">
-          <th style="padding: 1rem; text-align: left;">Cost Category</th>
-          <th style="padding: 1rem; text-align: right;">Amount</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for item in data.static_data.tco_breakdown %}
-        <tr style="border-bottom: 1px solid #e1e4e8;">
-          <td style="padding: 0.75rem;">{{ item.category }}</td>
-          <td style="padding: 0.75rem; text-align: right; font-weight: 600;">${{ item.amount }}</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-  {% endif %}
-
-  <!-- Business Value Proposition -->
-  {% if data.ai_generated_content.business_value and data.ai_generated_content.business_value != "" %}
-  <div class="business-value" style="background: linear-gradient(135deg, #f6f8fa 0%, #ffffff 100%); border: 2px solid #267CB9; border-radius: 8px; padding: 2rem; margin: 2rem 0;">
-    <h2 style="margin-top: 0; color: #267CB9;">Business Value</h2>
-    {{ data.ai_generated_content.business_value | markdownify }}
-  </div>
-  {% endif %}
-
+<!-- Main Content (unified field for all content types) -->
+{% if data.ai_generated_content.main_content and data.ai_generated_content.main_content != "" %}
+<div class="main-content">
+  {{ data.ai_generated_content.main_content | markdownify }}
+</div>
 {% endif %}
+
+<!-- CTA: Mid Content (mid_guide, mid_content placement) -->
+<!-- Note: Some pages (e.g., comparisons) embed CTAs directly in main_content via placeholder replacement -->
+{% for asset in data.conversion_assets %}
+  {% if asset.placement_hint == "mid_guide" or asset.placement_hint == "mid_content" or asset.placement_hint == "before_steps" %}
+    {% include ctas/{{ asset.component_type }}.html
+       copy=asset.generated_copy
+       intent_type=data.metadata.intent_type
+       location="mid_content" %}
+  {% endif %}
+{% endfor %}
+
+<!-- CTA: Post Technical (post_technical placement) -->
+{% for asset in data.conversion_assets %}
+  {% if asset.placement_hint == "post_technical" or asset.placement_hint == "after_verification" %}
+    {% include ctas/{{ asset.component_type }}.html
+       copy=asset.generated_copy
+       intent_type=data.metadata.intent_type
+       location="post_technical" %}
+  {% endif %}
+{% endfor %}
 
 <!-- CTA: Pre Conclusion (pre_conclusion placement) -->
 {% for asset in data.conversion_assets %}
@@ -285,7 +50,7 @@
   {% endif %}
 {% endfor %}
 
-<!-- Conclusion (support multiple field names) -->
+<!-- Conclusion (unified field) -->
 {% assign conclusion = data.ai_generated_content.conclusion | default: data.ai_generated_content.summary | default: data.ai_generated_content.final_thoughts %}
 {% if conclusion and conclusion != "" %}
 <div class="conclusion" style="margin-top: 3rem; padding-top: 2rem; border-top: 2px solid #e1e4e8;">
@@ -294,7 +59,7 @@
 </div>
 {% endif %}
 
-<!-- Next Steps Guide: Learning path visualization (Call to Action - after conclusion) -->
+<!-- Next Steps Guide: Learning path visualization (after conclusion) -->
 {% if data.visualizations %}
   {% for viz in data.visualizations %}
     {% if viz.placement_hint == "next_steps_guide" and viz.mermaid_chart_syntax and viz.mermaid_chart_syntax != "" %}

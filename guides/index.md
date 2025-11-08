@@ -1,12 +1,12 @@
 ---
 layout: home
 title: Complete Guides Library
-description: 142 battle-tested Odoo guides covering deployment, integration, migration, security, and operations. Complete playbooks from planning to production.
+description: 162 battle-tested Odoo guides covering deployment, integration, migration, comparison, and operations. Complete playbooks from planning to production.
 breadcrumb_title: Guides
-permalink: /guides/
+permalink: /guides
 ---
 
-# Complete Guides (142)
+# Complete Guides (162)
 
 Definitive playbooks for every stage of your Odoo journey—from strategic planning to daily operations. Each guide is meticulously crafted to be the only resource you need on the subject.
 
@@ -61,6 +61,12 @@ Definitive playbooks for every stage of your Odoo journey—from strategic plann
     <h3>Migration</h3>
     <p>Migrate from legacy systems</p>
     <span class="count">11 guides →</span>
+  </a>
+
+  <a href="/guides/comparison/" class="topic-card">
+    <h3>System Comparison</h3>
+    <p>Choose the right ERP system</p>
+    <span class="count">20 guides →</span>
   </a>
 </div>
 
