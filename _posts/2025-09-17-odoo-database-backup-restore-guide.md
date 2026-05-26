@@ -173,10 +173,10 @@ ZIP backup:     2.5 GB  (database + filestore + manifest)
 
 **Pro Tip**: Use ZIP format unless you have a specific reason not to. Research shows that 73% of restore failures stem from incomplete backups where administrators used SQL format thinking it was "simpler."
 
-<div style="background: linear-gradient(135deg, #FFF4E6 0%, #FFE8CC 100%); border-left: 4px solid #F59E0B; padding: 20px 24px; margin: 24px 0; border-radius: 4px;">
-<p style="margin: 0 0 12px 0; font-weight: 600; color: #92400E;">⚠️ Are you one of the 73%?</p>
-<p style="margin: 0 0 16px 0; font-size: 14px; line-height: 1.6; color: #78350F;">Most administrators discover backup gaps AFTER disaster strikes. Our free diagnostic reveals if your backup will actually work when you need it—including filestore sync issues, format problems, and 6 other critical failure points.</p>
-<p style="margin: 0;"><a href="/toolkit/odoo-backup-readiness-checker/" style="display: inline-block; background: #F59E0B; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; font-weight: 600; font-size: 14px;">Check Your Backup Health (60 seconds) →</a></p>
+<div style="background: #f8f9fa; border-left: 4px solid #267CB9; padding: 20px 24px; margin: 24px 0; border-radius: 4px;">
+<p style="margin: 0 0 8px 0; font-size: 15px; font-weight: 700; color: #1a1a1a;">Don't want to be in the 73%?</p>
+<p style="margin: 0 0 16px 0; font-size: 14px; line-height: 1.6; color: #444;">The <strong>Odoo Backup Protection Pack ($27)</strong> includes automated scripts that prevent filestore sync issues, format errors, and the other 6 critical failure points—before they become disasters. 30-day guarantee.</p>
+<a href="https://ariashaw.gumroad.com/l/backup-protection-pack" style="display: inline-block; background: #267CB9; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: 700; font-size: 14px;">Get Backup Protection Pack — $27</a>
 </div>
 
 ## How to Backup Odoo Database: 4 Proven Methods That Actually Work (2025 Edition)
@@ -641,7 +641,6 @@ Successful database restoration requires testing your process beforehand.
 
 Case studies reveal that 40% of backup attempts fail during recovery because organizations discover corrupted filestores or incomplete backup procedures during emergency situations.
 
-> **⏱️ When seconds count:** Before diving into restore procedures, does your backup strategy pass the "disaster drill test"? Our [Backup Readiness Checker](/toolkit/odoo-backup-readiness-checker/) simulates 8 real-world failure scenarios and tells you **exactly** which gaps would cause a failed restore in an actual emergency. **[Run the 60-second drill →](/toolkit/odoo-backup-readiness-checker/)**
 
 ### Restore Odoo Database from Backup File: Web Interface Method
 
@@ -915,7 +914,7 @@ When facing complete system failure, use our comprehensive emergency recovery to
 - Database connectivity restoration
 - Full system health verification
 
-> **⚡ Facing a backup emergency right now?** If you're in crisis mode and need immediate help, first run our [Backup Readiness Checker](/toolkit/odoo-backup-readiness-checker/) to diagnose the exact failure point in under 60 seconds. It'll tell you which of the 8 common disaster scenarios you're facing and point you to the specific fix. If you need hands-on help after that, I offer emergency backup recovery support—[Get emergency support here](https://ariashaw.gumroad.com/l/backup-protection-pack).
+> **⚡ Facing a backup emergency right now?** The Odoo Backup Protection Pack includes an emergency recovery toolkit and rollback scripts for all 8 common disaster scenarios. [Get immediate access — $27](https://ariashaw.gumroad.com/l/backup-protection-pack).
 
 ---
 
@@ -1207,10 +1206,10 @@ Documentation shows that seasoned system administrators spend hours troubleshoot
 
 Research analysis reveals that 90% of backup and restore problems fall into three categories: authentication issues, resource constraints, and configuration errors.
 
-<div style="background: #E8F4F8; border: 2px solid #267CB9; padding: 20px 24px; margin: 24px 0; border-radius: 8px;">
-<p style="margin: 0 0 12px 0; font-weight: 600; color: #0C5460; font-size: 16px;">💡 Skip the troubleshooting headache</p>
-<p style="margin: 0 0 16px 0; font-size: 14px; line-height: 1.6; color: #0C5460;">Rather than guessing which of these 90% of issues you're facing, let the diagnostic tell you. Our free [Backup Readiness Checker](/toolkit/odoo-backup-readiness-checker/) identifies your specific problem category in seconds and shows you the exact fix. No trial and error needed.</p>
-<p style="margin: 0;"><a href="/toolkit/odoo-backup-readiness-checker/" style="color: #267CB9; font-weight: 600; text-decoration: none; border-bottom: 2px solid #267CB9;">Get Your Diagnosis (60 sec) →</a></p>
+<div style="background: #f8f9fa; border-left: 4px solid #267CB9; padding: 20px 24px; margin: 24px 0; border-radius: 4px;">
+<p style="margin: 0 0 8px 0; font-size: 15px; font-weight: 700; color: #1a1a1a;">Skip the troubleshooting entirely.</p>
+<p style="margin: 0 0 16px 0; font-size: 14px; line-height: 1.6; color: #444;">The <strong>Odoo Backup Protection Pack ($27)</strong> covers all three failure categories with pre-built automation: authentication handling, large database scripts, and complete filestore sync verification. Fix it once, run it forever. 30-day guarantee.</p>
+<a href="https://ariashaw.gumroad.com/l/backup-protection-pack" style="display: inline-block; background: #267CB9; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: 700; font-size: 14px;">Get Backup Protection Pack — $27</a>
 </div>
 
 The most common scenarios and their documented solutions:
@@ -1619,10 +1618,10 @@ find /backup/odoo -mtime +$LOCAL_RETENTION -delete
 ![Diagnostic flowchart for troubleshooting backup and restore failures including disk space, permissions, and corruption issues](../assets/images/Backup and Restore Issue Diagnosis.webp){:loading="lazy"}
 *Comprehensive troubleshooting flowchart for common backup and restore problems*
 
-<div style="background: linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%); border-left: 4px solid #059669; padding: 20px 24px; margin: 32px 0; border-radius: 4px;">
-<p style="margin: 0 0 12px 0; font-weight: 600; color: #064E3B; font-size: 16px;">✅ Prevent these issues before they happen</p>
-<p style="margin: 0 0 16px 0; font-size: 14px; line-height: 1.6; color: #064E3B;">You just read about master password errors, size limitations, and filestore sync issues. Want to know if YOUR setup has these ticking time bombs? Our <a href="/toolkit/odoo-backup-readiness-checker/" style="color: #059669; font-weight: 600; text-decoration: underline;">Backup Readiness Checker</a> tests all 3 of these failure modes plus 5 others—before you're in emergency mode. Takes 60 seconds, completely free.</p>
-<p style="margin: 0;"><a href="/toolkit/odoo-backup-readiness-checker/" style="display: inline-block; background: #059669; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; font-weight: 600; font-size: 14px;">Test Your Backup Health Now →</a></p>
+<div style="background: #f8f9fa; border-left: 4px solid #267CB9; padding: 20px 24px; margin: 32px 0; border-radius: 4px;">
+<p style="margin: 0 0 8px 0; font-size: 15px; font-weight: 700; color: #1a1a1a;">You just read about what goes wrong. Here's how to prevent all of it.</p>
+<p style="margin: 0 0 16px 0; font-size: 14px; line-height: 1.6; color: #444;">The <strong>Odoo Backup Protection Pack ($27)</strong> automates master password handling, large database backups, and filestore sync — the 3 failure modes you just read about, plus 5 more. Pre-built scripts, 30-day guarantee.</p>
+<a href="https://ariashaw.gumroad.com/l/backup-protection-pack" style="display: inline-block; background: #267CB9; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: 700; font-size: 14px;">Get Backup Protection Pack — $27</a>
 </div>
 
 > **🔧 Still running into issues after trying these solutions?** Backup troubleshooting can be frustrating when your business data is on the line. If you've tried the steps above and are still facing problems, or if you want to avoid these headaches, I can audit your current setup and implement a rock-solid backup system that eliminates these common failure points. [Let me fix your backup issues once and for all](https://ariashaw.gumroad.com/l/backup-protection-pack) - includes complete troubleshooting and bulletproof implementation.
