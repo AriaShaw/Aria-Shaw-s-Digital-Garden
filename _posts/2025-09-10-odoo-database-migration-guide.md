@@ -1300,6 +1300,12 @@ Essential pre-migration, during-migration, and post-migration verification check
 
 Your preparation with this disaster prevention guide means you're already ahead of 90% of migration attempts. These scenarios are manageable when you see them coming and have the right recovery procedures ready.
 
+<div style="background: #f8f9fa; border-left: 4px solid #267CB9; padding: 20px 24px; margin: 32px 0; border-radius: 4px;">
+<p style="margin: 0 0 8px 0; font-size: 15px; font-weight: 700; color: #1a1a1a;">Six disaster scenarios. One toolkit that prevents all of them.</p>
+<p style="margin: 0 0 16px 0; font-size: 14px; line-height: 1.6; color: #444;">The <strong>Odoo Migration Toolkit ($47)</strong> includes pre-built automation scripts for zero-downtime execution, a rollback system for all 6 disaster scenarios, data validation scripts, and an audit trail generator. Everything in this guide, pre-configured. 30-day guarantee.</p>
+<a href="https://ariashaw.gumroad.com/l/migration-toolkit" style="display: inline-block; background: #267CB9; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: 700; font-size: 14px;">Get the Migration Toolkit — $47</a>
+</div>
+
 ---
 
 ## Advanced Troubleshooting Decision Tree 🌳
@@ -2081,6 +2087,8 @@ These scripts represent thousands of hours of refinement based on real-world tes
 
 **📥 Download the Complete Script Library:**
 
+> **Want pre-configured scripts instead of assembling them yourself?** The [Odoo Migration Toolkit ($47)](https://ariashaw.gumroad.com/l/migration-toolkit) includes all scripts below, production-tuned and tested. 30-day guarantee.
+
 ```bash
 # Clone the complete migration toolkit
 git clone https://github.com/AriaShaw/odoo-migration-toolkit.git
@@ -2702,7 +2710,12 @@ You now control the exact processes enterprise consultants charge $15K+ to execu
 
 Your data is yours. Your migration path is clear. Your business runs on infrastructure you control.
 
-Now execute. 🚀
+<div style="background: linear-gradient(135deg, #f0f7ff 0%, #e8f4fb 100%); border: 2px solid #267CB9; padding: 24px; margin: 32px 0; border-radius: 8px;">
+<p style="margin: 0 0 8px 0; font-size: 20px; font-weight: 700; color: #1a1a1a;">Odoo Migration Toolkit — $47</p>
+<p style="margin: 0 0 16px 0; font-size: 14px; line-height: 1.6; color: #333;">Zero-downtime migration scripts, automated rollback for every failure scenario, data validation, and audit trail generator. Everything in this guide, pre-built and production-tested. 30-day guarantee.</p>
+<a href="https://ariashaw.gumroad.com/l/migration-toolkit" style="display: inline-block; background: #267CB9; color: #fff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 700; font-size: 15px; margin-right: 16px;">Get the Migration Toolkit — $47</a>
+<span style="font-size: 13px; color: #555;">Need the full suite? <a href="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty" style="color: #267CB9; font-weight: 600;">Complete 5-Module Pack — $699</a></span>
+</div>
 
 ---
 *Last updated: September 2025 | Found this guide valuable? Share it with another business owner who deserves to control their own data.*
