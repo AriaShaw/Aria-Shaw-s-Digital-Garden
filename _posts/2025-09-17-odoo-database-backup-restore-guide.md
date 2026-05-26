@@ -1624,8 +1624,6 @@ find /backup/odoo -mtime +$LOCAL_RETENTION -delete
 <a href="https://ariashaw.gumroad.com/l/backup-protection-pack" style="display: inline-block; background: #267CB9; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: 700; font-size: 14px;">Get Backup Protection Pack — $27</a>
 </div>
 
-> **🔧 Still running into issues after trying these solutions?** Backup troubleshooting can be frustrating when your business data is on the line. If you've tried the steps above and are still facing problems, or if you want to avoid these headaches, I can audit your current setup and implement a rock-solid backup system that eliminates these common failure points. [Let me fix your backup issues once and for all](https://ariashaw.gumroad.com/l/backup-protection-pack) - includes complete troubleshooting and bulletproof implementation.
-
 ## Alternative Solutions Comparison
 
 Now that you understand the technical details, let's step back and compare the different approaches.
