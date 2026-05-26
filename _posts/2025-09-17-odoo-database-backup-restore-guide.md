@@ -909,7 +909,7 @@ When facing complete system failure, use our comprehensive emergency recovery to
 - Database connectivity restoration
 - Full system health verification
 
-> **⚡ Facing a backup emergency right now?** If you're in crisis mode and need immediate help, first run our [Backup Readiness Checker](/toolkit/odoo-backup-readiness-checker/) to diagnose the exact failure point in under 60 seconds. It'll tell you which of the 8 common disaster scenarios you're facing and point you to the specific fix. If you need hands-on help after that, I offer emergency backup recovery support—[Get emergency support here](#-bulletproof-backup--recovery-setup-service-199).
+> **⚡ Facing a backup emergency right now?** If you're in crisis mode and need immediate help, first run our [Backup Readiness Checker](/toolkit/odoo-backup-readiness-checker/) to diagnose the exact failure point in under 60 seconds. It'll tell you which of the 8 common disaster scenarios you're facing and point you to the specific fix. If you need hands-on help after that, I offer emergency backup recovery support—[Get emergency support here](https://ariashaw.gumroad.com/l/backup-protection-pack).
 
 ---
 
@@ -1619,7 +1619,7 @@ find /backup/odoo -mtime +$LOCAL_RETENTION -delete
 <p style="margin: 0;"><a href="/toolkit/odoo-backup-readiness-checker/" style="display: inline-block; background: #059669; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; font-weight: 600; font-size: 14px;">Test Your Backup Health Now →</a></p>
 </div>
 
-> **🔧 Still running into issues after trying these solutions?** Backup troubleshooting can be frustrating when your business data is on the line. If you've tried the steps above and are still facing problems, or if you want to avoid these headaches, I can audit your current setup and implement a rock-solid backup system that eliminates these common failure points. [Let me fix your backup issues once and for all](#-bulletproof-backup--recovery-setup-service-199) - includes complete troubleshooting and bulletproof implementation.
+> **🔧 Still running into issues after trying these solutions?** Backup troubleshooting can be frustrating when your business data is on the line. If you've tried the steps above and are still facing problems, or if you want to avoid these headaches, I can audit your current setup and implement a rock-solid backup system that eliminates these common failure points. [Let me fix your backup issues once and for all](https://ariashaw.gumroad.com/l/backup-protection-pack) - includes complete troubleshooting and bulletproof implementation.
 
 ## Alternative Solutions Comparison
 
@@ -2602,6 +2602,14 @@ This free guide covered manual backup and restore procedures—the foundation ev
 - **Module 5**: PostgreSQL performance tuner and optimization suite
 
 **Investment:** $699 for complete toolkit vs. $50,000-$200,000 for equivalent consulting services
+
+<div style="background: linear-gradient(135deg, #f0f7ff 0%, #e8f4fb 100%); border: 2px solid #267CB9; padding: 24px; margin: 24px 0; border-radius: 8px;">
+<p style="margin: 0 0 4px 0; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #267CB9;">Skip the manual setup</p>
+<p style="margin: 0 0 12px 0; font-size: 20px; font-weight: 700; color: #1a1a1a;">Odoo Backup Protection Pack — $27</p>
+<p style="margin: 0 0 16px 0; font-size: 14px; line-height: 1.6; color: #333;">Production-ready backup automation scripts (local + S3/Backblaze/Google Drive), disaster recovery drill simulator, 47-point validation checklist, and encryption setup guides. Everything in this guide, automated. 30-day guarantee.</p>
+<a href="https://ariashaw.gumroad.com/l/backup-protection-pack" style="display: inline-block; background: #267CB9; color: #fff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 700; font-size: 15px; margin-right: 16px;">Get Backup Protection Pack — $27</a>
+<span style="font-size: 13px; color: #555;">Need the full toolkit? <a href="https://ariashaw.gumroad.com/l/odoo-digital-sovereignty" style="color: #267CB9; font-weight: 600;">Complete 5-Module Pack — $699</a></span>
+</div>
 
 ---
 
