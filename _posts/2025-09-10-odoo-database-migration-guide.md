@@ -685,8 +685,6 @@ You've just completed the migration and verification scripts pass. Before celebr
 
 **Run a reality check on your server specs:** Use the **[Odoo Requirements Calculator](/toolkit/odoo-requirements-calculator/)** to verify your current server (CPU, RAM, storage) still matches your actual workload after migration. Post-migration is when you discover if your estimates were accurate—check NOW during the 48-hour monitoring window, not 3 months later when performance degrades.
 
-**Second-guess your hosting strategy?** If you're already thinking "this maintenance is more work than expected" or "the performance isn't what I hoped," run the **[Odoo Hosting Advisor](/toolkit/odoo-hosting-advisor/)** to compare your DIY approach against managed alternatives. Some teams realize post-migration that paying $150/month for managed hosting beats spending 10+ hours/month on maintenance, monitoring, and troubleshooting. Better to know now while you have momentum.
-
 **Migration feels successful?** Validate your architecture decision aligns with your team's actual capacity and business growth plans.
 
 ---
@@ -1309,18 +1307,6 @@ Your preparation with this disaster prevention guide means you're already ahead 
 ---
 
 ## Advanced Troubleshooting Decision Tree 🌳
-
----
-
-**🔍 Performance Issues After Migration? Diagnose the Root Cause Fast**
-
-Post-migration slowness typically stems from one of two causes: **under-provisioned servers** or **poorly sized infrastructure decisions**. Before diving into complex PostgreSQL tuning:
-
-1. **Verify your specs match your workload:** Run the **[Odoo Requirements Calculator](/toolkit/odoo-requirements-calculator/)** with your current user count, active modules, and transaction volume. Compare recommended specs against your actual server—if you're running 50 users on a 4GB RAM server, you've found your problem. Quick fix: upgrade RAM/CPU.
-
-2. **Question your hosting strategy:** If you're spending >8 hours/month troubleshooting performance, infrastructure, or mysterious slowdowns, use the **[Odoo Hosting Advisor](/toolkit/odoo-hosting-advisor/)** to evaluate whether managed hosting's automated optimization is worth the premium. Sometimes performance issues signal a strategic mismatch between technical capacity and self-hosting complexity.
-
-Most post-migration performance problems trace back to infrastructure decisions made during planning. These tools help diagnose whether it's a quick fix (more resources) or a strategic problem (wrong hosting model).
 
 ---
 
