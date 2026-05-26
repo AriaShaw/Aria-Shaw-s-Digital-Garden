@@ -625,6 +625,12 @@ wget https://raw.githubusercontent.com/cybrosys-technologies/odoo-backup/main/od
 ![Comparison matrix of community backup scripts evaluating features, reliability, maintenance status, and user ratings](../assets/images/Community Scripts Comparison.webp){:loading="lazy"}
 *Feature comparison matrix of popular community backup solutions with supported capabilities*
 
+<div style="background: #f8f9fa; border-left: 4px solid #267CB9; padding: 20px 24px; margin: 32px 0; border-radius: 4px;">
+<p style="margin: 0 0 8px 0; font-size: 15px; font-weight: 700; color: #1a1a1a;">That was a lot of configuration work.</p>
+<p style="margin: 0 0 16px 0; font-size: 14px; line-height: 1.6; color: #444;">The <strong>Odoo Backup Protection Pack ($27)</strong> includes all the scripts above — pre-configured for multi-cloud sync (S3, Backblaze, Google Drive), disaster recovery drills, and automated retention. Copy, configure one file, done. 30-day guarantee.</p>
+<a href="https://ariashaw.gumroad.com/l/backup-protection-pack" style="display: inline-block; background: #267CB9; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: 700; font-size: 14px;">Get the pre-built scripts — $27</a>
+</div>
+
 ## How to Restore Odoo Database: Complete Recovery Guide (Never Lose Data Again)
 
 Now comes the moment of truth—when you need to use those backups.
@@ -2580,28 +2586,6 @@ These hidden features have saved me hours over the years. The backup validation 
 
 ---
 
-## This Guide vs. The Master Pack
-
-This free guide covered manual backup and restore procedures—the foundation every Odoo administrator needs. The **Odoo Digital Sovereignty Master Pack** automates and enhances these processes for production environments:
-
-| What This Guide Covered | What Module 4 Adds |
-|-------------------------|---------------------|
-| Manual web interface backup | **Intelligent backup scheduler** - automatic timing optimization for minimal performance impact |
-| Single-location backup storage | **Multi-cloud sync engine** - simultaneous backup to AWS/Backblaze/Google Drive |
-| Basic backup verification | **Enterprise validation framework** - 47-point quality checklist with automated testing |
-| Manual restore procedures | **Recovery time optimizer** - automated rollback scripts for 7 disaster scenarios |
-| Performance considerations | **Incremental backup optimizer** - 90% storage reduction for large databases |
-| Basic monitoring tips | **System health monitor** - real-time monitoring with 47 production checks + alerting |
-
-**Plus:** Disaster recovery drill system, migration audit trail, and complete operations documentation.
-
-**Additional Modules:**
-- **Module 1**: Strategic planning with TCO calculator and failure prevention
-- **Module 2**: One-command deployment with production configs
-- **Module 3**: Zero-downtime migration execution
-- **Module 5**: PostgreSQL performance tuner and optimization suite
-
-**Investment:** $699 for complete toolkit vs. $50,000-$200,000 for equivalent consulting services
 
 <div style="background: linear-gradient(135deg, #f0f7ff 0%, #e8f4fb 100%); border: 2px solid #267CB9; padding: 24px; margin: 24px 0; border-radius: 8px;">
 <p style="margin: 0 0 4px 0; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #267CB9;">Skip the manual setup</p>
