@@ -351,7 +351,7 @@ nano basic_odoo_backup.sh
 
 For a comprehensive cURL-based backup script with advanced error handling, cloud integration, and logging, see our enhanced backup script:
 
-📋 **[Enhanced Backup Script](/downloads/enhanced-backup-script)** - Includes Backblaze B2 cloud sync and email alerts
+📋 **[Enhanced Backup Script](/assets/downloads/enhanced_backup_odoo.sh)** - Includes Backblaze B2 cloud sync and email alerts
 
 **Configuration file (backup.conf):**
 ```bash
@@ -2532,7 +2532,7 @@ When disaster strikes, every minute counts. An undocumented fast-track restore m
 **💾 Download the emergency restore script:**
 
 ```bash
-wget https://ariashaw.com/assets/downloads/emergency-restore-script
+wget /assets/downloads/emergency_restore.sh
 chmod +x emergency_restore.sh
 
 # Emergency restore usage:
